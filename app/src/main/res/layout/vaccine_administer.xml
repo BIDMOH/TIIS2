@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app_ms="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/titles_rl"
+                android:layout_below="@id/child_aefi_title"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Vaccine Doses"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Vaccine Lot"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_marginLeft="150dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Vaccine Date"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_marginLeft="450dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Done"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="260dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reasons If not Done"
+                    android:gravity="right"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_marginRight="32dp"
+                    android:layout_alignParentRight="true"/>
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.6dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:background="@color/card_light_text"/>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_below="@id/child_aefi_title"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PVC 1"
+                    android:textSize="18sp"
+                    android:layout_marginTop="16dp"
+                    android:textColor="@color/black"/>
+
+                <fr.ganfra.materialspinner.MaterialSpinner
+                    android:layout_width="180dp"
+                    android:layout_marginLeft="150dp"
+                    android:layout_height="wrap_content"
+                    android:divider="@null"
+                    app_ms:ms_multiline="false"
+                    app_ms:ms_hint="Gender"
+                    app_ms:ms_enableFloatingLabel="true"
+                    app_ms:ms_enableErrorLabel="false"
+                    app_ms:ms_floatingLabelText="Gender"
+                    app_ms:ms_baseColor="@color/light_blue_600"
+                    app_ms:ms_highlightColor="@color/light_blue_700"
+                    app_ms:ms_errorColor="@color/red_500"
+                    app_ms:ms_typeface="Roboto-LightItalic.ttf"
+                    app_ms:ms_hintColor="@color/card_light_text"
+                    app_ms:ms_arrowColor="@color/light_blue_600"
+                    app_ms:ms_arrowSize="16dp"
+                    app_ms:ms_alignLabels="false"
+                    app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="12-Jan-2016"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="450dp"/>
+
+                <CheckBox
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentRight="true"
+                    android:checked="true"
+                    android:layout_marginRight="260dp"/>
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.6dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:background="@color/card_light_text"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_below="@id/child_aefi_title"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="DTP-HepB-Hib 1"
+                    android:textSize="18sp"
+                    android:layout_marginTop="16dp"
+                    android:textColor="@color/black"/>
+
+                <fr.ganfra.materialspinner.MaterialSpinner
+                    android:layout_width="180dp"
+                    android:layout_marginLeft="150dp"
+                    android:layout_height="wrap_content"
+                    android:divider="@null"
+                    app_ms:ms_multiline="false"
+                    app_ms:ms_hint="Gender"
+                    app_ms:ms_enableFloatingLabel="true"
+                    app_ms:ms_enableErrorLabel="false"
+                    app_ms:ms_floatingLabelText="Gender"
+                    app_ms:ms_baseColor="@color/light_blue_600"
+                    app_ms:ms_highlightColor="@color/light_blue_700"
+                    app_ms:ms_errorColor="@color/red_500"
+                    app_ms:ms_typeface="Roboto-LightItalic.ttf"
+                    app_ms:ms_hintColor="@color/card_light_text"
+                    app_ms:ms_arrowColor="@color/light_blue_600"
+                    app_ms:ms_arrowSize="16dp"
+                    app_ms:ms_alignLabels="false"
+                    app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="12-Jan-2016"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="450dp"/>
+
+                <CheckBox
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentRight="true"
+                    android:checked="true"
+                    android:layout_marginRight="260dp"/>
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.6dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:background="@color/card_light_text"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_below="@id/child_aefi_title"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="OPV 1"
+                    android:textSize="18sp"
+                    android:layout_marginTop="16dp"
+                    android:textColor="@color/black"/>
+
+                <fr.ganfra.materialspinner.MaterialSpinner
+                    android:layout_width="180dp"
+                    android:layout_marginLeft="150dp"
+                    android:layout_height="wrap_content"
+                    android:divider="@null"
+                    app_ms:ms_multiline="false"
+                    app_ms:ms_hint="Gender"
+                    app_ms:ms_enableFloatingLabel="true"
+                    app_ms:ms_enableErrorLabel="false"
+                    app_ms:ms_floatingLabelText="Gender"
+                    app_ms:ms_baseColor="@color/light_blue_600"
+                    app_ms:ms_highlightColor="@color/light_blue_700"
+                    app_ms:ms_errorColor="@color/red_500"
+                    app_ms:ms_typeface="Roboto-LightItalic.ttf"
+                    app_ms:ms_hintColor="@color/card_light_text"
+                    app_ms:ms_arrowColor="@color/light_blue_600"
+                    app_ms:ms_arrowSize="16dp"
+                    app_ms:ms_alignLabels="false"
+                    app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="12-Jan-2016"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="450dp"/>
+
+                <CheckBox
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentRight="true"
+                    android:checked="true"
+                    android:layout_marginRight="260dp"/>
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.6dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:background="@color/card_light_text"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_below="@id/child_aefi_title"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rota 1"
+                    android:textSize="18sp"
+                    android:layout_marginTop="16dp"
+                    android:textColor="@color/black"/>
+
+                <fr.ganfra.materialspinner.MaterialSpinner
+                    android:layout_width="180dp"
+                    android:layout_marginLeft="150dp"
+                    android:layout_height="wrap_content"
+                    android:divider="@null"
+                    app_ms:ms_multiline="false"
+                    app_ms:ms_hint="Gender"
+                    app_ms:ms_enableFloatingLabel="true"
+                    app_ms:ms_enableErrorLabel="false"
+                    app_ms:ms_floatingLabelText="Gender"
+                    app_ms:ms_baseColor="@color/light_blue_600"
+                    app_ms:ms_highlightColor="@color/light_blue_700"
+                    app_ms:ms_errorColor="@color/red_500"
+                    app_ms:ms_typeface="Roboto-LightItalic.ttf"
+                    app_ms:ms_hintColor="@color/card_light_text"
+                    app_ms:ms_arrowColor="@color/light_blue_600"
+                    app_ms:ms_arrowSize="16dp"
+                    app_ms:ms_alignLabels="false"
+                    app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="12-Jan-2016"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="450dp"/>
+
+                <CheckBox
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentRight="true"
+                    android:checked="true"
+                    android:layout_marginRight="260dp"/>
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</ScrollView>

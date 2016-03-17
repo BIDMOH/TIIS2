@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app_ms="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".10"
+            android:text="BCG"
+            android:textSize="16sp"
+            android:id="@+id/item_name"/>
+
+        <TextView
+            android:gravity="center_horizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".10"
+            android:text="3456823"
+            android:textSize="16sp"
+            android:id="@+id/lot_number"/>
+
+        <TextView
+            android:gravity="center_horizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".10"
+            android:text="44000"
+            android:textSize="16sp"
+            android:id="@+id/balance"/>
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:gravity="center_horizontal|bottom"
+            android:layout_marginLeft="16dp"
+            android:layout_width="0dp"
+            android:inputType="number"
+            android:layout_height="wrap_content"
+            android:layout_weight=".20"
+            android:textSize="16sp"
+            android:id="@+id/met_quantity"/>
+
+        <fr.ganfra.materialspinner.MaterialSpinner
+            android:id="@+id/reason_spinner"
+            android:layout_width="0dp"
+            android:layout_weight=".40"
+            android:layout_height="wrap_content"
+            android:divider="@null"
+            android:layout_marginLeft="32dp"
+            android:gravity="bottom|center_horizontal"
+            app_ms:ms_multiline="false"
+            app_ms:ms_hint="Reason"
+            app_ms:ms_enableFloatingLabel="true"
+            app_ms:ms_enableErrorLabel="false"
+            app_ms:ms_floatingLabelText="Reason"
+            app_ms:ms_baseColor="@color/light_blue_600"
+            app_ms:ms_highlightColor="@color/light_blue_700"
+            app_ms:ms_errorColor="@color/red_500"
+            app_ms:ms_typeface="Roboto-LightItalic.ttf"
+            app_ms:ms_hintColor="@color/card_light_text"
+            app_ms:ms_arrowColor="@color/light_blue_600"
+            app_ms:ms_arrowSize="16dp"
+            app_ms:ms_alignLabels="false"
+            app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
+
+    </LinearLayout>
+
+</LinearLayout>

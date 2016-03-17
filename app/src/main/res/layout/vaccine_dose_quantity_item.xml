@@ -1,0 +1,118 @@
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app_ms="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_weight=".3"
+            android:layout_height="match_parent"
+            android:paddingLeft="32dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/dose"
+                android:text="Dozi"
+                android:textSize="18sp"
+                android:gravity="center_vertical"/>
+
+            <View
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:id="@+id/split_dose"
+                android:layout_marginRight="32dp"
+                android:background="@color/card_light_text"
+                android:layout_centerVertical="true"/>
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/card_light_text"/>
+
+            <Spinner
+                android:id="@+id/lot_spinner"
+                android:layout_width="0dp"
+                android:layout_weight=".15"
+                android:layout_height="match_parent"
+                android:divider="@null"
+                android:background="@color/white"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/card_light_text"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/vaccine_date"
+            android:layout_weight=".15"
+            android:text="12-Jan-2014"
+            android:textSize="18sp"
+            android:gravity="center"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/card_light_text"/>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_weight=".10"
+            android:gravity="center_vertical"
+            android:background="@color/white"
+            android:layout_height="match_parent">
+
+            <CheckBox
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/vit_a_check"
+                android:textSize="18sp"/>
+
+
+            <CheckBox
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/vaccine_administered_done_checkbox"
+
+                android:checked="true"
+                android:clickable="true" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/card_light_text"/>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".30">
+
+            <Spinner
+                android:background="@color/white"
+                android:id="@+id/non_vacc_reason_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@null"
+                android:layout_centerInParent="true"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

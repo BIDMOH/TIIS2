@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~   ~ Copyright (C)AIRIS Solutions 2015 TIIS App - Tanzania Immunization Information System App
+  ~   ~
+  ~   ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~   ~    you may not use this file except in compliance with the License.
+  ~   ~    You may obtain a copy of the License at
+  ~   ~
+  ~   ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~   ~
+  ~   ~    Unless required by applicable law or agreed to in writing, software
+  ~   ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~   ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~   ~    See the License for the specific language governing permissions and
+  ~   ~    limitations under the License.
+  ~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/borders_linear_layout">
+
+    <TextView
+        android:id="@+id/tv_item"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/name"
+        android:layout_gravity="center_vertical"
+        android:textColor="#333333"
+        android:textSize="18sp"
+        android:gravity="center"/>
+    <View
+        android:layout_width="2dp"
+        android:layout_height="match_parent"
+        android:background="@color/Black"/>
+
+    <TextView
+        android:id="@+id/tv_lot_number"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/date_of_birth"
+        android:textSize="18sp"
+        android:layout_gravity="center"
+        android:textColor="#333333"
+        android:gravity="center"/>
+    <View
+        android:layout_width="2dp"
+        android:layout_height="match_parent"
+        android:padding="10dp"
+        android:gravity="center"
+        android:background="@color/Black">
+
+    </View>
+    <TextView
+        android:id="@+id/tv_balance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/village_domicile"
+        android:textColor="@color/Black"
+        android:textSize="18sp"
+        android:layout_gravity="center"
+        android:gravity="center"/>
+
+
+    <View
+        android:layout_width="2dp"
+        android:layout_height="match_parent"
+        android:padding="10dp"
+        android:gravity="center"
+        android:background="@color/Black">
+
+    </View>
+
+    <EditText
+        android:id="@+id/et_quantity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border_radius_text_box"
+        android:layout_margin="10dp"
+        android:maxLines="1"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:inputType="number"
+        android:singleLine="true"
+        android:textColor="@color/Black" />
+
+
+    <View
+        android:layout_width="2dp"
+        android:layout_height="match_parent"
+        android:padding="10dp"
+        android:gravity="center"
+        android:background="@color/Black">
+
+    </View>
+    <Spinner
+        android:id="@+id/sp_reason"
+        style="@style/spinner_style"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:layout_weight="1"
+        android:spinnerMode="dialog"
+        android:textColor="@color/txt" />
+
+</LinearLayout>

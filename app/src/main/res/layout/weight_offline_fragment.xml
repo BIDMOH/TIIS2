@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="32dp"
+        android:id="@+id/title_rl">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/title"
+            android:textSize="18sp"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="32dp"
+            android:text="Enter Child Weight"
+            android:layout_centerVertical="true"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/card_separator"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/title"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="32dp"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:id="@+id/titles"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_below="@id/title_rl">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight=".30"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_marginLeft="32dp"
+            android:text="Date"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_weight=".20"
+            android:layout_height="8dp"
+            />
+
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight=".60"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="Weight"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linear_layout"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_below="@id/titles">
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:layout_width="0dp"
+            android:layout_weight=".30"
+            android:layout_height="wrap_content"
+            android:id="@+id/met_date_value"
+            android:hint="Date"
+            android:text=""
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/met_dob_value"
+            app:met_floatingLabelText="Date"
+            app:met_floatingLabel="normal"
+            app:met_floatingLabelTextColor="@color/light_blue_500"
+            />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_weight=".20"
+            android:layout_height="8dp"
+            />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="0.4">
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:layout_width="0dp"
+                android:layout_weight=".40"
+                android:layout_height="wrap_content"
+                android:id="@+id/met_weight_value"
+                android:hint="Whole"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/met_date_value"
+                android:inputType="number"
+                app:met_floatingLabelText="Whole"
+                app:met_floatingLabel="normal"
+                app:met_floatingLabelTextColor="@color/light_blue_500" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight=".20"
+                android:layout_height="wrap_content"
+                android:text="."
+                android:textSize="48sp"
+                android:textStyle="bold"
+                android:gravity="center_horizontal"
+                android:layout_gravity="bottom"/>
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:layout_width="0dp"
+                android:layout_weight=".40"
+                android:layout_height="wrap_content"
+                android:id="@+id/met_weight_decimal_value"
+                android:hint="Decimal"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/met_date_value"
+                android:inputType="number"
+                app:met_floatingLabelText="Decimal"
+                app:met_floatingLabel="normal"
+                app:met_floatingLabelTextColor="@color/light_blue_500" />
+
+        </LinearLayout>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight=".20"
+            android:layout_height="50dp"
+            android:id="@+id/weight_save_btn"
+            android:layout_below="@id/linear_layout"
+            android:layout_alignParentRight="true"
+            android:background="@color/light_blue_600"
+            android:textColor="@color/white"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="16dp"
+            android:text="Save"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

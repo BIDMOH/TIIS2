@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:id="@+id/sep_zero"
+            android:background="@color/card_grid_tex"/>
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="0.40"
+            android:id="@+id/antigen_value"
+            android:text=""
+            android:layout_marginLeft="16dp"
+            android:textSize="16sp"
+            android:layout_centerVertical="true"
+            android:textColor="@color/black"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="2dp"
+            android:id="@+id/sep_one"
+            android:background="@color/card_grid_tex"
+            android:layout_toRightOf="@id/antigen_value"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="0.10"
+            android:layout_marginLeft="8dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/week_o_value"
+            android:text=""
+            android:gravity="center"
+            android:layout_toRightOf="@id/sep_one"
+            android:textSize="16sp"
+            android:layout_centerVertical="true"
+            android:textColor="@color/black"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="2dp"
+            android:id="@+id/sep_two"
+            android:background="@color/card_grid_tex"
+            android:layout_toRightOf="@id/week_o_value"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="0.10"
+            android:layout_marginLeft="8dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/week_6_value"
+            android:text=""
+            android:gravity="center"
+            android:layout_toRightOf="@id/sep_two"
+            android:textSize="16sp"
+            android:layout_centerVertical="true"
+            android:textColor="@color/black"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="2dp"
+            android:id="@+id/sep_three"
+            android:background="@color/card_grid_tex"
+            android:layout_toRightOf="@id/week_6_value"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="0.10"
+            android:layout_marginLeft="8dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/week_10_value"
+            android:text=""
+            android:gravity="center"
+            android:layout_toRightOf="@id/sep_three"
+            android:textSize="16sp"
+            android:layout_centerVertical="true"
+            android:textColor="@color/black"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="2dp"
+            android:id="@+id/sep_four"
+            android:background="@color/card_grid_tex"
+            android:layout_toRightOf="@id/week_10_value"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="0.10"
+            android:layout_marginLeft="8dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/week_14_value"
+            android:text=""
+            android:gravity="center"
+            android:layout_toRightOf="@id/sep_four"
+            android:textSize="16sp"
+            android:layout_centerVertical="true"
+            android:textColor="@color/black"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="2dp"
+            android:id="@+id/sep_five"
+            android:background="@color/card_grid_tex"
+            android:layout_toRightOf="@id/week_14_value"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="0.10"
+            android:layout_marginLeft="8dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/month_9_value"
+            android:text=""
+            android:gravity="center"
+            android:layout_toRightOf="@id/sep_five"
+            android:textSize="16sp"
+            android:layout_centerVertical="true"
+            android:textColor="@color/black"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="2dp"
+            android:id="@+id/sep_six"
+            android:background="@color/card_grid_tex"
+            android:layout_toRightOf="@id/month_9_value"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="0.10"
+            android:layout_marginLeft="8dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/month_18_value"
+            android:text=""
+            android:gravity="center"
+            android:layout_toRightOf="@id/sep_six"
+            android:textSize="16sp"
+            android:layout_centerVertical="true"
+            android:textColor="@color/black"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="2dp"
+            android:id="@+id/sep_seven"
+            android:background="@color/card_grid_tex"
+            android:layout_toRightOf="@id/month_18_value"/>
+
+
+    </LinearLayout>
+
+</RelativeLayout>

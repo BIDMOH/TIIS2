@@ -1,0 +1,48 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/drawer_home"
+            android:checked="true"
+            android:icon="@drawable/title_home"
+            android:title="@string/home"/>
+
+        <item
+            android:id="@+id/reg_child"
+            android:icon="@drawable/home_register_child_icon"
+            android:title="@string/home_register_child"/>
+
+        <item
+            android:id="@+id/search_child"
+            android:icon="@drawable/home_search_child_icon"
+            android:title="@string/home_search_child"/>
+
+        <item
+            android:id="@+id/vac_queue"
+            android:icon="@drawable/home_vaccination_queue_icon"
+            android:title="@string/home_vac_queue"/>
+
+        <item
+            android:id="@+id/month_plan"
+            android:icon="@drawable/monthly_plan_button"
+            android:title="@string/home_monthly_plan"/>
+
+        <item
+            android:id="@+id/reports"
+            android:icon="@drawable/reports_button"
+            android:title="@string/home_reports"/>
+
+        <item
+            android:id="@+id/stock"
+            android:icon="@drawable/stock_button"
+            android:title="@string/home_stock"/>
+
+        <item
+            android:id="@+id/logout"
+            android:icon="@drawable/logout_button"
+            android:title="@string/home_logout"/>
+
+    </group>
+</menu>

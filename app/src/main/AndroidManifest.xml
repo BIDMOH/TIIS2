@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~   ~ Copyright (C)AIRIS Solutions 2015 TIIS App - Tanzania Immunization Information System App
+  ~   ~
+  ~   ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~   ~    you may not use this file except in compliance with the License.
+  ~   ~    You may obtain a copy of the License at
+  ~   ~
+  ~   ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~   ~
+  ~   ~    Unless required by applicable law or agreed to in writing, software
+  ~   ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~   ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~   ~    See the License for the specific language governing permissions and
+  ~   ~    limitations under the License.
+  ~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="mobile.giis.app"
+    android:versionName="1.9.6"
+    android:versionCode="101"
+    android:installLocation="auto"
+    android:largeHeap="true">
+
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <uses-sdk android:minSdkVersion="15" android:targetSdkVersion="17"/>
+
+    <!-- Don't require camera, as this requires a rear camera. This allows it to work on the Nexus 7 -->
+    <uses-feature android:name="android.hardware.camera"
+        android:required="false"/>
+    <uses-feature android:name="android.hardware.camera.front"
+        android:required="false"/>
+    <!-- <uses-feature android:name="android.hardware.camera.any"/> -->
+    <uses-feature android:name="android.hardware.camera.autofocus"
+        android:required="false"/>
+    <uses-feature android:name="android.hardware.camera.flash"
+        android:required="false"/>
+    <!--<uses-feature android:name="android.hardware.screen.portrait"/>-->
+
+    <uses-feature android:name="android.hardware.wifi"
+        android:required="false"/>
+    <!-- This excludes Google TV, which is unfortunately included by virtue of not requiring a camera -->
+    <uses-feature android:name="android.hardware.touchscreen"/>
+
+    <supports-screens android:xlargeScreens="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true"
+        android:anyDensity="true"/>
+
+    <application android:name="mobile.giis.app.base.BackboneApplication"
+        android:icon="@drawable/newloginlogo"
+        android:logo="@drawable/newloginlogo"
+        android:theme="@style/TIISTheme"
+        android:label="@string/app_name"
+        android:allowBackup="true">
+
+        <activity android:name="mobile.giis.app.LoginActivity"
+            android:label="Tanzania IIS"
+            android:stateNotNeeded="true"
+            android:configChanges="keyboard|keyboardHidden|uiMode|screenSize|smallestScreenSize"
+            android:windowSoftInputMode="stateAlwaysHidden">
+        </activity>
+
+        <activity android:name="mobile.giis.app.HomeActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name="mobile.giis.app.ScanHandlerActivity"
+            android:screenOrientation="user"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+
+        <activity android:name="mobile.giis.app.SearchChildActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize">
+        </activity>
+
+        <activity android:name="mobile.giis.app.SupplementsActivity"
+            android:screenOrientation="user">
+        </activity>
+
+        <activity android:name="mobile.giis.app.AefiActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize">
+        </activity>
+
+        <activity android:name="mobile.giis.app.ImmunizationCardActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize">
+        </activity>
+        <activity android:name="mobile.giis.app.ImmunizedChildrenActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:windowSoftInputMode="adjustResize" >
+        </activity>
+
+        <activity android:name="mobile.giis.app.SearchChildResultActivity"
+            android:screenOrientation="user">
+        </activity>
+
+        <activity android:name="mobile.giis.app.RegisterChildActivity"
+            android:screenOrientation="user">
+        </activity>
+
+        <activity android:name="mobile.giis.app.VaccinationQueueActivity"
+            android:screenOrientation="user">
+        </activity>
+
+        <activity android:name="mobile.giis.app.ViewAppointmentActivity"
+            android:screenOrientation="user">
+        </activity>
+
+        <activity android:name="mobile.giis.app.MonthlyPlanActivity"
+            android:screenOrientation="user">
+        </activity>
+
+        <activity android:name="mobile.giis.app.StockActivity"
+            android:screenOrientation="user">
+        </activity>
+        <activity android:name="mobile.giis.app.StockAdjustmentReasonsActivity"
+            android:screenOrientation="user">
+        </activity>
+
+        <activity android:name="mobile.giis.app.AdministerVaccinesOfflineActivity"
+            android:screenOrientation="user">
+        </activity>
+
+        <activity android:name="mobile.giis.app.ScanResultActivity"
+            android:screenOrientation="user">
+        </activity>
+
+        <activity android:name="mobile.giis.app.AdministerVaccinesActivity"
+            android:screenOrientation="user">
+        </activity>
+        <activity android:name=".StockMenuActivity"
+            android:screenOrientation="user">
+        </activity>
+        <activity android:name="mobile.giis.app.AdministerVaccines2"
+            android:screenOrientation="user">
+        </activity>
+
+        <activity android:name="mobile.giis.app.WeightActivity"
+            android:screenOrientation="user"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+
+        <activity android:name="mobile.giis.app.ViewChildActivity"
+            android:screenOrientation="user"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+
+        //services
+        <service
+            android:name="mobile.giis.app.helpers.NetworkStatusService"
+            android:label="network_status_service">
+        </service>
+
+        <service
+            android:name="mobile.giis.app.authentication.LoginAuthenticationService"
+            android:exported="true"
+            android:process=":auth">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
+
+        <receiver android:name="mobile.giis.app.postman.RoutineAlarmReceiver" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name="mobile.giis.app.postman.SynchronisationService"
+            android:exported="false" >
+        </service>
+        <service
+            android:name="mobile.giis.app.postman.CheckForChangesSynchronisationService"
+            android:exported="false"
+            >
+        </service>
+
+        <activity
+            android:name=".HealthFacilityBalanceChartActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:windowSoftInputMode="adjustResize" >
+        </activity>
+
+        <activity
+            android:name=".VaccinationCoverageActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:windowSoftInputMode="adjustResize" >
+        </activity>
+
+        <activity
+            android:name=".ReportsActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:windowSoftInputMode="adjustResize" >
+        </activity>
+
+        <activity android:name=".HomeActivityRevised"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:windowSoftInputMode="stateAlwaysHidden">
+        </activity>
+
+        <activity android:name=".ChildDetailsActivity"
+            android:parentActivityName=".HomeActivityRevised">
+        </activity>
+
+        <activity android:name=".StockActivityRevised"
+            android:parentActivityName=".HomeActivityRevised">
+        </activity>
+
+        <activity android:name=".ReportsActivityRevised"
+            android:parentActivityName=".HomeActivityRevised">
+        </activity>
+
+        <activity android:name=".AdministerVaccineOfflineRevisedActivity"
+            android:parentActivityName=".HomeActivityRevised">
+        </activity>
+
+    </application>
+
+</manifest>

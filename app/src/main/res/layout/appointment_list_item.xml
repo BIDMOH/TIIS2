@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.4"
+                android:layout_height="match_parent"
+                android:id="@+id/appointment_list_item_vaccine"
+                android:text="Vaccine"
+                android:textColor="@color/black"
+                android:gravity="center_vertical"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.3"
+                android:textColor="@color/black"
+                android:layout_height="match_parent"
+                android:id="@+id/appointment_list_item_schedule"
+                android:text="Schedule"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="32dp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.3"
+                android:textColor="@color/black"
+                android:layout_height="match_parent"
+                android:id="@+id/appointment_list_item_schedule_date"
+                android:text="12-Jan-2014"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="32dp"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

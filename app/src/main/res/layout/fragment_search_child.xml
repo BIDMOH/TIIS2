@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:app_ms="http://schemas.android.com/apk/res-auto"
+    xmlns:materialdesign="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/white">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_filters_title"
+                android:text="Search Filters"
+                android:textColor="@color/light_blue_600"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@id/txt_filters_title">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp">
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:layout_width="0dp"
+                        android:layout_weight=".25"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/met_barcode"
+                        app:met_floatingLabel="normal"
+                        app:met_floatingLabelTextColor="@color/light_blue_600"
+                        app:met_floatingLabelText="Barcode"
+                        app:met_textColorHint="@color/card_light_text"
+                        app:met_baseColor="#395670"
+                        android:textSize="14sp"
+                        android:hint="Barcode"/>
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:layout_width="0dp"
+                        android:layout_weight=".25"
+                        android:layout_marginLeft="8dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/met_fname"
+                        app:met_floatingLabel="normal"
+                        app:met_floatingLabelTextColor="@color/light_blue_600"
+                        app:met_floatingLabelText="First Name"
+                        app:met_textColorHint="@color/card_light_text"
+                        app:met_baseColor="#395670"
+                        android:textSize="14sp"
+                        android:hint="First Name"/>
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:layout_width="0dp"
+                        android:layout_weight=".25"
+                        android:layout_marginLeft="8dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/met_mname"
+                        app:met_floatingLabel="normal"
+                        app:met_floatingLabelTextColor="@color/light_blue_600"
+                        app:met_floatingLabelText="Middle Name"
+                        app:met_textColorHint="@color/card_light_text"
+                        app:met_baseColor="#395670"
+                        android:textSize="14sp"
+                        android:hint="Middle Name"/>
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:layout_width="0dp"
+                        android:layout_weight=".25"
+                        android:layout_marginLeft="8dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/met_sname"
+                        app:met_floatingLabel="normal"
+                        app:met_floatingLabelTextColor="@color/light_blue_600"
+                        app:met_floatingLabelText="Surname"
+                        app:met_textColorHint="@color/card_light_text"
+                        app:met_baseColor="#395670"
+                        android:textSize="14sp"
+                        android:hint="Surname"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="32dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp">
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:layout_width="0dp"
+                        android:layout_weight=".25"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/met_dop_from"
+                        android:hint="DOB From"
+                        android:textSize="14sp"
+                        app:met_floatingLabel="normal"
+                        app:met_floatingLabelTextColor="@color/light_blue_600"
+                        app:met_floatingLabelText="DOB From"
+                        app:met_textColorHint="@color/card_light_text"
+                        app:met_baseColor="#395670"
+                        app:met_iconRight="@drawable/ic_monthly_plan"/>
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:layout_width="0dp"
+                        android:layout_weight=".25"
+                        android:layout_marginLeft="8dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/met_dop_to"
+                        android:hint="DOB To"
+                        android:textSize="14sp"
+                        app:met_floatingLabel="normal"
+                        app:met_floatingLabelTextColor="@color/light_blue_600"
+                        app:met_floatingLabelText="DOB To"
+                        app:met_textColorHint="@color/card_light_text"
+                        app:met_baseColor="#395670"
+                        app:met_iconRight="@drawable/ic_monthly_plan"/>
+
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:layout_width="0dp"
+                        android:layout_weight=".25"
+                        android:layout_marginLeft="8dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/met_mother_fname"
+                        app:met_floatingLabel="normal"
+                        app:met_floatingLabelTextColor="@color/light_blue_600"
+                        app:met_floatingLabelText="Mother First Name"
+                        app:met_textColorHint="@color/card_light_text"
+                        android:textSize="14sp"
+                        app:met_baseColor="#395670"
+                        android:hint="Mother First Name"/>
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:layout_width="0dp"
+                        android:layout_weight=".25"
+                        android:layout_marginLeft="8dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/met_mother_sname"
+                        app:met_floatingLabel="normal"
+                        app:met_floatingLabelTextColor="@color/light_blue_600"
+                        app:met_floatingLabelText="Mother Sec Name"
+                        app:met_textColorHint="@color/card_light_text"
+                        app:met_baseColor="#395670"
+                        android:textSize="14sp"
+                        android:hint="Mother Sec Name"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:visibility="gone"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="32dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp">
+
+                    <fr.ganfra.materialspinner.MaterialSpinner
+                        android:id="@+id/spin_search_place_id"
+                        android:layout_width="0dp"
+                        android:layout_weight=".15"
+                        android:layout_height="wrap_content"
+                        android:divider="@null"
+                        app_ms:ms_multiline="false"
+                        app_ms:ms_hint="Place Of Birth"
+                        app_ms:ms_enableFloatingLabel="true"
+                        app_ms:ms_enableErrorLabel="false"
+                        app_ms:ms_floatingLabelText="Place Of Birth"
+                        app_ms:ms_baseColor="@color/light_blue_600"
+                        app_ms:ms_highlightColor="@color/light_blue_700"
+                        app_ms:ms_errorColor="@color/red_500"
+                        app_ms:ms_typeface="Roboto-LightItalic.ttf"
+                        app_ms:ms_hintColor="@color/card_light_text"
+                        app_ms:ms_arrowColor="@color/light_blue_600"
+                        app_ms:ms_arrowSize="16dp"
+                        app_ms:ms_alignLabels="false"
+                        app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
+
+                    <fr.ganfra.materialspinner.MaterialSpinner
+                        android:id="@+id/spin_search_health_id"
+                        android:layout_width="0dp"
+                        android:layout_weight=".30"
+                        android:layout_height="wrap_content"
+                        android:divider="@null"
+                        android:layout_marginLeft="8dp"
+                        app_ms:ms_multiline="false"
+                        app_ms:ms_hint="Health Facility"
+                        app_ms:ms_enableFloatingLabel="true"
+                        app_ms:ms_enableErrorLabel="false"
+                        app_ms:ms_floatingLabelText="Health Facility"
+                        app_ms:ms_baseColor="@color/light_blue_600"
+                        app_ms:ms_highlightColor="@color/light_blue_700"
+                        app_ms:ms_errorColor="@color/red_500"
+                        app_ms:ms_typeface="Roboto-LightItalic.ttf"
+                        app_ms:ms_hintColor="@color/card_light_text"
+                        app_ms:ms_arrowColor="@color/light_blue_600"
+                        app_ms:ms_arrowSize="16dp"
+                        app_ms:ms_alignLabels="false"
+                        app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
+
+                    <fr.ganfra.materialspinner.MaterialSpinner
+                        android:id="@+id/spin_search_village_id"
+                        android:layout_width="0dp"
+                        android:layout_weight=".20"
+                        android:layout_height="wrap_content"
+                        android:divider="@null"
+                        android:layout_marginLeft="8dp"
+                        app_ms:ms_multiline="false"
+                        app_ms:ms_hint="Village"
+                        app_ms:ms_enableFloatingLabel="true"
+                        app_ms:ms_enableErrorLabel="false"
+                        app_ms:ms_floatingLabelText="Village"
+                        app_ms:ms_baseColor="@color/light_blue_600"
+                        app_ms:ms_highlightColor="@color/light_blue_700"
+                        app_ms:ms_errorColor="@color/red_500"
+                        app_ms:ms_typeface="Roboto-LightItalic.ttf"
+                        app_ms:ms_hintColor="@color/card_light_text"
+                        app_ms:ms_arrowColor="@color/light_blue_600"
+                        app_ms:ms_arrowSize="16dp"
+                        app_ms:ms_alignLabels="false"
+                        app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
+
+
+                    <fr.ganfra.materialspinner.MaterialSpinner
+                        android:id="@+id/spin_search_status_id"
+                        android:layout_width="0dp"
+                        android:layout_weight=".15"
+                        android:layout_height="wrap_content"
+                        android:divider="@null"
+                        android:layout_marginLeft="8dp"
+                        app_ms:ms_multiline="false"
+                        app_ms:ms_hint="Status"
+                        app_ms:ms_enableFloatingLabel="true"
+                        app_ms:ms_enableErrorLabel="false"
+                        app_ms:ms_floatingLabelText="Status"
+                        app_ms:ms_baseColor="@color/light_blue_600"
+                        app_ms:ms_highlightColor="@color/light_blue_700"
+                        app_ms:ms_errorColor="@color/red_500"
+                        app_ms:ms_typeface="Roboto-LightItalic.ttf"
+                        app_ms:ms_hintColor="@color/card_light_text"
+                        app_ms:ms_arrowColor="@color/light_blue_600"
+                        app_ms:ms_arrowSize="16dp"
+                        app_ms:ms_alignLabels="false"
+                        app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:background="@color/cardview_light_background">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight=".05"
+                android:layout_height="wrap_content"
+                android:text="SN"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="@color/light_blue_600"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight=".20"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_child_names"
+                android:text="CHILD NAMES"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="@color/light_blue_600"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight=".20"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_mother_names"
+                android:text="MOTHER NAMES"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="@color/light_blue_600"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight=".10"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_child_dob"
+                android:text="DATE OF BIRTH"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="@color/light_blue_600"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight=".05"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_child_gender"
+                android:text="GENDER"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="@color/light_blue_600"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight=".20"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_child_village_domicile"
+                android:text="VILLAGE"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="@color/light_blue_600"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight=".20"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_child_health_facility"
+                android:text="HEALTH CENTER"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="@color/light_blue_600"/>
+
+        </LinearLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:id="@+id/children_not_found_layout">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No Child Found With the Given Criteria"
+                        android:layout_centerHorizontal="true"
+                        android:textSize="18sp"
+                        android:id="@+id/empty_state_text"/>
+
+                    <android.support.v7.widget.CardView
+                        android:visibility="gone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="32dp"
+                        android:id="@+id/reset_button"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@id/empty_state_text">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="32dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="18sp"
+                                android:layout_centerInParent="true"
+                                android:textColor="@color/black"
+                                android:text=" RESET "/>
+
+                        </RelativeLayout>
+
+                    </android.support.v7.widget.CardView>
+
+                    <android.support.v7.widget.CardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="32dp"
+                        android:id="@+id/search_outside_facility"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@id/empty_state_text">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="32dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="18sp"
+                                android:layout_centerInParent="true"
+                                android:textColor="@color/black"
+                                android:text="Search Outside Facility"/>
+
+                        </RelativeLayout>
+
+                    </android.support.v7.widget.CardView>
+
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/children_list_layout">
+
+                <ProgressBar
+                    android:visibility="gone"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerInParent="true"
+                    android:id="@+id/pbar"
+                    android:indeterminate="true"
+                    android:background="@color/light_blue_600"/>
+
+                <mobile.giis.app.CustomViews.NestedListView
+                    android:id="@+id/lv_children_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dp"
+                    android:layout_weight="1">
+                </mobile.giis.app.CustomViews.NestedListView>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

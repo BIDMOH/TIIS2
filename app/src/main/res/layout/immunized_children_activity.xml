@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~   ~ Copyright (C)AIRIS Solutions 2015 TIIS App - Tanzania Immunization Information System App
+  ~   ~
+  ~   ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~   ~    you may not use this file except in compliance with the License.
+  ~   ~    You may obtain a copy of the License at
+  ~   ~
+  ~   ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~   ~
+  ~   ~    Unless required by applicable law or agreed to in writing, software
+  ~   ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~   ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~   ~    See the License for the specific language governing permissions and
+  ~   ~    limitations under the License.
+  ~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background1"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <LinearLayout
+        android:id="@+id/titleBarLayout"
+        style="@style/TitleBar">
+
+        <ImageButton
+            style="@style/TitleBarAction"
+            android:contentDescription="@string/description_home"
+            android:onClick="onClickHome"
+            android:src="@drawable/title_home" />
+
+        <TextView
+            style="@style/TitleBarText"
+            android:gravity="center"
+            android:text="@string/title_immunized_children"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/text_size_large" />
+
+        <ImageView
+            android:id="@+id/home_start_continuous_sync"
+            android:layout_width="@dimen/fifty_dp_height"
+            android:layout_height="@dimen/forty_dp_height"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            android:layout_marginEnd="@dimen/ten_dp_height"
+            android:layout_marginRight="@dimen/ten_dp_width"
+            android:src="@drawable/ic_continuous_sync"
+            android:onClick="onClickContinuousSync"/>
+
+        <ImageView
+            android:id="@+id/home_wifi_icon"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:background="#ffff1313"
+            android:src="@drawable/wifi32" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/back_btn"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_margin="@dimen/ten_dp_height"
+        android:background="@drawable/border_radius_button"
+        android:text="@string/back"
+        android:textSize="@dimen/text_size_large" />
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="@dimen/twenty_dp_height">
+        <TextView
+            android:id="@+id/tv_today_date"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            style="@style/LabelChild"
+            android:textSize="@dimen/text_size_large"
+            android:textColor="@color/txt"
+            android:text="@string/date"/>
+
+
+
+        <Button
+            android:id="@+id/btn_date_vacc"
+            android:layout_width="170dp"
+            android:layout_height="40dp"
+            android:layout_toRightOf="@+id/tv_today_date"
+            android:layout_marginLeft="@dimen/twenty_dp_height"
+            android:background="@drawable/border_radius_text_box"
+            android:drawableEnd="@drawable/calendar_ico"
+            android:drawableRight="@drawable/calendar_ico"
+            android:gravity="left|center_vertical"
+            android:textColor="@color/txt"
+            android:textSize="18sp" />
+
+
+        <Button
+            android:layout_width="@dimen/two_hundred_and_eighty_three_dp_width"
+            android:layout_height="@dimen/sixty_dp_height"
+            android:id="@+id/btn_immun"
+            android:layout_marginRight="@dimen/thirty_dp_height"
+            android:layout_alignParentRight="true"
+            android:textSize="@dimen/text_size_large"
+            android:textColor="@color/Black"
+            android:background="@drawable/immunizations_button"
+            android:text="@string/title_immunized"/>
+        <Button
+            android:id="@+id/immun_chart"
+            android:layout_width="@dimen/two_hundred_and_eighty_three_dp_width"
+            android:layout_height="@dimen/sixty_dp_height"
+            android:layout_below="@+id/btn_immun"
+            android:textSize="@dimen/text_size_large"
+            android:layout_marginRight="@dimen/thirty_dp_height"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/twenty_dp_height"
+            android:textColor="@color/Black"
+            android:background="@drawable/weight_button"
+            android:text="@string/immunizations_chart"/>
+
+        <LinearLayout
+            android:id="@+id/lin_static"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@+id/immun_chart"
+            android:layout_marginTop="@dimen/twenty_dp_height"
+            android:background="@drawable/borders_linear_static_layout">
+
+
+
+            <TextView
+                android:id="@+id/tv_name_children"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/name"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/Black"
+                android:textSize="18sp"
+                android:gravity="center"/>
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/Black"/>
+
+
+
+            <TextView
+                android:id="@+id/tv_lastname_children"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/lastname_children"
+                android:textSize="18sp"
+                android:layout_gravity="center"
+                android:textColor="@color/Black"
+                android:gravity="center"/>
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/Black"/>
+            <TextView
+                android:id="@+id/tv_vacc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/vaccines"
+                android:textColor="@color/Black"
+                android:textSize="18sp"
+                android:layout_gravity="center"
+                android:gravity="center"/>
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:padding="10dp"
+                android:gravity="center"
+                android:background="@color/Black">
+
+            </View>
+
+
+
+
+        </LinearLayout>
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/list_with_children"
+            android:layout_below="@+id/lin_static"/>
+    </RelativeLayout>
+
+
+
+</LinearLayout>
+        </HorizontalScrollView>
+    </ScrollView>

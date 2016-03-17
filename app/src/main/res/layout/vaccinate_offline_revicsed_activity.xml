@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <android.support.v7.widget.Toolbar
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/child_details_activity_toolbar"
+        style="@style/ToolBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/abc_action_bar_default_height_material"
+        android:minHeight="@dimen/abc_action_bar_default_height_material"
+        android:background="@color/light_blue_600">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
+                android:textColor="@color/white"
+                android:id="@+id/vacc_offline_activity_toolbar_title"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_centerVertical="true"
+                android:text="TIIS"/>
+
+            <ImageView
+                android:visibility="invisible"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:id="@+id/home_start_continuous_sync"
+                android:layout_width="@dimen/fifty_dp_height"
+                android:layout_height="@dimen/forty_dp_height"
+                android:layout_gravity="center"
+                android:scaleType="fitCenter"
+                android:layout_marginEnd="@dimen/ten_dp_height"
+                android:layout_marginRight="@dimen/ten_dp_width"
+                android:src="@drawable/ic_continuous_sync"/>
+
+            <ImageView
+                android:id="@+id/vacc_offline_wifi_icon"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_toLeftOf="@id/home_start_continuous_sync"
+                android:layout_marginRight="8dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/wifi32" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.astuetz.PagerSlidingTabStrip
+            android:id="@+id/tabs_vacc_offline"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@color/light_blue_600"
+            app:pstsIndicatorColor="@color/white"
+            app:pstsDividerColor="@color/light_blue_600"/>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager_vacc_offline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tabs_vacc_offline" />
+
+    </RelativeLayout>
+
+</LinearLayout>

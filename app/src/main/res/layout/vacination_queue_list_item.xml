@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight=".25"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="16sp"
+            android:id="@+id/vacc_txt_child_names"
+            android:layout_marginLeft="32dp"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight=".25"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:id="@+id/vaccine"
+            android:textSize="16sp"/>
+
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight=".25"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:id="@+id/age"
+            android:textSize="16sp"/>
+
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight=".25"
+            android:gravity="right"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:layout_marginRight="32dp"
+            android:id="@+id/date"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app_ms="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent" android:gravity="center_vertical"
+        android:layout_height="wrap_content" android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp" android:layout_weight="1"
+            android:layout_height="wrap_content" android:layout_marginLeft="32dp"
+            android:id="@+id/vaccine_name" android:textColor="@color/black"/>
+
+        <fr.ganfra.materialspinner.MaterialSpinner
+            android:id="@+id/vaccine_lot_spinner" android:layout_width="0dp"
+            android:layout_weight="1" android:layout_height="wrap_content"
+            android:divider="@null" app_ms:ms_multiline="false"
+            app_ms:ms_enableFloatingLabel="true"
+            app_ms:ms_baseColor="@color/black" app_ms:ms_arrowColor="@color/light_blue_600"
+            app_ms:ms_arrowSize="16dp" app_ms:ms_alignLabels="false"/>
+
+        <TextView
+            android:layout_width="0dp" android:layout_weight="1"
+            android:layout_height="wrap_content" android:layout_marginLeft="32dp"
+            android:id="@+id/vaccination_date" android:textColor="@color/black"/>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="50dp">
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:id="@+id/done_checkbox"/>
+
+        </RelativeLayout>
+
+        <fr.ganfra.materialspinner.MaterialSpinner
+            android:id="@+id/reason_spinner" android:layout_width="0dp"
+            android:layout_weight="1" android:layout_height="wrap_content"
+            android:divider="@null" app_ms:ms_multiline="false"
+            app_ms:ms_enableFloatingLabel="true"
+            app_ms:ms_baseColor="@color/black" app_ms:ms_arrowColor="@color/light_blue_600"
+            app_ms:ms_arrowSize="16dp" app_ms:ms_alignLabels="false"
+            android:layout_marginRight="32dp"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>

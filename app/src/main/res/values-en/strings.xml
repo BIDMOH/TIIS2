@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~   ~ Copyright (C)AIRIS Solutions 2015 TIIS App - Tanzania Immunization Information System App
+  ~   ~
+  ~   ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~   ~    you may not use this file except in compliance with the License.
+  ~   ~    You may obtain a copy of the License at
+  ~   ~
+  ~   ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~   ~
+  ~   ~    Unless required by applicable law or agreed to in writing, software
+  ~   ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~   ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~   ~    See the License for the specific language governing permissions and
+  ~   ~    limitations under the License.
+  ~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<resources>
+    <string name="app_name">TIIS</string>
+    <string name="app_picker_name">Applications</string>
+    <string name="bookmark_picker_name">Bookmarks</string>
+    <string name="button_add_calendar">Add to calendar</string>
+    <string name="button_add_contact">Add contact</string>
+    <string name="button_book_search">Book Search</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_custom_product_search">Custom search</string>
+    <string name="button_dial">Dial number</string>
+    <string name="button_email">Send email</string>
+    <string name="button_get_directions">Get directions</string>
+    <string name="button_mms">Send MMS</string>
+    <string name="button_ok">OK</string>
+    <string name="button_open_browser">Open browser</string>
+    <string name="button_product_search">Product search</string>
+    <string name="button_search_book_contents">Search contents</string>
+    <string name="button_share_app">Application</string>
+    <string name="button_share_bookmark">Bookmark</string>
+    <string name="button_share_by_email">Share via email</string>
+    <string name="button_share_by_sms">Share via SMS</string>
+    <string name="button_share_clipboard">Clipboard</string>
+    <string name="button_share_contact">Contact</string>
+    <string name="button_show_map">Show map</string>
+    <string name="button_sms">Send SMS</string>
+    <string name="button_web_search">Web search</string>
+    <string name="button_wifi">Connect to Network</string>
+    <string name="contents_contact">Contact info</string>
+    <string name="contents_email">Email address</string>
+    <string name="contents_location">Geographic coordinates</string>
+    <string name="contents_phone">Phone number</string>
+    <string name="contents_sms">SMS address</string>
+    <string name="contents_text">Plain text</string>
+    <string name="history_clear_text">Clear history</string>
+    <string name="history_clear_one_history_text">Clear</string>
+    <string name="history_email_title">Barcode Scanner history</string>
+    <string name="history_empty">Empty</string>
+    <string name="history_empty_detail">No barcode scans have been recorded</string>
+    <string name="history_send">Send history</string>
+    <string name="history_title">History</string>
+    <string name="menu_encode_mecard">Use MECARD</string>
+    <string name="menu_encode_vcard">Use vCard</string>
+    <string name="menu_help">Help</string>
+    <string name="menu_history">History</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_share">Share</string>
+    <string name="msg_bulk_mode_scanned">Bulk mode: barcode scanned and saved</string>
+    <string name="msg_camera_framework_bug">Sorry, the Android camera encountered a problem. You may need to restart the device.</string>
+    <string name="msg_default_format">Format</string>
+    <string name="msg_default_meta">Metadata</string>
+    <string name="msg_default_mms_subject">Hi</string>
+    <string name="msg_default_status">Place a barcode inside the viewfinder rectangle to scan it.</string>
+    <string name="msg_default_time">Time</string>
+    <string name="msg_default_type">Type</string>
+    <string name="msg_encode_contents_failed">Could not encode a barcode from the data provided.</string>
+    <string name="msg_error">Error</string>
+    <string name="msg_google_books">Google</string>
+    <string name="msg_google_product">Google</string>
+    <string name="msg_intent_failed">Sorry, the requested application could not be launched. The barcode contents may be invalid.</string>
+    <string name="msg_invalid_value">Invalid value</string>
+    <string name="msg_redirect">Redirect</string>
+    <string name="msg_sbc_book_not_searchable">Sorry, this book is not searchable.</string>
+    <string name="msg_sbc_failed">Sorry, the search encountered a problem.</string>
+    <string name="msg_sbc_no_page_returned">No page returned</string>
+    <string name="msg_sbc_page">Page</string>
+    <string name="msg_sbc_results">Results</string>
+    <string name="msg_sbc_searching_book">Searching book\u2026</string>
+    <string name="msg_sbc_snippet_unavailable">Snippet not available</string>
+    <string name="msg_share_explanation">You can share data by displaying a barcode on your screen and scanning it with another phone.</string>
+    <string name="msg_share_text">Or type some text and press Enter</string>
+    <string name="msg_sure">Are you sure?</string>
+    <string name="msg_unmount_usb">Sorry, the SD card is not accessible.</string>
+    <string name="preferences_actions_title">When a barcode is found\u2026</string>
+    <string name="preferences_auto_focus_title">Use auto focus</string>
+    <string name="preferences_auto_open_web_title">Open web pages automatically</string>
+    <string name="preferences_bulk_mode_summary">Scan and save many barcodes continuously</string>
+    <string name="preferences_bulk_mode_title">Bulk scan mode</string>
+    <string name="preferences_copy_to_clipboard_title">Copy to clipboard</string>
+    <string name="preferences_custom_product_search_summary" formatted="false">Substitutions: %s = contents, %f = format, %t = type</string>
+    <string name="preferences_custom_product_search_title">Custom search URL</string>
+    <string name="preferences_decode_1D_industrial_title">1D Industrial</string>
+    <string name="preferences_decode_1D_product_title">1D Product</string>
+    <string name="preferences_decode_Aztec_title">Aztec</string>
+    <string name="preferences_decode_Data_Matrix_title">Data Matrix</string>
+    <string name="preferences_decode_PDF417_title">PDF417 (β)</string>
+    <string name="preferences_decode_QR_title">QR Codes</string>
+    <string name="preferences_device_bug_workarounds_title">Device Bug Workarounds</string>
+    <string name="preferences_disable_barcode_scene_mode_title">No barcode scene mode</string>
+    <string name="preferences_disable_continuous_focus_summary">Use only standard focus mode</string>
+    <string name="preferences_disable_continuous_focus_title">No continuous focus</string>
+    <string name="preferences_disable_exposure_title">No exposure</string>
+    <string name="preferences_disable_metering_title">No metering</string>
+    <string name="preferences_front_light_summary">Improves scanning in low light on some phones, but may cause glare. Does not work on all phones.</string>
+    <string name="preferences_front_light_title">Use front light</string>
+    <string name="preferences_front_light_auto">Automatic</string>
+    <string name="preferences_front_light_off">Off</string>
+    <string name="preferences_front_light_on">On</string>
+    <string name="preferences_general_title">General settings</string>
+    <string name="preferences_history_summary">Store your scans in History</string>
+    <string name="preferences_history_title">Add to History</string>
+    <string name="preferences_invert_scan_title">Invert scan</string>
+    <string name="preferences_invert_scan_summary">Scan for white barcodes on black background. Not available on some devices.</string>
+    <string name="preferences_name">Settings</string>
+    <string name="preferences_orientation_title">No automatic rotation</string>
+    <string name="preferences_play_beep_title">Beep</string>
+    <string name="preferences_remember_duplicates_summary">Store multiple scans of the same barcode in History</string>
+    <string name="preferences_remember_duplicates_title">Remember duplicates</string>
+    <string name="preferences_result_title">Result settings</string>
+    <string name="preferences_scanning_title">When scanning for barcodes, decode\u2026</string>
+    <string name="preferences_search_country">Search country</string>
+    <string name="preferences_supplemental_summary">Try to retrieve more information about the barcode contents</string>
+    <string name="preferences_supplemental_title">Retrieve more info</string>
+    <string name="preferences_vibrate_title">Vibrate</string>
+    <string name="result_address_book">Found contact info</string>
+    <string name="result_calendar">Found calendar event</string>
+    <string name="result_email_address">Found email address</string>
+    <string name="result_geo">Found geographic coordinates</string>
+    <string name="result_isbn">Found book</string>
+    <string name="result_product">Found product</string>
+    <string name="result_sms">Found SMS address</string>
+    <string name="result_tel">Found phone number</string>
+    <string name="result_text">Found plain text</string>
+    <string name="result_uri">Found URL</string>
+    <string name="result_wifi">Found WLAN Configuration</string>
+    <string name="sbc_name">Google Book Search</string>
+    <string name="wifi_changing_network">Requesting connection to network\u2026</string>
+
+
+    <string name="login">Sign in</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="enter">Sign in</string>
+    <string name="online_status">Offline</string>
+    <string name="button_search">Search</string>
+
+
+    <string name="title_scan">Scan</string>
+    <string name="title_check_in">Check in</string>
+    <string name="title_search_child">Search Child</string>
+    <string name="title_register_child">Register Child</string>
+    <string name="title_vaccination_queue">Vaccination Queue</string>
+    <string name="title_view_appointment">View Appointments</string>
+    <string name="title_monthly_plan">Monthly plan</string>
+    <string name="title_stock">Stock</string>
+    <string name="title_vaccinate">Vaccinate</string>
+    <string name="title_supplements">Supplements</string>
+    <string name="title_immunization_card">Immunization Card</string>
+    <string name="title_scan_child">Scan Child</string>
+    <string name="title_scan_result">Scan Results</string>
+    <string name="title_view_child">View/Edit Child</string>
+    <string name="title_child">Child</string>
+    <string name="title_administer_vaccines">Administer Vaccines</string>
+    <string name="description_home">Home</string>
+    <string name="barcode_id">Barcode</string>
+    <string name="barcode">Barcode</string>
+    <string name="temp_id">Temp ID</string>
+    <string name="firstname">Firstname</string>
+    <string name="surname">Surname</string>
+    <string name="mother">Mother</string>
+    <string name="mother_firstname">Mother Firstname</string>
+    <string name="mother_surname">Mother Surname</string>
+    <string name="name">Name</string>
+    <string name="birthdate">Birthdate</string>
+    <string name="date_of_birth">Date of Birth</string>
+    <string name="dob_from">DOB from</string>
+    <string name="dob_to">DOB to</string>
+    <string name="place_of_birth">Place of Birth</string>
+    <string name="village_domicile">Village/Domicile</string>
+    <string name="place_of_birth_prompt">Select Place of Birth</string>
+    <string name="village_domicile_prompt">Select Village/Domicile</string>
+    <string name="health_facility">Health Facility</string>
+    <string name="status">Status</string>
+    <string name="health_facility_prompt">Select Health Facility</string>
+    <string name="status_prompt">Select Status</string>
+    <string name="title_bar_search_child">Search Child</string>
+    <string name="choose_date">Select date</string>
+    <string name="log_in_txt">LOG IN TO YOUR ACCOUNT</string>
+    <string name="gender">Gender</string>
+    <string name="radio_male">M</string>
+    <string name="radio_female">F</string>
+    <string name="phone">Phone</string>
+    <string name="notes">Notes</string>
+    <string name="search">Search</string>
+    <string name="btn_scan">Scan</string>
+    <string name="btn_save">Save</string>
+    <string name="or">Or</string>
+    <string name="type_barcode_number">Type barcode number</string>
+    <string name="weight">Weight</string>
+    <string name="supplements">Supplements</string>
+    <string name="input">Input</string>
+    <string name="modify_record">Modify Record</string>
+    <string name="vaccinate">Vaccinate</string>
+    <string name="date">Date</string>
+    <string name="back">Back</string>
+    <string name="child">Child</string>
+    <string name="child_name">Name</string>
+    <string name="vaccine_dose">Vaccine Doses</string>
+    <string name="schedule">Age</string>
+    <string name="scheduled_date">Due Date</string>
+    <string name="vaccines">Vaccines</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="month">Month</string>
+    <string name="age">Age</string>
+    <string name="today_date">Today Date</string>
+    <string name="immunization_card">Immunization Card</string>
+    <string name="aefi">Aefi</string>
+    <string name="aefi_date">Aefi Date</string>
+    <string name="dose">Dose</string>
+    <string name="search_again">Search Again</string>
+    <string name="there_are_no_children">There are no children that match the search criteria!</string>
+    <string name="btn_register">Register Child</string>
+
+    <string name="alert_empty_fields">Please check your data</string>
+    <string name="empty_barcode">The barcode field can not be empty!</string>
+    <string name="change_barcode_scan_when_exists_dialog">This child already has a barcode, are you sure you want to assign another one?</string>
+    <string name="empty_child_id">The child Id field can not be empty</string>
+    <string name="empty_names">The last/first name cannot be empty</string>
+    <string name="empty_mother_names">The last/first mother name cannot be empty</string>
+    <string name="empty_firstname">The firstname cannot be empty</string>
+    <string name="empty_surname">The surname cannot be empty</string>
+    <string name="future_birth_date">The selected date of birth is incorrect</string>
+    <string name="empty_birthplace">The place of birth cannot be empty</string>
+    <string name="empty_village">Please select domicile / village</string>
+    <string name="empty_healthfacility">Please select health facility</string>
+    <string name="empty_status">Please select status</string>
+    <string name="child_change_data_saved_success">Saved successfully!</string>
+    <string name="child_change_data_saved_error">Error!Changes not saved!</string>
+    <string name="btn_clear">Clear</string>
+    <string name="vaccine_lot">Vaccine Lot</string>
+    <string name="vaccination_date">Vaccination Date</string>
+    <string name="done">Done</string>
+    <string name="reason">Reason \nif not done</string>
+    <string name="reason_only">Reason</string>
+    <string name="modify">Modify</string>
+    <string name="empty_phone">The phone number can not be empty</string>
+    <string name="empty_notes">Please enter village name on the Notes field.</string>
+    <string name="not_found">Not Found</string>
+    <string name="barcode_does_not_exist">This barcode doesn\'t exist locally or on server.</string>
+    <string name="assign_barcode_first">Please assign a barcode to this child first!</string>
+    <string name="error_retrieving_child_data">Error retrieving child data.</string>
+
+    <!--SupplementsActivity-->
+    <string name="txt_vitamina_a">Vit A</string>
+    <string name="txt_mebend_a">Mebendezol</string>
+    <string name="chk_yes">Yes</string>
+    <string name="select_one_supplement">Please select at least one supplement that was given!</string>
+    <string name="supplement_data_saved">The supplement data was saved!</string>
+
+    <!--ImmunizationCardActivit Strings-->
+    <string name="txt_vaccine_dose">Vaccine Dose</string>
+    <string name="txt_vaccine_lot">Vaccine Lot</string>
+    <string name="txt_health_center">Health Center</string>
+    <string name="txt_vaccination_date">Vaccination Date</string>
+    <string name="txt_done">Done</string>
+    <string name="txt_non_vaccination_reason">Non Vaccination Reason</string>
+    <string name="please_enter_barcode">Please enter barcode</string>
+    <string name="please_enter_firstname">Please enter firstname</string>
+    <string name="please_enter_surname">Please enter surname</string>
+    <string name="please_enter_birthdate">Please enter date of birth</string>
+    <string name="please_enter_mother_firstname">Please enter mother\'s firstname</string>
+    <string name="please_enter_mother_surname">Please enter mother\'s surname</string>
+    <string name="please_select_place_of_birth">Please select place of birth</string>
+    <string name="please_select_village_domicile">Please select Village/Domicile</string>
+    <string name="same_barcode">This barcode is already in use. Please choose another one!</string>
+
+    <!--AefiActivity Strings-->
+    <string name="chk_child_had_aefi">Child had AEFI on this encounter</string>
+    <string name="vaccine_names_quantity">Vaccine Quantities</string>
+    <string name="back_to_queue">Back</string>
+    <string name="quantity">Quantity</string>
+    <string name="adjustment_quantity">Adjustment Qty</string>
+    <string name="child_weight_already_entered">Weight for this child has already been entered, are you sure you want to overwrite it?</string>
+    <string name="barcode_already_entered">This child already has a barcode, are you sure you want to overwrite it?</string>
+    <string name="are_you_sure">You have made some changes, are you sure you want to leave the screen?</string>
+
+
+    <!--New strings-->
+    <string name="child_with_this_data_exist">A child with these data already exists. Are you sure you want to register?</string>
+    <string name="warning">Warning</string>
+    <string name="error_ocurred">An error occurred, please try again</string>
+    <string name="barcode_not_found_locally">Barcode not found locally. Please wait for server results …</string>
+    <string name="searching_online">Searching online</string>
+    <string name="birthdate_picker">Birthdate Picker</string>
+    <string name="child_not_found_locally">Child not found locally. \nPlease wait for server results</string>
+    <string name="child_not_saved_locally">Child was not saved locally. \nPlease wait for server data</string>
+    <string name="data_not_fetched">Data could not be fetched for selected child. \nPlease check your network or try again!</string>
+    <string name="error">Error</string>
+    <string name="too_early_vaccination">It is too early for this vaccination, you shouldn’t apply it now.</string>
+    <string name="too_late_vaccination">It is too late for this vaccination, you shouldn’t apply it now</string>
+    <string name="network_connectivity">Network connectivity or android caused an error. We are sorry for the inconvenience. \nPlease try to scan again.</string>
+    <string name="not_saved">Not Saved</string>
+    <string name="barcode_assigned">This barcode is already assigned. Please choose another barcode!</string>
+    <string name="select_non_vacc_reason">Please select non vaccination reason</string>
+    <string name="sign_out">Sign out</string>
+    <string name="barcode_non_registered">The inserted barcode is not registered on the database or server. Please check the barcode or Register child.</string>
+    <string name="barcode_not_found_local">The inserted barcode was not found on the local database.</string>
+    <string name="weight_analyzer_not_reached">The weight analyzer could not be reached at this moment. We are sorry for the inconvenience.</string>
+    <string name="error_comunication_server">There was an Error in communicating with the server. Please try again later or check your internet connection.</string>
+    <string name="child_significantly_underweight">This child is SIGNIFICANTLY underweight for their age - nutritional counselling and further interventions should be considered.</string>
+    <string name="child_weight_too_hight">This child\’s weight is too high for their age. Consider nutritional counselling for the caregiver.</string>
+    <string name="child_weight_too_low">This child\’s weight is too low for their age. Consider nutritional counselling for the caregiver.</string>
+    <string name="normal_child_weight">This child\'s weight is normal for their age.</string>
+    <string name="weight_not_correct">Warning! Weight is not correct</string>
+    <string name="weight_analysis">Weight Analysis</string>
+    <string name="weight_registered">Weight for child was REGISTERED successfully.</string>
+    <string name="weight_updated">Weight for child was UPDATED successfully.</string>
+    <string name="changes_saved">Your changes have been saved!</string>
+    <string name="outreach">Outreach</string>
+    <string name="given">Given</string>
+    <string name="language">Language</string>
+    <string name="health_facility_balance">Health Facility Balance</string>
+    <string name="item">Item</string>
+    <string name="lot_number">Lot number</string>
+    <string name="expire_date">Expire Date</string>
+    <string name="balance">Balance</string>
+    <string name="title_immunized_children">Immunized Children</string>
+    <string name="title_immunized"># immunizations</string>
+    <string name="immunizations_chart">immunizations chart</string>
+    <string name="lastname_children">Lastname</string>
+    <string name="title_immunizations">Immunizations</string>
+    <string name="number_of_children_immunized">Number of children immunized on the previous immunization day</string>
+    <string name="antigen">Antigen</string>
+    <string name="title_activity_health_facility_balnce_chart">HealthFacilityBalanceChartActivity
+    </string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="stock_status_in_doses">Stock Status (In Doses)</string>
+    <string name="number_immun">#immunized</string>
+    <string name="january">January</string>
+    <string name="february">February</string>
+    <string name="march">March</string>
+    <string name="april">April</string>
+    <string name="may">May</string>
+    <string name="june">June</string>
+    <string name="july">July</string>
+    <string name="august">August</string>
+    <string name="september">September</string>
+    <string name="october">October</string>
+    <string name="november">November</string>
+    <string name="december">December</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="reorder_qty">Reorder Quantity</string>
+    <string name="no_of_children_immunized"># of children immunized</string>
+    <string name="cumm_no_children_immunized">Cumm # of children immunized</string>
+    <string name="child_is_register">Child Registered Successfully!</string>
+    <string name="empty_gender">Please select child gender!</string>
+
+    <string name="balance_stock_count">Balance / Stock count</string>
+    <string name="stock_adjustments">Stock Adjustments</string>
+    <string name="vaccination_coverage">Vaccination coverage</string>
+    <string name="reports">Reports</string>
+    <string name="reason_stock">Reason</string>
+    <string name="adjustment_qty">Adjustment QTY</string>
+    <string name="firstname2">Second name</string>
+    <string name="saved_successfully">Saved successfully</string>
+    <string name="balance_negative">The adjustment will cause balance to be negative,this is not allowed</string>
+    <string name="choose_both_qty_reason">Please choose reason and the quantity for the adjustment you want to make.</string>
+    <string name="give_suppl_child">You should be giving supplements to this child!</string>
+    <string name="barcode_ten_numbers_constraint">Barcode should be 10 numbers long</string>
+
+    <!-- Updated texts -->
+    <string name="home">Home</string>
+    <string name="home_register_child">Register Child</string>
+    <string name="home_search_child">Search Child</string>
+    <string name="home_vac_queue">Vaccination Queue</string>
+    <string name="home_monthly_plan">Monthly Plan</string>
+    <string name="home_reports">Reports</string>
+    <string name="home_stock">Stock</string>
+    <string name="home_logout">Logout</string>
+
+
+</resources>

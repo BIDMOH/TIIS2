@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~   ~ Copyright (C)AIRIS Solutions 2015 TIIS App - Tanzania Immunization Information System App
+  ~   ~
+  ~   ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~   ~    you may not use this file except in compliance with the License.
+  ~   ~    You may obtain a copy of the License at
+  ~   ~
+  ~   ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~   ~
+  ~   ~    Unless required by applicable law or agreed to in writing, software
+  ~   ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~   ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~   ~    See the License for the specific language governing permissions and
+  ~   ~    limitations under the License.
+  ~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background1" android:weightSum="1">
+    <LinearLayout
+        android:id="@+id/titleBarLayout"
+        style="@style/TitleBar">
+
+        <ImageButton
+            style="@style/TitleBarAction"
+            android:contentDescription="@string/description_home"
+            android:onClick="onClickHome"
+            android:src="@drawable/title_home"/>
+
+        <TextView style="@style/TitleBarText"
+            android:text="@string/reports"
+            android:textAlignment="center"
+            android:textSize="@dimen/text_size_large"
+            android:gravity="center"
+            android:textColor="@android:color/black"/>
+
+        <ImageView
+            android:id="@+id/home_start_continuous_sync"
+            android:layout_width="@dimen/fifty_dp_height"
+            android:layout_height="@dimen/forty_dp_height"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            android:layout_marginEnd="@dimen/ten_dp_height"
+            android:layout_marginRight="@dimen/ten_dp_width"
+            android:src="@drawable/ic_continuous_sync"
+            android:onClick="onClickContinuousSync"/>
+        <ImageView
+            android:id="@+id/home_wifi_icon"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:background="#ffff1313"
+            android:src="@drawable/wifi32"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"/>
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btn_immunized_children"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_radius_immunized_child"
+            android:drawableTop="@drawable/immunized_child_button"
+            android:text="@string/title_immunized_children"
+            android:textColor="@color/txt"
+            android:textSize="@dimen/text_size_medium"
+            android:layout_marginTop="100dp"
+            android:layout_gravity="center"
+            android:width="300dp"
+            android:height="200dp"
+
+
+            />
+
+        <Button
+            android:id="@+id/btn_vaccination_coverage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_radius_vaccination_coverage"
+            android:drawableTop="@drawable/vaccination_coverage_button"
+            android:text="@string/vaccination_coverage"
+            android:textColor="@color/txt"
+            android:textSize="@dimen/text_size_medium"
+            android:layout_marginTop="50dp"
+            android:layout_gravity="center"
+            android:width="300dp"
+            android:height="200dp"
+            android:padding="40dp"
+            />
+
+        <Button
+            android:id="@+id/btn_stock_chart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_radius_stock_reports"
+            android:drawableTop="@drawable/stock_reports_button"
+            android:text="@string/title_stock"
+            android:textColor="@color/txt"
+            android:textSize="@dimen/text_size_medium"
+            android:layout_marginTop="50dp"
+            android:layout_gravity="center"
+            android:width="300dp"
+            android:height="200dp"
+            android:padding="40dp"
+            />
+
+
+
+
+
+
+
+    </LinearLayout>
+
+</LinearLayout>
+    </ScrollView>

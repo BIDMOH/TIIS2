@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    xmlns:app_ms="http://schemas.android.com/apk/res-auto"
+    xmlns:materialdesign="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/check_in_title"
+                android:layout_marginLeft="32dp"
+                android:text="Filters"
+                android:textSize="18sp"
+                android:layout_centerVertical="true"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_toRightOf="@id/check_in_title"
+                android:background="@color/card_light_text"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="32dp"
+                android:layout_centerVertical="true"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:background="@color/white">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:id="@+id/mp_txt_date"
+                android:text="Wed, 16th Dec 2015"
+                android:textColor="@color/light_blue_600"/>
+
+            <Button
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:textStyle="bold"
+                android:text="Vaccine Doses"
+                android:id="@+id/vac_qnt_btn"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="16dp"
+                android:background="@color/light_blue_600"
+                android:textColor="@color/white"
+                android:layout_marginTop="8dp"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_alignParentRight="true">
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:textSize="12sp"
+                    android:hint="Date from"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="32dp"
+                    android:id="@+id/met_dob_from"
+                    app:met_iconRight="@drawable/ic_monthly_plan"
+                    app:met_floatingLabelText="Date of birth"
+                    app:met_floatingLabel="normal"
+                    app:met_floatingLabelTextColor="@color/light_blue_500"
+                    android:layout_toLeftOf="@id/met_dob_value"
+                    android:layout_centerVertical="true"/>
+
+                <View
+                    android:visibility="gone"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/card_light_text"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:layout_gravity="center_vertical"
+                    android:hint="Date to"
+                    android:textSize="12sp"
+                    android:layout_marginLeft="32dp"
+                    android:id="@+id/met_dob_value"
+                    app:met_iconRight="@drawable/ic_monthly_plan"
+                    app:met_floatingLabelText="Date of birth"
+                    app:met_floatingLabel="normal"
+                    app:met_floatingLabelTextColor="@color/light_blue_500"
+                    android:layout_marginRight="16dp"
+                    android:layout_centerVertical="true"/>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/card_light_text"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginBottom="32dp"/>
+
+
+                <fr.ganfra.materialspinner.MaterialSpinner
+                    android:id="@+id/age_spinner"
+                    android:layout_width="150dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="16dp"
+                    android:layout_centerVertical="true"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="12sp"
+                    android:layout_marginLeft="32dp"
+                    app_ms:ms_multiline="false"
+                    app_ms:ms_hint="Age"
+                    app_ms:ms_enableFloatingLabel="true"
+                    app_ms:ms_enableErrorLabel="false"
+                    app_ms:ms_floatingLabelText="Age"
+                    app_ms:ms_baseColor="@color/light_blue_600"
+                    app_ms:ms_highlightColor="@color/light_blue_700"
+                    app_ms:ms_errorColor="@color/red_500"
+                    app_ms:ms_typeface="Roboto-LightItalic.ttf"
+                    app_ms:ms_thickness="0.5dp"
+                    app_ms:ms_hintColor="@color/card_light_text"
+                    app_ms:ms_arrowColor="@color/card_light_text"
+                    app_ms:ms_arrowSize="16dp"
+                    app_ms:ms_alignLabels="false"
+                    app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
+
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/child_list_title"
+                android:layout_marginLeft="32dp"
+                android:text="Child List"
+                android:textSize="18sp"
+                android:layout_centerVertical="true"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_toRightOf="@id/child_list_title"
+                android:background="@color/card_light_text"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="32dp"
+                android:layout_centerVertical="true"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@color/cardview_light_background">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight=".25"
+                android:layout_height="wrap_content"
+                android:text="Child"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:id="@+id/name_title"
+                android:layout_marginLeft="32dp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight=".25"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:text="Vaccine"
+                android:textStyle="bold"
+                android:id="@+id/vaccine_title"
+                android:textSize="18sp"/>
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight=".25"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:text="Age"
+                android:textStyle="bold"
+                android:id="@+id/age_title"
+                android:textSize="18sp"/>
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight=".25"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:text="Due Date"
+                android:textStyle="bold"
+                android:id="@+id/date_title"
+                android:textSize="18sp"/>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <mobile.giis.app.CustomViews.NestedListView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/lv_monthly_plan"
+                android:scrollbars="none"/>
+
+            <ProgressBar
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerInParent="true"
+                android:indeterminate="true"
+                android:id="@+id/loading_bar"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
