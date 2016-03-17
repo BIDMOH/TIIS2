@@ -19,7 +19,7 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="mobfile.giis.app"
+    package="mobile.giis.app"
     android:versionName="1.9.6"
     android:versionCode="101"
     android:installLocation="auto"

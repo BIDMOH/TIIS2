@@ -81,7 +81,7 @@ public class StockAdjustmentFragment extends Fragment{
         });
 
         stockAdjustmentList.addFooterView(saveFooterView);
-        stockAdjustmentList.addHeaderView(v);
+//        stockAdjustmentList.addHeaderView(v);
         stockAdjustmentList.setAdapter(adapter);
 
         return root;

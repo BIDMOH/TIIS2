@@ -47,39 +47,23 @@ import mobile.giis.app.entity.AdministerVaccinesModel;
 public class AdministerVaccineFragment extends BackHandledFragment implements View.OnClickListener{
 
     private String appointment_id, birthdate, barcode, childId;
-
     private BackboneApplication app;
-
     private DatabaseHandler dbh;
-
     private Boolean SavedState = false;
-
+    private boolean outreachChecked = false;
     private boolean outreach = false;
-
     private Thread thread;
-
     boolean starter_set = false;
-
     long daysDiff;
-
     int counter = 0,DateDiffDialog = 0;
-
     ArrayList<String> dosekeeper;
-
     ArrayList<AdministerVaccinesModel> arrayListAdminVacc;
-
     Date newest_date;
-
     NestedListView vaccineDosesList;
-
     CheckBox    vitACheckbox, mabendazolCheckbox, cbOutreach;
-
     TextView vitADate, mabendazolDate;
-
     Button saveButton;
-
     MaterialEditText etNotes;
-
     FragmentStackManager fm;
 
     public static final int getMonthsDifference(Date date1, Date date2) {
@@ -274,6 +258,19 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         switch (view.getId()){
             case R.id.addminister_vaccine_save_button:
                 administerVaccineSaveButtonClicked();
+                if (SavedState) {
+                    for (AdministerVaccinesModel a : arrayListAdminVacc) {
+                        Log.d("lastupdates", "updating the data to server I think");
+                        updateAdministerVaccine task = new updateAdministerVaccine();
+                        task.execute(a.getUpdateURL(), barcode);
+
+                        updateAppointmentOutreach task2 = new updateAppointmentOutreach();
+                        task2.execute();
+
+                        updateBalance balance = new updateBalance();
+                        balance.execute(a);
+                    }
+                }
                 app.saveNeeded = false;
                 break;
         }
@@ -471,20 +468,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
     @Override
     public boolean onBackPressed() {
 
-        if (SavedState) {
-            for (AdministerVaccinesModel a : arrayListAdminVacc) {
-
-                updateAdministerVaccine task = new updateAdministerVaccine();
-                task.execute(a.getUpdateURL(), barcode);
-
-                updateAppointmentOutreach task2 = new updateAppointmentOutreach();
-                task2.execute();
-
-                updateBalance balance = new updateBalance();
-                balance.execute(a);
-            }
-        }
-
         if (app.saveNeeded){
             LayoutInflater li = LayoutInflater.from(AdministerVaccineFragment.this.getActivity());
             View promptsView = li.inflate(R.layout.custom_alert_dialogue, null);
@@ -563,9 +546,18 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
         @Override
         protected Boolean doInBackground(String... params) {
+            outreachChecked = false;
             BackboneApplication application = (BackboneApplication) AdministerVaccineFragment.this.getActivity().getApplication();
             DatabaseHandler db = application.getDatabaseInstance();
-            if(cbOutreach.isChecked() && arrayListAdminVacc!=null && arrayListAdminVacc.size()>0) {
+            AdministerVaccineFragment.this.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                 if (cbOutreach.isChecked()){
+                     outreachChecked = true;
+                 }
+                }
+            });
+            if(outreachChecked && arrayListAdminVacc!=null && arrayListAdminVacc.size()>0) {
                 application.updateVaccinationAppOutreach(barcode, arrayListAdminVacc.get(0).getDose_id());
             }
             return true;

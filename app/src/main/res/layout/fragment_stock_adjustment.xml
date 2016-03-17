@@ -6,63 +6,76 @@
     android:orientation="vertical"
     android:background="@color/white">
 
-    <LinearLayout
-        android:background="@color/cardview_light_background"
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingLeft="32dp"
-        android:paddingRight="32dp">
+        android:background="@color/cardview_light_background">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".10"
-            android:text="Item"
-            android:textSize="16sp"
-            android:textColor="@color/black"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:gravity="center_horizontal"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".10"
-            android:text="Lot Number"
-            android:textSize="16sp"
-            android:textColor="@color/black"
-            />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="32dp"
+                android:paddingRight="32dp">
 
-        <TextView
-            android:gravity="center_horizontal"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".10"
-            android:text="Balance"
-            android:textSize="16sp"
-            android:textColor="@color/black"
-            />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".10"
+                    android:text="Item"
+                    android:textSize="16sp"
+                    android:textColor="@color/black"/>
 
-        <TextView
-            android:gravity="center_horizontal"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".20"
-            android:text="Adjustment Quantity"
-            android:textSize="16sp"
-            android:textColor="@color/black"
-            />
+                <TextView
+                    android:gravity="center_horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".10"
+                    android:text="Lot Number"
+                    android:textSize="16sp"
+                    android:textColor="@color/black"
+                    />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".40"
-            android:text="Reasons"
-            android:textSize="16sp"
-            android:textColor="@color/black"
-            />
+                <TextView
+                    android:gravity="center_horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".10"
+                    android:text="Balance"
+                    android:textSize="16sp"
+                    android:textColor="@color/black"
+                    />
 
-    </LinearLayout>
+                <TextView
+                    android:gravity="center_horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".20"
+                    android:text="Adjustment Quantity"
+                    android:textSize="16sp"
+                    android:textColor="@color/black"
+                    />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".40"
+                    android:text="Reasons"
+                    android:textSize="16sp"
+                    android:textColor="@color/black"
+                    />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
 
     <ListView
         android:layout_width="match_parent"
