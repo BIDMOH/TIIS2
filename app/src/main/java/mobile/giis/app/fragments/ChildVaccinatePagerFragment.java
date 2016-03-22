@@ -52,6 +52,8 @@ public class ChildVaccinatePagerFragment extends Fragment {
 
     private String value;
 
+    private static boolean barcodeIsEmpty = false;
+
     private static final String VALUE = "value";
 
     private ArrayList<RowCollector> rowCollectorContainer;
@@ -63,6 +65,12 @@ public class ChildVaccinatePagerFragment extends Fragment {
     final String VACC_NAME_LOG = "Vaccination Name";
 
     final String VACC__ITEM_ID_LOG = "Vaccination Item Id";
+
+    private String childBarcode;
+
+    private RelativeLayout noBarcode;
+
+    private RelativeLayout frameLayout;
 
     public static final int getMonthsDifference(Date date1, Date date2) {
         int m1 = date1.getYear() * 12 + date1.getMonth();
@@ -109,10 +117,11 @@ public class ChildVaccinatePagerFragment extends Fragment {
         return date;
     }
 
-    public static ChildVaccinatePagerFragment newInstance(String mValue) {
+    public static ChildVaccinatePagerFragment newInstance(String mValue, String barcode) {
         ChildVaccinatePagerFragment f = new ChildVaccinatePagerFragment();
         Bundle b                    = new Bundle();
         b                           .putString(VALUE, mValue);
+        b                           .putString("Barcode", barcode);
         f                           .setArguments(b);
         return f;
     }
@@ -129,9 +138,14 @@ public class ChildVaccinatePagerFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         value     = getArguments().getString(VALUE);
+        childBarcode = getArguments().getString("Barcode");
 
         app = (BackboneApplication) ChildVaccinatePagerFragment.this.getActivity().getApplication();
         dbh = app.getDatabaseInstance();
+
+        if (childBarcode.isEmpty() || childBarcode == null || childBarcode.equals("")){
+            barcodeIsEmpty = true;
+        }
 
     }
 
@@ -140,6 +154,14 @@ public class ChildVaccinatePagerFragment extends Fragment {
         ViewGroup v;
         v = (ViewGroup) inflater.inflate(R.layout.child_faccinate_pager_fragment, null);
         setUpView(v);
+
+        if (childBarcode.isEmpty() || childBarcode.equals("")){
+            noBarcode.setVisibility(View.VISIBLE);
+            frameLayout.setVisibility(View.GONE);
+        }else{
+            noBarcode.setVisibility(View.GONE);
+            frameLayout.setVisibility(View.VISIBLE);
+        }
 
         Cursor cursor = null;
         cursor = dbh.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",
@@ -174,6 +196,9 @@ public class ChildVaccinatePagerFragment extends Fragment {
     public void setUpView(View v){
         vaccineDosesListView        = (NestedListView) v.findViewById(R.id.lv_dose_list);
         vaccinateFrame              = (FrameLayout) v.findViewById(R.id.vacc_fragment_frame);
+        noBarcode    = (RelativeLayout) v.findViewById(R.id.child_no_barcode_layout);
+        noBarcode.setVisibility(View.GONE);
+        frameLayout  = (RelativeLayout) v.findViewById(R.id.frame_layout);
     }
 
     public Child getChildFromCursror(Cursor cursor) {

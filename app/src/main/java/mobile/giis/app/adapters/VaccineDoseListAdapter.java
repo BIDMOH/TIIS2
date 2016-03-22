@@ -35,6 +35,7 @@ import android.widget.TextView;
 
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,10 +47,13 @@ import java.util.concurrent.TimeUnit;
 import mobile.giis.app.AdministerVaccines2;
 import mobile.giis.app.ChildDetailsActivity;
 import mobile.giis.app.R;
+import mobile.giis.app.base.BackboneActivity;
 import mobile.giis.app.base.BackboneApplication;
 import mobile.giis.app.database.DatabaseHandler;
+import mobile.giis.app.database.SQLHandler;
 import mobile.giis.app.entity.AdministerVaccinesModel;
 import mobile.giis.app.entity.NonVaccinationReason;
+import mobile.giis.app.fragments.AdministerVaccineFragment;
 
 /**
  *  ReCreated by issymac on 03/03/16.
@@ -63,6 +67,8 @@ public class VaccineDoseListAdapter extends ArrayAdapter<AdministerVaccinesModel
     private DatabaseHandler dbh;
     String dob_st;
     Date new_date = new Date();
+    boolean correctDateSelected = false;
+    public final SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy");
 
     public VaccineDoseListAdapter(Context ctx, int resource, List<AdministerVaccinesModel> items,String dob_st,int vac_lot_pos) {
         super(ctx, resource, items);
@@ -85,10 +91,10 @@ public class VaccineDoseListAdapter extends ArrayAdapter<AdministerVaccinesModel
         c1.set(Calendar.MILLISECOND, 0);
 
         c2.set(Calendar.HOUR_OF_DAY, 0);
-        c2.set(Calendar.HOUR,0);
-        c2.set(Calendar.MINUTE,0);
-        c2.set(Calendar.SECOND,0);
-        c2.set(Calendar.MILLISECOND,0);
+        c2.set(Calendar.HOUR, 0);
+        c2.set(Calendar.MINUTE, 0);
+        c2.set(Calendar.SECOND, 0);
+        c2.set(Calendar.MILLISECOND, 0);
 
         long diff = c2.getTimeInMillis() - c1.getTimeInMillis();
         long difference = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
@@ -151,7 +157,6 @@ public class VaccineDoseListAdapter extends ArrayAdapter<AdministerVaccinesModel
     }
 
     public void pickDate(){
-        final SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy");
         Calendar now = Calendar.getInstance();
         DatePickerDialog dpd = DatePickerDialog.newInstance(
                 this,
@@ -203,9 +208,28 @@ public class VaccineDoseListAdapter extends ArrayAdapter<AdministerVaccinesModel
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        final SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy");
+        Date bdate = BackboneActivity.dateParser(dob_st);
+
         Calendar cal = new GregorianCalendar();
         cal.set(year, (monthOfYear), dayOfMonth);
         new_date = cal.getTime();
+
+        try {
+            new_date = ft.parse(ft.format(new_date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Log.d("WOWHITS", "##################### New Date is  :  "+ft.format(new_date));
+        Log.d("WOWHITS", "##################### DOB is  :  "+ft.format(bdate));
+
+        if (new_date.before(bdate)){
+            AdministerVaccineFragment.correnctDateSelected = false;
+        }else{
+            AdministerVaccineFragment.correnctDateSelected = true;
+        }
+
     }
 
     public void setSpinnerVoccLot(final AdministerVaccinesModel items,final ViewHolder viewHolder){

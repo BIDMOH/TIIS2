@@ -20,11 +20,15 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:app_ms="http://schemas.android.com/apk/res-auto"
     xmlns:materialdesign="http://schemas.android.com/tools"
     android:background="@color/white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     <android.support.v7.widget.Toolbar
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -54,150 +58,157 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <include
-        android:visibility="gone"
-        android:id="@+id/toolbar_actionbar"
-        layout="@layout/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-        <RelativeLayout
+        <ScrollView
             android:layout_below="@id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
                 <RelativeLayout
-                    android:layout_width="410dp"
-                    android:layout_height="410dp"
-                    android:layout_marginLeft="100dp"
-                    android:id="@+id/imageView_card"
-                    android:layout_centerVertical="true">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="220dp">
 
-                    <ImageView
-                        android:id="@+id/imageView"
-                        android:layout_width="400dp"
-                        android:layout_height="400dp"
-                        android:layout_centerInParent="true"
-                        android:src="@drawable/uhurunaumoja" />
-
-
-                </RelativeLayout>
-
-            <LinearLayout
-                android:layout_width="600dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:background="@color/white"
-                android:gravity="top|center"
-                android:layout_toRightOf="@id/imageView_card"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    android:id="@+id/ministry_name"
-                    android:text="Wizara ya Afya na Ustawi wa Jamii \n Mpango wa Taifa wa Chanjo"/>
-
-                <LinearLayout
-                    android:id="@+id/big_lin"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/textView"
-                    android:layout_marginTop="16dp"
-                    android:layout_centerHorizontal="true"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:id="@+id/language"
-                        android:layout_width="350dp"
-                        android:layout_height="wrap_content"
-                        android:layout_alignLeft="@+id/table_layout"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="10dp">
-
-                        <TextView
-                            android:visibility="gone"
-                            style="@style/LabelChild"
-                            android:id="@+id/language_textview"
-                            android:layout_width="150dp"
-                            android:layout_height="60dp"
-                            android:layout_gravity="center"
-                            android:text="@string/language" />
+                    <RelativeLayout
+                        android:layout_width="410dp"
+                        android:layout_height="410dp"
+                        android:layout_marginLeft="100dp"
+                        android:id="@+id/imageView_card"
+                        android:layout_centerVertical="true">
 
                         <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:id="@+id/spinner_icon"
-                            android:layout_gravity="bottom"
-                            android:src="@drawable/ic_language"
-                            android:scaleType="fitXY"
-                            android:layout_marginLeft="4dp"/>
+                            android:id="@+id/imageView"
+                            android:layout_width="400dp"
+                            android:layout_height="400dp"
+                            android:layout_centerInParent="true"
+                            android:src="@drawable/uhurunaumoja" />
 
-                        <fr.ganfra.materialspinner.MaterialSpinner
-                            android:id="@+id/lang_spinner"
-                            android:layout_width="300dp"
-                            android:layout_marginLeft="8dp"
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="600dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:background="@color/white"
+                        android:gravity="center"
+                        android:layout_toRightOf="@id/imageView_card"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app_ms:ms_multiline="false"
-                            app_ms:ms_hint="Select Language"
-                            app_ms:ms_enableFloatingLabel="true"
-                            app_ms:ms_enableErrorLabel="false"
-                            app_ms:ms_floatingLabelText="Language"
-                            app_ms:ms_baseColor="@color/card_light_text"
-                            app_ms:ms_highlightColor="@color/light_blue_700"
-                            app_ms:ms_errorColor="@color/red_500"
-                            app_ms:ms_typeface="Roboto-LightItalic.ttf"
-                            app_ms:ms_thickness="0.5dp"
-                            app_ms:ms_hintColor="@color/card_light_text"
-                            app_ms:ms_arrowColor="@color/card_light_text"
-                            app_ms:ms_arrowSize="16dp"
-                            app_ms:ms_alignLabels="false"
-                            app_ms:ms_floatingLabelColor="@color/card_light_text"/>
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:id="@+id/ministry_name"
+                            android:text="Wizara ya Afya na Ustawi wa Jamii \n Mpango wa Taifa wa Chanjo"/>
+
+                        <LinearLayout
+                            android:id="@+id/big_lin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/textView"
+                            android:layout_marginTop="16dp"
+                            android:layout_centerHorizontal="true"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:id="@+id/language"
+                                android:layout_width="350dp"
+                                android:layout_height="wrap_content"
+                                android:layout_alignLeft="@+id/table_layout"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginTop="10dp">
+
+                                <TextView
+                                    android:visibility="gone"
+                                    style="@style/LabelChild"
+                                    android:id="@+id/language_textview"
+                                    android:layout_width="150dp"
+                                    android:layout_height="60dp"
+                                    android:layout_gravity="center"
+                                    android:text="@string/language" />
+
+                                <ImageView
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:id="@+id/spinner_icon"
+                                    android:layout_gravity="bottom"
+                                    android:src="@drawable/ic_language"
+                                    android:scaleType="fitXY"
+                                    android:layout_marginLeft="4dp"/>
+
+                                <fr.ganfra.materialspinner.MaterialSpinner
+                                    android:id="@+id/lang_spinner"
+                                    android:layout_width="300dp"
+                                    android:layout_marginLeft="8dp"
+                                    android:layout_height="wrap_content"
+                                    app_ms:ms_multiline="false"
+                                    app_ms:ms_hint="Select Language"
+                                    app_ms:ms_enableFloatingLabel="true"
+                                    app_ms:ms_enableErrorLabel="false"
+                                    app_ms:ms_floatingLabelText="Language"
+                                    app_ms:ms_baseColor="@color/card_light_text"
+                                    app_ms:ms_highlightColor="@color/light_blue_700"
+                                    app_ms:ms_errorColor="@color/red_500"
+                                    app_ms:ms_typeface="Roboto-LightItalic.ttf"
+                                    app_ms:ms_thickness="0.5dp"
+                                    app_ms:ms_hintColor="@color/card_light_text"
+                                    app_ms:ms_arrowColor="@color/card_light_text"
+                                    app_ms:ms_arrowSize="16dp"
+                                    app_ms:ms_alignLabels="false"
+                                    app_ms:ms_floatingLabelColor="@color/card_light_text"/>
+
+                            </LinearLayout>
+
+
+                            <com.rengwuxian.materialedittext.MaterialEditText
+                                android:layout_marginTop="16dp"
+                                android:layout_width="350dp"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/username"
+                                android:id="@+id/username"
+                                android:lines="1"
+                                android:inputType="textNoSuggestions"
+                                app:met_iconLeft="@drawable/ic_phone"
+                                app:met_iconPadding="0dp"
+                                app:met_typeface="Roboto-LightItalic.ttf" />
+
+                            <com.rengwuxian.materialedittext.MaterialEditText
+                                android:layout_width="350dp"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/password"
+                                android:id="@+id/password"
+                                android:lines="1"
+                                android:inputType="textPassword"
+                                app:met_iconLeft="@drawable/ic_lock"
+                                app:met_iconPadding="0dp"
+                                app:met_typeface="Roboto-LightItalic.ttf" />
+
+                        </LinearLayout>
+
+                        <Button
+                            android:layout_width="350dp"
+                            android:layout_height="60dp"
+                            android:id="@+id/login_btn"
+                            android:background="@color/app_theme_color"
+                            android:textColor="@color/white"
+                            android:layout_marginLeft="8dp"
+                            android:text="@string/enter"/>
 
                     </LinearLayout>
 
+                </RelativeLayout>
 
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:layout_marginTop="16dp"
-                        android:layout_width="350dp"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/username"
-                        android:id="@+id/username"
-                        android:lines="1"
-                        android:inputType="textNoSuggestions"
-                        app:met_iconLeft="@drawable/ic_phone"
-                        app:met_iconPadding="0dp"
-                        app:met_typeface="Roboto-LightItalic.ttf" />
+            </RelativeLayout>
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:layout_width="350dp"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/password"
-                            android:id="@+id/password"
-                            android:lines="1"
-                            android:inputType="textPassword"
-                            app:met_iconLeft="@drawable/ic_lock"
-                            app:met_iconPadding="0dp"
-                            app:met_typeface="Roboto-LightItalic.ttf" />
-
-                </LinearLayout>
-
-                <Button
-                    android:layout_width="350dp"
-                    android:layout_height="60dp"
-                    android:id="@+id/login_btn"
-                    android:background="@color/app_theme_color"
-                    android:textColor="@color/white"
-                    android:layout_marginLeft="8dp"
-                    android:text="@string/enter"/>
-
-            </LinearLayout>
-
-        </RelativeLayout>
+        </ScrollView>
 
     </RelativeLayout>
+
+</RelativeLayout>

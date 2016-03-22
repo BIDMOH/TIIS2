@@ -28,7 +28,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:layout_centerVertical="true"
-                android:text="TIIS"/>
+                android:text="TImR"/>
 
             <ImageView
                 android:visibility="invisible"
@@ -50,8 +50,7 @@
                 android:layout_toLeftOf="@id/home_start_continuous_sync"
                 android:layout_marginRight="8dp"
                 android:layout_centerVertical="true"
-                android:background="@color/green_300"
-                android:src="@drawable/wifi32" />
+                android:src="@drawable/network_on" />
 
         </RelativeLayout>
 

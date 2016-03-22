@@ -68,7 +68,7 @@
                     android:id="@+id/met_home_barcode"
                     android:focusable="true"
                     android:inputType="number"
-                    android:hint="Type Barcode"
+                    android:hint="Type / Scan Barcode"
                     app:met_floatingLabelText="Barcode"
                     app:met_floatingLabel="normal"
                     app:met_floatingLabelTextColor="@color/light_blue_500"

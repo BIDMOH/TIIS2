@@ -52,6 +52,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
     private Boolean SavedState = false;
     private boolean outreachChecked = false;
     private boolean outreach = false;
+    public  static boolean correnctDateSelected  = true;
     private Thread thread;
     boolean starter_set = false;
     long daysDiff;
@@ -79,16 +80,16 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         c2.setTime(d2);
 
         c1.set(Calendar.HOUR_OF_DAY, 0);
-        c1.set(Calendar.HOUR,0);
-        c1.set(Calendar.MINUTE,0);
+        c1.set(Calendar.HOUR, 0);
+        c1.set(Calendar.MINUTE, 0);
         c1.set(Calendar.SECOND, 0);
         c1.set(Calendar.MILLISECOND, 0);
 
         c2.set(Calendar.HOUR_OF_DAY, 0);
-        c2.set(Calendar.HOUR,0);
-        c2.set(Calendar.MINUTE,0);
-        c2.set(Calendar.SECOND,0);
-        c2.set(Calendar.MILLISECOND,0);
+        c2.set(Calendar.HOUR, 0);
+        c2.set(Calendar.MINUTE, 0);
+        c2.set(Calendar.SECOND, 0);
+        c2.set(Calendar.MILLISECOND, 0);
 
         long diff = c2.getTimeInMillis() - c1.getTimeInMillis();
         long difference = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
@@ -257,19 +258,45 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.addminister_vaccine_save_button:
-                administerVaccineSaveButtonClicked();
-                if (SavedState) {
-                    for (AdministerVaccinesModel a : arrayListAdminVacc) {
-                        Log.d("lastupdates", "updating the data to server I think");
-                        updateAdministerVaccine task = new updateAdministerVaccine();
-                        task.execute(a.getUpdateURL(), barcode);
+                if (correnctDateSelected){
+                    administerVaccineSaveButtonClicked();
+                    if (SavedState) {
+                        for (AdministerVaccinesModel a : arrayListAdminVacc) {
+                            Log.d("lastupdates", "updating the data to server I think");
+                            updateAdministerVaccine task = new updateAdministerVaccine();
+                            task.execute(a.getUpdateURL(), barcode);
 
-                        updateAppointmentOutreach task2 = new updateAppointmentOutreach();
-                        task2.execute();
+                            updateAppointmentOutreach task2 = new updateAppointmentOutreach();
+                            task2.execute();
 
-                        updateBalance balance = new updateBalance();
-                        balance.execute(a);
+                            updateBalance balance = new updateBalance();
+                            balance.execute(a);
+                        }
                     }
+                }else{
+                    LayoutInflater li = LayoutInflater.from(AdministerVaccineFragment.this.getActivity());
+                    View promptsView = li.inflate(R.layout.custom_alert_dialogue, null);
+
+                    android.support.v7.app.AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(AdministerVaccineFragment.this.getActivity());
+                    alertDialogBuilder.setView(promptsView);
+
+                    TextView message = (TextView) promptsView.findViewById(R.id.dialogMessage);
+                    message.setText("Vaccination Date Cannot Be Before Child's DOB");
+
+                    alertDialogBuilder
+                            .setCancelable(false)
+                            .setPositiveButton("YES",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                        }
+                                    });
+
+                    // create alert dialog
+                    android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
+
+                    // show it
+                    alertDialog.show();
                 }
                 app.saveNeeded = false;
                 break;

@@ -59,10 +59,7 @@ public class SynchronisationService extends IntentService {
             if (listPosts != null && app.getLOGGED_IN_USER_PASS() != null && app.getLOGGED_IN_USERNAME() != null) {
                 for (PostmanModel p : listPosts) {
                     if(p.getUrl() == null || p.getUrl().trim().equals(""))continue;
-
-
                     try {
-
                         DefaultHttpClient httpClient = new DefaultHttpClient();
                         HttpGet httpGet = new HttpGet(p.getUrl());
                         Utils.writeNetworkLogFileOnSD("SynchronisationService" + " "+ Utils.returnDeviceIdAndTimestamp(getApplicationContext())+p.getUrl() );

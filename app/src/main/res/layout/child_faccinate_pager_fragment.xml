@@ -4,6 +4,7 @@
     android:background="@color/white">
 
     <RelativeLayout
+        android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -13,6 +14,22 @@
             android:id="@+id/vacc_fragment_frame">
 
         </FrameLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/child_no_barcode_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_centerInParent="true"
+            android:textColor="@color/black"
+            android:text="Cannot Vaccinate a Child With No Barcode"/>
 
     </RelativeLayout>
 

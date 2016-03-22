@@ -133,6 +133,8 @@ public class StockTabFragment extends Fragment {
 
         ArrayList<BarEntry> balanceVals = new ArrayList<BarEntry>();
         ArrayList<BarEntry> reorderVals = new ArrayList<BarEntry>();
+        ArrayList<Float> thresholds = new ArrayList<>();
+
         float maxValue = 0;
         for (int i = 0; i < listStock.size(); i++) {
             Stock item = listStock.get(i);
@@ -140,6 +142,14 @@ public class StockTabFragment extends Fragment {
             if (item.getBalance() > maxValue){
                 maxValue = item.getBalance();
             }
+
+            float n = Integer.parseInt(item.getReorderQty());
+            thresholds.add(n);
+
+            if (n > maxValue){
+                maxValue = n;
+            }
+
             balanceVals.add(new BarEntry((float)item.getBalance(), i));
 
             reorderVals.add(new BarEntry(Float.parseFloat(item.getReorderQty()), i));
@@ -147,7 +157,7 @@ public class StockTabFragment extends Fragment {
         }
 
         // create 2 datasets with different types
-        mBarDataSet set1 = new mBarDataSet(balanceVals, app.getString(R.string.balance), maxValue);
+        mBarDataSet set1 = new mBarDataSet(balanceVals, app.getString(R.string.balance), thresholds);
         // set1.setColors(ColorTemplate.createColors(getApplicationContext(),
         // ColorTemplate.FRESH_COLORS));
         set1.setColors(new int[]{this.getActivity().getResources().getColor(R.color.red_500), this.getActivity().getResources().getColor(R.color.yellow_500), this.getActivity().getResources().getColor(R.color.green_500)});

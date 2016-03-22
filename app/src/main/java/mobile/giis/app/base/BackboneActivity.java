@@ -293,10 +293,10 @@ public class BackboneActivity extends AppCompatActivity {
             sync_needed = sync_preferences.getBoolean("synchronization_needed", false);
         }
 
-//        boolean secondSyncNeeded = false;
-//        if (sync_preferences.contains("secondSyncNeeded") && Utils.isOnline(this)) {
-//            secondSyncNeeded = sync_preferences.getBoolean("secondSyncNeeded", false);
-//        }
+        boolean secondSyncNeeded = false;
+        if (sync_preferences.contains("secondSyncNeeded") && Utils.isOnline(this)) {
+            secondSyncNeeded = sync_preferences.getBoolean("secondSyncNeeded", false);
+        }
 
         if (sync_needed /*|| secondSyncNeeded*/) {
             toastMessage("Device is synchronizing. Please wait ...");

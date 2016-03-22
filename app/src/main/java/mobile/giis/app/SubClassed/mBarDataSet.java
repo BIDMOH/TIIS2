@@ -10,18 +10,20 @@ import java.util.List;
  */
 public class mBarDataSet extends BarDataSet {
 
-    private float axisMaximumValue;
+    private List<Float> axisMaximumValue;
 
-    public mBarDataSet(List<BarEntry> yVals, String label, float maxValue){
+    public mBarDataSet(List<BarEntry> yVals, String label, List<Float> maxValue){
         super(yVals, label);
         axisMaximumValue = maxValue;
     }
 
     @Override
     public int getColor(int index) {
-        if(getEntryForXIndex(index).getVal() < (0.20*axisMaximumValue)) // less than 25% red
+        float reorder = axisMaximumValue.get(index);
+        float safety = reorder * 2;
+        if(getEntryForXIndex(index).getVal() < (reorder)) // less than 25% red
             return mColors.get(0);
-        else if(getEntryForXIndex(index).getVal() < (0.50*axisMaximumValue)) // less than 50% orange
+        else if(getEntryForXIndex(index).getVal() < (safety)) // less than 50% orange
             return mColors.get(1);
         else // less or equal to 100% Green
             return mColors.get(2);

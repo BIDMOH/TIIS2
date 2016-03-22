@@ -59,7 +59,7 @@ public class ChildDetailsViewPager extends FragmentPagerAdapter {
         }
         else if (position == 2){
             tx.addToBackStack(TITLES[position]);
-            return ChildVaccinatePagerFragment.newInstance(mValue);
+            return ChildVaccinatePagerFragment.newInstance(mValue, Barcode);
         }
         else if (position == 3){
             tx.addToBackStack(TITLES[position]);

@@ -23,6 +23,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.WakefulBroadcastReceiver;
+import android.util.Log;
 
 import java.util.Calendar;
 
@@ -49,7 +50,7 @@ public class RoutineAlarmReceiver extends WakefulBroadcastReceiver {
         Intent intent = new Intent(context, RoutineAlarmReceiver.class);
         intent.putExtra("setPostmanAlarm", true);
         alarmIntent = PendingIntent.getBroadcast(context, 111, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + 1000, 300000, alarmIntent);
+        alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + 1000, 60000, alarmIntent);
     }
 
     // BEGIN_INCLUDE(set_alarm)
@@ -60,12 +61,13 @@ public class RoutineAlarmReceiver extends WakefulBroadcastReceiver {
      * @param context
      */
     public static void setAlarmCheckForChangesInChild(Context context) {
+        Log.d("WOWHITS", "Starting a syncronization every few seconds for child information update .... ");
         if (alarmMgr == null)
             alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent childChanges = new Intent(context, RoutineAlarmReceiver.class);
         childChanges.putExtra("childChanges", true);
-        checkForChangesInChildPI = PendingIntent.getBroadcast(context, 222, childChanges, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + 120000, 200000, checkForChangesInChildPI);
+        checkForChangesInChildPI = PendingIntent.getBroadcast(context, 222, childChanges, PendingIntent.FLAG_UPDATE_CURRENT); //
+        alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + 1000, 60000, checkForChangesInChildPI);
     }
 
     /**
@@ -94,6 +96,7 @@ public class RoutineAlarmReceiver extends WakefulBroadcastReceiver {
         if (intent.getBooleanExtra("setPostmanAlarm", false)) {
             // this happens everytime a broadcast is received , without needing to categorise if the event comes from network or something else
             if (Utils.isOnline(context)) {
+                Log.d("WOWHITS", "Broadcast Received Syncronization of the service starts.........");
                 Intent i = new Intent(context, SynchronisationService.class);
                 startWakefulService(context, i);
             }

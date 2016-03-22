@@ -132,6 +132,9 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
         String dateNow = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
         app.getDatabaseInstance().deleteVaccinationQueueEntriesOfOtherDays(dateNow);
 
+        app.LAST_FRAGMENT = "mobile.giis.app.fragments.HomeFragment";
+        app.LAST_FRAGMENT_TITLE = "Home";
+
         //Starting the repeating synchronisation procedure that happens every 5 minutes
         RoutineAlarmReceiver.setPostmanAlarm(this);
 

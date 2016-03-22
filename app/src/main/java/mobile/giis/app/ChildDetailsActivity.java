@@ -52,6 +52,24 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
 
     private DatabaseHandler mydb;
 
+    boolean barcodeNull = true;
+
+    BroadcastReceiver status_receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            BackboneApplication app = (BackboneApplication) getApplication();
+            ImageView wifi_logo = (ImageView)findViewById(R.id.details_wifi_icon);
+            if(Utils.isOnline(context)){
+                wifi_logo.setImageResource(R.drawable.network_on);
+                app.setOnlineStatus(true);
+            }
+            else{
+                wifi_logo.setImageResource(R.drawable.network_off);
+                app.setOnlineStatus(false);
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +77,6 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
         setUpView();
 
         final BackboneApplication app = (BackboneApplication) getApplication();
-
         Bundle extras = getIntent().getExtras();
         mydb = app.getDatabaseInstance();
 
@@ -113,7 +130,7 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
         }
 
         adapter = new ChildDetailsViewPager(this, getSupportFragmentManager(), value, handlerBarcode);
-        pager.setOffscreenPageLimit(4);
+        pager.setOffscreenPageLimit(1);
 
         pager.setAdapter(adapter);
 
@@ -134,22 +151,6 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
         tabs            = (PagerSlidingTabStrip) findViewById(R.id.tabs_stock);
         pager           = (ViewPager) findViewById(R.id.pager_stock);
     }
-
-    BroadcastReceiver status_receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            BackboneApplication app = (BackboneApplication) getApplication();
-            ImageView wifi_logo = (ImageView)findViewById(R.id.details_wifi_icon);
-            if(Utils.isOnline(context)){
-                wifi_logo.setImageResource(R.drawable.network_on);
-                app.setOnlineStatus(true);
-            }
-            else{
-                wifi_logo.setImageResource(R.drawable.network_off);
-                app.setOnlineStatus(false);
-            }
-        }
-    };
 
     @Override
     public void onBackPressed() {

@@ -192,6 +192,9 @@ public class BackboneApplication extends Application{
     private boolean administerVaccineHidden = false;
     public static final String AUDIT_MANAGEMENT_GET_CONFIGURATION = "AuditManagement.svc/GetConfiguration";
 
+    public String LAST_FRAGMENT = "mobile.giis.app.fragments.HomeFragment";
+    public String LAST_FRAGMENT_TITLE = "Home";
+
     public static String getWcfUrl() {
         return WCF_URL;
     }

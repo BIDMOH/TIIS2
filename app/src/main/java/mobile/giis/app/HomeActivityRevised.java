@@ -75,7 +75,6 @@ public class HomeActivityRevised extends BackboneActivity {
     private DrawerListItemsAdapter adapter;
 
     private String[] drawerItems;
-    private List<DrawerObjects> objects;
     private ActionBarDrawerToggle drawerToggle;
 
     FragmentStackManager fm;
@@ -91,9 +90,6 @@ public class HomeActivityRevised extends BackboneActivity {
             "mobile.giis.app.fragments.StockFragment",
             "mobile.giis.app.fragments.RegisterChildFragment"
     };
-
-    public final String CHILD_SUMMARY_FRAGMENT = "ChildSummaryFragment";
-    public final String CHILD_DETAILS_FRAGMENT = "ChildDetailsFragment";
 
     public final String HOME_FRAGMENT = "mobile.giis.app.fragments.HomeFragment";
     public final String REGISTER_CHILD_FRAGMENT = "mobile.giis.app.fragments.RegisterChildFragment";
@@ -141,8 +137,14 @@ public class HomeActivityRevised extends BackboneActivity {
 
         fm = new FragmentStackManager(this);
 
+        String lastFragment = app.LAST_FRAGMENT;
+        String lastFragmentTitle = app.LAST_FRAGMENT_TITLE;
         if (starter == null) {
-            fm.addFragment(new HomeFragment(), R.id.content_frame, false, FragmentTransaction.TRANSIT_NONE, false);
+            FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+            tx.replace(R.id.content_frame, Fragment.instantiate(HomeActivityRevised.this, lastFragment));
+            tx.addToBackStack(lastFragment);
+            toolbarTitle.setText(lastFragmentTitle);
+            tx.commit();
         } else {
 //            Log.d("Saving", "Saved back to activity");
 //            //Maintain the current fragment
@@ -168,7 +170,8 @@ public class HomeActivityRevised extends BackboneActivity {
         sync_needed = sync_preferences.getBoolean("synchronization_needed", true);
         secondSyncNeeded = sync_preferences.getBoolean("secondSyncNeeded", false);
         firstLoginOfDaySyncNeeded = sync_preferences.getBoolean("firstLoginOfDaySyncNeeded", false);
-        if (app.getLOGGED_IN_FIRSTNAME() == null && app.getLOGGED_IN_LASTNAME() == null) {
+        if (app.getLOGGED_IN_FIRSTNAME() == null && app.getLOGGED_IN_LASTNAME() == null && app.getUsername() == null) {
+            Log.d("CHECHINGLOGOUT", "No user creds found in the application upon starting the activiry");
             performLogout();
         }else{
             //Do main if necessary
@@ -202,6 +205,8 @@ public class HomeActivityRevised extends BackboneActivity {
                             if (app.saveNeeded){
                                 alertUserLeavingScreen(HOME_FRAGMENT,getString(R.string.home));
                             }else{
+                                app.LAST_FRAGMENT = HOME_FRAGMENT;
+                                app.LAST_FRAGMENT_TITLE = getString(R.string.home);
                                 changeFragment(HOME_FRAGMENT, getString(R.string.home));
                             }
                             break;
@@ -209,6 +214,8 @@ public class HomeActivityRevised extends BackboneActivity {
                             if (app.saveNeeded){
                                 alertUserLeavingScreen(REGISTER_CHILD_FRAGMENT,getString(R.string.home_register_child));
                             }else{
+                                app.LAST_FRAGMENT = REGISTER_CHILD_FRAGMENT;
+                                app.LAST_FRAGMENT_TITLE = getString(R.string.home_register_child);
                                 changeFragment(REGISTER_CHILD_FRAGMENT, getString(R.string.home_register_child));
                             }
                             break;
@@ -216,6 +223,8 @@ public class HomeActivityRevised extends BackboneActivity {
                             if (app.saveNeeded){
                                 alertUserLeavingScreen(SEARCH_CHILD_FRAGMENT,getString(R.string.home_search_child));
                             }else{
+                                app.LAST_FRAGMENT = SEARCH_CHILD_FRAGMENT;
+                                app.LAST_FRAGMENT_TITLE = getString(R.string.home_search_child);
                                 changeFragment(SEARCH_CHILD_FRAGMENT, getString(R.string.home_search_child));
                             }
                             break;
@@ -223,6 +232,8 @@ public class HomeActivityRevised extends BackboneActivity {
                             if (app.saveNeeded){
                                 alertUserLeavingScreen(VACCINATION_QUEUE_FRAGMENT,getString(R.string.home_vac_queue));
                             }else{
+                                app.LAST_FRAGMENT = VACCINATION_QUEUE_FRAGMENT;
+                                app.LAST_FRAGMENT_TITLE = getString(R.string.home_vac_queue);
                                 changeFragment(VACCINATION_QUEUE_FRAGMENT, getString(R.string.home_vac_queue));
                             }
                             break;
@@ -230,6 +241,8 @@ public class HomeActivityRevised extends BackboneActivity {
                             if (app.saveNeeded){
                                 alertUserLeavingScreen(REPORTS_FRAGMENT,getString(R.string.home_reports));
                             }else{
+                                app.LAST_FRAGMENT = HOME_FRAGMENT;
+                                app.LAST_FRAGMENT_TITLE = getString(R.string.home);
                                 changeFragmentToReportActivity(getString(R.string.home_stock));
                                 //changeFragment(REPORTS_FRAGMENT, getString(R.string.home_reports));
                             }
@@ -238,6 +251,8 @@ public class HomeActivityRevised extends BackboneActivity {
                             if (app.saveNeeded){
                                 alertUserLeavingScreen(MONTHLY_PLAN_FRAGMENT,getString(R.string.home_monthly_plan));
                             }else{
+                                app.LAST_FRAGMENT = MONTHLY_PLAN_FRAGMENT;
+                                app.LAST_FRAGMENT_TITLE = getString(R.string.home_monthly_plan);
                                 changeFragment(MONTHLY_PLAN_FRAGMENT, getString(R.string.home_monthly_plan));
                             }
                             break;
@@ -245,6 +260,8 @@ public class HomeActivityRevised extends BackboneActivity {
                             if (app.saveNeeded){
                                 alertUserLeavingScreen(STOCK_FRAGMENT,getString(R.string.home_stock));
                             }else{
+                                app.LAST_FRAGMENT = HOME_FRAGMENT;
+                                app.LAST_FRAGMENT_TITLE = getString(R.string.home);
                                 changeFragmentToActivity(getString(R.string.home_stock));
                             }
                             break;
@@ -278,7 +295,7 @@ public class HomeActivityRevised extends BackboneActivity {
                  */
                 public void onDrawerClosed(View view) {
                     drawerToggle.syncState();
-                    getSupportActionBar().setTitle("TIIS");
+                    getSupportActionBar().setTitle("TImR");
 //                ((FragmentInterface)fragment).showMenuActions();
                     invalidateOptionsMenu();
                 }
@@ -310,6 +327,8 @@ public class HomeActivityRevised extends BackboneActivity {
     }
 
     private void performLogout(){
+
+        Log.d("CHECHINGLOGOUT", "Logout is here reason unknown....... ");
 
         LayoutInflater li = LayoutInflater.from(this);
         View promptsView = li.inflate(R.layout.custom_alert_dialogue, null);
