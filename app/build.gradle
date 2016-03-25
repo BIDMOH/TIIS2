@@ -49,6 +49,8 @@ dependencies {
         exclude group: 'com.nineoldandroids', module: 'library'
         exclude group: 'com.android.support', module: 'appcompat-v7'
     }
+
+    compile 'com.loopj.android:android-async-http:1.4.9'
     compile 'com.wdullaer:materialdatetimepicker:1.5.4'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     compile 'com.hannesdorfmann.smoothprogressbar:library:1.0.0'
