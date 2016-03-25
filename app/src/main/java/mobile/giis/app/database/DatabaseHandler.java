@@ -305,7 +305,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
     public long addChild(ContentValues cv) {
-
+        SQLiteDatabase db = getWritableDatabase();
+        long result = db.insert(Tables.CHILD, null, cv);
+        return result;
+    }
+    public long addBulkChild(ContentValues cv) {
         SQLiteDatabase db = getWritableDatabase();
         long result = db.insert(Tables.CHILD, null, cv);
         return result;

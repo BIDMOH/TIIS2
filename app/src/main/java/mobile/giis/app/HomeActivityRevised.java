@@ -56,7 +56,9 @@ import mobile.giis.app.fragments.HomeFragment;
 import mobile.giis.app.fragments.RegisterChildFragment;
 import mobile.giis.app.helpers.Utils;
 import mobile.giis.app.mObjects.DrawerObjects;
+import mobile.giis.app.postman.Alarm;
 import mobile.giis.app.postman.RoutineAlarmReceiver;
+import mobile.giis.app.postman.SynchronizationService2;
 
 /**
  *  Created by issymac on 10/12/15.
@@ -121,6 +123,7 @@ public class HomeActivityRevised extends BackboneActivity {
         setContentView(R.layout.homeactivity_redesigned);
         setupTypeface(HomeActivityRevised.this);
         initializeViews();
+        Log.d(TAG, "starting my service");
 
         final BackboneApplication app = (BackboneApplication) getApplication();
 
@@ -499,8 +502,8 @@ public class HomeActivityRevised extends BackboneActivity {
                 }
 
                 try {
-                    //application.parseChildCollector(); // old service
-                    application.parseChildCollector2(); // new service
+                    application.parseChildCollector(); // old service
+//                    application.parseChildCollector2(); // new service
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -531,6 +534,8 @@ public class HomeActivityRevised extends BackboneActivity {
         super.onPostExecute(result);
         Log.e("SYNC FINISHED", "Database synchronization finished.");
 
+        Alarm alarm = new Alarm();
+        alarm.SetAlarm(HomeActivityRevised.this);
         if (!DatabaseHandler.dbPreinstalled)
             Toast.makeText(getApplicationContext(), "mainSynchronisation finished.", Toast.LENGTH_LONG).show();
     }
