@@ -1,26 +1,38 @@
 package mobile.giis.app.fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fr.ganfra.materialspinner.MaterialSpinner;
 import mobile.giis.app.R;
 import mobile.giis.app.adapters.SingleTextViewAdapter;
 import mobile.giis.app.adapters.vaccinateOfflineListAdapter;
+import mobile.giis.app.base.BackboneActivity;
 import mobile.giis.app.base.BackboneApplication;
 import mobile.giis.app.database.DatabaseHandler;
 import mobile.giis.app.entity.NonVaccinationReason;
@@ -39,6 +51,7 @@ public class AdministerVaccineOfflineFragment extends Fragment {
     private ArrayList<RowCollector> rowCollectorContainer;
     private BackboneApplication application;
     private DatabaseHandler database;
+    private TableLayout tableLayout;
 
     public static AdministerVaccineOfflineFragment newInstance(String barcode) {
         AdministerVaccineOfflineFragment f = new AdministerVaccineOfflineFragment();
@@ -57,7 +70,6 @@ public class AdministerVaccineOfflineFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.administer_vaccines_offline_fragment, null);
         setupviews(rootview);
-
 
         rowCollectorContainer = new ArrayList<RowCollector>();
 
@@ -90,12 +102,29 @@ public class AdministerVaccineOfflineFragment extends Fragment {
 
         for (final RowCollector rowCollector : rowCollectorContainer) {
 
+            View rowView = inflater.inflate(R.layout.vaccine_offline_list_item, null);
+            TextView vaccineName                = (TextView) rowView.findViewById(R.id.vaccine_name);
+            final MaterialSpinner vaccineLot          = (MaterialSpinner) rowView.findViewById(R.id.vaccine_lot_spinner);
+            TextView vaccineDate                = (TextView) rowView.findViewById(R.id.vaccination_date);
+            CheckBox done                       = (CheckBox) rowView.findViewById(R.id.done_checkbox);
+            final MaterialSpinner nonVAccineReason    = (MaterialSpinner) rowView.findViewById(R.id.reason_spinner);
+
+            vaccineName.setText(rowCollector.getScheduled_vaccination_name());
+
             Map<String, String> vaccine_lot_map = new HashMap<String, String>();
             List<String> vaccine_lot_names_list = new ArrayList<String>();
-            cursor = database.getReadableDatabase().rawQuery("SELECT '-1' AS id, '-----' AS lot_number, datetime('now') as expire_date UNION " +
-                    "SELECT '-2' AS id, 'No Lot' AS lot_number, datetime('now') as expire_date UNION " +
-                    "SELECT item_lot.id, item_lot.lot_number, datetime(substr(item_lot.expire_date,7,10), 'unixepoch') FROM item_lot  join health_facility_balance ON item_lot.ID = health_facility_balance.lot_id WHERE item_lot.item_id = ? AND health_facility_balance.LotIsActive = 'true'" +
-                    " AND datetime(substr(item_lot.expire_date,7,10), 'unixepoch') >= datetime('now') ORDER BY expire_date", new String[]{rowCollector.getScheduled_vaccination_item_id()});
+            cursor = database.getReadableDatabase().rawQuery("SELECT '-1' AS id, '-----' AS lot_number, datetime('now') as expire_date, '0' as balance, 1 as r_order UNION " +
+                     " SELECT '-2' AS id, 'No Lot' AS lot_number, datetime('now') as expire_date, '0' as balance, 1 as r_order UNION " +
+                     " SELECT item_lot.id, item_lot.lot_number, datetime(substr(item_lot.expire_date,7,10), 'unixepoch'), balance, (balance > 0) as r_order " +
+                     " FROM item_lot  join health_facility_balance ON item_lot.ID = health_facility_balance.lot_id " +
+                     " WHERE item_lot.item_id = ? AND health_facility_balance.LotIsActive = 'true'" +
+                     " AND datetime(substr(item_lot.expire_date,7,10), 'unixepoch') >= datetime('now') ORDER BY r_order desc, expire_date", new String[]{rowCollector.getScheduled_vaccination_item_id()});
+
+//            cursor = database.getReadableDatabase().rawQuery("SELECT '-1' AS id, '-----' AS lot_number, datetime('now') as expire_date UNION " +
+//                    "SELECT '-2' AS id, 'No Lot' AS lot_number, datetime('now') as expire_date UNION " +
+//                    "SELECT item_lot.id, item_lot.lot_number, datetime(substr(item_lot.expire_date,7,10), 'unixepoch') FROM item_lot  join health_facility_balance ON item_lot.ID = health_facility_balance.lot_id WHERE item_lot.item_id = ? AND health_facility_balance.LotIsActive = 'true'" +
+//                    " AND datetime(substr(item_lot.expire_date,7,10), 'unixepoch') >= datetime('now') ORDER BY expire_date", new String[]{rowCollector.getScheduled_vaccination_item_id()});
+
             if (cursor.getCount() > 0) {
                 if (cursor.moveToFirst()) {
                     do {
@@ -110,30 +139,121 @@ public class AdministerVaccineOfflineFragment extends Fragment {
                 }
             }
 
+            /*
+            Vaccine LOT spinner implementation
+             */
+            SingleTextViewAdapter statusAdapter = new SingleTextViewAdapter(this.getActivity(), R.layout.single_text_spinner_item_drop_down, rowCollector.getVaccine_lot_names_list());
+            vaccineLot.setAdapter(statusAdapter);
+
+            // -Condition to set Lot on start (first good one / No lot)
+            if (rowCollector.getVaccine_lot_names_list().size() > 2) {
+                vaccineLot.setSelection(2);
+                rowCollector.setVaccine_lot_current_position(2);
+            } else {
+                vaccineLot.setSelection(1);
+                rowCollector.setVaccine_lot_current_position(1);
+            }
+            vaccineLot.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                    vaccineLot.setSelection(position);
+                    rowCollector.setVaccine_lot_current_position(position);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parentView) {
+                    //no changes
+                }
+
+            });
+
+            /*
+            Vaccination Date TextView implementation
+             */
+            Date dNow = new Date();
+            SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy");
+            vaccineDate.setText(ft.format(dNow));
+            rowCollector.setVaccination_date(dNow);
+
+            /*
+            Non Vaccination Reason Spinner Implementation
+             */
+            //NonVaccinationReason Column Spinner
             List<String> reasons = new ArrayList<String>();
             reasons.add("----");
             for (NonVaccinationReason nvElement : database.getAllNonvaccinationReasons()) {
                 reasons.add(nvElement.getName());
             }
-            rowCollector.setNon_vac_reason_list(reasons);
 
-            List<NonVaccinationReason> non_vaccination_reason_list_with_additions = database.getAllNonvaccinationReasons();
+
+            final List<NonVaccinationReason> non_vaccination_reason_list_with_additions = database.getAllNonvaccinationReasons();
             NonVaccinationReason empty = new NonVaccinationReason();
             empty.setName("----");
             empty.setId("0");
             non_vaccination_reason_list_with_additions.add(empty);
-            rowCollector.setNon_vaccination_reason_list_with_additions(non_vaccination_reason_list_with_additions);
 
+            final SingleTextViewAdapter statusAdapterNonVaccinationReason = new SingleTextViewAdapter(this.getActivity(), R.layout.single_text_spinner_item_drop_down, reasons);
+            nonVAccineReason.setAdapter(statusAdapterNonVaccinationReason);
+            nonVAccineReason.setSelection(0);
+            rowCollector.setNonvaccination_reason_position(0);
+            rowCollector.setNon_vac_reason("0");
 
+            nonVAccineReason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                    nonVAccineReason.setSelection(position);
+                    rowCollector.setNonvaccination_reason_position(position);
+
+                    for (NonVaccinationReason a : non_vaccination_reason_list_with_additions) {
+                        if (statusAdapterNonVaccinationReason.getItem(position).toString().equalsIgnoreCase(a.getName())) {
+                            rowCollector.setNon_vac_reason(a.getId());
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parentView) {
+                    //no changes
+                }
+
+            });
+
+            /*
+            Vaccination Done Checkbox implementation
+             */
+            rowCollector.setVaccination_done_status("false");
+            done.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    rowCollector.setVaccination_done_status(String.valueOf(b));
+                    if (!b) {
+                        nonVAccineReason.setVisibility(View.VISIBLE);
+                        //VaccineLotColumn.setSelection(0);
+                        rowCollector.setNonvaccination_reason_position(0);
+
+                    }
+                    if (b) {
+                        nonVAccineReason.setVisibility(View.INVISIBLE);
+                        rowCollector.setNon_vac_reason("-1");
+                    }
+                }
+            });
+
+            tableLayout.addView(rowView);
 
         }
-
-        adapter = new vaccinateOfflineListAdapter(this.getActivity(), rowCollectorContainer);
-
         View v = inflater.inflate(R.layout.stock_adjustment_footer, null);
+        tableLayout.addView(v);
+
         saveButton  = (Button) v.findViewById(R.id.save_btn);
-        allDosesList.addFooterView(v);
-        allDosesList.setAdapter(adapter);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("skip", "Button Clicked clicked");
+                saveButtonClickEvent();
+            }
+        });
 
         return rootview;
     }
@@ -145,6 +265,87 @@ public class AdministerVaccineOfflineFragment extends Fragment {
         doneTitle           = (TextView) v.findViewById(R.id.done_title);
         reasonsTitle        = (TextView) v.findViewById(R.id.reasons_title);
         allDosesList        = (ListView) v.findViewById(R.id.all_doses_list);
+        tableLayout         = (TableLayout) v.findViewById(R.id.administer_vaccines_offline_table_layout);
+    }
+
+    public void saveButtonClickEvent(){
+        int done = 0;
+
+        for (RowCollector a : rowCollectorContainer) {
+            if (a.getVaccination_done_status().equalsIgnoreCase("false")) {
+                if (a.getNonvaccination_reason_position() != 0) {
+                    done += 1;
+                }
+            } else if (a.getVaccination_done_status().equalsIgnoreCase("true")) {
+                done += 1;
+            }
+
+        }
+
+        if (done == 0) {
+            final AlertDialog ad22 = new AlertDialog.Builder(this.getActivity()).create();
+            ad22.setTitle(getString(R.string.warning));
+            ad22.setMessage(getString(R.string.select_non_vacc_reason));
+            ad22.setButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    ad22.dismiss();
+                }
+            });
+            ad22.show();
+            return;
+        }
+
+
+        for (RowCollector a : rowCollectorContainer) {
+
+            if (a.getVaccination_done_status().equalsIgnoreCase("true") && a.getVaccine_lot_names_list().get(a.getVaccine_lot_current_position()).equalsIgnoreCase("-----")) {
+                final AlertDialog ad22 = new AlertDialog.Builder(this.getActivity()).create();
+                ad22.setTitle("Not Saved");
+                ad22.setMessage("Please select vaccine lot");
+                ad22.setButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ad22.dismiss();
+                    }
+                });
+                ad22.show();
+                return;
+            }
+
+            if (a.getVaccination_done_status().equalsIgnoreCase("false") && a.getNonvaccination_reason_position() == 0) {
+                Log.d("Skip", "Skipping vaccine");
+            } else {
+                SimpleDateFormat formatted = new SimpleDateFormat("yyyy-MM-dd");
+                updateOfflineAdministerVaccine task = new updateOfflineAdministerVaccine();
+                StringBuilder updateUrl = new StringBuilder(BackboneActivity.WCF_URL + "VaccinationEvent.svc/UpdateVaccinationEventByBarcodeVaccine?")
+                        .append("barcodeId=").append(barcode)
+                        .append("&vaccineId=").append(a.getScheduled_vaccination_id())
+                        .append("&vaccinelot=").append(a.getVaccine_lot_id_name_map().get(a.getVaccine_lot_names_list().get(a.getVaccine_lot_current_position())))
+                        .append("&healthFacilityId=").append(application.getLOGGED_IN_USER_HF_ID())
+                        .append("&vaccinationDate=").append(URLEncoder.encode(formatted.format(a.getVaccination_date())))
+                        .append("&notes=").append("")
+                        .append("&vaccinationStatus=").append(a.getVaccination_done_status())
+                        .append("&nonvaccinationReasonId=").append(a.getNon_vac_reason())
+                        .append("&userId=").append(application.getLOGGED_IN_USER_ID());
+                Log.d("Created URL", updateUrl.toString());
+                task.execute(updateUrl.toString());
+            }
+
+        }
+
+
+        final AlertDialog ad2 = new AlertDialog.Builder(this.getActivity()).create();
+        ad2.setTitle("Saved");
+        ad2.setMessage(getString(R.string.changes_saved));
+        ad2.setButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ad2.dismiss();
+            }
+        });
+        ad2.show();
+
     }
 
     public class RowCollector {
@@ -276,6 +477,27 @@ public class AdministerVaccineOfflineFragment extends Fragment {
 
     }
 
+    private class updateOfflineAdministerVaccine extends AsyncTask<String, Integer, Boolean> {
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
 
+        @Override
+        protected Boolean doInBackground(String... params) {
+            BackboneApplication application = (BackboneApplication) AdministerVaccineOfflineFragment.this.getActivity().getApplication();
+            DatabaseHandler db = application.getDatabaseInstance();
+            for (String a : params) {
+                int status = application.updateVaccinationEventOnServer(a);
+                Log.d("Saving offline status", status + "");
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+        }
+    }
 }

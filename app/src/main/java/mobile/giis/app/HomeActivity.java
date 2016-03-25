@@ -240,7 +240,7 @@ public class HomeActivity extends BackboneActivity {
                     application.parseHealthFacilityThatAreInVaccEventButNotInHealthFac(hfidFoundInVaccEvOnlyAndNotInHealthFac);
                 }
 
-                application.parseChildCollector();
+                application.parseChildCollector2();
 
                 String placesFoundInChildOnlyAndNotInPlace = application.getDatabaseInstance().getDomicilesFoundInChildAndNotInPlace();
                 if(placesFoundInChildOnlyAndNotInPlace != null){

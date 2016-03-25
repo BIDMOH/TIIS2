@@ -219,8 +219,7 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (!(i == -1)) {
                     Intent childDetailsActivity = new Intent(SearchChildFragment.this.getActivity(), ChildDetailsActivity.class);
-                    AdapterGridDataSearchResult mAdapter = (AdapterGridDataSearchResult) lvChildrenSearchResults.getAdapter();
-                    childDetailsActivity.putExtra("barcode", mAdapter.getBarcode(i));
+                    childDetailsActivity.putExtra("barcode", adapter.getBarcode(i));
                     startActivity(childDetailsActivity);
                 }
 
@@ -332,6 +331,7 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
         lvChildrenSearchResults = (NestedListView) v.findViewById(R.id.lv_children_list);
 
         childListLayout         = (RelativeLayout) v.findViewById(R.id.children_list_layout);
+        childListLayout.setVisibility(View.VISIBLE);
         childNotFoundLayout     = (RelativeLayout) v.findViewById(R.id.children_not_found_layout);
         childNotFoundLayout.setVisibility(View.GONE);
 
@@ -402,8 +402,6 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
 
         @Override
         protected void onPreExecute() {
-            dateFrom = null;
-            dateTo = null;
             pbar.setVisibility(View.VISIBLE);
             barcode     = metBarcode.getText().toString();
             firstname   = metFName.getText().toString();
@@ -507,18 +505,35 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
 
         final AlertDialog alertDialog;
 
+        SimpleDateFormat fmt = new SimpleDateFormat("d/M/yyyy");
+
+        dateFrom = null;
+        dateTo =  null;
+
+        try {
+            dateFrom = fmt.parse(metDOBFrom.getText().toString());
+            dateTo = fmt.parse(metDOBTo.getText().toString());
+            Log.d("dtfrm", "NO EXEPTIONS");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         SimpleDateFormat formatted = new SimpleDateFormat("yyyy-MM-dd");
         String dateFromForSRV = "";
         String dateToForSRV = "";
 
         try {
             dateFromForSRV = formatted.format(dateFrom);
+            Log.d("dtfrm", "date from for server is : "+dateFromForSRV);
         } catch (Exception e) {
+            Log.d("dtfrm",e.toString());
             e.printStackTrace();
         }
         try {
             dateToForSRV = formatted.format(dateTo);
+            Log.d("dtfrm", "date to for server is : "+dateToForSRV);
         } catch (Exception e) {
+            Log.d("dtfrm",e.toString());
             e.printStackTrace();
         }
 
@@ -547,20 +562,43 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
 
             synchronized (this) {
 
-                String placeOBId = "";
+                String childBarcode = null;
+                if (!(metBarcode.getText().toString().equals("") || metBarcode.getText().toString().isEmpty())){
+                    childBarcode = metBarcode.getText().toString();
+                }
+                String childFName  = null;
+                if (!(metFName.getText().toString().equals("") || metFName.getText().toString().isEmpty())){
+                    childFName = metFName.getText().toString();
+                }
 
-                String healthFacility = "";
+                String ChildMName = null;
+                if (!(metMName.getText().toString().equals("") || metMName.getText().toString().isEmpty())){
+                    ChildMName = metMName.getText().toString();
+                }
 
-                String villageName = "";
+                String motherFname = null;
+                if (!(metMotFname.getText().toString().equals("") || metMotFname.getText().toString().isEmpty())) {
+                    motherFname = metMotFname.getText().toString();
+                }
 
-                String status = "";
+                String surname = null;
+                if (!(metSurname.getText().toString().equals("") || metSurname.getText().toString().isEmpty())) {
+                    surname = metSurname.getText().toString();
+                }
+
+                String motherSName = null;
+                if (!(metMotSname.getText().toString().equals("") || metMotSname.getText().toString().isEmpty())) {
+                    motherSName = metMotSname.getText().toString();
+                }
+
+                String placeOBId = null;
+                String healthFacility = null;
+                String villageName = null;
+                String status = null;
 
                 BackboneApplication backbone = (BackboneApplication) SearchChildFragment.this.getActivity().getApplication();
-                childrensrv = backbone.searchChild(metBarcode.getText().toString(),
-                        metFName.getText().toString(),metMName.getText().toString(), metMotFname.getText().toString(), "",
-                        "", "", metSurname.getText().toString(), metMotSname.getText().toString(),
-                        placeOBId, healthFacility,
-                        villageName, status);
+                childrensrv = backbone.searchChild(childBarcode, childFName, ChildMName, motherFname, null,null,null,surname,
+                        motherSName,placeOBId,healthFacility, villageName, status);
 
                 if (childrensrv == null || childrensrv.isEmpty()) {
                     SearchChildFragment.this.getActivity().runOnUiThread(new Runnable() {
@@ -575,7 +613,8 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
                     });
                 } else if (childrensrv.size() > 0) {
                     alertDialog.dismiss();
-                    Log.d("EBENSEARCH", "ebenezer was found");
+                    Log.d("EBENSEARCH", "ebenezer was found : "+childrensrv.get(0).getFirstname1());
+
                     SearchChildFragment.this.getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -583,12 +622,10 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
                             if (childrensrv.size() >  0) {
                                 serverdata = true;
                                 childNotFoundLayout.setVisibility(View.GONE);
+                                childListLayout.setVisibility(View.VISIBLE);
                                 lvChildrenSearchResults.setVisibility(View.VISIBLE);
-
                                 adapter = new AdapterGridDataSearchResult(SearchChildFragment.this.getActivity(), R.layout.children_list_item, childrensrv, mydb);
                                 lvChildrenSearchResults.setAdapter(adapter);
-                                adapter.notifyDataSetChanged();
-
                             }
                         }
                     });

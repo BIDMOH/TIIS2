@@ -580,7 +580,7 @@ public class ChildSummaryPagerFragment extends Fragment {
      * accepptable.
      */
     private boolean checkDataIntegrityBeforeSave() {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ChildSummaryPagerFragment.this.getActivity().getApplication())
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ChildSummaryPagerFragment.this.getActivity())
                 .setTitle(getString(R.string.alert_empty_fields))
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * <--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *   ~ Copyright (C)AIRIS Solutions 2015 TIIS App - Tanzania Immunization Information System App
  *   ~
  *   ~    Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,8 +22,8 @@ import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
 import android.util.Log;
@@ -65,6 +65,7 @@ import mobile.giis.app.entity.AdministerVaccinesModel;
 import mobile.giis.app.entity.AgeDefinitions;
 import mobile.giis.app.entity.Child;
 import mobile.giis.app.entity.ChildCollector;
+import mobile.giis.app.entity.ChildCollector2;
 import mobile.giis.app.entity.Dose;
 import mobile.giis.app.entity.HealthFacility;
 import mobile.giis.app.entity.Item;
@@ -88,20 +89,18 @@ import mobile.giis.app.util.Constants;
 //import com.android.volley.toolbox.Volley;
 
 /**
- *  Created by Teodor on 2/3/2015.
+ * Created by Teodor on 2/3/2015.
  */
 public class BackboneApplication extends Application{
+
     /**
      * Testing WCF
      */
     public static final String WCF_URL = "https://ec2-54-187-21-117.us-west-2.compute.amazonaws.com/SVC/";
-
-//    public static final String WCF_URL = "http://142.222.45.61/svc/";
     /**
      * Live WCF
      */
-//    public static final String WCF_URL = "https://ec2-52-11-215-89.us-west-2.compute.amazonaws.com/SVC/";
-
+    //public static final String WCF_URL = "https://ec2-52-11-215-89.us-west-2.compute.amazonaws.com/SVC/";
     public static final String USER_MANAGEMENT_SVC = "UserManagement.svc/";
     public static final String PLACE_MANAGEMENT_SVC = "PlaceManagement.svc/";
     public static final String HEALTH_FACILITY_SVC = "HealthFacilityManagement.svc/";
@@ -132,6 +131,7 @@ public class BackboneApplication extends Application{
     public static final String CHILD_MANAGEMENT_SVC_GETTER = "GetChildrenByHealthFacility?healthFacilityId=";
     public static final String CHILD_UPDATE = "UpdateChild?";
     public static final String REGISTER_CHILD_AEFI = "RegisterChildAEFI?";
+    public static final String REGISTER_CHILD_AEFI_BARCODE = "RegisterChildAEFIBarcode?";
     public static final String CHILD_SUPPLEMENTS_INSERT = "RegisterSupplementsBarcode";
     public static final String WEIGHT_MANAGEMENT_SVC_GETTER = "getweight";
     public static final String AGE_DEFINITION_MANAGEMENT_SVC_GETTER = "getagedefinitionslist";
@@ -165,6 +165,7 @@ public class BackboneApplication extends Application{
     //register audit Constants
     public static final String CHILD_AUDIT = "CHILD";
     public static final int ACTION_CHECKIN = 5;
+    private static final String CHECK_PREINSTALLED_DB_KEY = "check_preinstalled_db_key";
 
     //Fields Edited Watcher
     public static boolean saveNeeded = false;
@@ -175,9 +176,9 @@ public class BackboneApplication extends Application{
     private String USERNAME = "default";
     private boolean ONLINE_STATUS = false;
     private String CURRENT_ACTIVITY = "default";
-    private String CURRENT_FRAGMENT = "HOME";
     public String APPOINTMENT_LIST_FRAGMENT = "appointmentListFragment";
     public String VACCINATE_CHILD_FRAGMENT = "vaccinateChildFragment";
+
     //On login
     private String LOGGED_IN_USER_ID;
     private String LOGGED_IN_USERNAME;
@@ -194,6 +195,7 @@ public class BackboneApplication extends Application{
 
     public String LAST_FRAGMENT = "mobile.giis.app.fragments.HomeFragment";
     public String LAST_FRAGMENT_TITLE = "Home";
+    private String CURRENT_FRAGMENT = "HOME";
 
     public static String getWcfUrl() {
         return WCF_URL;
@@ -233,7 +235,13 @@ public class BackboneApplication extends Application{
 
     public DatabaseHandler getDatabaseInstance() {
         if (databaseInstance == null) {
-            DatabaseHandler.dbPreinstalled = DatabaseHandler.checkIfThereIsDatabaseFile(this);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            if (!prefs.contains(CHECK_PREINSTALLED_DB_KEY)) {
+                DatabaseHandler.dbPreinstalled = DatabaseHandler.checkIfThereIsDatabaseFile(this);
+                prefs.edit().putBoolean(CHECK_PREINSTALLED_DB_KEY, DatabaseHandler.dbPreinstalled).commit();
+            } else {
+                DatabaseHandler.dbPreinstalled = prefs.getBoolean(CHECK_PREINSTALLED_DB_KEY, false);
+            }
             databaseInstance = new DatabaseHandler(this);
         }
         return databaseInstance;
@@ -364,12 +372,11 @@ public class BackboneApplication extends Application{
             httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
             HttpResponse httpResponse = httpClient.execute(httpGet);
             InputStream inputStream = httpResponse.getEntity().getContent();
-            ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-            bais.reset();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(bais, new TypeReference<List<Place>>(){});
+            objects = mapper.readValue(response, new TypeReference<List<Place>>(){});
 
         }
         catch (JsonGenerationException e) {
@@ -405,7 +412,7 @@ public class BackboneApplication extends Application{
             DefaultHttpClient httpClient = new DefaultHttpClient();
             HttpGet httpGet = new HttpGet(webServiceUrl.toString());
             Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+webServiceUrl.toString());
-            httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
+            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
             HttpResponse httpResponse = httpClient.execute(httpGet);
             InputStream inputStream = httpResponse.getEntity().getContent();
             JSONArray jarr = new JSONArray(Utils.getStringFromInputStream(inputStream));
@@ -487,12 +494,11 @@ public class BackboneApplication extends Application{
             httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
             HttpResponse httpResponse = httpClient.execute(httpGet);
             InputStream inputStream = httpResponse.getEntity().getContent();
-            ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-            bais.reset();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(bais, new TypeReference<List<Place>>(){});
+            objects = mapper.readValue(response, new TypeReference<List<Place>>(){});
 
         }
         catch (JsonGenerationException e) {
@@ -533,12 +539,11 @@ public class BackboneApplication extends Application{
             httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
             HttpResponse httpResponse = httpClient.execute(httpGet);
             InputStream inputStream = httpResponse.getEntity().getContent();
-            ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-            bais.reset();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(bais, new TypeReference<List<HealthFacility>>(){});
+            objects = mapper.readValue(response, new TypeReference<List<HealthFacility>>(){});
 
         }
         catch (JsonGenerationException e) {
@@ -578,12 +583,11 @@ public class BackboneApplication extends Application{
             httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
             HttpResponse httpResponse = httpClient.execute(httpGet);
             InputStream inputStream = httpResponse.getEntity().getContent();
-            ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-            bais.reset();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(bais, new TypeReference<List<Stock>>(){});
+            objects = mapper.readValue(response, new TypeReference<List<Stock>>(){});
 
         }
         catch (JsonGenerationException e) {
@@ -625,6 +629,139 @@ public class BackboneApplication extends Application{
         }
     }
 
+    public int parseChildCollector2() {
+        final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append("ChildManagement.svc/GetOnlyChildrenDataByHealthFacility?healthfacilityId=").append(LOGGED_IN_USER_HF_ID);
+
+        ChildCollector2 childCollector2;
+        try
+        {
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+webServiceUrl.toString());
+            httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
+            HttpResponse httpResponse = httpClient.execute(httpGet);
+            if(httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                Utils.writeNetworkLogFileOnSD(
+                        Utils.returnDeviceIdAndTimestamp(getApplicationContext())
+                                + " StatusCode " + httpResponse.getStatusLine().getStatusCode()
+                                + " ReasonPhrase " + httpResponse.getStatusLine().getReasonPhrase()
+                                + " ProtocolVersion " + httpResponse.getStatusLine().getProtocolVersion());
+                return 3;
+            }
+            InputStream inputStream = httpResponse.getEntity().getContent();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+            childCollector2 = mapper.readValue(response, ChildCollector2.class);
+
+            addChildVaccinationEventVaccinationAppointment(childCollector2);
+            return 1;
+        }
+        catch (JsonGenerationException e) {
+            e.printStackTrace();
+            return 2;
+        }
+        catch (JsonMappingException e){
+            e.printStackTrace();
+            return 2;
+        }
+        catch (IOException e){
+            e.printStackTrace();
+            return 3;
+        } finally {
+            childCollector2 = null; // clearing references so that it can be identified as GC material more easilly
+        }
+    }
+
+    public void addChildVaccinationEventVaccinationAppointment(ChildCollector2 childCollector){
+        List<Child> children = childCollector.getChildList();
+        List<VaccinationEvent> vaccinationEvents = childCollector.getVeList();
+        List<VaccinationAppointment> vaccinationAppointments = childCollector.getVaList();
+        DatabaseHandler db = getDatabaseInstance();
+
+        if (children != null) {
+            for (Child child : children) {
+                ContentValues childCV = new ContentValues();
+                childCV.put(SQLHandler.SyncColumns.UPDATED, 1);
+                childCV.put(SQLHandler.ChildColumns.ID, child.getId());
+                childCV.put(SQLHandler.ChildColumns.BARCODE_ID, child.getBarcodeID());
+                childCV.put(SQLHandler.ChildColumns.FIRSTNAME1, child.getFirstname1());
+                childCV.put(SQLHandler.ChildColumns.FIRSTNAME2, child.getFirstname2());
+                childCV.put(SQLHandler.ChildColumns.LASTNAME1, child.getLastname1());
+                childCV.put(SQLHandler.ChildColumns.BIRTHDATE, child.getBirthdate());
+                childCV.put(SQLHandler.ChildColumns.GENDER, child.getGender());
+                childCV.put(SQLHandler.ChildColumns.TEMP_ID, child.getTempId());
+                childCV.put(SQLHandler.ChildColumns.HEALTH_FACILITY, child.getHealthcenter());
+                childCV.put(SQLHandler.ChildColumns.DOMICILE, child.getDomicile());
+                childCV.put(SQLHandler.ChildColumns.DOMICILE_ID, child.getDomicileId());
+                childCV.put(SQLHandler.ChildColumns.HEALTH_FACILITY_ID, child.getHealthcenterId());
+                childCV.put(SQLHandler.ChildColumns.STATUS_ID, child.getStatusId());
+                childCV.put(SQLHandler.ChildColumns.BIRTHPLACE_ID, child.getBirthplaceId());
+                childCV.put(SQLHandler.ChildColumns.NOTES, child.getNotes());
+                childCV.put(SQLHandler.ChildColumns.STATUS, child.getDomicile());
+                childCV.put(SQLHandler.ChildColumns.MOTHER_FIRSTNAME, child.getMotherFirstname());
+                childCV.put(SQLHandler.ChildColumns.MOTHER_LASTNAME, child.getMotherLastname());
+                childCV.put(SQLHandler.ChildColumns.PHONE, child.getPhone());
+
+                if (!db.isChildIDInChildTable(child.getId())) {
+                    db.addChild(childCV);
+                } else {
+                    db.updateChild(childCV, child.getId());
+                }
+            }
+        }
+
+        if (vaccinationEvents != null) {
+            for (VaccinationEvent vaccinationEvent : vaccinationEvents) {
+                ContentValues vaccEventCV = new ContentValues();
+                vaccEventCV.put(SQLHandler.SyncColumns.UPDATED, 1);
+                vaccEventCV.put(SQLHandler.VaccinationEventColumns.APPOINTMENT_ID, vaccinationEvent.getAppointmentId());
+                vaccEventCV.put(SQLHandler.VaccinationEventColumns.CHILD_ID, vaccinationEvent.getChildId());
+                vaccEventCV.put(SQLHandler.VaccinationEventColumns.DOSE_ID, vaccinationEvent.getDoseId());
+                vaccEventCV.put(SQLHandler.VaccinationEventColumns.HEALTH_FACILITY_ID, vaccinationEvent.getHealthFacilityId());
+                vaccEventCV.put(SQLHandler.VaccinationEventColumns.ID, vaccinationEvent.getId());
+                vaccEventCV.put(SQLHandler.VaccinationEventColumns.IS_ACTIVE, vaccinationEvent.getIsActive());
+                vaccEventCV.put(SQLHandler.VaccinationEventColumns.MODIFIED_BY, vaccinationEvent.getModifiedBy());
+                vaccEventCV.put(SQLHandler.VaccinationEventColumns.MODIFIED_ON, vaccinationEvent.getModifiedOn());
+                vaccEventCV.put(SQLHandler.VaccinationEventColumns.NONVACCINATION_REASON_ID, vaccinationEvent.getNonvaccinationReasonId());
+                vaccEventCV.put(SQLHandler.VaccinationEventColumns.SCHEDULED_DATE, vaccinationEvent.getScheduledDate());
+                vaccEventCV.put(SQLHandler.VaccinationEventColumns.VACCINATION_DATE, vaccinationEvent.getVaccinationDate());
+                vaccEventCV.put(SQLHandler.VaccinationEventColumns.VACCINATION_STATUS, vaccinationEvent.getVaccinationStatus());
+                vaccEventCV.put(SQLHandler.VaccinationEventColumns.VACCINE_LOT_ID, vaccinationEvent.getVaccineLotId());
+                if (!db.isVaccinationEventInDb(vaccinationEvent.getChildId(), vaccinationEvent.getDoseId())) {
+                    db.addVaccinationEvent(vaccEventCV);
+                } else {
+                    db.updateVaccinationEvent(vaccEventCV, vaccinationEvent.getId());
+                }
+            }
+        }
+
+        if (vaccinationAppointments != null) {
+            for (VaccinationAppointment vaccinationAppointment : vaccinationAppointments) {
+                ContentValues vaccAppointmentCV = new ContentValues();
+                vaccAppointmentCV.put(SQLHandler.SyncColumns.UPDATED, 1);
+                vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.CHILD_ID, vaccinationAppointment.getChildId());
+                vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.ID, vaccinationAppointment.getId());
+                vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.IS_ACTIVE, vaccinationAppointment.getIsActive());
+                vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.MODIFIED_BY, vaccinationAppointment.getModifiedBy());
+                vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.MODIFIED_ON, vaccinationAppointment.getModifiedOn());
+                vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.NOTES, vaccinationAppointment.getNotes());
+                vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.SCHEDULED_DATE, vaccinationAppointment.getScheduledDate());
+                vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.SCHEDULED_FACILITY_ID, vaccinationAppointment.getScheduledFacilityId());
+
+                if (!db.isVaccinationAppointmentInDb(vaccinationAppointment.getChildId(), vaccinationAppointment.getScheduledDate())) {
+                    db.addVaccinationAppointment(vaccAppointmentCV);
+                } else {
+                    db.updateVaccinationAppointment(vaccAppointmentCV, vaccinationAppointment.getId());
+                }
+
+            }
+        }
+
+        childCollector = null; // clearing references so that it can be identified as GC material more easilly
+    }
+
     public void parseChildCollector() {
         final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, GET_CHILD);
         Log.e("parseChildCollector", webServiceUrl.toString());
@@ -638,12 +775,11 @@ public class BackboneApplication extends Application{
             httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
             HttpResponse httpResponse = httpClient.execute(httpGet);
             InputStream inputStream = httpResponse.getEntity().getContent();
-            ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-            bais.reset();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
             ObjectMapper mapper = new ObjectMapper();
             JsonFactory jsonFactory = mapper.getJsonFactory();
-            JsonParser jp = jsonFactory.createJsonParser(bais);
+            JsonParser jp = jsonFactory.createJsonParser(response);
             JsonToken token;
             token = jp.nextToken();
 
@@ -651,11 +787,16 @@ public class BackboneApplication extends Application{
                 switch (token) {
                     case START_OBJECT:
                         JsonNode node = jp.readValueAsTree();
+
+                        long tStart = System.currentTimeMillis();
+                        Log.e("TIMING LOG","Parsing start ");
                         ChildCollector obj = mapper.treeToValue(node, ChildCollector.class);
 
+                        Log.e("TIMING LOG","elapsed time parsing (milliseconds): " + (System.currentTimeMillis() - tStart));
+
 //                        ChildCollector obj = mapper.readTree(node, ChildCollector.class);
-                        Log.d("Barcode-----------------------", obj.getChildEntity().getBarcodeID());
-                        Log.d("ID-----------------------", obj.getChildEntity().getId());
+                        Log.d("Barcode--------------", obj.getChildEntity().getBarcodeID());
+                        Log.d("ID-------------------", obj.getChildEntity().getId());
                         addChildVaccinationEventVaccinationAppointment(obj);
 //                        objects.add(obj);
                         break;
@@ -819,6 +960,10 @@ public class BackboneApplication extends Application{
             JSONArray jChildren = new JSONArray(result);
             for(int i = 0 ; i <jChildren.length() ; i++){
                 try {
+
+                    long tStart = System.currentTimeMillis();
+                    Log.e("TIMING LOG","Parsing start search children");
+
                     Child c = new Child();
                     JSONObject jc = jChildren.getJSONObject(i);
                     c.setFirstname1(jc.getString("Firstname1"));
@@ -833,6 +978,8 @@ public class BackboneApplication extends Application{
                     c.setHealthcenter(jc.getString("HealthcenterId"));
                     c.setId(jc.getInt("Id") + "");
                     children.add(c);
+
+                    Log.e("TIMING LOG", "elapsed time parsing search children (milliseconds): " + (System.currentTimeMillis() - tStart));
                 }catch(Exception e){}
             }
             Log.e("","");
@@ -887,7 +1034,7 @@ public class BackboneApplication extends Application{
             }
             InputStream inputStream = httpResponse.getEntity().getContent();
             String result =  Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+result);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
             return  true;
 
         }
@@ -923,12 +1070,11 @@ public class BackboneApplication extends Application{
                 return 3;
             }
             InputStream inputStream = httpResponse.getEntity().getContent();
-            ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-            bais.reset();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            childCollector = mapper.readValue(new JSONArray(Utils.getStringFromInputStream(bais)).getJSONObject(0).toString(), ChildCollector.class);
+            childCollector = mapper.readValue(new JSONArray(response).getJSONObject(0).toString(), ChildCollector.class);
 
             addChildVaccinationEventVaccinationAppointment(childCollector);
             return 1;
@@ -1232,6 +1378,7 @@ public class BackboneApplication extends Application{
         }
     }
 
+
     /**
      * method to be used internaly since there were two other methods that needed this code to execute
      * @param childCollector
@@ -1245,6 +1392,9 @@ public class BackboneApplication extends Application{
         ContentValues vaccAppointmentCV = new ContentValues();
         DatabaseHandler db = getDatabaseInstance();
 
+        long tStart = System.currentTimeMillis();
+
+        Log.e("TIMING LOG","start insert/update child in DB");
         childCV.put(SQLHandler.SyncColumns.UPDATED, 1);
         childCV.put(SQLHandler.ChildColumns.ID, child.getId());
         childCV.put(SQLHandler.ChildColumns.BARCODE_ID, child.getBarcodeID());
@@ -1272,6 +1422,11 @@ public class BackboneApplication extends Application{
             db.updateChild(childCV,child.getId());
         }
 
+
+        Log.e("TIMING LOG","elapsed time insert/update child in DB (milliseconds): " + (System.currentTimeMillis() - tStart));
+        tStart = System.currentTimeMillis();
+
+        Log.e("TIMING LOG","start insert/update Vaccination Event list in DB");
         for(VaccinationEvent vaccinationEvent : vaccinationEvents){
             vaccEventCV.put(SQLHandler.SyncColumns.UPDATED, 1);
             vaccEventCV.put(SQLHandler.VaccinationEventColumns.APPOINTMENT_ID, vaccinationEvent.getAppointmentId());
@@ -1294,6 +1449,11 @@ public class BackboneApplication extends Application{
             }
         }
 
+        Log.e("TIMING LOG","elapsed time insert/update Vaccination Event list in DB (milliseconds): " + (System.currentTimeMillis() - tStart));
+        tStart = System.currentTimeMillis();
+
+        Log.e("TIMING LOG","start insert/update Vaccination Appointment list in DB");
+
         for(VaccinationAppointment vaccinationAppointment : vaccinationAppointments){
             vaccAppointmentCV.put(SQLHandler.SyncColumns.UPDATED, 1);
             vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.CHILD_ID, vaccinationAppointment.getChildId());
@@ -1312,6 +1472,9 @@ public class BackboneApplication extends Application{
             }
 
         }
+
+        Log.e("TIMING LOG","elapsed time insert/update Vaccination Appointment list in DB (milliseconds): " + (System.currentTimeMillis() - tStart));
+
     }
 
     public void parseHealthFacility(){
@@ -1327,12 +1490,11 @@ public class BackboneApplication extends Application{
             httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
             HttpResponse httpResponse = httpClient.execute(httpGet);
             InputStream inputStream = httpResponse.getEntity().getContent();
-            ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-            bais.reset();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(bais, new TypeReference<List<HealthFacility>>(){});
+            objects = mapper.readValue(response, new TypeReference<List<HealthFacility>>(){});
 
         }
         catch (JsonGenerationException e) {
@@ -1371,12 +1533,11 @@ public class BackboneApplication extends Application{
             httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
             HttpResponse httpResponse = httpClient.execute(httpGet);
             InputStream inputStream = httpResponse.getEntity().getContent();
-            ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-            bais.reset();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(bais, new TypeReference<List<Status>>(){});
+            objects = mapper.readValue(response, new TypeReference<List<Status>>(){});
 
         }
         catch (JsonGenerationException e) {
@@ -1415,12 +1576,11 @@ public class BackboneApplication extends Application{
             httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
             HttpResponse httpResponse = httpClient.execute(httpGet);
             InputStream inputStream = httpResponse.getEntity().getContent();
-            ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-            bais.reset();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(bais, new TypeReference<List<ItemLot>>(){});
+            objects = mapper.readValue(response, new TypeReference<List<ItemLot>>(){});
 
         }
         catch (JsonGenerationException e) {
@@ -1460,12 +1620,11 @@ public class BackboneApplication extends Application{
             httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
             HttpResponse httpResponse = httpClient.execute(httpGet);
             InputStream inputStream = httpResponse.getEntity().getContent();
-            ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-            bais.reset();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(bais, new TypeReference<List<Weight>>(){});
+            objects = mapper.readValue(response, new TypeReference<List<Weight>>(){});
 
         }
         catch (JsonGenerationException e) {
@@ -1512,12 +1671,11 @@ public class BackboneApplication extends Application{
             httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
             HttpResponse httpResponse = httpClient.execute(httpGet);
             InputStream inputStream = httpResponse.getEntity().getContent();
-            ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-            bais.reset();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(bais, new TypeReference<List<NonVaccinationReason>>(){});
+            objects = mapper.readValue(response, new TypeReference<List<NonVaccinationReason>>(){});
 
         }
         catch (JsonGenerationException e) {
@@ -1555,12 +1713,11 @@ public class BackboneApplication extends Application{
             httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
             HttpResponse httpResponse = httpClient.execute(httpGet);
             InputStream inputStream = httpResponse.getEntity().getContent();
-            ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-            bais.reset();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(bais, new TypeReference<List<AgeDefinitions>>(){});
+            objects = mapper.readValue(response, new TypeReference<List<AgeDefinitions>>(){});
 
         }
         catch (JsonGenerationException e) {
@@ -1599,12 +1756,11 @@ public class BackboneApplication extends Application{
             httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
             HttpResponse httpResponse = httpClient.execute(httpGet);
             InputStream inputStream = httpResponse.getEntity().getContent();
-            ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-            bais.reset();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(bais, new TypeReference<List<Item>>(){});
+            objects = mapper.readValue(response, new TypeReference<List<Item>>(){});
 
         }
         catch (JsonGenerationException e) {
@@ -1645,11 +1801,10 @@ public class BackboneApplication extends Application{
             httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
             HttpResponse httpResponse = httpClient.execute(httpGet);
             InputStream inputStream = httpResponse.getEntity().getContent();
-            ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-            bais.reset();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
             ObjectMapper mapper = new ObjectMapper();
-            objects = mapper.readValue(bais, new TypeReference<List<ScheduledVaccination>>(){});
+            objects = mapper.readValue(response, new TypeReference<List<ScheduledVaccination>>(){});
 
         } catch (JsonGenerationException e) {
             e.printStackTrace();
@@ -1690,12 +1845,11 @@ public class BackboneApplication extends Application{
             httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
             HttpResponse httpResponse = httpClient.execute(httpGet);
             InputStream inputStream = httpResponse.getEntity().getContent();
-            ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-            bais.reset();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(bais, new TypeReference<List<Dose>>(){});
+            objects = mapper.readValue(response, new TypeReference<List<Dose>>(){});
 
         }
         catch (JsonGenerationException e) {
@@ -1712,8 +1866,8 @@ public class BackboneApplication extends Application{
                 ContentValues doseCV = new ContentValues();
                 DatabaseHandler db = getDatabaseInstance();
 
-                doseCV.put(SQLHandler.DoseColumns.AGE_DEFINITON_ID, object.getAgeDefinitionId());
                 doseCV.put(SQLHandler.SyncColumns.UPDATED, 1);
+                doseCV.put(SQLHandler.DoseColumns.AGE_DEFINITON_ID, object.getAgeDefinitionId());
                 doseCV.put(SQLHandler.DoseColumns.FULLNAME, object.getFullname());
                 doseCV.put(SQLHandler.DoseColumns.DOSE_NUMBER, object.getDoseNumber());
                 doseCV.put(SQLHandler.DoseColumns.ID, object.getId());
@@ -1746,12 +1900,11 @@ public class BackboneApplication extends Application{
                 return 3;
             }
             InputStream inputStream = httpResponse.getEntity().getContent();
-            ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-            bais.reset();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            childCollector = mapper.readValue(new JSONArray(Utils.getStringFromInputStream(bais)).getJSONObject(0).toString(), ChildCollector.class);
+            childCollector = mapper.readValue(new JSONArray(response).getJSONObject(0).toString(), ChildCollector.class);
 
             addChildVaccinationEventVaccinationAppointment(childCollector);
             return 1;
@@ -1786,12 +1939,11 @@ public class BackboneApplication extends Application{
             httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
             HttpResponse httpResponse = httpClient.execute(httpGet);
             InputStream inputStream = httpResponse.getEntity().getContent();
-            ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-            bais.reset();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(bais, new TypeReference<List<HealthFacility>>(){});
+            objects = mapper.readValue(response, new TypeReference<List<HealthFacility>>(){});
 
         }
         catch (JsonGenerationException e) {
@@ -1830,12 +1982,11 @@ public class BackboneApplication extends Application{
             httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
             HttpResponse httpResponse = httpClient.execute(httpGet);
             InputStream inputStream = httpResponse.getEntity().getContent();
-            ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-            bais.reset();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            place = mapper.readValue(bais, Place.class);
+            place = mapper.readValue(response, Place.class);
         }
         catch (JsonGenerationException e) {
             e.printStackTrace();
@@ -1874,11 +2025,10 @@ public class BackboneApplication extends Application{
             httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
             HttpResponse httpResponse = httpClient.execute(httpGet);
             InputStream inputStream = httpResponse.getEntity().getContent();
-            ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-            bais.reset();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
             ObjectMapper mapper = new ObjectMapper();
-            objects = mapper.readValue(bais, new TypeReference<List<Place>>(){});
+            objects = mapper.readValue(response, new TypeReference<List<Place>>(){});
 
         }
         catch (JsonGenerationException e) {
@@ -2140,10 +2290,10 @@ public class BackboneApplication extends Application{
      */
     public int updateVaccinationAppOutreach(String childBarcode, String doseId) {
         final StringBuilder webServiceUrl;
-            webServiceUrl = new StringBuilder(WCF_URL).append("VaccinationAppointmentManagement.svc/UpdateVaccinationApp?outreach=true&userId=")
-                    .append(getLOGGED_IN_USER_ID())
-                    .append("&barcode=").append(childBarcode)
-                    .append("&doseId=").append(doseId);
+        webServiceUrl = new StringBuilder(WCF_URL).append("VaccinationAppointmentManagement.svc/UpdateVaccinationApp?outreach=true&userId=")
+                .append(getLOGGED_IN_USER_ID())
+                .append("&barcode=").append(childBarcode)
+                .append("&doseId=").append(doseId);
 
 
         Log.e("service appointment outreach",webServiceUrl+"");
@@ -2206,7 +2356,7 @@ public class BackboneApplication extends Application{
             String url = WCF_URL + "ChildManagement.svc/GetChildrenByHealthFacilityBeforeLastLogin?idUser=" + getLOGGED_IN_USER_ID();
             Log.d("secondLoginURL", url);
 
-            List<ChildCollector> objects2 = new ArrayList<ChildCollector>();
+            ChildCollector2 objects2 = new ChildCollector2();
 
             try
             {
@@ -2216,12 +2366,10 @@ public class BackboneApplication extends Application{
                 httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
                 HttpResponse httpResponse = httpClient.execute(httpGet);
                 InputStream inputStream = httpResponse.getEntity().getContent();
-                ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-                Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-                bais.reset();
-
+                String response = Utils.getStringFromInputStream(inputStream);
+                Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
                 ObjectMapper mapper = new ObjectMapper();
-                objects2 = mapper.readValue(bais, new TypeReference<List<ChildCollector>>(){});
+                objects2 = mapper.readValue(response, ChildCollector2.class);
 
             }
             catch (JsonGenerationException e) {
@@ -2234,9 +2382,7 @@ public class BackboneApplication extends Application{
                 e.printStackTrace();
             }
             finally{
-                for(ChildCollector object : objects2){
-                    addChildVaccinationEventVaccinationAppointment(object);
-                }
+                addChildVaccinationEventVaccinationAppointment(objects2);
             }
         }
 
@@ -2252,7 +2398,7 @@ public class BackboneApplication extends Application{
             String url = WCF_URL + "ChildManagement.svc/GetChildrenByHealthFacilityDayFirstLogin?idUser=" + getLOGGED_IN_USER_ID();
             Log.d("secondLoginURL", url);
 
-            List<ChildCollector> objects2 = new ArrayList<ChildCollector>();
+            ChildCollector2 objects2 = new ChildCollector2();
 
             try
             {
@@ -2262,12 +2408,10 @@ public class BackboneApplication extends Application{
                 httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
                 HttpResponse httpResponse = httpClient.execute(httpGet);
                 InputStream inputStream = httpResponse.getEntity().getContent();
-                ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-                Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-                bais.reset();
-
+                String response = Utils.getStringFromInputStream(inputStream);
+                Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
                 ObjectMapper mapper = new ObjectMapper();
-                objects2 = mapper.readValue(bais, new TypeReference<List<ChildCollector>>(){});
+                objects2 = mapper.readValue(response, new TypeReference<List<ChildCollector>>(){});
 
             }
             catch (JsonGenerationException e) {
@@ -2280,9 +2424,7 @@ public class BackboneApplication extends Application{
                 e.printStackTrace();
             }
             finally{
-                for(ChildCollector object : objects2){
-                    addChildVaccinationEventVaccinationAppointment(object);
-                }
+                addChildVaccinationEventVaccinationAppointment(objects2);
             }
         }
 
@@ -2297,7 +2439,7 @@ public class BackboneApplication extends Application{
         String url = WCF_URL + "ChildManagement.svc/GetChildrenByHealthFacilitySinceLastLogin?idUser=" + getLOGGED_IN_USER_ID();
         Log.e("SinceLastLogin", "GetChildrenByHealthFacilitySinceLastLogin url is: " + url);
 
-        List<ChildCollector> objects2 = new ArrayList<ChildCollector>();
+        ChildCollector2 objects2 = new ChildCollector2();
 
         try
         {
@@ -2307,11 +2449,10 @@ public class BackboneApplication extends Application{
             httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
             HttpResponse httpResponse = httpClient.execute(httpGet);
             InputStream inputStream = httpResponse.getEntity().getContent();
-            ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-            bais.reset();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
             ObjectMapper mapper = new ObjectMapper();
-            objects2 = mapper.readValue(bais, new TypeReference<List<ChildCollector>>(){});
+            objects2 = mapper.readValue(response, new TypeReference<List<ChildCollector>>(){});
 
         }
         catch (JsonGenerationException e) {
@@ -2324,9 +2465,7 @@ public class BackboneApplication extends Application{
             e.printStackTrace();
         }
         finally{
-            for(ChildCollector object : objects2){
-                addChildVaccinationEventVaccinationAppointment(object);
-            }
+            addChildVaccinationEventVaccinationAppointment(objects2);
         }
 
 
@@ -2351,11 +2490,10 @@ public class BackboneApplication extends Application{
             httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
             HttpResponse httpResponse = httpClient.execute(httpGet);
             InputStream inputStream = httpResponse.getEntity().getContent();
-            ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-            bais.reset();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
             ObjectMapper mapper = new ObjectMapper();
-            objects2 = mapper.readValue(bais, new TypeReference<List<ChildCollector>>(){});
+            objects2 = mapper.readValue(response, new TypeReference<List<ChildCollector>>(){});
 
         }
         catch (JsonGenerationException e) {
@@ -2387,7 +2525,7 @@ public class BackboneApplication extends Application{
         String url = WCF_URL + "ChildManagement.svc/GetChildByIdListSince?childIdList="+childIds+"&userId=" + getLOGGED_IN_USER_ID();
         Log.d("getChildByBarcodeList", url);
 
-        List<ChildCollector> objects2 = new ArrayList<ChildCollector>();
+        ChildCollector2 objects2 = new ChildCollector2();
 
         try
         {
@@ -2397,11 +2535,10 @@ public class BackboneApplication extends Application{
             httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
             HttpResponse httpResponse = httpClient.execute(httpGet);
             InputStream inputStream = httpResponse.getEntity().getContent();
-            ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-            bais.reset();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
             ObjectMapper mapper = new ObjectMapper();
-            objects2 = mapper.readValue(bais, new TypeReference<List<ChildCollector>>(){});
+            objects2 = mapper.readValue(response, new TypeReference<List<ChildCollector>>(){});
 
         }
         catch (JsonGenerationException e) {
@@ -2414,9 +2551,7 @@ public class BackboneApplication extends Application{
             e.printStackTrace();
         }
         finally{
-            for(ChildCollector object : objects2){
-                addChildVaccinationEventVaccinationAppointment(object);
-            }
+            addChildVaccinationEventVaccinationAppointment(objects2);
         }
 
 
@@ -2433,7 +2568,7 @@ public class BackboneApplication extends Application{
         String url = WCF_URL + "ChildManagement.svc/GetChildByIdList?childIdList="+childIds+"&userId=" + getLOGGED_IN_USER_ID();
         Log.d("getChildByBarcodeList", url);
 
-        List<ChildCollector> objects2 = new ArrayList<ChildCollector>();
+        ChildCollector2 objects2 = new ChildCollector2();
 
         try
         {
@@ -2443,11 +2578,10 @@ public class BackboneApplication extends Application{
             httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
             HttpResponse httpResponse = httpClient.execute(httpGet);
             InputStream inputStream = httpResponse.getEntity().getContent();
-            ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-            bais.reset();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
             ObjectMapper mapper = new ObjectMapper();
-            objects2 = mapper.readValue(bais, new TypeReference<List<ChildCollector>>(){});
+            objects2 = mapper.readValue(response, new TypeReference<List<ChildCollector>>(){});
 
         }
         catch (JsonGenerationException e) {
@@ -2460,9 +2594,7 @@ public class BackboneApplication extends Application{
             e.printStackTrace();
         }
         finally{
-            for(ChildCollector object : objects2){
-                addChildVaccinationEventVaccinationAppointment(object);
-            }
+            addChildVaccinationEventVaccinationAppointment(objects2);
         }
 
 
@@ -2606,12 +2738,11 @@ public class BackboneApplication extends Application{
             httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
             HttpResponse httpResponse = httpClient.execute(httpGet);
             InputStream inputStream = httpResponse.getEntity().getContent();
-            ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-            bais.reset();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(bais, new TypeReference<List<AdjustmentReasons>>(){});
+            objects = mapper.readValue(response, new TypeReference<List<AdjustmentReasons>>(){});
 
         }
         catch (JsonGenerationException e) {
@@ -2643,7 +2774,7 @@ public class BackboneApplication extends Application{
         final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(STOCK_MANAGEMENT_SVC);
         webServiceUrl.append("StockAdjustment?gtin=").append(gtin).append("&lotno=").append(lotno).append("&qty=").append(qty)
                 .append("&date=").append(date).append("&reasonId=").append(reasonId).
-            append("&userId=").append(userId);
+                append("&userId=").append(userId);
 
         Log.e(" save health faci", webServiceUrl + "");
         try

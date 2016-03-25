@@ -438,42 +438,11 @@ public class HomeActivityRevised extends BackboneActivity {
     protected void onPause(){
         super.onPause();
         unregisterReceiver(status_receiver);
-        SharedPreferences.Editor editPrefs = sync_preferences.edit();
-        BackboneApplication app = (BackboneApplication) getApplication();
-        boolean sync_needed = true;
-        if (sync_preferences.contains("synchronization_needed"))
-        {
-            sync_needed = sync_preferences.getBoolean("synchronization_needed", false);
-        }
-        editPrefs.putBoolean("synchronization_needed", sync_needed);
-
-        boolean secondSyncNeeded = true;
-        if (sync_preferences.contains("secondSyncNeeded"))
-        {
-            secondSyncNeeded = sync_preferences.getBoolean("secondSyncNeeded", false);
-        }
-        editPrefs.putBoolean("secondSyncNeeded", secondSyncNeeded);
-        editPrefs.apply();
     }
 
     @Override
     public void onDestroy(){
         super.onDestroy();
-        SharedPreferences.Editor editPrefs = sync_preferences.edit();
-        BackboneApplication app = (BackboneApplication) getApplication();
-        boolean sync_needed = true;
-        if (sync_preferences.contains("synchronization_needed"))
-        {
-            sync_needed = sync_preferences.getBoolean("synchronization_needed", false);
-        }
-        editPrefs.putBoolean("synchronization_needed", sync_needed);
-        boolean secondSyncNeeded = true;
-        if (sync_preferences.contains("secondSyncNeeded"))
-        {
-            secondSyncNeeded = sync_preferences.getBoolean("secondSyncNeeded", false);
-        }
-        editPrefs.putBoolean("secondSyncNeeded", secondSyncNeeded);
-        editPrefs.apply();
     }
 
     @Override
@@ -530,7 +499,8 @@ public class HomeActivityRevised extends BackboneActivity {
                 }
 
                 try {
-                    application.parseChildCollector();
+                    //application.parseChildCollector(); // old service
+                    application.parseChildCollector2(); // new service
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -542,29 +512,29 @@ public class HomeActivityRevised extends BackboneActivity {
                 }
 
             }
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            super.onPostExecute(result);
-            Log.e("SYNC FINISHED", "Database synchronization finished.");
-
-            if (!DatabaseHandler.dbPreinstalled)Toast.makeText(getApplicationContext(), "mainSynchronisation finished.", Toast.LENGTH_LONG).show();
-
             BackboneApplication app = (BackboneApplication) getApplication();
 
             SharedPreferences.Editor editor = sync_preferences.edit();
             editor.putBoolean("synchronization_needed", false);
             editor.putBoolean("secondSyncNeeded", false);
-            editor.apply();
+            editor.commit();
             app.setMainSyncronizationNeededStatus(false);
             alertDialog.dismiss();
             //Starting the repeating synchronisation procedure that happens every week
             // and pulls changes done to some main tables
             RoutineAlarmReceiver.setAlarmWeeklyUpdateBaseTables(HomeActivityRevised.this.getApplicationContext());
+            return true;
         }
+
+    @Override
+    protected void onPostExecute(Boolean result) {
+        super.onPostExecute(result);
+        Log.e("SYNC FINISHED", "Database synchronization finished.");
+
+        if (!DatabaseHandler.dbPreinstalled)
+            Toast.makeText(getApplicationContext(), "mainSynchronisation finished.", Toast.LENGTH_LONG).show();
     }
+}
 
     private class updateSynchronisation extends AsyncTask<Integer, Integer, Boolean> {
 
@@ -604,13 +574,10 @@ public class HomeActivityRevised extends BackboneActivity {
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
 
-            Log.e("SYNC FINISHED","Database synchronization finished.");
+            Log.e("SYNC FINISHED", "Database synchronization finished.");
             Toast toast = Toast.makeText(getApplicationContext(), "updateSynchronisation finished.", Toast.LENGTH_LONG);
             toast.show();
 
-            SharedPreferences.Editor editor = sync_preferences.edit();
-            editor.putBoolean("secondSyncNeeded", false);
-            editor.commit();
         }
     }
 
@@ -662,6 +629,10 @@ public class HomeActivityRevised extends BackboneActivity {
 
             application.parseStock();
 
+            SharedPreferences.Editor editor = sync_preferences.edit();
+            editor.putBoolean("firstLoginOfDaySyncNeeded", false);
+            editor.apply();
+
             return true;
         }
 
@@ -673,9 +644,6 @@ public class HomeActivityRevised extends BackboneActivity {
             Toast toast = Toast.makeText(getApplicationContext(), "firstLoginOfDaySynchronisation finished.", Toast.LENGTH_LONG);
             toast.show();
 
-            SharedPreferences.Editor editor = sync_preferences.edit();
-            editor.putBoolean("firstLoginOfDaySyncNeeded", false);
-            editor.apply();
         }
     }
 

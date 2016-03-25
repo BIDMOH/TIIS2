@@ -100,16 +100,16 @@ import mobile.giis.app.entity.Child;
         viewHolder.tvVillage.setText(mydb.getVillageName(item.getDomicile()));
         viewHolder.tvHealthFacility.setText(mydb.getHealthCenterName(item.getHealthcenter()));
 
-        rowView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!(position == -1)) {
-                    Intent childDetailsActivity = new Intent(ctx, ChildDetailsActivity.class);
-                    childDetailsActivity.putExtra("barcode", item.getBarcodeID());
-                    ctx.startActivity(childDetailsActivity);
-                }
-            }
-        });
+//        rowView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (!(position == -1)) {
+//                    Intent childDetailsActivity = new Intent(ctx, ChildDetailsActivity.class);
+//                    childDetailsActivity.putExtra("barcode", item.getBarcodeID());
+//                    ctx.startActivity(childDetailsActivity);
+//                }
+//            }
+//        });
 
     return rowView;
 

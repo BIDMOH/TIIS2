@@ -243,9 +243,11 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
                 StringBuilder webServiceLoginURL = createWebServiceLoginURL(username, password);
 
                 //call web service to pull user info and send to account manager
-                startWebService(webServiceLoginURL ,username, password);
-
-//                fakeLogin(username, password);
+                try{
+                       startWebService(webServiceLoginURL ,username, password);
+                }catch (NullPointerException e){
+                       startWebService(webServiceLoginURL ,username, password);
+                }
 
             }
 
@@ -408,7 +410,9 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
 
                         Account account = new Account(username, ACCOUNT_TYPE);
                         AccountManager accountManager = AccountManager.get(LoginActivity.this);
-                        boolean accountCreated = accountManager.addAccountExplicitly(account, LoginActivity.this.password, null);
+
+//                        boolean accountCreated = accountManager.addAccountExplicitly(account, LoginActivity.this.password, null);
+                        boolean accountCreated = accountManager.addAccountExplicitly(account, password, null);
 
                         Bundle extras = LoginActivity.this.getIntent().getExtras();
                         if (extras != null) {

@@ -295,7 +295,7 @@ public class BackboneActivity extends AppCompatActivity {
 
         boolean secondSyncNeeded = false;
         if (sync_preferences.contains("secondSyncNeeded") && Utils.isOnline(this)) {
-            secondSyncNeeded = sync_preferences.getBoolean("secondSyncNeeded", false);
+            secondSyncNeeded = sync_preferences.getBoolean("secondSyncNeeded", true);
         }
 
         if (sync_needed /*|| secondSyncNeeded*/) {
