@@ -1296,7 +1296,7 @@ public class BackboneApplication extends Application {
         AsyncHttpClient.allowRetryExceptionClass(ConnectTimeoutException.class);
         AsyncHttpClient.blockRetryExceptionClass(UnknownHostException.class);
         AsyncHttpClient.blockRetryExceptionClass(ConnectionPoolTimeoutException.class);
-        client.setMaxConnections(1);
+//        client.setMaxConnections(1);
 
 
     }
