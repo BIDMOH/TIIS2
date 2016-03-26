@@ -140,6 +140,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.execSQL(SQLHandler.SQLVaccinationAppointmentTable);
             db.execSQL("CREATE INDEX childIDx ON " + Tables.VACCINATION_APPOINTMENT + "(CHILD_ID);");
             db.execSQL(SQLHandler.SQLVaccinationEventTable);
+            db.execSQL(SQLHandler.SQLVaccinationEventTableINDEX);
             db.execSQL("CREATE INDEX childIdIndex ON " + Tables.VACCINATION_EVENT + "(CHILD_ID);");
             db.execSQL("CREATE INDEX healthx ON " + Tables.VACCINATION_EVENT + "(HEALTH_FACILITY_ID);");
             db.execSQL(SQLHandler.SQLWeightTable);
@@ -1395,19 +1396,23 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 //        }
 //    }
 
-    public boolean isVaccinationEventInDb(String childId, String doseId) {
-        String selectQuery = "SELECT * FROM " + Tables.VACCINATION_EVENT +
+    public int isVaccinationEventInDb(String childId, String doseId, String modifiedBy, String modifiedOn) {
+        String selectQuery = "SELECT MODIFIED_ON,MODIFIED_BY FROM " + Tables.VACCINATION_EVENT +
                 " WHERE CHILD_ID = '" + childId + "' AND "
                 +" DOSE_ID = '"+doseId+"'";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         if (cursor.moveToFirst()) {
+            if(cursor.getString(cursor.getColumnIndex("MODIFIED_ON")).equals(modifiedOn) && cursor.getString(cursor.getColumnIndex("MODIFIED_BY")).equals(modifiedBy)){
+                cursor.close();
+                return 1;
+            }
             cursor.close();
-            return true;
+            return 2;
         } else {
             cursor.close();
-            return false;
+            return 3;
         }
     }
 
@@ -1711,7 +1716,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public boolean isChildIDInChildTable(String ID) {
-        String selectQuery = "SELECT * FROM child" +
+        String selectQuery = "SELECT ID FROM child" +
                 " WHERE ID = '" + ID + "'";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);

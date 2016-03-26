@@ -89,6 +89,8 @@ public class SQLHandler {
                     + GIISContract.VaccinationEventColumns.MODIFIED_ON + " DATETIME,"
                     + GIISContract.VaccinationEventColumns.MODIFIED_BY + " TEXT,"
                     + GIISContract.VaccinationEventColumns.NOTES + " TEXT);";
+    public static final String SQLVaccinationEventTableINDEX = "CREATE UNIQUE INDEX vaccination_event_index ON " + Tables.VACCINATION_EVENT + " ("+GIISContract.VaccinationEventColumns.MODIFIED_ON+", "+GIISContract.VaccinationEventColumns.MODIFIED_BY+")";
+
     public static final String SQLWeightTable =
             "CREATE TABLE " + Tables.WEIGHT + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
