@@ -140,7 +140,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.execSQL(SQLHandler.SQLVaccinationAppointmentTable);
             db.execSQL("CREATE INDEX childIDx ON " + Tables.VACCINATION_APPOINTMENT + "(CHILD_ID);");
             db.execSQL(SQLHandler.SQLVaccinationEventTable);
-            db.execSQL(SQLHandler.SQLVaccinationEventTableINDEX);
             db.execSQL("CREATE INDEX childIdIndex ON " + Tables.VACCINATION_EVENT + "(CHILD_ID);");
             db.execSQL("CREATE INDEX healthx ON " + Tables.VACCINATION_EVENT + "(HEALTH_FACILITY_ID);");
             db.execSQL(SQLHandler.SQLWeightTable);
@@ -1396,7 +1395,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 //        }
 //    }
 
-    public int isVaccinationEventInDb(String childId, String doseId, String modifiedBy, String modifiedOn) {
+    public boolean isVaccinationEventInDb(String childId, String doseId) {
         String selectQuery = "SELECT MODIFIED_ON,MODIFIED_BY FROM " + Tables.VACCINATION_EVENT +
                 " WHERE CHILD_ID = '" + childId + "' AND "
                 +" DOSE_ID = '"+doseId+"'";
@@ -1404,15 +1403,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         if (cursor.moveToFirst()) {
-            if(cursor.getString(cursor.getColumnIndex("MODIFIED_ON")).equals(modifiedOn) && cursor.getString(cursor.getColumnIndex("MODIFIED_BY")).equals(modifiedBy)){
-                cursor.close();
-                return 1;
-            }
             cursor.close();
-            return 2;
+            return true;
         } else {
             cursor.close();
-            return 3;
+            return false;
         }
     }
 

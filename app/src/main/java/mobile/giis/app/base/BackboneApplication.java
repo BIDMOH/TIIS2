@@ -648,7 +648,6 @@ public class BackboneApplication extends Application {
             }
             InputStream inputStream = httpResponse.getEntity().getContent();
             String response = Utils.getStringFromInputStream(inputStream);
-            Log.d(TAG, "received child results = " + response);
             Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
@@ -726,8 +725,7 @@ public class BackboneApplication extends Application {
                 vaccEventCV.put(SQLHandler.VaccinationEventColumns.VACCINATION_STATUS, vaccinationEvent.getVaccinationStatus());
                 vaccEventCV.put(SQLHandler.VaccinationEventColumns.VACCINE_LOT_ID, vaccinationEvent.getVaccineLotId());
 
-                int insertChecker = db.isVaccinationEventInDb(vaccinationEvent.getChildId(), vaccinationEvent.getDoseId(),vaccinationEvent.getModifiedBy(),vaccinationEvent.getModifiedOn());
-                if (insertChecker==2) {
+                if (!db.isVaccinationEventInDb(vaccinationEvent.getChildId(), vaccinationEvent.getDoseId())) {
                     db.addVaccinationEvent(vaccEventCV);
                 } else {
                     db.updateVaccinationEvent(vaccEventCV, vaccinationEvent.getId());
@@ -1296,7 +1294,7 @@ public class BackboneApplication extends Application {
         AsyncHttpClient.allowRetryExceptionClass(ConnectTimeoutException.class);
         AsyncHttpClient.blockRetryExceptionClass(UnknownHostException.class);
         AsyncHttpClient.blockRetryExceptionClass(ConnectionPoolTimeoutException.class);
-//        client.setMaxConnections(1);
+        client.setMaxConnections(20);
 
 
     }
@@ -1438,6 +1436,7 @@ public class BackboneApplication extends Application {
             e.printStackTrace();
         }
     }
+
 
     public void parseHealthFacility() {
         final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, GET_HEALTH_FACILITY);
