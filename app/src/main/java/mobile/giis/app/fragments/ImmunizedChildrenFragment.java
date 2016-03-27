@@ -24,6 +24,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.LargeValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
@@ -344,7 +345,7 @@ public class ImmunizedChildrenFragment extends Fragment implements OnChartValueS
         BarDataSet set2 = new BarDataSet(cummNoVals, app.getString(R.string.cumm_no_children_immunized));
         set2.setColor(Color.rgb(235, 139, 75));
 
-        ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
+        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
         dataSets.add(set1);
         dataSets.add(set2);
 

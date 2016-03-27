@@ -19,7 +19,7 @@ public class Alarm extends BroadcastReceiver
 
         // Put here YOUR code.
         Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_LONG).show(); // For example
-        context.startService(new Intent(context.getApplicationContext(), SynchronizationService2.class));
+        context.startService(new Intent(context.getApplicationContext(), CheckForChangesSynchronisationService.class));
 
         wl.release();
     }

@@ -2639,8 +2639,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     public String getDomicilesFoundInChildAndNotInPlace() {
         //Query on Child Table
-        String selectQuery =
-                " SELECT DISTINCT(DOMICILE_ID) FROM CHILD WHERE DOMICILE_ID  NOT IN (SELECT ID FROM place) AND DOMICILE_ID <> 0";
+        String selectQuery = " SELECT DISTINCT(DOMICILE_ID) FROM CHILD WHERE DOMICILE_ID  NOT IN (SELECT ID FROM place) AND DOMICILE_ID <> 0";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);

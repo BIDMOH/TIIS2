@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -29,11 +30,14 @@ import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.LargeValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -101,6 +105,10 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
 
     Button  searchButton;
     private Thread thread;
+    public static final int[] VORDIPLOM_COLORS = {
+            Color.rgb(192, 255, 140), Color.rgb(255, 247, 140), Color.rgb(255, 208, 140),
+            Color.rgb(140, 234, 255), Color.rgb(255, 140, 157)
+    };
     Handler myHandler = new Handler() {
 
         @Override
@@ -169,7 +177,6 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_home, null);
         setUpView(root);
-//        createXYValues();
         initChart();
         renderChartData();
 
@@ -283,6 +290,9 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
 
         mChart.setDrawGridBackground(false);
 
+
+
+
         // create a custom MarkerView (extend MarkerView) and specify the layout
         // to use for it
         MyMarkerView mv = new MyMarkerView(HomeFragment.this.getActivity(), R.layout.custom_marker_view);
@@ -294,17 +304,33 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
         // set the marker to the chart
         mChart.setMarkerView(mv);
 
-        Legend l = mChart.getLegend();
-        l.setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
+//        Legend l = mChart.getLegend();
+//        l.setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
+//
+//        l.setTextSize(18f);
 
-        l.setTextSize(18f);
+//        YAxis leftAxis = mChart.getAxisLeft();
+//        leftAxis.setValueFormatter(new LargeValueFormatter());
+//        leftAxis.setDrawGridLines(false);
+//        leftAxis.setSpaceTop(25f);
 
-        YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setValueFormatter(new LargeValueFormatter());
-        leftAxis.setDrawGridLines(false);
-        leftAxis.setSpaceTop(25f);
+        XAxis xAxis = mChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "Roboto-Regular.ttf");
 
-        mChart.getAxisRight().setEnabled(false);
+        xAxis.setTypeface(tf);
+        xAxis.setSpaceBetweenLabels(0);
+        xAxis.setDrawGridLines(false);
+
+        mChart.getAxisLeft().setDrawGridLines(false);
+
+        // add a nice and smooth animation
+        mChart.animateY(2500);
+
+        mChart.getLegend().setEnabled(false);
+
+
+//        mChart.getAxisRight().setEnabled(false);
     }
 
     public void renderChartData() {
@@ -335,15 +361,20 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
 
         Log.e("sample", "maximum value is  : "+maxValue);
 
-        // create 2 datasets with different types
-        mBarDataSet set1 = new mBarDataSet(balanceVals, app.getString(R.string.balance), thresholds);
-        // set1.setColors(ColorTemplate.createColors(getApplicationContext(),
-        // ColorTemplate.FRESH_COLORS));
-        set1.setColors(new int[]{this.getActivity().getResources().getColor(R.color.red_500), this.getActivity().getResources().getColor(R.color.yellow_500), this.getActivity().getResources().getColor(R.color.green_500)});
-//        BarDataSet set2 = new BarDataSet(reorderVals, app.getString(R.string.reorder_qty));
-//        set2.setColor(Color.rgb(235, 139, 75));
+//        // create 2 datasets with different types
+//        mBarDataSet set1 = new mBarDataSet(balanceVals, app.getString(R.string.balance), thresholds);
+//        // set1.setColors(ColorTemplate.createColors(getApplicationContext(),
+//        // ColorTemplate.FRESH_COLORS));
+//        set1.setColors(ColorTemplate.VORDIPLOM_COLORS);
 
-        ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
+
+        BarDataSet set1 = new BarDataSet(balanceVals, app.getString(R.string.balance));
+        set1.setColors(ColorTemplate.VORDIPLOM_COLORS);
+        set1.setDrawValues(false);
+
+
+
+        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
         dataSets.add(set1);
 //        dataSets.add(set2);
 
@@ -351,7 +382,7 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
         data.setValueFormatter(new LargeValueFormatter());
 
         mChart.setData(data);
-        mChart.animateY(500);
+        mChart.animateY(2500);
         mChart.invalidate();
     }
 
