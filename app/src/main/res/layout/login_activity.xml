@@ -78,7 +78,7 @@
             android:layout_marginTop="32dp"
             android:gravity="center"
             android:id="@+id/ministry_name"
-            android:text="Wizara ya Afya na Ustawi wa Jamii \n Mpango wa Taifa wa Chanjo"/>
+            android:text="Wizara ya Afya, Maendeleo ya Jamii, \nJinsia, Wazee na Watoto. \n Mpango wa Taifa wa Chanjo"/>
 
             <RelativeLayout
                 android:layout_width="410dp"
