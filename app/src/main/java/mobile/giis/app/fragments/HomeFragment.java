@@ -290,37 +290,33 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
 
         mChart.setDrawGridBackground(false);
 
+        mChart.setDrawValueAboveBar(true);
 
 
-
-        // create a custom MarkerView (extend MarkerView) and specify the layout
-        // to use for it
-        MyMarkerView mv = new MyMarkerView(HomeFragment.this.getActivity(), R.layout.custom_marker_view);
-
-        // define an offset to change the original position of the marker
-        // (optional)
-        // mv.setOffsets(-mv.getMeasuredWidth() / 2, -mv.getMeasuredHeight());
-
-        // set the marker to the chart
+        MyMarkerView mv = new MyMarkerView(getActivity(), R.layout.custom_marker_view);
         mChart.setMarkerView(mv);
 
-//        Legend l = mChart.getLegend();
-//        l.setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
-//
-//        l.setTextSize(18f);
+        Legend l = mChart.getLegend();
+        l.setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
+        l.setTextSize(18f);
 
-//        YAxis leftAxis = mChart.getAxisLeft();
-//        leftAxis.setValueFormatter(new LargeValueFormatter());
-//        leftAxis.setDrawGridLines(false);
-//        leftAxis.setSpaceTop(25f);
 
-        XAxis xAxis = mChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "Roboto-Regular.ttf");
+        YAxis leftAxis = mChart.getAxisLeft();
+        leftAxis.setValueFormatter(new LargeValueFormatter());
+        leftAxis.setDrawGridLines(false);
+        leftAxis.setDrawLabels(true);
+        leftAxis.setDrawAxisLine(false); // no axis line
+        leftAxis.setDrawGridLines(false); // no grid lines
+        leftAxis.setDrawZeroLine(true); // draw a zero line
+        mChart.getAxisRight().setEnabled(false); // no right axis
 
-        xAxis.setTypeface(tf);
-        xAxis.setSpaceBetweenLabels(0);
-        xAxis.setDrawGridLines(false);
+
+        XAxis yAxis = mChart.getXAxis();
+        yAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        yAxis.setTextSize(10f);
+        yAxis.setTextColor(Color.BLUE);
+        yAxis.setDrawAxisLine(true);
+        yAxis.setDrawGridLines(false);
 
         mChart.getAxisLeft().setDrawGridLines(false);
 
@@ -330,7 +326,7 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
         mChart.getLegend().setEnabled(false);
 
 
-//        mChart.getAxisRight().setEnabled(false);
+        mChart.getAxisRight().setEnabled(false);
     }
 
     public void renderChartData() {
@@ -361,16 +357,10 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
 
         Log.e("sample", "maximum value is  : "+maxValue);
 
-//        // create 2 datasets with different types
-//        mBarDataSet set1 = new mBarDataSet(balanceVals, app.getString(R.string.balance), thresholds);
-//        // set1.setColors(ColorTemplate.createColors(getApplicationContext(),
-//        // ColorTemplate.FRESH_COLORS));
-//        set1.setColors(ColorTemplate.VORDIPLOM_COLORS);
 
-
-        BarDataSet set1 = new BarDataSet(balanceVals, app.getString(R.string.balance));
-        set1.setColors(ColorTemplate.VORDIPLOM_COLORS);
-        set1.setDrawValues(false);
+        mBarDataSet set1 = new mBarDataSet(balanceVals, app.getString(R.string.balance), thresholds);
+        set1.setColors(new int[]{this.getActivity().getResources().getColor(R.color.red_500), this.getActivity().getResources().getColor(R.color.yellow_500), this.getActivity().getResources().getColor(R.color.green_500)});
+        set1.setDrawValues(true);
 
 
 
