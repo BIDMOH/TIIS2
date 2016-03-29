@@ -18,9 +18,15 @@ package mobile.giis.app.adapters;
  ******************************************************************************/
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DownloadManager;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -240,7 +246,47 @@ public class VaccineDoseListAdapter extends ArrayAdapter<AdministerVaccinesModel
             AdministerVaccineFragment.correnctDateSelected = true;
         }
 
-        setdates(tempHoldingTextView, tempHoldingVaccineModel);
+        //Obtaining time in milliseconds from the scheduled time in string
+        String [] tm = tempHoldingVaccineModel.getScheduled_Date_field().split("\\(");
+        String [] tLong =  tm[1].split("-");
+        String timeLong = tLong[0];
+
+        Date scheduledDate = new Date(Long.parseLong(timeLong));
+
+        if(new_date.before(scheduledDate)){
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ctx);
+
+            // set title
+            alertDialogBuilder.setTitle("Warning");
+
+            // set dialog message
+            alertDialogBuilder
+                    .setMessage("The selected vaccination date is before due date. Are you sure you want to set this date?")
+                    .setCancelable(false)
+                    .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            setdates(tempHoldingTextView, tempHoldingVaccineModel);
+                        }
+                    })
+                    .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // if this button is clicked, just close
+                            // the dialog box and do nothing
+                            dialog.cancel();
+                        }
+                    });
+
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+
+            // show it
+            alertDialog.show();
+
+        }else{
+            setdates(tempHoldingTextView, tempHoldingVaccineModel);
+        }
+
+
 
     }
 
