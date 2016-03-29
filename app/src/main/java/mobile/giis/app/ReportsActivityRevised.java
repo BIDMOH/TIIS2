@@ -72,6 +72,17 @@ public class ReportsActivityRevised extends BackboneActivity {
                 new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
+    @Override
+    protected void onPause(){
+        super.onPause();
+        unregisterReceiver(status_receiver);
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+    }
+
     BroadcastReceiver status_receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {

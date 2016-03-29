@@ -409,7 +409,7 @@ public class ChildSummaryPagerFragment extends Fragment {
             healthFacilitySpinner.setAdapter(healthAdapter);
             healthFacilitySpinner.setEnabled(false);
 
-            Log.d("coze","facility = "+currentChild.getHealthcenter());
+            Log.d("coze", "facility = " + currentChild.getHealthcenter());
             int index =facility_name.indexOf(currentChild.getHealthcenter());
 
 
@@ -654,7 +654,7 @@ public class ChildSummaryPagerFragment extends Fragment {
     }
 
     private void showAlertThatChildHadABarcode() {
-        HomeActivityRevised parent = (HomeActivityRevised)ChildSummaryPagerFragment.this.getActivity();
+        ChildDetailsActivity parent = (ChildDetailsActivity)ChildSummaryPagerFragment.this.getActivity();
         final AlertDialog.Builder ad = new AlertDialog.Builder(ChildSummaryPagerFragment.this.getActivity());
 
         ad.setTitle(getString(R.string.warning));
@@ -669,6 +669,7 @@ public class ChildSummaryPagerFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 saveChangedData();
+                enableUserInputs(false);
                 dialog.dismiss();
             }
         });

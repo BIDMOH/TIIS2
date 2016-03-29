@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -126,6 +127,12 @@ public class HomeActivityRevised extends BackboneActivity {
         Log.d(TAG, "starting my service");
 
         final BackboneApplication app = (BackboneApplication) getApplication();
+        if (app.getLOGGED_IN_FIRSTNAME() != null && app.getLOGGED_IN_LASTNAME() != null && app.getUsername() != null){
+            TextView welcomeText = (TextView) nv.getHeaderView(0).findViewById(R.id.welcome_username);
+            welcomeText.setText(app.getLOGGED_IN_FIRSTNAME() + " " + app.getLOGGED_IN_LASTNAME() + " " + "(" + app.getUsername() + ")");
+        }else{
+            forceLogout();
+        }
 
         //Create dialogue to prompt syncronization
         LayoutInflater li = LayoutInflater.from(HomeActivityRevised.this);
@@ -205,84 +212,79 @@ public class HomeActivityRevised extends BackboneActivity {
                     drawerLayout.closeDrawers();
                     switch (item.getItemId()) {
                         case R.id.drawer_home:
-                            if (app.saveNeeded){
-                                alertUserLeavingScreen(HOME_FRAGMENT,getString(R.string.home));
-                            }else{
+                            if (app.saveNeeded) {
+                                alertUserLeavingScreen(HOME_FRAGMENT, getString(R.string.home));
+                            } else {
                                 app.LAST_FRAGMENT = HOME_FRAGMENT;
                                 app.LAST_FRAGMENT_TITLE = getString(R.string.home);
                                 changeFragment(HOME_FRAGMENT, getString(R.string.home));
                             }
                             break;
                         case R.id.reg_child:
-                            if (app.saveNeeded){
-                                alertUserLeavingScreen(REGISTER_CHILD_FRAGMENT,getString(R.string.home_register_child));
-                            }else{
+                            if (app.saveNeeded) {
+                                alertUserLeavingScreen(REGISTER_CHILD_FRAGMENT, getString(R.string.home_register_child));
+                            } else {
                                 app.LAST_FRAGMENT = REGISTER_CHILD_FRAGMENT;
                                 app.LAST_FRAGMENT_TITLE = getString(R.string.home_register_child);
                                 changeFragment(REGISTER_CHILD_FRAGMENT, getString(R.string.home_register_child));
                             }
                             break;
                         case R.id.search_child:
-                            if (app.saveNeeded){
-                                alertUserLeavingScreen(SEARCH_CHILD_FRAGMENT,getString(R.string.home_search_child));
-                            }else{
+                            if (app.saveNeeded) {
+                                alertUserLeavingScreen(SEARCH_CHILD_FRAGMENT, getString(R.string.home_search_child));
+                            } else {
                                 app.LAST_FRAGMENT = SEARCH_CHILD_FRAGMENT;
                                 app.LAST_FRAGMENT_TITLE = getString(R.string.home_search_child);
                                 changeFragment(SEARCH_CHILD_FRAGMENT, getString(R.string.home_search_child));
                             }
                             break;
                         case R.id.vac_queue:
-                            if (app.saveNeeded){
-                                alertUserLeavingScreen(VACCINATION_QUEUE_FRAGMENT,getString(R.string.home_vac_queue));
-                            }else{
+                            if (app.saveNeeded) {
+                                alertUserLeavingScreen(VACCINATION_QUEUE_FRAGMENT, getString(R.string.home_vac_queue));
+                            } else {
                                 app.LAST_FRAGMENT = VACCINATION_QUEUE_FRAGMENT;
                                 app.LAST_FRAGMENT_TITLE = getString(R.string.home_vac_queue);
                                 changeFragment(VACCINATION_QUEUE_FRAGMENT, getString(R.string.home_vac_queue));
                             }
                             break;
                         case R.id.reports:
-                            if (app.saveNeeded){
-                                alertUserLeavingScreen(REPORTS_FRAGMENT,getString(R.string.home_reports));
-                            }else{
+                            if (app.saveNeeded) {
+                                alertUserLeavingScreen(REPORTS_FRAGMENT, getString(R.string.home_reports));
+                            } else {
                                 app.LAST_FRAGMENT = HOME_FRAGMENT;
                                 app.LAST_FRAGMENT_TITLE = getString(R.string.home);
-                                changeFragmentToReportActivity(getString(R.string.home_stock));
+                                changeFragmentToReportActivity(getString(R.string.home_reports));
                                 //changeFragment(REPORTS_FRAGMENT, getString(R.string.home_reports));
                             }
                             break;
                         case R.id.month_plan:
-                            if (app.saveNeeded){
-                                alertUserLeavingScreen(MONTHLY_PLAN_FRAGMENT,getString(R.string.home_monthly_plan));
-                            }else{
+                            if (app.saveNeeded) {
+                                alertUserLeavingScreen(MONTHLY_PLAN_FRAGMENT, getString(R.string.home_monthly_plan));
+                            } else {
                                 app.LAST_FRAGMENT = MONTHLY_PLAN_FRAGMENT;
                                 app.LAST_FRAGMENT_TITLE = getString(R.string.home_monthly_plan);
                                 changeFragment(MONTHLY_PLAN_FRAGMENT, getString(R.string.home_monthly_plan));
                             }
                             break;
                         case R.id.stock:
-                            if (app.saveNeeded){
-                                alertUserLeavingScreen(STOCK_FRAGMENT,getString(R.string.home_stock));
-                            }else{
+                            if (app.saveNeeded) {
+                                alertUserLeavingScreen(STOCK_FRAGMENT, getString(R.string.home_stock));
+                            } else {
                                 app.LAST_FRAGMENT = HOME_FRAGMENT;
                                 app.LAST_FRAGMENT_TITLE = getString(R.string.home);
                                 changeFragmentToActivity(getString(R.string.home_stock));
                             }
                             break;
                         default:
-                            if (app.saveNeeded){
-                                alertUserLeavingScreen(LOGOUT,getString(R.string.home));
-                            }else{
+                            if (app.saveNeeded) {
+                                alertUserLeavingScreen(LOGOUT, getString(R.string.home));
+                            } else {
                                 performLogout();
                             }
                     }
                     return true;
                 }
             });
-
-
-            TextView welcomeText = (TextView) nv.getHeaderView(0).findViewById(R.id.welcome_username);
-            welcomeText.setText(app.getLOGGED_IN_FIRSTNAME() + " " + app.getLOGGED_IN_LASTNAME() + " " + "(" + app.getUsername() + ")");
-
 
             // Set the adapter for the list view
             drawerItems = getResources().getStringArray(R.array.drawerOptions);
@@ -368,6 +370,13 @@ public class HomeActivityRevised extends BackboneActivity {
         // show it
         alertDialog.show();
 
+    }
+
+    private void forceLogout(){
+        Intent intent = new Intent(HomeActivityRevised.this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        login_preferences.edit().putBoolean("isLoggedIn", false).apply();
     }
 
     public void initializeViews(){

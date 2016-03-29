@@ -3,8 +3,10 @@ package mobile.giis.app;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -152,6 +154,25 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
             }
         }
     };
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(status_receiver,
+                new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        unregisterReceiver(status_receiver);
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+    }
 
     @Override
     public void onBackPressed() {

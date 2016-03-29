@@ -3,7 +3,9 @@ package mobile.giis.app;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -65,6 +67,24 @@ public class StockActivityRevised extends BackboneActivity {
         pager = (ViewPager) findViewById(R.id.pager_stock);
         toolbar         = (Toolbar) findViewById(R.id.child_details_activity_toolbar);
         toolbarTitle    = (TextView) findViewById(R.id.child_details_activity_toolbar_title);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(status_receiver,
+                new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        unregisterReceiver(status_receiver);
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
     }
 
     BroadcastReceiver status_receiver = new BroadcastReceiver() {

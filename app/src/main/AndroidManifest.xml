@@ -78,7 +78,7 @@
         android:allowBackup="true">
 
         <activity android:name="mobile.giis.app.LoginActivity"
-            android:label="Tanzania IIS"
+            android:label="Tanzania ImR"
             android:stateNotNeeded="true"
             android:configChanges="keyboard|keyboardHidden|uiMode|screenSize|smallestScreenSize"
             android:windowSoftInputMode="stateAlwaysHidden">
@@ -91,6 +91,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity android:name=".HomeActivityRevised"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:windowSoftInputMode="stateAlwaysHidden">
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.LAUNCHER" />
         </activity>
 
         <activity android:name="mobile.giis.app.ScanHandlerActivity"
@@ -230,11 +238,6 @@
             android:name=".ReportsActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:windowSoftInputMode="adjustResize" >
-        </activity>
-
-        <activity android:name=".HomeActivityRevised"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
 
         <activity android:name=".ChildDetailsActivity"
