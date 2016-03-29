@@ -57,7 +57,7 @@
                     android:layout_marginRight="8dp"
                     android:layout_centerVertical="true"
                     android:scaleType="fitXY"
-                    android:src="@drawable/wifi32" />
+                    android:src="@drawable/network_off" />
 
             </RelativeLayout>
 
@@ -80,6 +80,7 @@
             android:layout_width="@dimen/drawer_size"
             android:layout_height="match_parent"
             android:layout_gravity="start"
+            android:theme="@style/NavigationDrawerStyle"
             app:headerLayout="@layout/drawer_layout_header"
             app:menu="@menu/navigation_view"/>
 
