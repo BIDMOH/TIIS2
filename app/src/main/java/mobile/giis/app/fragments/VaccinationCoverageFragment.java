@@ -21,6 +21,7 @@ import java.util.List;
 
 import mobile.giis.app.R;
 import mobile.giis.app.SubClassed.mBarDataSet;
+import mobile.giis.app.SubClassed.nBarDataSet;
 import mobile.giis.app.base.BackboneApplication;
 import mobile.giis.app.database.DatabaseHandler;
 import mobile.giis.app.entity.ScheduledVaccination;
@@ -138,8 +139,9 @@ public class VaccinationCoverageFragment extends android.support.v4.app.Fragment
 
         }
 
-        BarDataSet set1 = new BarDataSet(percentageVals, app.getString(R.string.vaccination_coverage));
-        set1.setColor(Color.rgb(109, 164, 213));
+        nBarDataSet set1 = new nBarDataSet(percentageVals, app.getString(R.string.vaccination_coverage));
+//        set1.setColor(Color.rgb(109, 164, 213));
+        set1.setColors(new int[]{this.getActivity().getResources().getColor(R.color.red_500), this.getActivity().getResources().getColor(R.color.yellow_500), this.getActivity().getResources().getColor(R.color.green_500)});
 
         ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
         dataSets.add(set1);

@@ -34,7 +34,7 @@
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:layout_centerVertical="true"
-                    android:text="TIIS"/>
+                    android:text="TImR"/>
 
                 <ImageView
                     android:layout_alignParentRight="true"

@@ -11,11 +11,8 @@ import java.util.List;
  */
 public class nBarDataSet extends BarDataSet {
 
-    private float axisMaximumValue;
-
-    public nBarDataSet(List<BarEntry> yVals, String label, float maxValue){
+    public nBarDataSet(List<BarEntry> yVals, String label){
         super(yVals, label);
-        axisMaximumValue = maxValue;
     }
 
     @Override
