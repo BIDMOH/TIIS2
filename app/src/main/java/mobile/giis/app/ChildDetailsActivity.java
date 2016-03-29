@@ -54,22 +54,6 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
 
     boolean barcodeNull = true;
 
-    BroadcastReceiver status_receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            BackboneApplication app = (BackboneApplication) getApplication();
-            ImageView wifi_logo = (ImageView)findViewById(R.id.details_wifi_icon);
-            if(Utils.isOnline(context)){
-                wifi_logo.setImageResource(R.drawable.network_on);
-                app.setOnlineStatus(true);
-            }
-            else{
-                wifi_logo.setImageResource(R.drawable.network_off);
-                app.setOnlineStatus(false);
-            }
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -145,12 +129,29 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
         toolbarTitle.setText(title);
     }
 
+
     public void setUpView(){
         toolbar         = (Toolbar) findViewById(R.id.child_details_activity_toolbar);
         toolbarTitle    = (TextView) findViewById(R.id.child_details_activity_toolbar_title);
         tabs            = (PagerSlidingTabStrip) findViewById(R.id.tabs_stock);
         pager           = (ViewPager) findViewById(R.id.pager_stock);
     }
+
+    BroadcastReceiver status_receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            BackboneApplication app = (BackboneApplication) getApplication();
+            ImageView wifi_logo = (ImageView)findViewById(R.id.details_wifi_icon);
+            if(Utils.isOnline(context)){
+                app.setOnlineStatus(true);
+                wifi_logo.setImageResource(R.drawable.network_on);
+            }
+            else{
+                app.setOnlineStatus(false);
+                wifi_logo.setImageResource(R.drawable.network_off);
+            }
+        }
+    };
 
     @Override
     public void onBackPressed() {

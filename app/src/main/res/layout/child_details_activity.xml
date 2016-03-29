@@ -49,7 +49,7 @@
                 android:layout_toLeftOf="@id/home_start_continuous_sync"
                 android:layout_marginRight="8dp"
                 android:layout_centerVertical="true"
-                android:src="@drawable/network_on" />
+                android:src="@drawable/network_off" />
 
         </RelativeLayout>
 
