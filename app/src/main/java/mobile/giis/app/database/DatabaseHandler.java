@@ -1563,20 +1563,112 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public ArrayList<Child> searchChild(String barcode, String firtsname, String firstname2,String motherFistname, String DobFrom, String DobTo, String tempId, String surname, String motherSurname,
                                         String placeID, String healthID, String villageId, String statusId, String beginIndex) {
         //Query on Child Table
-        String selectQuery = "SELECT  * FROM " + Tables.CHILD + " WHERE HEALTH_FACILITY_ID like '%" + healthID
-                + "%' and  FIRSTNAME1 like '%" + firtsname +  "%' and FIRSTNAME2 like '%"+ firstname2 + "%' and MOTHER_FIRSTNAME like '%" + motherFistname +
-                "%' and TEMP_ID like '%" + tempId + "%' and LASTNAME1 like '%" + surname + "%' and MOTHER_LASTNAME like '%" + motherSurname + "%' " +
-                " and BIRTHPLACE_ID like '%" + placeID + "%' and DOMICILE_ID like '%" + villageId + "%' and STATUS_ID like '%" + statusId
-                + "%' and BARCODE_ID like '%" + barcode + "%' " +
-                ((!DobFrom.equals("")) ? " and datetime(substr(BIRTHDATE,7,10), 'unixepoch') >= datetime( '" + DobFrom + "','unixepoch')" : "") +
-                ((!DobTo.equals("")) ? " and datetime(substr(BIRTHDATE,7,10), 'unixepoch') <= datetime( '" + DobTo + "','unixepoch')" : "")+
-                " ORDER BY BIRTHDATE DESC "+
-                " LIMIT "+beginIndex+", 10 ; ";
+//        String selectQuery = "SELECT  * FROM " + Tables.CHILD + " WHERE HEALTH_FACILITY_ID like '%" + healthID
+//                + "%' and  FIRSTNAME1 like '%" + firtsname +  "%' and FIRSTNAME2 like '%"+ firstname2 + "%' and MOTHER_FIRSTNAME like '%" + motherFistname +
+//                "%' and TEMP_ID like '%" + tempId + "%' and LASTNAME1 like '%" + surname + "%' and MOTHER_LASTNAME like '%" + motherSurname + "%' " +
+//                " and BIRTHPLACE_ID like '%" + placeID + "%' and DOMICILE_ID like '%" + villageId + "%' and STATUS_ID like '%" + statusId
+//                + "%' and BARCODE_ID like '%" + barcode + "%' " +
+//                ((!DobFrom.equals("")) ? " and datetime(substr(BIRTHDATE,7,10), 'unixepoch') >= datetime( '" + DobFrom + "','unixepoch')" : "") +
+//                ((!DobTo.equals("")) ? " and datetime(substr(BIRTHDATE,7,10), 'unixepoch') <= datetime( '" + DobTo + "','unixepoch')" : "")+
+//                " ORDER BY BIRTHDATE DESC "+
+//                " LIMIT "+beginIndex+", 10 ; ";
+
+        boolean thereIsData = false;
+
+        String selectQuery = "";
+        if(!healthID.equals("")){
+            thereIsData=true;
+            selectQuery+="HEALTH_FACILITY_ID like '%" + healthID +"% AND ";
+        }
+
+        if(!firtsname.equals("")){
+            thereIsData=true;
+            selectQuery+="FIRSTNAME1 like '%" + firtsname +  "%' AND ";
+        }
+
+        if(!firstname2.equals("")){
+            thereIsData=true;
+            selectQuery+="FIRSTNAME2 like '%" + firstname2 +  "%' AND ";
+        }
+
+        if(!motherFistname.equals("")){
+            thereIsData=true;
+            selectQuery+="MOTHER_FIRSTNAME like '%" + motherFistname +  "%' AND ";
+        }
+
+        if(!tempId.equals("")){
+            thereIsData=true;
+            selectQuery+="TEMP_ID like '%" + tempId +  "%' AND ";
+        }
+        if(!surname.equals("")){
+            thereIsData=true;
+            selectQuery+="LASTNAME1 like '%" + surname +  "%' AND ";
+        }
+
+        if(!motherSurname.equals("")){
+            thereIsData=true;
+            selectQuery+="MOTHER_LASTNAME like '%" + motherSurname +  "%' AND ";
+        }
+
+        if(!placeID.equals("")){
+            thereIsData=true;
+            selectQuery+="BIRTHPLACE_ID like '%" + placeID +  "%' AND ";
+        }
+
+        if(!villageId.equals("")){
+            thereIsData=true;
+            selectQuery+="DOMICILE_ID like '%" + villageId +  "%' AND ";
+        }
+
+        if(!statusId.equals("")){
+            thereIsData=true;
+            selectQuery+="STATUS_ID like '%" + statusId +  "%' AND ";
+        }
+
+        if(!barcode.equals("")){
+            thereIsData=true;
+            selectQuery+="BARCODE_ID like '%" + barcode +  "%' AND ";
+        }
+
+        if(!barcode.equals("")){
+            thereIsData=true;
+            selectQuery+="BARCODE_ID like '%" + barcode +  "%' AND ";
+        }
+
+        if(!DobFrom.equals("") || !DobTo.equals("")){
+            thereIsData=true;
+            selectQuery+= ((!DobFrom.equals("")) ? " and datetime(substr(BIRTHDATE,7,10), 'unixepoch') >= datetime( '" + DobFrom + "','unixepoch')" : "") +
+                    ((!DobTo.equals("")) ? " and datetime(substr(BIRTHDATE,7,10), 'unixepoch') <= datetime( '" + DobTo + "','unixepoch')" : "");
+        }else if(thereIsData){
+
+            Log.d("coze","before = "+selectQuery);
+            int startIndex = selectQuery.length()-5;
+            int endIndex = selectQuery.length()-1;
+            String replacement = "";
+            String toBeReplaced = selectQuery.substring(startIndex, endIndex);
 
 
-        Log.e("Query ", selectQuery);
+            StringBuilder str = new StringBuilder(selectQuery);
+            str.replace(startIndex, endIndex, "");
+            selectQuery = str.toString();
+            Log.d("coze","after = "+selectQuery);
+        }
+
+
+        String sql;
+        if(thereIsData){
+            sql = "SELECT  * FROM " + Tables.CHILD + " WHERE "+selectQuery+
+            " ORDER BY BIRTHDATE DESC "+
+                    " LIMIT "+beginIndex+", 10 ; ";
+        }else {
+            sql = "SELECT  * FROM " + Tables.CHILD + ""+selectQuery+
+                    " ORDER BY BIRTHDATE DESC "+
+                    " LIMIT "+beginIndex+", 10 ; ";
+        }
+
+        Log.e("Query ", sql);
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
+        Cursor cursor = db.rawQuery(sql, null);
         ArrayList<Child> children = null;
         if (cursor.moveToFirst()) {
             children = new ArrayList<>();

@@ -455,12 +455,7 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
             }
 
             try {
-                if (statusSpinner.getSelectedItemPosition() != 0) {
-                    status = statusList.get(statusSpinner.getSelectedItemPosition() - 1).getId();
-                    Log.d("Selected from spinner", status);
-                }else{
-                    status = "";
-                }
+                status="";
             } catch (Exception e) {
             }
 
