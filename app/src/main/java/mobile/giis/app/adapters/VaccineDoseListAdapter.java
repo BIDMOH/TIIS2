@@ -250,7 +250,7 @@ public class VaccineDoseListAdapter extends ArrayAdapter<AdministerVaccinesModel
         String [] tm = tempHoldingVaccineModel.getScheduled_Date_field().split("\\(");
         String [] tLong;
         if(tm[1].contains("+")){
-            tLong =  tm[1].split("-");
+            tLong =  tm[1].split("\\+");
         }else if(tm[1].contains("-")){
             tLong =  tm[1].split("-");
         }else {
