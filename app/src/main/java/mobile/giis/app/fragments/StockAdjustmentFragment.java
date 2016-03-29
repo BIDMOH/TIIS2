@@ -4,14 +4,20 @@ import android.app.Dialog;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -19,9 +25,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import fr.ganfra.materialspinner.MaterialSpinner;
 import mobile.giis.app.R;
 import mobile.giis.app.adapters.AdapterStockAdjustmentReasons;
+import mobile.giis.app.adapters.SingleTextViewAdapter;
 import mobile.giis.app.adapters.StockAdjustmentListAdapter;
+import mobile.giis.app.base.BackboneActivity;
 import mobile.giis.app.base.BackboneApplication;
 import mobile.giis.app.database.DatabaseHandler;
 import mobile.giis.app.entity.AdjustmentReasons;
@@ -44,6 +53,8 @@ public class StockAdjustmentFragment extends Fragment{
 
     private List<AdjustmentReasons> listAdjustmentReasons;
 
+    private TableLayout stockHostTable;
+
     public static StockAdjustmentFragment newInstance() {
         StockAdjustmentFragment f = new StockAdjustmentFragment();
         Bundle b = new Bundle();
@@ -60,10 +71,9 @@ public class StockAdjustmentFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_stock_adjustment, null);
 
-        ListView stockAdjustmentList    = (ListView) root.findViewById(R.id.stock_adjustment_list);
-        View v                          = inflater.inflate(R.layout.stock_adjustment_list_item_title, null);
         View saveFooterView             = inflater.inflate(R.layout.stock_adjustment_footer, null);
         Button saveButton               = (Button) saveFooterView.findViewById(R.id.save_btn);
+        stockHostTable                  = (TableLayout) root.findViewById(R.id.stock_table_container);
 
         application = (BackboneApplication) this.getActivity().getApplication();
         database = application.getDatabaseInstance();
@@ -71,7 +81,62 @@ public class StockAdjustmentFragment extends Fragment{
         listAdjustmentReasons = database.getAdjustmentReasons();
         rowCollectorList = getHealthFacilityBalanceRows();
 
-        adapter = new StockAdjustmentListAdapter(StockAdjustmentFragment.this.getActivity(), rowCollectorList, database.getNameFromAdjustmentReasons());
+        for (final HealthFacilityBalance healthFacilityBalance : rowCollectorList){
+            View rowView = inflater.inflate(R.layout.stock_adjustment_list_item, null);
+
+            TextView vaccineName = (TextView) rowView.findViewById(R.id.item_name);
+            vaccineName.setTypeface(BackboneActivity.Rosario_Regular);
+            vaccineName.setText(healthFacilityBalance.getItem_name());
+
+            TextView vaccineLotNumber = (TextView) rowView.findViewById(R.id.lot_number);
+            vaccineLotNumber.setTypeface(BackboneActivity.Rosario_Regular);
+            vaccineLotNumber.setText(healthFacilityBalance.getLot_number());
+
+            TextView vacccineBalance = (TextView) rowView.findViewById(R.id.balance);
+            vacccineBalance.setTypeface(BackboneActivity.Rosario_Regular);
+            vacccineBalance.setText(healthFacilityBalance.getBalance()+"");
+
+            final MaterialEditText stockAdjustmentQuantity = (MaterialEditText) rowView.findViewById(R.id.met_quantity);
+
+            MaterialSpinner stockAdjustmentReason = (MaterialSpinner)rowView.findViewById(R.id.reason_spinner);
+            SingleTextViewAdapter spAdjustmentReasons = new SingleTextViewAdapter(this.getActivity(), R.layout.single_text_spinner_item_drop_down, database.getNameFromAdjustmentReasons());
+            stockAdjustmentReason.setAdapter(spAdjustmentReasons);
+
+            stockAdjustmentQuantity.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                item.setTempBalance(etQuantity.getText().toString());
+                    healthFacilityBalance.setTempBalance(stockAdjustmentQuantity.getText().toString());
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
+
+            stockAdjustmentReason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int i, long id) {
+//                item.setSelectedAdjustmentReasonPosition(i);
+                    healthFacilityBalance.setSelectedAdjustmentReasonPosition(i);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+
+            stockHostTable.addView(rowView);
+        }
+
+        stockHostTable.addView(saveFooterView);
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,10 +144,6 @@ public class StockAdjustmentFragment extends Fragment{
                 saveButtonClicked();
             }
         });
-
-        stockAdjustmentList.addFooterView(saveFooterView);
-//        stockAdjustmentList.addHeaderView(v);
-        stockAdjustmentList.setAdapter(adapter);
 
         return root;
     }
