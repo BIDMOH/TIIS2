@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -98,18 +99,13 @@ public class StockTabFragment extends Fragment {
 
     private void initChart(){
         mChart.setDescription("");
-        //mChart.setDrawBorders(true);
-        // scaling can now only be done on x- and y-axis separately
+        mChart.setPinchZoom(false);
         mChart.setPinchZoom(false);
         mChart.setDrawBarShadow(false);
         mChart.setDrawGridBackground(false);
-        // create a custom MarkerView (extend MarkerView) and specify the layout
-        // to use for it
-        MyMarkerView mv = new MyMarkerView(this.getActivity(), R.layout.custom_marker_view);
-        // define an offset to change the original position of the marker
-        // (optional)
-        // mv.setOffsets(-mv.getMeasuredWidth() / 2, -mv.getMeasuredHeight());
-        // set the marker to the chart
+        mChart.setDescriptionTextSize(16f);
+
+        MyMarkerView mv = new MyMarkerView(getActivity(), R.layout.custom_marker_view);
         mChart.setMarkerView(mv);
 
         Legend l = mChart.getLegend();
@@ -119,7 +115,20 @@ public class StockTabFragment extends Fragment {
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.setValueFormatter(new LargeValueFormatter());
         leftAxis.setDrawGridLines(false);
-        leftAxis.setSpaceTop(25f);
+        leftAxis.setDrawLabels(true);
+        leftAxis.setDrawAxisLine(false); // no axis line
+        leftAxis.setDrawGridLines(false); // no grid lines
+        leftAxis.setDrawZeroLine(true); // draw a zero line
+        mChart.getAxisRight().setEnabled(false); // no right axis
+
+
+        XAxis yAxis = mChart.getXAxis();
+        yAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        yAxis.setTextSize(10f);
+        yAxis.setTextColor(Color.RED);
+        yAxis.setDrawAxisLine(true);
+        yAxis.setDrawGridLines(false);
+
 
         mChart.getAxisRight().setEnabled(false);
 

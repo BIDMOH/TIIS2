@@ -92,10 +92,9 @@ public class VaccinationCoverageFragment extends android.support.v4.app.Fragment
 
         // scaling can now only be done on x- and y-axis separately
         mChart.setPinchZoom(false);
-
         mChart.setDrawBarShadow(false);
-
         mChart.setDrawGridBackground(false);
+        mChart.setDescriptionTextSize(16f);
 
         // create a custom MarkerView (extend MarkerView) and specify the layout
         // to use for it
@@ -110,14 +109,28 @@ public class VaccinationCoverageFragment extends android.support.v4.app.Fragment
 
         Legend l = mChart.getLegend();
         l.setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
-
         l.setTextSize(18f);
+
 
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.setValueFormatter(new LargeValueFormatter());
         leftAxis.setDrawGridLines(false);
-        leftAxis.setSpaceTop(25f);
+        leftAxis.setDrawLabels(true);
+        leftAxis.setDrawAxisLine(false); // no axis line
+        leftAxis.setDrawGridLines(false); // no grid lines
+        leftAxis.setDrawZeroLine(true); // draw a zero line
+        mChart.getAxisRight().setEnabled(false); // no right axis
 
+
+        XAxis yAxis = mChart.getXAxis();
+        yAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        yAxis.setTextSize(10f);
+        yAxis.setTextColor(Color.BLUE);
+        yAxis.setDrawAxisLine(true);
+        yAxis.setDrawGridLines(false);
+
+
+        mChart.getAxisRight().setEnabled(false);
         mChart.getAxisRight().setEnabled(false);
     }
 

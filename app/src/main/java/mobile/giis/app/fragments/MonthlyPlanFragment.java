@@ -2,6 +2,7 @@ package mobile.giis.app.fragments;
 
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -19,10 +20,16 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.rengwuxian.materialedittext.MaterialEditText;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
@@ -45,7 +52,7 @@ import mobile.giis.app.util.ViewAppointmentRow;
 /**
  * Created by issymac on 16/12/15.
  */
-public class MonthlyPlanFragment extends android.support.v4.app.Fragment{
+public class MonthlyPlanFragment extends android.support.v4.app.Fragment implements DatePickerDialog.OnDateSetListener{
 
     private List<String>  ages;
 
@@ -73,6 +80,12 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment{
     public RelativeLayout prevLayout, nextLayout;
 
     public ProgressBar loadingBar;
+
+    boolean dobFromIsActive = false;
+    boolean isEndingDateSelected = false;
+    boolean isBegginingDateSelected = false;
+    private  MaterialEditText metDOBFrom,metDOBTo;
+    private String fromDate, toDate;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_monthly_plan, null);
@@ -131,6 +144,52 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment{
         TextView dateTitle = (TextView) lvHeader.findViewById(R.id.date_title);
         dateTitle.setTypeface(BackboneActivity.Rosario_Regular);
 
+        metDOBFrom              = (MaterialEditText) root.findViewById(R.id.met_dob_from);
+        metDOBTo                = (MaterialEditText) root.findViewById(R.id.met_dob_value);
+
+
+
+//        metDOBFrom.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View view, boolean b) {
+//                if (b) {
+//                    dobFromIsActive = true;
+//                    pickDate();
+//                } else {
+//                    if (!isEndingDateSelected) {
+//                        Toast.makeText(MonthlyPlanFragment.this.getActivity(),
+//                                "Select Ending Date to be able to filter children",
+//                                Toast.LENGTH_LONG).show();
+//                    } else {
+//                        new filterList().execute(currentCategory, currentCount,fromDate,toDate);
+//                    }
+//                }
+//            }
+//        });
+
+
+
+//        metDOBTo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View view, boolean b) {
+//                if(b){
+//                    dobFromIsActive = false;
+//                    pickDate();
+//                }
+//                else{
+//                    if(!isBegginingDateSelected){
+//                        Toast.makeText(MonthlyPlanFragment.this.getActivity(),
+//                                "Select From Date to be able to filter children",
+//                                Toast.LENGTH_LONG).show();
+//                    }else{
+//                        new filterList().execute(currentCategory, currentCount,fromDate,toDate);
+//                    }
+//                }
+//            }
+//        });
+
+
+
 //        adapter = new MonthlyPlanListAdapter(MonthlyPlanFragment.this.getActivity(), children);
 //        var = getViewAppointmentRows("");
 //        adapter = new VaccinationQueueListAdapter(MonthlyPlanFragment.this.getActivity(), var);
@@ -183,6 +242,19 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment{
         });
         
         return root;
+    }
+
+
+    public void pickDate(){
+        Calendar now = Calendar.getInstance();
+        DatePickerDialog dpd = DatePickerDialog.newInstance(
+                MonthlyPlanFragment.this,
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH)
+        );
+        dpd.setAccentColor(Color.DKGRAY);
+        dpd.show(this.getActivity().getFragmentManager(), "DatePickerDialogue");
     }
 
     public void setUpView(View v){
@@ -260,6 +332,28 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment{
         }
     }
 
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        Calendar cal = new GregorianCalendar();
+        cal.set(year, (monthOfYear + 1), dayOfMonth);
+        cal.add(cal.YEAR, 1);
+        cal.add(cal.DAY_OF_MONTH, -1);
+
+        String displayDate = dayOfMonth+"/"+(monthOfYear+1)+"/"+year;
+        if(dobFromIsActive){
+            metDOBFrom.setText(displayDate);
+            dobFromIsActive = false;
+            isBegginingDateSelected = true;
+            fromDate = ""+cal.getTimeInMillis();
+        }else{
+            metDOBTo.setText(displayDate);
+            isEndingDateSelected = true;
+            toDate = ""+cal.getTimeInMillis();
+        }
+
+
+    }
+
     public class filterList extends AsyncTask<String, Void, Integer> {
 
         ArrayList<ViewAppointmentRow> mVar;
@@ -274,12 +368,24 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment{
         protected Integer doInBackground(String... params) {
             String ageName = params[0];
             String startRow = params[1];
+            String fromDate ="";
+            String toDate ="";
+
+            try{
+                fromDate = params[2];
+                toDate = params[3];
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+
             currentCount = params[1];
 
             Cursor cursor;
             mVar = new ArrayList<>();
 
-            String SQLVaccinationQueue =
+            String SQLVaccinationQueue;
+            SQLVaccinationQueue =
                     "SELECT DISTINCT APPOINTMENT_ID, CHILD_ID "+
                             " ,(SELECT GROUP_CONCAT(dose.FULLNAME) FROM vaccination_event INNER JOIN dose ON vaccination_event.DOSE_ID = dose.ID left join age_definitions on dose.TO_AGE_DEFINITON_ID = age_definitions.ID WHERE monthly_plan.APPOINTMENT_ID=vaccination_event.APPOINTMENT_ID AND datetime(substr(vaccination_event.SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('now','+30 days') AND vaccination_event.IS_ACTIVE='true' AND vaccination_event.VACCINATION_STATUS='false' AND (vaccination_event.NONVACCINATION_REASON_ID=0  OR vaccination_event.NONVACCINATION_REASON_ID in (Select ID from nonvaccination_reason where KEEP_CHILD_DUE = 'true')) AND (DAYS IS NULL or (datetime(substr(vaccination_event.SCHEDULED_DATE,7,10),'unixepoch') > datetime('now','-' || DAYS || ' days')) )) AS VACCINES " +
                             " , SCHEDULE, SCHEDULED_DATE "+
@@ -290,6 +396,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment{
                             " GROUP BY APPOINTMENT_ID, SCHEDULED_DATE, DOMICILE, NAME, SCHEDULE, CHILD_ID, SCHEDULE_ID "+
                             " ORDER BY SCHEDULED_DATE "+
                             " LIMIT "+startRow+", 10 ; ";
+
             Log.e("SQLVaccinationQueue", SQLVaccinationQueue);
             cursor = this_database.getReadableDatabase().rawQuery(SQLVaccinationQueue, null);
             if (cursor != null) {

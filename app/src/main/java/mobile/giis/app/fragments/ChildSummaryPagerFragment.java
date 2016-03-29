@@ -94,7 +94,7 @@ public class ChildSummaryPagerFragment extends Fragment {
 
     public String value;
 
-    public MaterialEditText metBarcodeValue, metSystemID, metFirstName, metMiddleName, metLastName, metMothersFirstName, metMothersSurname, metPhoneNumber, metDOB;
+    public MaterialEditText metBarcodeValue, metSystemID, metFirstName, metNotesValue,metMiddleName, metLastName, metMothersFirstName, metMothersSurname, metPhoneNumber, metDOB;
 
     VaccinationHistoryListAdapter adapter;
 
@@ -155,6 +155,7 @@ public class ChildSummaryPagerFragment extends Fragment {
         metMothersSurname   = (MaterialEditText) header.findViewById(R.id.met_mother_surname_value);
         metPhoneNumber      = (MaterialEditText) header.findViewById(R.id.met_phone_value);
         metDOB              = (MaterialEditText) header.findViewById(R.id.met_dob_value);
+        metNotesValue              = (MaterialEditText) header.findViewById(R.id.met_notes_value);
 
         ms                  = (MaterialSpinner) header.findViewById(R.id.spin_gender);
         pobSpinner          = (MaterialSpinner) header.findViewById(R.id.spin_pob);
@@ -219,6 +220,7 @@ public class ChildSummaryPagerFragment extends Fragment {
         metFirstName    .setEnabled(fieldStatus);
         metMiddleName   .setEnabled(fieldStatus);
         metLastName     .setEnabled(fieldStatus);
+        metNotesValue     .setEnabled(fieldStatus);
 
         metMothersFirstName     .setEnabled(fieldStatus);
         metMothersSurname       .setEnabled(fieldStatus);
@@ -313,6 +315,7 @@ public class ChildSummaryPagerFragment extends Fragment {
             metSystemID.setText(childId);
 
             metFirstName.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME1)));
+            metNotesValue.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.NOTES)));
             metMiddleName.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME2)));
             metLastName.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.LASTNAME1)));
 
@@ -405,14 +408,19 @@ public class ChildSummaryPagerFragment extends Fragment {
             SingleTextViewAdapter healthAdapter = new SingleTextViewAdapter(ChildSummaryPagerFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, facility_name);
             healthFacilitySpinner.setAdapter(healthAdapter);
             healthFacilitySpinner.setEnabled(false);
-            pos = healthAdapter.getPosition(currentChild.getHealthcenter());
-            if (pos != -1) {
-                healthFacilitySpinner.setSelection(pos);
-                healthFacOrig = pos;
+
+            Log.d("coze","facility = "+currentChild.getHealthcenter());
+            int index =facility_name.indexOf(currentChild.getHealthcenter());
+
+
+            Log.d("coze","facility index = "+index);
+            if (index != -1) {
+                healthFacilitySpinner.setSelection(index+1);
+                healthFacOrig = index+1;
 
             } else {
-                healthFacilitySpinner.setSelection(healthAdapter.getCount() - 1);
-                healthFacOrig = healthAdapter.getCount() - 1;
+                healthFacilitySpinner.setSelection(healthAdapter.getCount()-1);
+                healthFacOrig = healthAdapter.getCount()-1;
             }
 
 
@@ -690,6 +698,10 @@ public class ChildSummaryPagerFragment extends Fragment {
             currentChild.setFirstname1(metFirstName.getText().toString());
             contentValues.put(SQLHandler.ChildColumns.FIRSTNAME1, metFirstName.getText().toString());
         }
+        if (!metNotesValue.getText().toString().equalsIgnoreCase(currentChild.getNotes())) {
+            currentChild.setNotes(metNotesValue.getText().toString());
+            contentValues.put(SQLHandler.ChildColumns.NOTES, metNotesValue.getText().toString());
+        }
         if (!metMiddleName.getText().toString().equalsIgnoreCase(currentChild.getFirstname2())) {
             currentChild.setFirstname2(metMiddleName.getText().toString());
             contentValues.put(SQLHandler.ChildColumns.FIRSTNAME2, metMiddleName.getText().toString());
@@ -837,6 +849,11 @@ public class ChildSummaryPagerFragment extends Fragment {
         }
         try {
             webServiceUrl.append("&firstname1=" + URLEncoder.encode(metFirstName.getText().toString(), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        try {
+            webServiceUrl.append("&notes=" + URLEncoder.encode(metNotesValue.getText().toString(), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
