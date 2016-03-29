@@ -248,12 +248,20 @@ public class VaccineDoseListAdapter extends ArrayAdapter<AdministerVaccinesModel
 
         //Obtaining time in milliseconds from the scheduled time in string
         String [] tm = tempHoldingVaccineModel.getScheduled_Date_field().split("\\(");
-        String [] tLong =  tm[1].split("-");
+        String [] tLong;
+        if(tm[1].contains("+")){
+            tLong =  tm[1].split("-");
+        }else if(tm[1].contains("-")){
+            tLong =  tm[1].split("-");
+        }else {
+            tLong = tm;
+        }
+
         String timeLong = tLong[0];
 
         Date scheduledDate = new Date(Long.parseLong(timeLong));
 
-        if(new_date.before(scheduledDate)){
+        if (new_date.before(scheduledDate)){
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ctx);
 
             // set title
