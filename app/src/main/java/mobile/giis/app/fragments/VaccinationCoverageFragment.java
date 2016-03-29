@@ -28,7 +28,7 @@ import mobile.giis.app.entity.ScheduledVaccination;
 import mobile.giis.app.util.MyMarkerView;
 
 /**
- *  Created by issymac::.. on 10/02/16.
+ *  Created by issymac::.. on 10/02/16 .
  */
 public class VaccinationCoverageFragment extends android.support.v4.app.Fragment {
 
@@ -39,8 +39,6 @@ public class VaccinationCoverageFragment extends android.support.v4.app.Fragment
     protected ArrayList<String> labels;
     protected mBarDataSet dataset;
     protected BarData data;
-
-    private float maximumIndex = 0;
 
     public static VaccinationCoverageFragment newInstance() {
         VaccinationCoverageFragment f = new VaccinationCoverageFragment();
@@ -125,7 +123,7 @@ public class VaccinationCoverageFragment extends android.support.v4.app.Fragment
 
     public void renderChartData() {
 
-        BackboneApplication app = (BackboneApplication) this.getActivity().getApplication();
+        BackboneApplication app = (BackboneApplication) VaccinationCoverageFragment.this.getActivity().getApplication();
         DatabaseHandler mydb = app.getDatabaseInstance();
         List<ScheduledVaccination> list = mydb.getAllScheduledVaccination();
         ArrayList<String> xVals = new ArrayList<String>();
@@ -134,9 +132,7 @@ public class VaccinationCoverageFragment extends android.support.v4.app.Fragment
         for (int i = 0; i < list.size(); i++) {
             ScheduledVaccination item = list.get(i);
             xVals.add(item.getName());
-
             percentageVals.add(new BarEntry((float)mydb.getCoveragePercentage(app.getLOGGED_IN_USER_HF_ID(),item.getId()), i));
-
         }
 
         nBarDataSet set1 = new nBarDataSet(percentageVals, app.getString(R.string.vaccination_coverage));
