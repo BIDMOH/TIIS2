@@ -369,17 +369,17 @@
 
 
                     <RelativeLayout
-                        android:visibility="gone"
+                        android:visibility="visible"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="100dp"
                         android:layout_marginTop="32dp">
 
                         <android.support.v7.widget.AppCompatTextView
-                            android:visibility="gone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:id="@+id/txt_notes_title"
+                            android:layout_marginTop="20dp"
                             android:text="Notes"
                             android:minWidth="120dp"
                             android:layout_marginLeft="32dp"
@@ -387,6 +387,7 @@
                             android:textColor="@color/light_blue_600"/>
 
                         <Button
+                            android:visibility="gone"
                             android:layout_width="70dp"
                             android:layout_height="70dp"
                             android:id="@+id/btn_submit_child_info"
@@ -396,10 +397,10 @@
                             />
 
                         <com.rengwuxian.materialedittext.MaterialEditText
-                            android:visibility="gone"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:minLines="3"
+                            android:gravity="top"
                             android:focusable="true"
                             android:hint="Coments"
                             android:layout_marginLeft="16dp"
