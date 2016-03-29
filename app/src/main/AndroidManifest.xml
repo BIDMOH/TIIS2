@@ -180,6 +180,12 @@
         </service>
 
         <service
+            android:name=".postman.SynchronizationService2">
+        </service>
+
+
+        <receiver android:name=".postman.Alarm" />
+        <service
             android:name="mobile.giis.app.authentication.LoginAuthenticationService"
             android:exported="true"
             android:process=":auth">

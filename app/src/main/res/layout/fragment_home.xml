@@ -157,11 +157,23 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
+                android:padding="8dp"
                 android:layout_height="match_parent"
                 android:background="@color/white">
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:textSize="18sp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:textColor="@color/blue_500"
+                    android:text="Balance BarGraph"/>
 
                 <com.github.mikephil.charting.charts.BarChart
                     android:id="@+id/home_stock_chart"
+                    android:layout_below="@id/title"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"/>

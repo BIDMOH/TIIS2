@@ -193,7 +193,6 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_weight=".25"
-                android:gravity="center"
                 android:layout_height="wrap_content"
                 android:text="Vaccine"
                 android:textStyle="bold"
@@ -204,7 +203,6 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_weight=".25"
-                android:gravity="center"
                 android:layout_height="wrap_content"
                 android:text="Age"
                 android:textStyle="bold"
@@ -215,7 +213,6 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_weight=".25"
-                android:gravity="center"
                 android:layout_height="wrap_content"
                 android:text="Due Date"
                 android:textStyle="bold"

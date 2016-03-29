@@ -276,72 +276,72 @@
             android:background="@color/cardview_light_background">
 
             <TextView
+                android:paddingLeft="16dp"
                 android:layout_width="0dp"
-                android:layout_weight=".05"
+                android:layout_weight=".08"
                 android:layout_height="wrap_content"
                 android:text="SN"
-                android:gravity="center"
                 android:textStyle="bold"
                 android:textColor="@color/light_blue_600"/>
 
             <TextView
+                android:paddingLeft="16dp"
                 android:layout_width="0dp"
-                android:layout_weight=".20"
+                android:layout_weight=".18"
                 android:layout_height="wrap_content"
                 android:id="@+id/txt_child_names"
                 android:text="CHILD NAMES"
                 android:textStyle="bold"
-                android:gravity="center"
                 android:textColor="@color/light_blue_600"/>
 
             <TextView
+                android:paddingLeft="16dp"
                 android:layout_width="0dp"
-                android:layout_weight=".20"
+                android:layout_weight=".18"
                 android:layout_height="wrap_content"
                 android:id="@+id/txt_mother_names"
                 android:text="MOTHER NAMES"
                 android:textStyle="bold"
-                android:gravity="center"
                 android:textColor="@color/light_blue_600"/>
 
             <TextView
+                android:paddingLeft="16dp"
                 android:layout_width="0dp"
-                android:layout_weight=".10"
+                android:layout_weight=".14"
                 android:layout_height="wrap_content"
                 android:id="@+id/txt_child_dob"
                 android:text="DATE OF BIRTH"
                 android:textStyle="bold"
-                android:gravity="center"
                 android:textColor="@color/light_blue_600"/>
 
             <TextView
+                android:paddingLeft="16dp"
                 android:layout_width="0dp"
-                android:layout_weight=".05"
+                android:layout_weight=".11"
                 android:layout_height="wrap_content"
                 android:id="@+id/txt_child_gender"
                 android:text="GENDER"
-                android:gravity="center"
                 android:textStyle="bold"
                 android:textColor="@color/light_blue_600"/>
 
             <TextView
+                android:paddingLeft="16dp"
                 android:layout_width="0dp"
-                android:layout_weight=".20"
+                android:layout_weight=".12"
                 android:layout_height="wrap_content"
                 android:id="@+id/txt_child_village_domicile"
                 android:text="VILLAGE"
-                android:gravity="center"
                 android:textStyle="bold"
                 android:textColor="@color/light_blue_600"/>
 
             <TextView
+                android:paddingLeft="16dp"
                 android:layout_width="0dp"
-                android:layout_weight=".20"
+                android:layout_weight=".16"
                 android:layout_height="wrap_content"
                 android:id="@+id/txt_child_health_facility"
                 android:text="HEALTH CENTER"
                 android:textStyle="bold"
-                android:gravity="center"
                 android:textColor="@color/light_blue_600"/>
 
         </LinearLayout>

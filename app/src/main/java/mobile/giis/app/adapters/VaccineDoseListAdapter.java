@@ -17,9 +17,16 @@ package mobile.giis.app.adapters;
  *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
  ******************************************************************************/
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DownloadManager;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,6 +76,8 @@ public class VaccineDoseListAdapter extends ArrayAdapter<AdministerVaccinesModel
     Date new_date = new Date();
     boolean correctDateSelected = false;
     public final SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy");
+    private TextView tempHoldingTextView;
+    private AdministerVaccinesModel tempHoldingVaccineModel;
 
     public VaccineDoseListAdapter(Context ctx, int resource, List<AdministerVaccinesModel> items,String dob_st,int vac_lot_pos) {
         super(ctx, resource, items);
@@ -141,8 +150,10 @@ public class VaccineDoseListAdapter extends ArrayAdapter<AdministerVaccinesModel
         viewHolder.tvVaccineDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                tempHoldingTextView = viewHolder.tvVaccineDate;
+                tempHoldingVaccineModel = item;
                 pickDate();
-                setdates(viewHolder.tvVaccineDate, item);
+//                setdates(viewHolder.tvVaccineDate, item);
                 Log.d("Time after show done", item.getTime());
             }
         });
@@ -158,24 +169,29 @@ public class VaccineDoseListAdapter extends ArrayAdapter<AdministerVaccinesModel
 
     public void pickDate(){
         Calendar now = Calendar.getInstance();
-        DatePickerDialog dpd = DatePickerDialog.newInstance(
+        DatePickerDialog reaction_start_date_picker = DatePickerDialog.newInstance(
                 this,
                 now.get(Calendar.YEAR),
                 now.get(Calendar.MONTH),
                 now.get(Calendar.DAY_OF_MONTH)
         );
-        try {
-            Date date = ft.parse(dob_st);
-            Calendar cal=GregorianCalendar.getInstance();
-            cal.setTime(date);
-            dpd.setMinDate(cal);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        dpd.setAccentColor(Color.DKGRAY);
-        ChildDetailsActivity activity = (ChildDetailsActivity)ctx;
-        dpd.show(activity.getFragmentManager(), "DatePickerDialogue");
+        Date bdate = BackboneActivity.dateParser(dob_st);
+
+
+        Log.d("coze", "my date is " + bdate.getTime());
+
+        Calendar dob=Calendar.getInstance();
+        dob.setTimeInMillis(bdate.getTime());
+        reaction_start_date_picker.setMinDate(dob);
+
+
+
+        reaction_start_date_picker.show(((Activity) ctx).getFragmentManager(), "DatePickerDialogue");
+
+
+
+
     }
 
     public Date setdates(final TextView a, final AdministerVaccinesModel coll){
@@ -222,13 +238,55 @@ public class VaccineDoseListAdapter extends ArrayAdapter<AdministerVaccinesModel
         }
 
         Log.d("WOWHITS", "##################### New Date is  :  "+ft.format(new_date));
-        Log.d("WOWHITS", "##################### DOB is  :  "+ft.format(bdate));
+        Log.d("WOWHITS", "##################### DOB is  :  " + ft.format(bdate));
 
         if (new_date.before(bdate)){
             AdministerVaccineFragment.correnctDateSelected = false;
         }else{
             AdministerVaccineFragment.correnctDateSelected = true;
         }
+
+        //Obtaining time in milliseconds from the scheduled time in string
+        String [] tm = tempHoldingVaccineModel.getScheduled_Date_field().split("\\(");
+        String [] tLong =  tm[1].split("-");
+        String timeLong = tLong[0];
+
+        Date scheduledDate = new Date(Long.parseLong(timeLong));
+
+        if(new_date.before(scheduledDate)){
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ctx);
+
+            // set title
+            alertDialogBuilder.setTitle("Warning");
+
+            // set dialog message
+            alertDialogBuilder
+                    .setMessage("The selected vaccination date is before due date. Are you sure you want to set this date?")
+                    .setCancelable(false)
+                    .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            setdates(tempHoldingTextView, tempHoldingVaccineModel);
+                        }
+                    })
+                    .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // if this button is clicked, just close
+                            // the dialog box and do nothing
+                            dialog.cancel();
+                        }
+                    });
+
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+
+            // show it
+            alertDialog.show();
+
+        }else{
+            setdates(tempHoldingTextView, tempHoldingVaccineModel);
+        }
+
+
 
     }
 

@@ -224,8 +224,8 @@
     <string name="november">November</string>
     <string name="december">December</string>
     <string name="reorder_qty">Reorder Quantity</string>
-    <string name="no_of_children_immunized"># of children immunized</string>
-    <string name="cumm_no_children_immunized">Cumm # of children immunized</string>
+    <string name="no_of_children_immunized">No. of children immunized</string>
+    <string name="cumm_no_children_immunized">Cumm No. of children immunized</string>
     <string name="child_is_register">Child Registered Successfully!</string>
     <string name="empty_gender">Please select gender!</string>
     <string name="balance_stock_count">Balance / Stock count</string>

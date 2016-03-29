@@ -62,17 +62,16 @@ public class MyMarkerView extends MarkerView {
 
     }
 
-
-
     @Override
-    public int getXOffset() {
-        // this will center the marker-view horizontally
+    public int getXOffset(float xpos) {
         return -(getWidth() / 2);
     }
 
     @Override
-    public int getYOffset() {
-        // this will cause the marker-view to be above the selected value
+    public int getYOffset(float ypos) {
         return -getHeight();
     }
+
+
+
 }

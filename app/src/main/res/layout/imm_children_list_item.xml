@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_weight=".30"
-            android:gravity="center"
+            android:paddingLeft="16dp"
             android:layout_height="wrap_content"
             android:text="Name"
             android:id="@+id/names"
@@ -26,7 +26,6 @@
             android:layout_width="0dp"
             android:layout_weight=".30"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:id="@+id/lastnames"
             android:text="Last Name"
             />
@@ -35,7 +34,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".4"
-            android:gravity="center"
             android:text="Vaccines"
             android:textSize="16sp"
             android:id="@+id/vaccines"

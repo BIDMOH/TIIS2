@@ -305,7 +305,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
     public long addChild(ContentValues cv) {
-
+        SQLiteDatabase db = getWritableDatabase();
+        long result = db.insert(Tables.CHILD, null, cv);
+        return result;
+    }
+    public long addBulkChild(ContentValues cv) {
         SQLiteDatabase db = getWritableDatabase();
         long result = db.insert(Tables.CHILD, null, cv);
         return result;
@@ -1392,7 +1396,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 //    }
 
     public boolean isVaccinationEventInDb(String childId, String doseId) {
-        String selectQuery = "SELECT * FROM " + Tables.VACCINATION_EVENT +
+        String selectQuery = "SELECT MODIFIED_ON,MODIFIED_BY FROM " + Tables.VACCINATION_EVENT +
                 " WHERE CHILD_ID = '" + childId + "' AND "
                 +" DOSE_ID = '"+doseId+"'";
         SQLiteDatabase db = this.getReadableDatabase();
@@ -1707,7 +1711,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public boolean isChildIDInChildTable(String ID) {
-        String selectQuery = "SELECT * FROM child" +
+        String selectQuery = "SELECT ID FROM child" +
                 " WHERE ID = '" + ID + "'";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -2635,8 +2639,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     public String getDomicilesFoundInChildAndNotInPlace() {
         //Query on Child Table
-        String selectQuery =
-                " SELECT DISTINCT(DOMICILE_ID) FROM CHILD WHERE DOMICILE_ID  NOT IN (SELECT ID FROM place) AND DOMICILE_ID <> 0";
+        String selectQuery = " SELECT DISTINCT(DOMICILE_ID) FROM CHILD WHERE DOMICILE_ID  NOT IN (SELECT ID FROM place) AND DOMICILE_ID <> 0";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);

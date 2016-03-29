@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -24,6 +25,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.LargeValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
@@ -263,15 +265,29 @@ public class ImmunizedChildrenFragment extends Fragment implements OnChartValueS
         mChart.setMarkerView(mv);
 
         Legend l = mChart.getLegend();
-        l.setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
+        l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART_CENTER);
         l.setTextSize(18f);
 
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.setValueFormatter(new LargeValueFormatter());
         leftAxis.setDrawGridLines(false);
-        leftAxis.setSpaceTop(25f);
+        leftAxis.setDrawLabels(true);
+        leftAxis.setDrawAxisLine(false); // no axis line
+        leftAxis.setDrawGridLines(false); // no grid lines
+        leftAxis.setDrawZeroLine(true); // draw a zero line
+        mChart.getAxisRight().setEnabled(false); // no right axis
+
+
+        XAxis yAxis = mChart.getXAxis();
+        yAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        yAxis.setTextSize(14f);
+        yAxis.setTextColor(Color.RED);
+        yAxis.setDrawAxisLine(true);
+        yAxis.setDrawGridLines(false);
+
 
         mChart.getAxisRight().setEnabled(false);
+
 
         renderChart();
 
@@ -344,7 +360,7 @@ public class ImmunizedChildrenFragment extends Fragment implements OnChartValueS
         BarDataSet set2 = new BarDataSet(cummNoVals, app.getString(R.string.cumm_no_children_immunized));
         set2.setColor(Color.rgb(235, 139, 75));
 
-        ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
+        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
         dataSets.add(set1);
         dataSets.add(set2);
 

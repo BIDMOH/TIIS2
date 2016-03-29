@@ -15,12 +15,11 @@
         <TextView
             android:layout_width="0dp"
             android:layout_weight=".40"
-            android:gravity="center"
+            android:paddingLeft="16dp"
             android:layout_height="wrap_content"
             android:text="Antigen"
             android:id="@+id/txt_antigen"
-            android:textSize="18sp"
-            android:textColor="@color/black"/>
+            android:textSize="16sp"/>
 
         <TextView
             android:layout_width="0dp"
@@ -29,8 +28,7 @@
             android:layout_height="wrap_content"
             android:text="0"
             android:id="@+id/model_0"
-            android:textSize="18sp"
-            android:textColor="@color/black"/>
+            android:textSize="16sp"/>
 
         <TextView
             android:layout_width="0dp"
@@ -39,8 +37,7 @@
             android:layout_height="wrap_content"
             android:text="0"
             android:id="@+id/model_1"
-            android:textSize="18sp"
-            android:textColor="@color/black"/>
+            android:textSize="16sp"/>
 
         <TextView
             android:layout_width="0dp"
@@ -49,8 +46,7 @@
             android:layout_height="wrap_content"
             android:text="0"
             android:id="@+id/model_2"
-            android:textSize="18sp"
-            android:textColor="@color/black"/>
+            android:textSize="16sp"/>
 
 
         <TextView
@@ -60,8 +56,7 @@
             android:layout_height="wrap_content"
             android:text="0"
             android:id="@+id/model_3"
-            android:textSize="18sp"
-            android:textColor="@color/black"/>
+            android:textSize="16sp"/>
 
         <TextView
             android:layout_width="0dp"
@@ -69,8 +64,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Total"
-            android:textSize="18sp"
-            android:textColor="@color/black"
+            android:textSize="16sp"
             android:id="@+id/txt_number"
             />
 
