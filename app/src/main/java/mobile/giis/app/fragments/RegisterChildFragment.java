@@ -511,7 +511,6 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         contentValues.put(SQLHandler.ChildColumns.BIRTHPLACE, birthplaceList.get(placeOfBirthSpinner.getSelectedItemPosition() - 1).getName());
         contentValues.put(SQLHandler.ChildColumns.BIRTHPLACE_ID, birthplaceList.get(placeOfBirthSpinner.getSelectedItemPosition() - 1).getId());
 
-
         contentValues.put(SQLHandler.ChildColumns.DOMICILE, placeList.get(placeOfDomicileSpinner.getSelectedItemPosition() - 1).getName());
         contentValues.put(SQLHandler.ChildColumns.DOMICILE_ID, placeList.get(placeOfDomicileSpinner.getSelectedItemPosition() - 1).getId());
 
@@ -655,6 +654,8 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
     private synchronized void registerChildWithoutAppointments(String barcode, String fristname, String lastname, Date bDate, String gender, String  hfid, String birthPlaceId, String domId,
                                                                String addr, String phone, String motherFirstname, String motherLastname, String notes, String userID, Date modOn, final String tempId,String firstname2) {
+
+        Log.d("coze","selected vilage id to be synch = "+domId);
         new Thread() {
             String threadBDateString;
             String threadModOn;
