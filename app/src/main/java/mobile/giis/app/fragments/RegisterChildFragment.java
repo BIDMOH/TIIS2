@@ -511,9 +511,6 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         contentValues.put(SQLHandler.ChildColumns.BIRTHPLACE, birthplaceList.get(placeOfBirthSpinner.getSelectedItemPosition() - 1).getName());
         contentValues.put(SQLHandler.ChildColumns.BIRTHPLACE_ID, birthplaceList.get(placeOfBirthSpinner.getSelectedItemPosition() - 1).getId());
 
-        Log.d("coze","selected vilage = "+placeList.get(placeOfDomicileSpinner.getSelectedItemPosition() - 1).getName());
-        Log.d("coze","selected vilage id= "+placeList.get(placeOfDomicileSpinner.getSelectedItemPosition() - 1).getId());
-
         contentValues.put(SQLHandler.ChildColumns.DOMICILE, placeList.get(placeOfDomicileSpinner.getSelectedItemPosition() - 1).getName());
         contentValues.put(SQLHandler.ChildColumns.DOMICILE_ID, placeList.get(placeOfDomicileSpinner.getSelectedItemPosition() - 1).getId());
 
