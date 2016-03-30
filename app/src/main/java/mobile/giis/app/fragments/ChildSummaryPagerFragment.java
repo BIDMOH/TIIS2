@@ -110,6 +110,8 @@ public class ChildSummaryPagerFragment extends Fragment {
 
     BackboneApplication app;
 
+    List<String> place_names;
+
     public static final long getDaysDifference(Date d1, Date d2) {
         long diff = d2.getTime() - d1.getTime();
         long difference = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
@@ -359,7 +361,7 @@ public class ChildSummaryPagerFragment extends Fragment {
                 }
             }
 
-            List<String> place_names = new ArrayList<String>();
+            place_names = new ArrayList<String>();
             for (Place element : placeList) {
                 place_names.add(element.getName());
             }
@@ -378,7 +380,7 @@ public class ChildSummaryPagerFragment extends Fragment {
 
             int pos = birthplaceAdapter.getPosition(currentChild.getBirthplace());
             if (pos != -1) {
-                pobSpinner.setSelection(pos);
+                pobSpinner.setSelection(pos+1);
                 birthplaceOrig = pos;
             } else {
                 pobSpinner.setSelection(birthplaceAdapter.getCount() - 1);
@@ -389,7 +391,7 @@ public class ChildSummaryPagerFragment extends Fragment {
             //@Teodor -> Modification -> E njejta liste si per Place of Birth dhe per Village
             villageSpinner.setAdapter(dataAdapter);
             villageSpinner.setEnabled(false);
-            pos = dataAdapter.getPosition(currentChild.getDomicile());
+            pos = place_names.indexOf(currentChild.getDomicile())+1;
             if (pos != -1) {
                 villageSpinner.setSelection(pos);
                 villageOrig = pos;
@@ -473,6 +475,7 @@ public class ChildSummaryPagerFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 villageSpinner.setSelection(position);
+                Log.d("coze",place_names.get(position));
             }
 
             @Override
@@ -736,29 +739,30 @@ public class ChildSummaryPagerFragment extends Fragment {
             currentChild.setMotherLastname(metMothersSurname.getText().toString());
             contentValues.put(SQLHandler.ChildColumns.MOTHER_LASTNAME, metMothersSurname.getText().toString());
         }
-        if (!birthplaceList.get(pobSpinner.getSelectedItemPosition()).getName().equalsIgnoreCase(currentChild.getBirthplace())) {
-            currentChild.setBirthplaceId(birthplaceList.get(pobSpinner.getSelectedItemPosition()).getId());
-            currentChild.setBirthplace(birthplaceList.get(pobSpinner.getSelectedItemPosition()).getName());
-            contentValues.put(SQLHandler.ChildColumns.BIRTHPLACE, birthplaceList.get(pobSpinner.getSelectedItemPosition()).getName());
-            contentValues.put(SQLHandler.ChildColumns.BIRTHPLACE_ID, birthplaceList.get(pobSpinner.getSelectedItemPosition()).getId());
+        if (!birthplaceList.get(pobSpinner.getSelectedItemPosition()-1).getName().equalsIgnoreCase(currentChild.getBirthplace())) {
+            currentChild.setBirthplaceId(birthplaceList.get(pobSpinner.getSelectedItemPosition()-1).getId());
+            currentChild.setBirthplace(birthplaceList.get(pobSpinner.getSelectedItemPosition()-1).getName());
+            contentValues.put(SQLHandler.ChildColumns.BIRTHPLACE, birthplaceList.get(pobSpinner.getSelectedItemPosition()-1).getName());
+            contentValues.put(SQLHandler.ChildColumns.BIRTHPLACE_ID, birthplaceList.get(pobSpinner.getSelectedItemPosition()-1).getId());
         }
-        if (!placeList.get(villageSpinner.getSelectedItemPosition()).getName().equalsIgnoreCase(currentChild.getDomicile())) {
-            currentChild.setDomicileId(placeList.get(villageSpinner.getSelectedItemPosition()).getId());
-            currentChild.setDomicile(placeList.get(villageSpinner.getSelectedItemPosition()).getName());
-            contentValues.put(SQLHandler.ChildColumns.DOMICILE, placeList.get(villageSpinner.getSelectedItemPosition()).getName());
-            contentValues.put(SQLHandler.ChildColumns.DOMICILE_ID, placeList.get(villageSpinner.getSelectedItemPosition()).getId());
+        Log.d("coze","vilage name = "+placeList.get(villageSpinner.getSelectedItemPosition()-1).getName());
+        if (!placeList.get(villageSpinner.getSelectedItemPosition()-1).getName().equalsIgnoreCase(currentChild.getDomicile())) {
+            currentChild.setDomicileId(placeList.get(villageSpinner.getSelectedItemPosition()-1).getId());
+            currentChild.setDomicile(placeList.get(villageSpinner.getSelectedItemPosition()-1).getName());
+            contentValues.put(SQLHandler.ChildColumns.DOMICILE, placeList.get(villageSpinner.getSelectedItemPosition()-1).getName());
+            contentValues.put(SQLHandler.ChildColumns.DOMICILE_ID, placeList.get(villageSpinner.getSelectedItemPosition()-1).getId());
         }
-        if (!healthFacilityList.get(healthFacilitySpinner.getSelectedItemPosition()).getName().equalsIgnoreCase(currentChild.getHealthcenter())) {
-            currentChild.setHealthcenterId(healthFacilityList.get(healthFacilitySpinner.getSelectedItemPosition()).getId());
-            currentChild.setHealthcenter(healthFacilityList.get(healthFacilitySpinner.getSelectedItemPosition()).getName());
-            contentValues.put(SQLHandler.ChildColumns.HEALTH_FACILITY, healthFacilityList.get(healthFacilitySpinner.getSelectedItemPosition()).getName());
-            contentValues.put(SQLHandler.ChildColumns.HEALTH_FACILITY_ID, healthFacilityList.get(healthFacilitySpinner.getSelectedItemPosition()).getId());
+        if (!healthFacilityList.get(healthFacilitySpinner.getSelectedItemPosition()-1).getName().equalsIgnoreCase(currentChild.getHealthcenter())) {
+            currentChild.setHealthcenterId(healthFacilityList.get(healthFacilitySpinner.getSelectedItemPosition()-1).getId());
+            currentChild.setHealthcenter(healthFacilityList.get(healthFacilitySpinner.getSelectedItemPosition()-1).getName());
+            contentValues.put(SQLHandler.ChildColumns.HEALTH_FACILITY, healthFacilityList.get(healthFacilitySpinner.getSelectedItemPosition()-1).getName());
+            contentValues.put(SQLHandler.ChildColumns.HEALTH_FACILITY_ID, healthFacilityList.get(healthFacilitySpinner.getSelectedItemPosition()-1).getId());
         }
-        if (!statusList.get(statusSpinner.getSelectedItemPosition()).getName().equalsIgnoreCase(currentChild.getStatus())) {
-            currentChild.setStatusId(statusList.get(statusSpinner.getSelectedItemPosition()).getId());
-            currentChild.setStatus(statusList.get(statusSpinner.getSelectedItemPosition()).getName());
-            contentValues.put(SQLHandler.ChildColumns.STATUS, statusList.get(statusSpinner.getSelectedItemPosition()).getName());
-            contentValues.put(SQLHandler.ChildColumns.STATUS_ID, statusList.get(statusSpinner.getSelectedItemPosition()).getId());
+        if (!statusList.get(statusSpinner.getSelectedItemPosition()-1).getName().equalsIgnoreCase(currentChild.getStatus())) {
+            currentChild.setStatusId(statusList.get(statusSpinner.getSelectedItemPosition()-1).getId());
+            currentChild.setStatus(statusList.get(statusSpinner.getSelectedItemPosition()-1).getName());
+            contentValues.put(SQLHandler.ChildColumns.STATUS, statusList.get(statusSpinner.getSelectedItemPosition()-1).getName());
+            contentValues.put(SQLHandler.ChildColumns.STATUS_ID, statusList.get(statusSpinner.getSelectedItemPosition()-1).getId());
         }
 
 //        if (male.isChecked() && !gender_val.equalsIgnoreCase("male")) {
