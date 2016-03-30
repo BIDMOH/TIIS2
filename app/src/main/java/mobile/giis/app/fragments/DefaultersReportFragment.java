@@ -12,13 +12,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import mobile.giis.app.R;
 import mobile.giis.app.base.BackboneApplication;
 import mobile.giis.app.database.DatabaseHandler;
+import mobile.giis.app.database.SQLHandler;
+import mobile.giis.app.entity.Child;
 import mobile.giis.app.entity.HealthFacility;
 import mobile.giis.app.util.ViewAppointmentRow;
 
@@ -38,6 +45,10 @@ public class DefaultersReportFragment extends Fragment {
     private ProgressBar progressBar;
 
     private DatabaseHandler mydb;
+
+    private TableLayout defaultersTable;
+
+    private String hf_id, child_id, birthplacestr, villagestr, hfstr, statusstr, gender_val, birthdate_val;
 
     public static DefaultersReportFragment newInstance(int position) {
         DefaultersReportFragment f = new DefaultersReportFragment();
@@ -62,9 +73,8 @@ public class DefaultersReportFragment extends Fragment {
         prepareUIElements(rowview);
         mydb = app.getDatabaseInstance();
         healthFacility.setText(mydb.getHealthCenterName(app.getLOGGED_IN_USER_HF_ID()));
-        reportingPeriod.setText(mydb.getUserHFIDByUserId(app.getLOGGED_IN_USER_ID()));
 
-
+        new getDefaultersList().execute("");
 
         return rowview;
     }
@@ -72,16 +82,16 @@ public class DefaultersReportFragment extends Fragment {
     public void prepareUIElements(View v){
         region          = (TextView) v.findViewById(R.id.region_title);
         district        = (TextView) v.findViewById(R.id.district_title);
-        healthFacility  = (TextView) v.findViewById(R.id.hf_title);
+        healthFacility  = (TextView) v.findViewById(R.id.hf_value);
         reportingPeriod = (TextView) v.findViewById(R.id.period_title);
         title           = (TextView) v.findViewById(R.id.the_title);
         progressBar     = (ProgressBar) v.findViewById(R.id.progres_bar);
+        defaultersTable = (TableLayout) v.findViewById(R.id.defaulter_table);
     }
 
-    public class filterList extends AsyncTask<String, Void, Integer> {
+    public class getDefaultersList extends AsyncTask<String, Void, Integer> {
 
         ArrayList<ViewRows> mVar;
-
 
         @Override
         protected void onPreExecute() {
@@ -90,58 +100,161 @@ public class DefaultersReportFragment extends Fragment {
 
         @Override
         protected Integer doInBackground(String... params) {
-            String ageName = params[0];
-            String startRow = params[1];
-            String fromDate ="";
-            String toDate ="";
-
-            try{
-                fromDate = params[2];
-                toDate = params[3];
-            }catch (Exception e){
-                e.printStackTrace();
-            }
 
             Cursor cursor;
             mVar = new ArrayList<>();
-
+            /*
+            "datetime(substr(vaccination_event.SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('now','+30 days') AND vaccination_event.IS_ACTIVE='true' AND vaccination_event.VACCINATION_STATUS='false' AND (vaccination_event.NONVACCINATION_REASON_ID=0  OR vaccination_event.NONVACCINATION_REASON_ID in (Select ID from nonvaccination_reason where KEEP_CHILD_DUE = 'true'))" +
+             */
             String SQLDefaultersList;
             SQLDefaultersList =
-                    "SELECT DISTINCT APPOINTMENT_ID, CHILD_ID "+
-                            " ,(SELECT GROUP_CONCAT(dose.FULLNAME) FROM vaccination_event INNER JOIN dose ON vaccination_event.DOSE_ID = dose.ID left join age_definitions on dose.TO_AGE_DEFINITON_ID = age_definitions.ID WHERE monthly_plan.APPOINTMENT_ID=vaccination_event.APPOINTMENT_ID AND datetime(substr(vaccination_event.SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('now','+30 days') AND vaccination_event.IS_ACTIVE='true' AND vaccination_event.VACCINATION_STATUS='false' AND (vaccination_event.NONVACCINATION_REASON_ID=0  OR vaccination_event.NONVACCINATION_REASON_ID in (Select ID from nonvaccination_reason where KEEP_CHILD_DUE = 'true')) AND (DAYS IS NULL or (datetime(substr(vaccination_event.SCHEDULED_DATE,7,10),'unixepoch') > datetime('now','-' || DAYS || ' days')) )) AS VACCINES " +
-                            " , SCHEDULE, SCHEDULED_DATE "+
-                            " FROM monthly_plan join dose on DOSE_ID = dose.ID" +
-                            " WHERE HEALTH_FACILITY_ID = '"+app.getLOGGED_IN_USER_HF_ID()+"' AND SCHEDULE like '%"+ageName+"%' AND datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('now','+30 days') "+
-                            "AND ( (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) IS NULL \n" +
-                            " OR (datetime(substr(SCHEDULED_DATE,7,10),'unixepoch') > datetime('now','-' || (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) || ' days' )) )" +
-                            " GROUP BY APPOINTMENT_ID, SCHEDULED_DATE, DOMICILE, NAME, SCHEDULE, CHILD_ID, SCHEDULE_ID "+
-                            " ORDER BY SCHEDULED_DATE "+
-                            " LIMIT "+startRow+", 10 ; ";
+                    "SELECT DISTINCT CHILD_ID "+
+                            " FROM vaccination_event " +
+                            " WHERE HEALTH_FACILITY_ID = '"+app.getLOGGED_IN_USER_HF_ID()+"' AND strftime('%m', datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch')) = strftime('%m','now') "+
+                            " AND vaccination_event.IS_ACTIVE='true' AND vaccination_event.VACCINATION_STATUS='false' "+
+                            " GROUP BY CHILD_ID " ; //+
+//                            " ORDER BY SCHEDULED_DATE "+
+//                            " LIMIT "+startRow+", 10 ; ";
 
             Log.e("SQLDefaultersList", SQLDefaultersList);
             cursor = mydb.getReadableDatabase().rawQuery(SQLDefaultersList, null);
+
             if (cursor != null) {
                 if (cursor.moveToFirst()) {
                     do {
                         ViewRows row = new ViewRows();
+                        row.setChildId(cursor.getString(cursor.getColumnIndex("CHILD_ID")));
                         mVar.add(row);
                     } while (cursor.moveToNext());
                 }
                 cursor.close();
             }
-
-            return 1;
+            return mVar.size();
         }
 
         @Override
         protected void onPostExecute(Integer result) {
-            Log.d("MPLAN", mVar.size() + "");
+
 //            adapter.updateData(mVar);
-            progressBar.setVisibility(View.GONE);
+            if (result!=0){
+                defaultersTable.removeAllViews();
+                FillDefaultersTable(mVar);
+                progressBar.setVisibility(View.GONE);
+            }
+
         }
 
         @Override
         protected void onProgressUpdate(Void... values) {}
+
+    }
+
+    private void FillDefaultersTable(ArrayList<ViewRows> items){
+        ArrayList<ViewRows> VR = items;
+        for (ViewRows row : VR){
+            View v  = View.inflate(DefaultersReportFragment.this.getActivity(), R.layout.defaulter_list_table_item, null);
+
+            TextView childNames = (TextView) v.findViewById(R.id.child_names_value);
+            TextView childID    = (TextView) v.findViewById(R.id.child_id_value);
+            TextView childGender = (TextView) v.findViewById(R.id.gender_value);
+            TextView childDOB = (TextView) v.findViewById(R.id.child_dob_value);
+            TextView childMotherNames = (TextView) v.findViewById(R.id.mothers_names_value);
+            TextView childMotherContacts = (TextView) v.findViewById(R.id.mothers_contacts_value);
+            TextView childVillage = (TextView) v.findViewById(R.id.village_value);
+
+            Cursor cursor;
+            cursor =  mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",
+                    new String[]{String.valueOf(row.getChildId())});
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                Child currentChild = getChildFromCursror(cursor);
+                childNames.setText(currentChild.getFirstname1()+" "+currentChild.getLastname1());
+                childID.setText(currentChild.getBarcodeID());
+
+                if (currentChild.getGender().equals("true")){
+                    childGender.setText("Male");
+                }else if (currentChild.getGender().equals("false")){
+                    childGender.setText("Female");
+                }
+
+                SimpleDateFormat ft = new SimpleDateFormat("dd/MM/yyyy");
+                try {
+                    childDOB.setText(ft.format(ft.parse(currentChild.getBirthdate())));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                childMotherNames.setText(currentChild.getMotherFirstname()+ " "+currentChild.getMotherLastname());
+
+                childMotherContacts.setText(currentChild.getPhone());
+
+                childVillage.setText(currentChild.getDomicile());
+
+            }
+
+            defaultersTable.addView(v);
+
+        }
+    }
+
+    public Child getChildFromCursror(Cursor cursor) {
+        Child parsedChild = new Child();
+        parsedChild.setId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.ID)));
+        parsedChild.setBarcodeID(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.BARCODE_ID)));
+        parsedChild.setTempId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.TEMP_ID)));
+        parsedChild.setFirstname1(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME1)));
+        parsedChild.setFirstname2(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME2)));
+        parsedChild.setLastname1(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.LASTNAME1)));
+        parsedChild.setBirthdate(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.BIRTHDATE)));
+        parsedChild.setMotherFirstname(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_FIRSTNAME)));
+        parsedChild.setMotherLastname(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_LASTNAME)));
+        parsedChild.setPhone(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.PHONE)));
+        parsedChild.setNotes(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.NOTES)));
+        parsedChild.setBirthplaceId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.BIRTHPLACE_ID)));
+        parsedChild.setGender(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.GENDER)));
+        Cursor cursor1;
+        cursor1 = null;
+        try {
+            cursor1 = mydb.getReadableDatabase().rawQuery("SELECT * FROM birthplace WHERE ID=?", new String[]{parsedChild.getBirthplaceId()});
+            if (cursor1.getCount() > 0) {
+                cursor1.moveToFirst();
+                birthplacestr = cursor1.getString(cursor1.getColumnIndex(SQLHandler.PlaceColumns.NAME));
+            }
+        }finally {
+            if(cursor1 != null)
+                cursor1.close();
+        }
+
+        parsedChild.setBirthplace(birthplacestr);
+
+        parsedChild.setDomicileId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.DOMICILE_ID)));
+        Cursor cursor2 = mydb.getReadableDatabase().rawQuery("SELECT * FROM place WHERE ID=?", new String[]{parsedChild.getDomicileId()});
+        if (cursor2.getCount() > 0) {
+            cursor2.moveToFirst();
+            villagestr = cursor2.getString(cursor2.getColumnIndex(SQLHandler.PlaceColumns.NAME));
+        }
+
+        parsedChild.setDomicile(villagestr);
+        parsedChild.setHealthcenterId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.HEALTH_FACILITY_ID)));
+        try {
+            Cursor cursor3 = mydb.getReadableDatabase().rawQuery("SELECT * FROM health_facility WHERE ID=?", new String[]{parsedChild.getHealthcenterId()});
+            if (cursor3.getCount() > 0) {
+                cursor3.moveToFirst();
+                hfstr = cursor3.getString(cursor3.getColumnIndex(SQLHandler.HealthFacilityColumns.NAME));
+            }
+        }catch (Exception e){
+            hfstr = "";
+        }
+        parsedChild.setHealthcenter(hfstr);
+
+        parsedChild.setStatusId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.STATUS_ID)));
+        Cursor cursor4 = mydb.getReadableDatabase().rawQuery("SELECT * FROM status WHERE ID=?", new String[]{parsedChild.getStatusId()});
+        if (cursor4.getCount() > 0) {
+            cursor4.moveToFirst();
+            statusstr = cursor4.getString(cursor4.getColumnIndex(SQLHandler.StatusColumns.NAME));
+        }
+        parsedChild.setStatus(statusstr);
+        return parsedChild;
 
     }
 
@@ -150,62 +263,14 @@ public class DefaultersReportFragment extends Fragment {
         public ViewRows(){
         }
 
-        String ChildName, ChildId, Gender, ChildDOB, MotherNames, MotherContacts, Village;
-
-        public String getChildName() {
-            return ChildName;
-        }
-
-        public void setChildName(String childName) {
-            ChildName = childName;
-        }
+        String childId;
 
         public String getChildId() {
-            return ChildId;
+            return childId;
         }
 
         public void setChildId(String childId) {
-            ChildId = childId;
-        }
-
-        public String getGender() {
-            return Gender;
-        }
-
-        public void setGender(String gender) {
-            Gender = gender;
-        }
-
-        public String getChildDOB() {
-            return ChildDOB;
-        }
-
-        public void setChildDOB(String childDOB) {
-            ChildDOB = childDOB;
-        }
-
-        public String getMotherNames() {
-            return MotherNames;
-        }
-
-        public void setMotherNames(String motherNames) {
-            MotherNames = motherNames;
-        }
-
-        public String getMotherContacts() {
-            return MotherContacts;
-        }
-
-        public void setMotherContacts(String motherContacts) {
-            MotherContacts = motherContacts;
-        }
-
-        public String getVillage() {
-            return Village;
-        }
-
-        public void setVillage(String village) {
-            Village = village;
+            this.childId = childId;
         }
     }
 
