@@ -27,12 +27,15 @@ import mobile.giis.app.base.BackboneActivity;
 import mobile.giis.app.base.BackboneApplication;
 import mobile.giis.app.database.DatabaseHandler;
 import mobile.giis.app.database.SQLHandler;
+import mobile.giis.app.entity.Child;
 import mobile.giis.app.helpers.Utils;
 
 /**
  * Created by issymac on 25/02/16.
  */
 public class ChildDetailsActivity extends BackboneActivity implements BackHandledFragment.BackHandlerInterface {
+
+    private String hf_id, child_id, birthplacestr, villagestr, hfstr, statusstr, gender_val, birthdate_val;
 
     private PagerSlidingTabStrip tabs;
 
@@ -103,16 +106,29 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
 
         DatabaseHandler mydb = app.getDatabaseInstance();
         Cursor cursor = null;
-        cursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE BARCODE_ID=?", new String[]{handlerBarcode});
 
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
-            String name = cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME1))+" "+
-                    cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME2))+ " "+
-                    cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.LASTNAME1));
+        if (!handlerBarcode.isEmpty() || !handlerBarcode.equals("")){
+            cursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE BARCODE_ID=?", new String[]{handlerBarcode});
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                String name = cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME1))+" "+
+                        cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME2))+ " "+
+                        cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.LASTNAME1));
 
-            toolbarTitle.setText(name);
+                toolbarTitle.setText(name);
 
+            }
+        }else{
+            cursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",
+                    new String[]{String.valueOf(value)});
+
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                Child child = getChildFromCursror(cursor);
+
+                String name = child.getFirstname1()+" "+child.getFirstname2()+" "+child.getLastname1();
+                toolbarTitle.setText(name);
+            }
         }
 
         adapter = new ChildDetailsViewPager(this, getSupportFragmentManager(), value, handlerBarcode);
@@ -154,6 +170,59 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
             }
         }
     };
+
+    public Child getChildFromCursror(Cursor cursor) {
+        Child parsedChild = new Child();
+        parsedChild.setId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.ID)));
+        parsedChild.setBarcodeID(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.BARCODE_ID)));
+        parsedChild.setTempId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.TEMP_ID)));
+        parsedChild.setFirstname1(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME1)));
+        parsedChild.setFirstname2(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME2)));
+        parsedChild.setLastname1(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.LASTNAME1)));
+        parsedChild.setBirthdate(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.BIRTHDATE)));
+        parsedChild.setMotherFirstname(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_FIRSTNAME)));
+        parsedChild.setMotherLastname(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_LASTNAME)));
+        parsedChild.setPhone(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.PHONE)));
+        parsedChild.setNotes(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.NOTES)));
+        parsedChild.setBirthplaceId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.BIRTHPLACE_ID)));
+        parsedChild.setGender(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.GENDER)));
+        Cursor cursor1 = mydb.getReadableDatabase().rawQuery("SELECT * FROM birthplace WHERE ID=?", new String[]{parsedChild.getBirthplaceId()});
+        if (cursor1.getCount() > 0) {
+            cursor1.moveToFirst();
+            birthplacestr = cursor1.getString(cursor1.getColumnIndex(SQLHandler.PlaceColumns.NAME));
+        }
+        parsedChild.setBirthplace(birthplacestr);
+
+        parsedChild.setDomicileId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.DOMICILE_ID)));
+        Cursor cursor2 = mydb.getReadableDatabase().rawQuery("SELECT * FROM place WHERE ID=?", new String[]{parsedChild.getDomicileId()});
+        if (cursor2.getCount() > 0) {
+            cursor2.moveToFirst();
+            villagestr = cursor2.getString(cursor2.getColumnIndex(SQLHandler.PlaceColumns.NAME));
+        }
+
+        parsedChild.setDomicile(villagestr);
+        parsedChild.setHealthcenterId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.HEALTH_FACILITY_ID)));
+        try {
+            Cursor cursor3 = mydb.getReadableDatabase().rawQuery("SELECT * FROM health_facility WHERE ID=?", new String[]{parsedChild.getHealthcenterId()});
+            if (cursor3.getCount() > 0) {
+                cursor3.moveToFirst();
+                hfstr = cursor3.getString(cursor3.getColumnIndex(SQLHandler.HealthFacilityColumns.NAME));
+            }
+        }catch (Exception e){
+            hfstr = "";
+        }
+        parsedChild.setHealthcenter(hfstr);
+
+        parsedChild.setStatusId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.STATUS_ID)));
+        Cursor cursor4 = mydb.getReadableDatabase().rawQuery("SELECT * FROM status WHERE ID=?", new String[]{parsedChild.getStatusId()});
+        if (cursor4.getCount() > 0) {
+            cursor4.moveToFirst();
+            statusstr = cursor4.getString(cursor4.getColumnIndex(SQLHandler.StatusColumns.NAME));
+        }
+        parsedChild.setStatus(statusstr);
+        return parsedChild;
+
+    }
 
 
     @Override

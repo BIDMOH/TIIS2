@@ -376,7 +376,11 @@ public class HomeActivityRevised extends BackboneActivity {
         Intent intent = new Intent(HomeActivityRevised.this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-        login_preferences.edit().putBoolean("isLoggedIn", false).apply();
+        try {
+            login_preferences.edit().putBoolean("isLoggedIn", false).apply();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void initializeViews(){

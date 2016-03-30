@@ -57,7 +57,7 @@
                 android:layout_marginLeft="32dp"
                 android:layout_centerVertical="true"
                 android:textColor="@color/white"
-                android:text="Tanzania Immunization Information System"/>
+                android:text="Tanzania Immunization Register (TImR) "/>
 
         </RelativeLayout>
 

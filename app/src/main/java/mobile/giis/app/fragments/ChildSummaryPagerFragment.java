@@ -101,7 +101,7 @@ public class ChildSummaryPagerFragment extends Fragment {
     PlacesOfBirthAdapter spinnerAdapter;
 
     ListView lvImmunizationHistory;
-
+    private Cursor mCursor;
     Button editButton, saveButton;
 
     MaterialSpinner ms, pobSpinner, villageSpinner, healthFacilitySpinner, statusSpinner;
@@ -138,6 +138,7 @@ public class ChildSummaryPagerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup v;
         v = (ViewGroup) inflater.inflate(R.layout.fragment_child_summary, null);
+
         setUpView(v);
 
         gender = new ArrayList<>();
@@ -157,7 +158,7 @@ public class ChildSummaryPagerFragment extends Fragment {
         metMothersSurname   = (MaterialEditText) header.findViewById(R.id.met_mother_surname_value);
         metPhoneNumber      = (MaterialEditText) header.findViewById(R.id.met_phone_value);
         metDOB              = (MaterialEditText) header.findViewById(R.id.met_dob_value);
-        metNotesValue              = (MaterialEditText) header.findViewById(R.id.met_notes_value);
+        metNotesValue       = (MaterialEditText) header.findViewById(R.id.met_notes_value);
 
         ms                  = (MaterialSpinner) header.findViewById(R.id.spin_gender);
         pobSpinner          = (MaterialSpinner) header.findViewById(R.id.spin_pob);
@@ -176,6 +177,18 @@ public class ChildSummaryPagerFragment extends Fragment {
 
         app = (BackboneApplication) ChildSummaryPagerFragment.this.getActivity().getApplication();
         mydb = app.getDatabaseInstance();
+
+        mCursor = null;
+        mCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",
+                new String[]{String.valueOf(value)});
+
+        if (mCursor.getCount() > 0) {
+            mCursor.moveToFirst();
+            currentChild = getChildFromCursror(mCursor);
+            Log.d("issy", "gotten a child");
+        }else{
+            Log.d("issy", "cursor empty");
+        }
 
         enableUserInputs(false);
 
@@ -208,10 +221,7 @@ public class ChildSummaryPagerFragment extends Fragment {
             }
         });
 
-
-
         loadViewAppointementsTable(false);
-
 
         return v;
     }
@@ -258,6 +268,7 @@ public class ChildSummaryPagerFragment extends Fragment {
         var = new ArrayList<ViewAppointmentRow>();
         String result = "";
 
+
         if (currentChild.getId() != null && !currentChild.getId().isEmpty()) {
             child_id = currentChild.getId();
             Log.d("ViewAppointment:", "Child_Id: " + child_id);
@@ -291,14 +302,9 @@ public class ChildSummaryPagerFragment extends Fragment {
 
     private void fillUIElements(){
 
-        Cursor cursor = null;
-        cursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",
-                new String[]{String.valueOf(value)});
+        if (currentChild!=null){
 
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
-
-            currentChild = getChildFromCursror(cursor);
+            Log.d("issy", "child gotten "+currentChild.getFirstname1());
             if (currentChild.getBarcodeID() == null || currentChild.getBarcodeID().isEmpty()) {
                 Toast.makeText(ChildSummaryPagerFragment.this.getActivity(), getString(R.string.empty_barcode), Toast.LENGTH_SHORT).show();
             }
@@ -311,39 +317,39 @@ public class ChildSummaryPagerFragment extends Fragment {
 
             metBarcodeValue     .setText(currentChild.getBarcodeID());
             barcodeOrig         = currentChild.getBarcodeID();
-            tempIdOrig          = cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.TEMP_ID));
+            tempIdOrig          = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.TEMP_ID));
 
-            childId = cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.ID));
+            childId = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.ID));
             metSystemID.setText(childId);
 
-            metFirstName.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME1)));
-            metNotesValue.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.NOTES)));
-            metMiddleName.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME2)));
-            metLastName.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.LASTNAME1)));
+            metFirstName.setText(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME1)));
+            metNotesValue.setText(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.NOTES)));
+            metMiddleName.setText(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME2)));
+            metLastName.setText(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.LASTNAME1)));
 
-            firstnameOrig = cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME1));
-            firstname2Orig = cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME2));
-            lastnameOrig = cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.LASTNAME1));
+            firstnameOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME1));
+            firstname2Orig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME2));
+            lastnameOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.LASTNAME1));
 
-            bdate = BackboneActivity.dateParser(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.BIRTHDATE)));
+            bdate = BackboneActivity.dateParser(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.BIRTHDATE)));
             SimpleDateFormat ft = new SimpleDateFormat("dd/MM/yyyy");
             metDOB.setText(ft.format(bdate));
             birthdateOrig = ft.format(bdate);
             birthdate_val = ft.format(bdate);
 
-            metMothersFirstName.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_FIRSTNAME)));
-            metMothersSurname.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_LASTNAME)));
+            metMothersFirstName.setText(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_FIRSTNAME)));
+            metMothersSurname.setText(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_LASTNAME)));
 
-            motherFirOrig = cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_FIRSTNAME));
-            motherLastOrig = cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_LASTNAME));
+            motherFirOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_FIRSTNAME));
+            motherLastOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_LASTNAME));
 
-            phoneOrig = cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.PHONE));
-            metPhoneNumber.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.PHONE)));
+            phoneOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.PHONE));
+            metPhoneNumber.setText(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.PHONE)));
 
-            notesOrig = cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.NOTES));
+            notesOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.NOTES));
 
 
-            if (Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.GENDER)))) {
+            if (Boolean.parseBoolean(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.GENDER)))) {
                 ms.setAdapter(spinnerAdapter);
                 ms.setSelection(1);
 //                gender.setText("Male");
@@ -411,7 +417,9 @@ public class ChildSummaryPagerFragment extends Fragment {
             healthFacilitySpinner.setAdapter(healthAdapter);
             healthFacilitySpinner.setEnabled(false);
 
+            //mydb.getHealthCenterName(item.getHealthcenter())
             Log.d("coze", "facility = " + currentChild.getHealthcenter());
+            Log.d("coze", "facility 2 = " + mydb.getHealthCenterName(currentChild.getHealthcenter()));
             int index =facility_name.indexOf(currentChild.getHealthcenter());
 
             Log.d("coze", "village = " + currentChild.getDomicile());
