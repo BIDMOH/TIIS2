@@ -412,6 +412,9 @@ public class ChildSummaryPagerFragment extends Fragment {
             Log.d("coze", "facility = " + currentChild.getHealthcenter());
             int index =facility_name.indexOf(currentChild.getHealthcenter());
 
+            Log.d("coze", "village = " + currentChild.getDomicile());
+            Log.d("coze", "village ID = " + currentChild.getDomicileId());
+
 
             Log.d("coze","facility index = "+index);
             if (index != -1) {
