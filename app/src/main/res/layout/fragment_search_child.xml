@@ -441,13 +441,13 @@
                     android:indeterminate="true"
                     android:background="@color/light_blue_600"/>
 
-                <mobile.giis.app.CustomViews.NestedListView
+                <ListView
                     android:id="@+id/lv_children_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
                     android:layout_weight="1">
-                </mobile.giis.app.CustomViews.NestedListView>
+                </ListView>
 
             </RelativeLayout>
 

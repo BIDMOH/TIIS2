@@ -3,7 +3,7 @@
 
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~   ~ Copyright (C)AIRIS Solutions 2015 TIIS App - Tanzania Immunization Information System App
+  ~   ~ Copyright (C)AIRIS Solutions 2015 TIIS App - Tanzania Immunization Register App
   ~   ~
   ~   ~    Licensed under the Apache License, Version 2.0 (the "License");
   ~   ~    you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <resources>
+
+    <string name="reports_title"> Ministry Of Health And Social Welfare \n Immunization And Vaccine Development Program \n Health Facility Level Report </string>
 
     <string name="app_name">TImR</string>
     <string name="login">Ingia</string>

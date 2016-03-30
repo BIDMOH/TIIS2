@@ -21,6 +21,7 @@ package mobile.giis.app.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,7 @@ import mobile.giis.app.entity.Child;
         this.items = items;
         this.ctx = ctx;
         this.mydb = mydb;
+        Log.d("coze adpter", " Size of list is : "+items.size());
     }
 
     static class ViewHolder {
@@ -56,8 +58,20 @@ import mobile.giis.app.entity.Child;
 
     }
 
+    public void replaceData(List<Child> items){
+        this.items = items;
+    }
+
     public String getBarcode(int position){
         return items.get(position).getBarcodeID();
+    }
+
+    public String getChildId(int position){
+        return items.get(position).getSystemId();
+    }
+
+    public String getChildid(int position){
+        return items.get(position).getId();
     }
 
     @Override
@@ -97,8 +111,10 @@ import mobile.giis.app.entity.Child;
         String dateString = new SimpleDateFormat("dd-MMM-yyyy").format(new Date(Long.parseLong(item.getBirthdate().toString())));
         viewHolder.tvDateOfBirth.setText(dateString);
         viewHolder.tvGender.setText(item.getGender());
-        viewHolder.tvVillage.setText(mydb.getVillageName(item.getDomicile()));
-        viewHolder.tvHealthFacility.setText(mydb.getHealthCenterName(item.getHealthcenter()));
+        viewHolder.tvVillage.setText(item.getDomicile());
+        viewHolder.tvHealthFacility.setText(item.getHealthcenter());
+        Log.d("coze adpter", "facility One = " + item.getHealthcenter());
+        Log.d("coze adpter", "facility Two = " + mydb.getHealthCenterName(item.getHealthcenter()));
 
 //        rowView.setOnClickListener(new View.OnClickListener() {
 //            @Override

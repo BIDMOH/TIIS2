@@ -69,7 +69,7 @@ import mobile.giis.app.entity.Status;
 
 public class SearchChildFragment extends android.support.v4.app.Fragment implements DatePickerDialog.OnDateSetListener{
 
-    public NestedListView lvChildrenSearchResults;
+    public ListView lvChildrenSearchResults;
 
     public MaterialEditText metFName, metMName, metSurname, metMotFname, metMotSname, metBarcode, metDOBFrom, metDOBTo;
 
@@ -113,6 +113,8 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
     String childidToParse;
     ArrayList<Child> childrensrv = new ArrayList<>();
     boolean serverdata = false;
+
+    public int currentChildPosition = -1;
 
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_search_child, null);
@@ -210,23 +212,30 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
 
         //get the list of all children in the local db
 
-        setListViewHeightBasedOnChildren(lvChildrenSearchResults);
         lvChildrenSearchResults.addFooterView(listviewFooter);
         new getChildren().execute("0");
 
         lvChildrenSearchResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (!(i == -1)) {
-                    Intent childDetailsActivity = new Intent(SearchChildFragment.this.getActivity(), ChildDetailsActivity.class);
-                    childDetailsActivity.putExtra("barcode", adapter.getBarcode(i));
-                    startActivity(childDetailsActivity);
-                }
-
+                currentChildPosition = i;
                 if (serverdata) {
-                    childidToParse = childrensrv.get(i).getId();
-                    ChildSynchronization task = new ChildSynchronization();
-                    task.execute(childidToParse);
+                    if (!(i == -1)){
+                        childidToParse = childrensrv.get(i).getId();
+                        ChildSynchronization task = new ChildSynchronization();
+                        task.execute(childidToParse);
+                    }
+                }else{
+                    if (!(i == -1)) {
+                        Intent childDetailsActivity = new Intent(SearchChildFragment.this.getActivity(), ChildDetailsActivity.class);
+                        childDetailsActivity.putExtra("barcode", adapter.getBarcode(i));
+                        childDetailsActivity.putExtra(BackboneApplication.CHILD_ID, adapter.getChildid(i));
+                        Log.e("coze", "child id is 1  : " + adapter.getChildId(i));
+                        Log.e("coze", "OR child id is 2  : " + adapter.getChildid(i));
+                        Log.e("coze", "BARCODE IS  : " + adapter.getBarcode(i));
+
+                        startActivity(childDetailsActivity);
+                    }
                 }
 
             }
@@ -328,7 +337,7 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
         metDOBFrom              = (MaterialEditText) v.findViewById(R.id.met_dop_from);
         metDOBTo                = (MaterialEditText) v.findViewById(R.id.met_dop_to);
 
-        lvChildrenSearchResults = (NestedListView) v.findViewById(R.id.lv_children_list);
+        lvChildrenSearchResults = (ListView) v.findViewById(R.id.lv_children_list);
 
         childListLayout         = (RelativeLayout) v.findViewById(R.id.children_list_layout);
         childListLayout.setVisibility(View.VISIBLE);
@@ -620,7 +629,11 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
                                 childListLayout.setVisibility(View.VISIBLE);
                                 lvChildrenSearchResults.setVisibility(View.VISIBLE);
                                 adapter = new AdapterGridDataSearchResult(SearchChildFragment.this.getActivity(), R.layout.children_list_item, childrensrv, mydb);
+                                lvChildrenSearchResults.setAdapter(null);
+//                                adapter.replaceData(childrensrv);
                                 lvChildrenSearchResults.setAdapter(adapter);
+                                adapter.notifyDataSetChanged();
+
                             }
                         }
                     });
@@ -709,6 +722,16 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
             //super.onPostExecute(result);;
 //            myHandler.sendEmptyMessage(result);
             //parseChildByBarcode = result;
+
+            Intent childDetailsActivity = new Intent(SearchChildFragment.this.getActivity(), ChildDetailsActivity.class);
+            childDetailsActivity.putExtra("barcode", adapter.getBarcode(currentChildPosition));
+            childDetailsActivity.putExtra(BackboneApplication.CHILD_ID, adapter.getChildid(currentChildPosition));
+            Log.e("coze", "child id is 1  : " + adapter.getChildId(currentChildPosition));
+            Log.e("coze", "OR child id is 2  : " + adapter.getChildid(currentChildPosition));
+            Log.e("coze", "BARCODE IS  : " + adapter.getBarcode(currentChildPosition));
+            startActivity(childDetailsActivity);
+            currentChildPosition = -1;
+
         }
     }
 

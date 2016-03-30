@@ -66,7 +66,7 @@
             android:layout_weight=".16"
             android:layout_height="wrap_content"
             android:id="@+id/txt_child_health_facility"
-            android:text="Kaloleni Health Center Arusha"/>
+            android:text=""/>
 
     </LinearLayout>
 

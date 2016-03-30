@@ -245,6 +245,7 @@
         </activity>
 
         <activity android:name=".StockActivityRevised"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:parentActivityName=".HomeActivityRevised">
         </activity>
 
