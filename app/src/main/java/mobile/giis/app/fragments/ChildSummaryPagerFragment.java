@@ -101,7 +101,7 @@ public class ChildSummaryPagerFragment extends Fragment {
     PlacesOfBirthAdapter spinnerAdapter;
 
     ListView lvImmunizationHistory;
-
+    private Cursor mCursor;
     Button editButton, saveButton;
 
     MaterialSpinner ms, pobSpinner, villageSpinner, healthFacilitySpinner, statusSpinner;
@@ -110,7 +110,7 @@ public class ChildSummaryPagerFragment extends Fragment {
 
     BackboneApplication app;
 
-    private Cursor mCursor;
+
 
     public static final long getDaysDifference(Date d1, Date d2) {
         long diff = d2.getTime() - d1.getTime();
