@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#e5e5e5">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_margin="8dp"
+            android:layout_marginBottom="-2dp"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:padding="16dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:background="@color/card_light_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp"
+                    android:text="Defaulters List Report"
+                    android:textStyle="bold"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp">
+
+                    <ImageView
+                        android:layout_width="90dp"
+                        android:layout_height="90dp"
+                        android:id="@+id/national_logo"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/launcher_icon"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/reports_title"
+                        android:layout_centerInParent="true"
+                        android:gravity="center|center_vertical"
+                        android:text="@string/reports_title"
+                        android:textSize="18sp"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="16dp"
+                    android:paddingTop="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.2"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/region_title"
+                                android:text="Region"
+                                android:paddingTop="4dp"
+                                android:paddingBottom="4dp"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/region_value"
+                                android:text="Arusha"
+                                android:paddingTop="4dp"
+                                android:paddingBottom="4dp"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.2"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/district_title"
+                                android:text="District"
+                                android:paddingTop="4dp"
+                                android:paddingBottom="4dp"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/district_value"
+                                android:text="Arusha City"
+                                android:paddingTop="4dp"
+                                android:paddingBottom="4dp"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.2"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/hf_title"
+                                android:text="Health Facility"
+                                android:paddingTop="4dp"
+                                android:paddingBottom="4dp"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/hf_value"
+                                android:text="Baraa RC Dispensary"
+                                android:paddingTop="4dp"
+                                android:paddingBottom="4dp"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.2"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/period_title"
+                                android:text="Reporting Period"
+                                android:paddingTop="4dp"
+                                android:paddingBottom="4dp"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/period_value"
+                                android:text="May-14"
+                                android:paddingTop="4dp"
+                                android:paddingBottom="4dp"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.2"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/the_title"
+                                android:text="Title"
+                                android:paddingTop="4dp"
+                                android:paddingBottom="4dp"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/the_title_value"
+                                android:text="Stock Balance"
+                                android:paddingTop="4dp"
+                                android:paddingBottom="4dp"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="32dp"
+                        android:paddingTop="16dp"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:paddingBottom="8dp"
+                        android:id="@+id/linear_title"
+                        android:background="@color/card_light_text">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.3"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/antigen_title"
+                            android:text="Antigen"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.2"
+                            android:textStyle="bold"
+                            android:text="Batch Number"
+                            android:id="@+id/batch_number_title"
+                            />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.1"
+                            android:id="@+id/exp_date_title"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:text="Expiry Date"
+                            />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.1"
+                            android:id="@+id/child_dob_title"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:text="Child DOB"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.1"
+                            android:id="@+id/physical_count_title"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:layout_marginRight="4dp"
+                            android:text="Mother's Names"/>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/white"/>
+
+                        <RelativeLayout
+                            android:layout_marginLeft="4dp"
+                            android:layout_width="0dp"
+                            android:layout_weight="0.3"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:text="Discarded By Key Reasons"
+                                android:id="@+id/section_title"/>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_alignParentBottom="true"
+                                android:layout_marginBottom="16dp">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:id="@+id/vvm_title"
+                                    android:layout_height="wrap_content"
+                                    android:textStyle="bold"
+                                    android:text="VVM Change"/>
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:id="@+id/expiry_title"
+                                    android:layout_height="wrap_content"
+                                    android:textStyle="bold"
+                                    android:text="Expiry"/>
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:id="@+id/physical_damage_title"
+                                    android:layout_height="wrap_content"
+                                    android:textStyle="bold"
+                                    android:text="Physical Damage"/>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+
+                    </LinearLayout>
+
+                    <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/defaulter_table"
+                        android:layout_below="@id/linear_title"
+                        android:background="@color/card_grid_tex">
+
+
+                    </TableLayout>
+
+                    <ProgressBar
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:id="@+id/progres_bar"
+                        android:layout_centerHorizontal="true"
+                        android:layout_alignParentBottom="true"
+                        android:indeterminate="true"/>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </ScrollView>
+
+</RelativeLayout>

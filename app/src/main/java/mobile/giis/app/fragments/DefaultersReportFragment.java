@@ -228,10 +228,17 @@ public class DefaultersReportFragment extends Fragment {
         parsedChild.setBirthplace(birthplacestr);
 
         parsedChild.setDomicileId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.DOMICILE_ID)));
-        Cursor cursor2 = mydb.getReadableDatabase().rawQuery("SELECT * FROM place WHERE ID=?", new String[]{parsedChild.getDomicileId()});
-        if (cursor2.getCount() > 0) {
-            cursor2.moveToFirst();
-            villagestr = cursor2.getString(cursor2.getColumnIndex(SQLHandler.PlaceColumns.NAME));
+        Cursor cursor2;
+        cursor2 = null;
+        try {
+            cursor2 = mydb.getReadableDatabase().rawQuery("SELECT * FROM place WHERE ID=?", new String[]{parsedChild.getDomicileId()});
+            if (cursor2.getCount() > 0) {
+                cursor2.moveToFirst();
+                villagestr = cursor2.getString(cursor2.getColumnIndex(SQLHandler.PlaceColumns.NAME));
+            }
+        }finally {
+            if (cursor2 != null)
+                cursor2.close();
         }
 
         parsedChild.setDomicile(villagestr);
@@ -248,11 +255,19 @@ public class DefaultersReportFragment extends Fragment {
         parsedChild.setHealthcenter(hfstr);
 
         parsedChild.setStatusId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.STATUS_ID)));
-        Cursor cursor4 = mydb.getReadableDatabase().rawQuery("SELECT * FROM status WHERE ID=?", new String[]{parsedChild.getStatusId()});
-        if (cursor4.getCount() > 0) {
-            cursor4.moveToFirst();
-            statusstr = cursor4.getString(cursor4.getColumnIndex(SQLHandler.StatusColumns.NAME));
+        Cursor cursor4;
+        cursor4 = null;
+        try {
+            cursor4 = mydb.getReadableDatabase().rawQuery("SELECT * FROM status WHERE ID=?", new String[]{parsedChild.getStatusId()});
+            if (cursor4.getCount() > 0) {
+                cursor4.moveToFirst();
+                statusstr = cursor4.getString(cursor4.getColumnIndex(SQLHandler.StatusColumns.NAME));
+            }
+        }finally {
+            if(cursor4 != null)
+                cursor4.close();
         }
+
         parsedChild.setStatus(statusstr);
         return parsedChild;
 
