@@ -234,7 +234,7 @@ public class HealthFacilityImmunizationCoverageReportFragment extends Fragment {
 
                 List<ViewRow> rowList = new ArrayList<>();
 
-                String SQLDose = "SELECT ID,FULLNAME,DOSE_NUMBER,SCHEDULED_VACCINATION_ID FROM dose WHERE SCHEDULED_VACCINATION_ID = '"+scheduled_vaccination.getId()+"'";
+                String SQLDose = "SELECT ID,FULLNAME,DOSE_NUMBER,SCHEDULED_VACCINATION_ID FROM dose WHERE SCHEDULED_VACCINATION_ID = '"+scheduled_vaccination.getId()+"' ORDER BY DOSE_NUMBER ASC";
                 Cursor cursor1 = db.rawQuery(SQLDose, null);
 
                 int size1= cursor1.getCount();
