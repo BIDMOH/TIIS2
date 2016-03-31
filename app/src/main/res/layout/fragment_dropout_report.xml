@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app_ms="http://schemas.android.com/apk/res-auto"
     android:background="#e5e5e5">
 
     <ScrollView
@@ -166,14 +166,35 @@
                                 android:paddingTop="4dp"
                                 android:paddingBottom="4dp"/>
 
-                            <TextView
+                            <RelativeLayout
                                 android:layout_width="0dp"
                                 android:layout_weight="0.8"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/period_value"
-                                android:text="May-14"
-                                android:paddingTop="4dp"
-                                android:paddingBottom="4dp"/>
+                                android:layout_height="wrap_content">
+
+
+                                <fr.ganfra.materialspinner.MaterialSpinner
+                                    android:id="@+id/spin_date"
+                                    android:layout_width="300dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerVertical="true"
+                                    android:divider="@null"
+                                    app_ms:ms_multiline="false"
+                                    app_ms:ms_hint="Select Date"
+                                    app_ms:ms_enableFloatingLabel="true"
+                                    app_ms:ms_enableErrorLabel="false"
+                                    app_ms:ms_floatingLabelText="Select Date"
+                                    app_ms:ms_baseColor="@color/light_blue_600"
+                                    app_ms:ms_highlightColor="@color/light_blue_700"
+                                    app_ms:ms_errorColor="@color/red_500"
+                                    app_ms:ms_typeface="Roboto-LightItalic.ttf"
+                                    app_ms:ms_hintColor="@color/card_light_text"
+                                    app_ms:ms_arrowColor="@color/light_blue_600"
+                                    app_ms:ms_arrowSize="16dp"
+                                    app_ms:ms_alignLabels="false"
+                                    app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
+
+                            </RelativeLayout>
+
 
                         </LinearLayout>
 
