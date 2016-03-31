@@ -203,35 +203,104 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
             String SQLCountTotalVisits,SQLCountTotalOutReach,SQLCountTotalFixed,SQLCountTotalWithin,SQLCountTotalOutside,SQLCountVaccinedOutReach,SQLCountVaccinedFixed,SQLCountVaccinedlVisits,SQLCountVaccinedWithin,
                     SQLCountVaccinedOutside,SQLCountTotalNewVisits,SQLCountNewVisitsOutreach,SQLCountNewVisitsFixed,SQLCountNewVisitsWithin,SQLCountNewVisitsOutside,SQLCountUnderImmunizedTotal,SQLCountUnderImmunizedOutreach,
                     SQLCountUnderImmunizedFixed,SQLCountUnderImmunizedWithin,SQLCountUnderImmunizedOutside,SQLCountFullyImmunized,SQLCountFullyImmunizedOutreach,SQLCountFullyImmunizedFixed,SQLCountFullyImmunizedWithin,SQLCountFullyImmunizedOutside;
-            SQLCountTotalVisits = "SELECT  COUNT (DISTINCT(vaccination_appointment.ID)) AS IDS  FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID AND vaccination_event.CHILD_ID=vaccination_appointment.CHILD_ID AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
-            SQLCountTotalOutReach = "SELECT  COUNT (DISTINCT(vaccination_appointment.ID)) AS IDS FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID AND vaccination_event.CHILD_ID=vaccination_appointment.CHILD_ID AND vaccination_appointment.OUTREACH  = 'true' AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
-            SQLCountTotalFixed = "SELECT  COUNT (DISTINCT(vaccination_appointment.ID)) AS IDS FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID AND vaccination_event.CHILD_ID=vaccination_appointment.CHILD_ID AND vaccination_appointment.OUTREACH  = 'false' AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
-            SQLCountTotalWithin = "SELECT  COUNT (DISTINCT(vaccination_appointment.ID)) AS IDS  FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID AND vaccination_event.CHILD_ID=vaccination_appointment.CHILD_ID AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"' AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
-            SQLCountTotalOutside = "SELECT  COUNT (DISTINCT(vaccination_appointment.ID)) AS IDS  FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID AND vaccination_event.CHILD_ID=vaccination_appointment.CHILD_ID AND vaccination_event.HEALTH_FACILITY_ID <> '"+healthFacilityId+"'AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
+            SQLCountTotalVisits = "SELECT  COUNT (DISTINCT(vaccination_appointment.ID)) AS IDS  FROM  vaccination_event, vaccination_appointment " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "AND vaccination_event.CHILD_ID=vaccination_appointment.CHILD_ID " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"'" +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
+            SQLCountTotalOutReach = "SELECT  COUNT (DISTINCT(vaccination_appointment.ID)) AS IDS FROM  vaccination_event, vaccination_appointment " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "AND vaccination_event.CHILD_ID=vaccination_appointment.CHILD_ID " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"'" +
+                    "AND vaccination_appointment.OUTREACH  = 'true' " +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
+            SQLCountTotalFixed = "SELECT  COUNT (DISTINCT(vaccination_appointment.ID)) AS IDS FROM  vaccination_event, vaccination_appointment " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "AND vaccination_event.CHILD_ID=vaccination_appointment.CHILD_ID " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"'" +
+                    "AND vaccination_appointment.OUTREACH  = 'false' " +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
+            SQLCountTotalWithin = "SELECT  COUNT (DISTINCT(vaccination_appointment.ID)) AS IDS  FROM  vaccination_event, vaccination_appointment,child " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "AND vaccination_event.CHILD_ID=child.ID " +
+                    "AND child.HEALTH_FACILITY_ID = '"+healthFacilityId+"' " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"' " +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
+            SQLCountTotalOutside = "SELECT  COUNT (DISTINCT(vaccination_appointment.ID)) AS IDS  FROM  vaccination_event, vaccination_appointment,child " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "AND vaccination_event.CHILD_ID=child.ID " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"'" +
+                    "AND child.HEALTH_FACILITY_ID <> '"+healthFacilityId+"' " +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
+            Log.d("coze","outside = "+SQLCountTotalOutside);
 
 
-            SQLCountVaccinedOutReach = "SELECT  COUNT (DISTINCT(vaccination_appointment.ID)) AS IDS FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID AND vaccination_appointment.OUTREACH  = 'true' AND vaccination_event.VACCINATION_STATUS='true' AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
-            SQLCountVaccinedFixed = "SELECT  COUNT (DISTINCT(vaccination_appointment.ID)) AS IDS FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID AND vaccination_appointment.OUTREACH  = 'false' AND vaccination_event.VACCINATION_STATUS='true' AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
-            SQLCountVaccinedlVisits = "SELECT  COUNT (DISTINCT(vaccination_appointment.ID)) AS IDS  FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID AND vaccination_event.VACCINATION_STATUS='true' AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
-            SQLCountVaccinedWithin = "SELECT  COUNT (DISTINCT(vaccination_appointment.ID)) AS IDS  FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"' AND vaccination_event.VACCINATION_STATUS='true' AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
-            SQLCountVaccinedOutside = "SELECT  COUNT (DISTINCT(vaccination_appointment.ID)) AS IDS FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID AND vaccination_event.HEALTH_FACILITY_ID <> '"+healthFacilityId+"' AND vaccination_event.VACCINATION_STATUS='true' AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
+            SQLCountVaccinedOutReach = "SELECT  COUNT (DISTINCT(vaccination_appointment.ID)) AS IDS FROM  vaccination_event, vaccination_appointment " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "AND vaccination_appointment.OUTREACH  = 'true' " +
+                    "AND vaccination_event.VACCINATION_STATUS='true' " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"'" +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
+            SQLCountVaccinedFixed = "SELECT  COUNT (DISTINCT(vaccination_appointment.ID)) AS IDS FROM  vaccination_event, vaccination_appointment " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "AND vaccination_appointment.OUTREACH  = 'false' " +
+                    "AND vaccination_event.VACCINATION_STATUS='true' " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"'" +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
+            SQLCountVaccinedlVisits = "SELECT  COUNT (DISTINCT(vaccination_appointment.ID)) AS IDS  FROM  vaccination_event, vaccination_appointment " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "AND vaccination_event.VACCINATION_STATUS='true' " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"'" +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
+            SQLCountVaccinedWithin = "SELECT  COUNT (DISTINCT(vaccination_appointment.ID)) AS IDS  FROM  vaccination_event, vaccination_appointment,child " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "AND vaccination_event.CHILD_ID=child.ID " +
+                    "AND child.HEALTH_FACILITY_ID = '"+healthFacilityId+"' " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"' " +
+                    "AND vaccination_event.VACCINATION_STATUS='true' " +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
+            SQLCountVaccinedOutside = "SELECT  COUNT (DISTINCT(vaccination_appointment.ID)) AS IDS FROM  vaccination_event, vaccination_appointment,child " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "AND vaccination_event.CHILD_ID=child.ID " +
+                    "AND child.HEALTH_FACILITY_ID <> '"+healthFacilityId+"' " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"' " +
+                    "AND vaccination_event.VACCINATION_STATUS='true' " +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
 
 
 
-            SQLCountTotalNewVisits="SELECT  COUNT (DISTINCT(vaccination_event.CHILD_ID)) AS IDS FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID  " +
+            SQLCountTotalNewVisits="SELECT  COUNT (DISTINCT(vaccination_event.CHILD_ID)) AS IDS FROM  vaccination_event, vaccination_appointment " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID  " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"' " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')" +
                     "AND  vaccination_event.CHILD_ID NOT IN (" +
-                    "SELECT  vaccination_event.CHILD_ID FROM vaccination_event,vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID  " +
+                    "SELECT  vaccination_event.CHILD_ID FROM vaccination_event,vaccination_appointment " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID  " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"' " +
                     "AND vaccination_event.CHILD_ID=vaccination_appointment.CHILD_ID " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<datetime('"+fromDate+"','unixepoch')  GROUP BY vaccination_appointment.ID,vaccination_event.CHILD_ID)";
 
             SQLCountNewVisitsOutreach="SELECT COUNT(CHILD_ID) AS IDS FROM  (" +
-                    "SELECT  * FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID  " +
+                    "SELECT  * FROM  vaccination_event, vaccination_appointment " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID  " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"' " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')" +
                     "AND  vaccination_event.CHILD_ID NOT IN (" +
-                    "SELECT  vaccination_event.CHILD_ID FROM vaccination_event,vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID  " +
+                    "SELECT  vaccination_event.CHILD_ID FROM vaccination_event,vaccination_appointment " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID  " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"' " +
                     "AND vaccination_event.CHILD_ID=vaccination_appointment.CHILD_ID  " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<datetime('"+fromDate+"','unixepoch')  GROUP BY vaccination_appointment.ID,vaccination_event.CHILD_ID)" +
                     "GROUP BY vaccination_event.CHILD_ID " +
@@ -239,11 +308,15 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
                     ") WHERE OUTREACH='true'";
 
             SQLCountNewVisitsFixed="SELECT COUNT(CHILD_ID) AS IDS FROM  (" +
-                    "SELECT  * FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID  " +
+                    "SELECT  * FROM  vaccination_event, vaccination_appointment " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID  " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"' " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')" +
                     "AND  vaccination_event.CHILD_ID NOT IN (" +
-                    "SELECT  vaccination_event.CHILD_ID FROM vaccination_event,vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID  " +
+                    "SELECT  vaccination_event.CHILD_ID FROM vaccination_event,vaccination_appointment " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID  " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"' " +
                     "AND vaccination_event.CHILD_ID=vaccination_appointment.CHILD_ID  " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<datetime('"+fromDate+"','unixepoch')  GROUP BY vaccination_appointment.ID,vaccination_event.CHILD_ID)" +
                     "GROUP BY vaccination_event.CHILD_ID " +
@@ -251,24 +324,30 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
                     ") WHERE OUTREACH='false'";
 
             SQLCountNewVisitsWithin = "SELECT COUNT(CHILD_ID) AS IDS FROM  (" +
-                    "SELECT  * FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID   " +
+                    "SELECT  vaccination_event.CHILD_ID AS CHILD_ID,child.HEALTH_FACILITY_ID AS HEALTH_FACILITY_ID  FROM  vaccination_event, vaccination_appointment,child " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID   " +
+                    "AND vaccination_event.CHILD_ID=child.ID " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch')  " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')" +
                     "AND  vaccination_event.CHILD_ID NOT IN ( " +
                     "SELECT  vaccination_event.CHILD_ID FROM vaccination_event,vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID   " +
                     "AND vaccination_event.CHILD_ID=vaccination_appointment.CHILD_ID  " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"' " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<datetime('"+fromDate+"','unixepoch')  GROUP BY vaccination_appointment.ID,vaccination_event.CHILD_ID)" +
                     "GROUP BY vaccination_event.CHILD_ID " +
                     "ORDER BY vaccination_event.VACCINATION_DATE ASC " +
                     ") WHERE HEALTH_FACILITY_ID = '"+healthFacilityId+"'";
 
             SQLCountNewVisitsOutside = "SELECT COUNT(CHILD_ID) AS IDS FROM  (" +
-                    "SELECT  * FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID   " +
+                    "SELECT  vaccination_event.CHILD_ID AS CHILD_ID,child.HEALTH_FACILITY_ID AS HEALTH_FACILITY_ID  FROM  vaccination_event, vaccination_appointment,child " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID   " +
+                    "AND vaccination_event.CHILD_ID=child.ID " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch')  " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')" +
                     "AND  vaccination_event.CHILD_ID NOT IN ( " +
                     "SELECT  vaccination_event.CHILD_ID FROM vaccination_event,vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID   " +
                     "AND vaccination_event.CHILD_ID=vaccination_appointment.CHILD_ID  " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"' " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<datetime('"+fromDate+"','unixepoch')  GROUP BY vaccination_appointment.ID,vaccination_event.CHILD_ID)" +
                     "GROUP BY vaccination_event.CHILD_ID " +
                     "ORDER BY vaccination_event.VACCINATION_DATE ASC " +
@@ -276,50 +355,102 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
 
 
 
-            SQLCountUnderImmunizedTotal="SELECT COUNT (DISTINCT(vaccination_event.APPOINTMENT_ID)) AS IDS FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID AND vaccination_event.VACCINATION_STATUS = 'false' AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
-            SQLCountUnderImmunizedOutreach="SELECT COUNT (DISTINCT(vaccination_event.APPOINTMENT_ID)) AS IDS FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID AND vaccination_event.VACCINATION_STATUS = 'false'  AND vaccination_appointment.OUTREACH = 'true' AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
-            SQLCountUnderImmunizedFixed=   "SELECT COUNT (DISTINCT(vaccination_event.APPOINTMENT_ID)) AS IDS FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID AND vaccination_event.VACCINATION_STATUS = 'false'  AND vaccination_appointment.OUTREACH = 'false' AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
-            SQLCountUnderImmunizedWithin="SELECT COUNT (DISTINCT(vaccination_event.APPOINTMENT_ID)) AS IDS FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID AND vaccination_event.VACCINATION_STATUS = 'false'  AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"' AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
-            SQLCountUnderImmunizedOutside="SELECT COUNT (DISTINCT(vaccination_event.APPOINTMENT_ID)) AS IDS FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID AND vaccination_event.VACCINATION_STATUS = 'false'  AND vaccination_event.HEALTH_FACILITY_ID <> '"+healthFacilityId+"' AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
+            SQLCountUnderImmunizedTotal="SELECT COUNT (DISTINCT(vaccination_event.APPOINTMENT_ID)) AS IDS FROM  vaccination_event, vaccination_appointment " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "AND vaccination_event.VACCINATION_STATUS = 'false' " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"'" +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
+            SQLCountUnderImmunizedOutreach="SELECT COUNT (DISTINCT(vaccination_event.APPOINTMENT_ID)) AS IDS FROM  vaccination_event, vaccination_appointment " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "AND vaccination_event.VACCINATION_STATUS = 'false'  " +
+                    "AND vaccination_appointment.OUTREACH = 'true' " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"'" +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
+            SQLCountUnderImmunizedFixed=   "SELECT COUNT (DISTINCT(vaccination_event.APPOINTMENT_ID)) AS IDS FROM  vaccination_event, vaccination_appointment " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "AND vaccination_event.VACCINATION_STATUS = 'false'  " +
+                    "AND vaccination_appointment.OUTREACH = 'false' " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"'" +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
+            SQLCountUnderImmunizedWithin="SELECT COUNT (DISTINCT(vaccination_event.APPOINTMENT_ID)) AS IDS FROM  vaccination_event, vaccination_appointment,child " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "AND vaccination_event.VACCINATION_STATUS = 'false'  " +
+                    "AND vaccination_event.CHILD_ID=child.ID " +
+                    "AND child.HEALTH_FACILITY_ID = '"+healthFacilityId+"' " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"' " +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
+            SQLCountUnderImmunizedOutside="SELECT COUNT (DISTINCT(vaccination_event.APPOINTMENT_ID)) AS IDS FROM  vaccination_event, vaccination_appointment,child " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "AND vaccination_event.VACCINATION_STATUS = 'false'  " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"' " +
+                    "AND vaccination_event.CHILD_ID=child.ID " +
+                    "AND child.HEALTH_FACILITY_ID <> '"+healthFacilityId+"' " +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
+                    "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
 
 
-
-            SQLCountFullyImmunized="SELECT COUNT (DISTINCT(vaccination_event.APPOINTMENT_ID)) AS IDS FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+            SQLCountFullyImmunized="SELECT COUNT (DISTINCT(vaccination_event.APPOINTMENT_ID)) AS IDS FROM  vaccination_event, vaccination_appointment " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"'" +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') "+
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')" +
                     "AND vaccination_event.APPOINTMENT_ID NOT IN (" +
-                    "SELECT DISTINCT(vaccination_event.APPOINTMENT_ID) AS IDS FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "SELECT DISTINCT(vaccination_event.APPOINTMENT_ID) AS IDS FROM  vaccination_event, vaccination_appointment " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID "+
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"'" +
                     "AND vaccination_event.VACCINATION_STATUS = 'false')";
 
-            SQLCountFullyImmunizedOutreach="SELECT COUNT (DISTINCT(vaccination_event.APPOINTMENT_ID)) AS IDS FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+            SQLCountFullyImmunizedOutreach="SELECT COUNT (DISTINCT(vaccination_event.APPOINTMENT_ID)) AS IDS FROM  vaccination_event, vaccination_appointment " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"'" +
                     "AND vaccination_appointment.OUTREACH='true'" +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') "+
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')" +
                     "AND vaccination_event.APPOINTMENT_ID NOT IN (" +
-                    "SELECT DISTINCT(vaccination_event.APPOINTMENT_ID) AS IDS FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "SELECT DISTINCT(vaccination_event.APPOINTMENT_ID) AS IDS FROM  vaccination_event, vaccination_appointment " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"'" +
                     "AND vaccination_event.VACCINATION_STATUS = 'false')";
 
-            SQLCountFullyImmunizedFixed="SELECT COUNT (DISTINCT(vaccination_event.APPOINTMENT_ID)) AS IDS FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+            SQLCountFullyImmunizedFixed="SELECT COUNT (DISTINCT(vaccination_event.APPOINTMENT_ID)) AS IDS FROM  vaccination_event, vaccination_appointment " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
                     "AND vaccination_appointment.OUTREACH='false'" +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"'" +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') "+
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')" +
                     "AND vaccination_event.APPOINTMENT_ID NOT IN (" +
-                    "SELECT DISTINCT(vaccination_event.APPOINTMENT_ID) AS IDS FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "SELECT DISTINCT(vaccination_event.APPOINTMENT_ID) AS IDS FROM  vaccination_event, vaccination_appointment " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"'" +
                     "AND vaccination_event.VACCINATION_STATUS = 'false')";
 
-            SQLCountFullyImmunizedWithin="SELECT COUNT (DISTINCT(vaccination_event.APPOINTMENT_ID)) AS IDS FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+            SQLCountFullyImmunizedWithin="SELECT COUNT (DISTINCT(vaccination_event.APPOINTMENT_ID)) AS IDS FROM  vaccination_event, vaccination_appointment,child " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "AND vaccination_event.CHILD_ID=child.ID " +
+                    "AND child.HEALTH_FACILITY_ID = '"+healthFacilityId+"' " +
                     "AND vaccination_event.HEALTH_FACILITY_ID == '"+healthFacilityId+"'" +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') "+
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')" +
                     "AND vaccination_event.APPOINTMENT_ID NOT IN (" +
-                    "SELECT DISTINCT(vaccination_event.APPOINTMENT_ID) AS IDS FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "SELECT DISTINCT(vaccination_event.APPOINTMENT_ID) AS IDS FROM  vaccination_event, vaccination_appointment " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID == '"+healthFacilityId+"'" +
                     "AND vaccination_event.VACCINATION_STATUS = 'false')";
-            SQLCountFullyImmunizedOutside="SELECT COUNT (DISTINCT(vaccination_event.APPOINTMENT_ID)) AS IDS FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
-                    "AND vaccination_event.HEALTH_FACILITY_ID <> '"+healthFacilityId+"'" +
+            SQLCountFullyImmunizedOutside="SELECT COUNT (DISTINCT(vaccination_event.APPOINTMENT_ID)) AS IDS FROM  vaccination_event, vaccination_appointment,child " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "AND vaccination_event.CHILD_ID=child.ID " +
+                    "AND child.HEALTH_FACILITY_ID <> '"+healthFacilityId+"' " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"'" +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') "+
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')" +
                     "AND vaccination_event.APPOINTMENT_ID NOT IN (" +
-                    "SELECT DISTINCT(vaccination_event.APPOINTMENT_ID) AS IDS FROM  vaccination_event, vaccination_appointment WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "SELECT DISTINCT(vaccination_event.APPOINTMENT_ID) AS IDS FROM  vaccination_event, vaccination_appointment " +
+                    "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"'" +
                     "AND vaccination_event.VACCINATION_STATUS = 'false')";
 
             ViewRows viewRows = new ViewRows();
