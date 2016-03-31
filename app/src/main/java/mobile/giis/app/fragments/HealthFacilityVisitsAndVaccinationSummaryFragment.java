@@ -43,7 +43,7 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
     private ProgressBar progressBar;
 
     private DatabaseHandler mydb;
-    private View rowview,chartList;
+    private View rowview,chartList,chart_view;
     private  MaterialEditText metDOBFrom,metDOBTo;
 
     final DatePickerDialog fromDatePicker = new DatePickerDialog();
@@ -85,6 +85,7 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
     }
 
     public void prepareUIElements(View v){
+        chart_view      = v.findViewById(R.id.chart_view);
         editTextUsedToRequestFocus          = (EditText) v.findViewById(R.id.edit_text_used_to_request_focus);
         editTextUsedToRequestFocus.requestFocus();
         region          = (TextView) v.findViewById(R.id.region_value);
@@ -117,6 +118,7 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
                             editTextUsedToRequestFocus.requestFocus();
 
                             if(!fromDateString.equals("")){
+                                chart_view.setVisibility(View.VISIBLE);
                                 new FilterList().execute(app.getLOGGED_IN_USER_HF_ID(),fromDateString,toDateString);
                             }else{
                                 final Snackbar snackbar=Snackbar.make(rowview,"Please select a start date to view the chart",Snackbar.LENGTH_LONG);
@@ -154,6 +156,7 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
                             editTextUsedToRequestFocus.requestFocus();
 
                             if(!toDateString.equals("")){
+                                chart_view.setVisibility(View.VISIBLE);
                                 new FilterList().execute(app.getLOGGED_IN_USER_HF_ID(),fromDateString,toDateString);
                             }else{
                                 final Snackbar snackbar=Snackbar.make(rowview,"Please select an end date to view the chart",Snackbar.LENGTH_LONG);
