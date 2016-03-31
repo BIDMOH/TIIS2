@@ -69,8 +69,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:foregroundGravity="top"
-            android:layout_marginTop="?attr/actionBarSize"
-            android:layout_marginLeft="8dp"/>
+            android:layout_marginTop="?attr/actionBarSize"/>
 
         </android.support.design.widget.CoordinatorLayout>
 

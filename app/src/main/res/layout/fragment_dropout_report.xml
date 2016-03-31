@@ -14,6 +14,7 @@
             android:layout_margin="8dp"
             android:layout_marginBottom="-2dp"
             android:layout_height="wrap_content">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:padding="16dp"
@@ -196,7 +197,7 @@
                                 android:layout_weight="0.8"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/the_title_value"
-                                android:text="Defaulters List Report"
+                                android:text="Dropout Report"
                                 android:paddingTop="4dp"
                                 android:paddingBottom="4dp"/>
 
@@ -213,7 +214,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="70dp"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:layout_marginTop="32dp"
@@ -226,77 +227,111 @@
 
                         <TextView
                             android:layout_width="0dp"
-                            android:layout_weight="0.05"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/sn_title"
-                            android:text="Sn"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="0dp"
                             android:layout_weight="0.2"
                             android:layout_height="wrap_content"
-                            android:id="@+id/child_names_title"
-                            android:text="Child Names"
-                            android:textStyle="bold"/>
+                            android:id="@+id/month_title"
+                            android:text="Month"/>
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.1"
-                            android:textStyle="bold"
-                            android:text="Child Id"
-                            android:id="@+id/child_id_title"
-                            />
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/white"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="4dp"/>
 
-                        <TextView
+                        <RelativeLayout
+                            android:layout_marginRight="4dp"
                             android:layout_width="0dp"
-                            android:layout_weight="0.1"
-                            android:id="@+id/gender_title"
-                            android:layout_height="wrap_content"
-                            android:textStyle="bold"
-                            android:text="Gender"
-                            />
+                            android:layout_weight="0.4"
+                            android:layout_height="match_parent">
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="0.1"
-                            android:id="@+id/child_dob_title"
-                            android:layout_height="wrap_content"
-                            android:textStyle="bold"
-                            android:text="Child DOB"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:text=" BCG - MR 1 "
+                                android:id="@+id/bcg_mri"/>
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="0.2"
-                            android:id="@+id/mothers_names_title"
-                            android:layout_height="wrap_content"
-                            android:textStyle="bold"
-                            android:text="Mother's Names"/>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_below="@id/bcg_mri"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical">
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="0.1"
-                            android:id="@+id/mothers_contacts_title"
-                            android:layout_height="wrap_content"
-                            android:textStyle="bold"
-                            android:text="Mother Contacts"/>
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.5"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/bcg_mri_number_title"
+                                    android:gravity="center_horizontal"
+                                    android:text="Number"/>
 
-                        <TextView
-                            android:layout_marginLeft="8dp"
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.5"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/bcg_mri_percent_title"
+                                    android:gravity="center_horizontal"
+                                    android:text="Percent (%) "/>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/white"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="4dp"/>
+
+
+                        <RelativeLayout
+                            android:layout_marginLeft="4dp"
                             android:layout_width="0dp"
-                            android:layout_weight="0.15"
-                            android:id="@+id/village_title"
-                            android:layout_height="wrap_content"
-                            android:textStyle="bold"
-                            android:text="Village"/>
+                            android:layout_weight="0.4"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:text=" PENTA 1 - PENTA 3 "
+                                android:id="@+id/penta1_penta3"/>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_below="@id/penta1_penta3"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.5"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/penta1_penta3_number_title"
+                                    android:gravity="center_horizontal"
+                                    android:text="Number"/>
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.5"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/penta1_penta3_percent_title"
+                                    android:gravity="center_horizontal"
+                                    android:text="Percent (%)"/>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
 
                     </LinearLayout>
 
                     <TableLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/defaulter_table"
+                        android:id="@+id/dropout_table"
                         android:layout_below="@id/linear_title"
                         android:background="@color/card_grid_tex">
 

@@ -196,7 +196,7 @@
                                 android:layout_weight="0.8"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/the_title_value"
-                                android:text="Defaulters List Report"
+                                android:text="Stock Balance"
                                 android:paddingTop="4dp"
                                 android:paddingBottom="4dp"/>
 
@@ -209,16 +209,13 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="16dp">
+                    android:paddingBottom="8dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="70dp"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical"
                         android:layout_marginTop="32dp"
-                        android:paddingTop="16dp"
-                        android:paddingBottom="16dp"
                         android:paddingLeft="16dp"
                         android:paddingRight="16dp"
                         android:id="@+id/linear_title"
@@ -226,77 +223,115 @@
 
                         <TextView
                             android:layout_width="0dp"
-                            android:layout_weight="0.05"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/sn_title"
-                            android:text="Sn"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="0dp"
                             android:layout_weight="0.2"
                             android:layout_height="wrap_content"
-                            android:id="@+id/child_names_title"
-                            android:text="Child Names"
+                            android:id="@+id/antigen_title"
+                            android:text="Antigen"
+                            android:layout_marginTop="16dp"
                             android:textStyle="bold"/>
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.1"
+                            android:layout_weight="0.15"
                             android:textStyle="bold"
-                            android:text="Child Id"
-                            android:id="@+id/child_id_title"
+                            android:layout_marginTop="16dp"
+                            android:text="Batch Number"
+                            android:id="@+id/batch_number_title"
                             />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_weight="0.1"
-                            android:id="@+id/gender_title"
+                            android:layout_marginTop="16dp"
+                            android:id="@+id/exp_date_title"
                             android:layout_height="wrap_content"
                             android:textStyle="bold"
-                            android:text="Gender"
+                            android:text="Expiry Date"
                             />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_weight="0.1"
-                            android:id="@+id/child_dob_title"
+                            android:id="@+id/physical_count_title"
                             android:layout_height="wrap_content"
                             android:textStyle="bold"
-                            android:text="Child DOB"/>
+                            android:layout_marginTop="16dp"
+                            android:gravity="center"
+                            android:layout_marginRight="8dp"
+                            android:text="Physical Count"/>
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="0.2"
-                            android:id="@+id/mothers_names_title"
-                            android:layout_height="wrap_content"
-                            android:textStyle="bold"
-                            android:text="Mother's Names"/>
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:background="@color/white"/>
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="0.1"
-                            android:id="@+id/mothers_contacts_title"
-                            android:layout_height="wrap_content"
-                            android:textStyle="bold"
-                            android:text="Mother Contacts"/>
-
-                        <TextView
+                        <RelativeLayout
                             android:layout_marginLeft="8dp"
                             android:layout_width="0dp"
-                            android:layout_weight="0.15"
-                            android:id="@+id/village_title"
-                            android:layout_height="wrap_content"
-                            android:textStyle="bold"
-                            android:text="Village"/>
+                            android:layout_weight="0.45"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginTop="8dp"
+                                android:text="Discarded By Key Reasons"
+                                android:textStyle="bold"
+                                android:id="@+id/section_title"/>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_alignParentBottom="true"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginBottom="16dp">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:id="@+id/vvm_title"
+                                    android:layout_height="wrap_content"
+                                    android:textStyle="bold"
+                                    android:gravity="center_horizontal"
+                                    android:layout_marginBottom="8dp"
+                                    android:text="VVM Change"/>
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:id="@+id/expiry_title"
+                                    android:layout_height="wrap_content"
+                                    android:textStyle="bold"
+                                    android:gravity="center_horizontal"
+                                    android:layout_marginBottom="8dp"
+                                    android:text="Expiry"/>
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:id="@+id/physical_damage_title"
+                                    android:layout_height="wrap_content"
+                                    android:textStyle="bold"
+                                    android:gravity="center_horizontal"
+                                    android:layout_marginBottom="8dp"
+                                    android:text="Physical Damage"/>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
 
                     </LinearLayout>
 
                     <TableLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/defaulter_table"
+                        android:id="@+id/stock_balance_table"
                         android:layout_below="@id/linear_title"
                         android:background="@color/card_grid_tex">
 

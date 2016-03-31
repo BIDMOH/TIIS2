@@ -49,7 +49,7 @@ public class ReportsActivityRevised extends BackboneActivity {
         toolbarTitle.setText(title);
 
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
-
+        pager.setOffscreenPageLimit(1);
         pager.setAdapter(adapter);
 
         tabs.setTextColor(Color.WHITE);
