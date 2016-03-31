@@ -64,7 +64,7 @@ public class HealthFacilityImmunizationCoverageChartFragment extends Fragment {
     BackboneApplication app;
     private ProgressBar progressBar;
     private DatabaseHandler mydb;
-    private View rowview;
+    private View rowview,chart_view;;
     private  MaterialEditText metDOBFrom,metDOBTo;
 
     final DatePickerDialog fromDatePicker = new DatePickerDialog();
@@ -116,6 +116,7 @@ public class HealthFacilityImmunizationCoverageChartFragment extends Fragment {
 
     public void prepareUIElements(View v){
         mChart          = (com.github.mikephil.charting.charts.RadarChart)v.findViewById(R.id.chart1);
+        chart_view      = v.findViewById(R.id.chart_view);
         region          = (TextView) v.findViewById(R.id.region_value);
         district        = (TextView) v.findViewById(R.id.district_title);
         healthFacility  = (TextView) v.findViewById(R.id.hf_value);
@@ -151,7 +152,7 @@ public class HealthFacilityImmunizationCoverageChartFragment extends Fragment {
                             editTextUsedToRequestFocus.requestFocus();
 
                             if(!fromDateString.equals("")){
-                                mChart.setVisibility(View.VISIBLE);
+                                chart_view.setVisibility(View.VISIBLE);
                                 new FilterList().execute(app.getLOGGED_IN_USER_HF_ID(),fromDateString,toDateString);
                             }else{
                                 final Snackbar snackbar=Snackbar.make(rowview,"Please select a start date to view the chart",Snackbar.LENGTH_LONG);
@@ -189,7 +190,7 @@ public class HealthFacilityImmunizationCoverageChartFragment extends Fragment {
                             editTextUsedToRequestFocus.requestFocus();
 
                             if (!toDateString.equals("")) {
-                                mChart.setVisibility(View.VISIBLE);
+                                chart_view.setVisibility(View.VISIBLE);
                                 new FilterList().execute(app.getLOGGED_IN_USER_HF_ID(), fromDateString, toDateString);
                             } else {
                                 final Snackbar snackbar = Snackbar.make(rowview, "Please select an end date to view the chart", Snackbar.LENGTH_LONG);
@@ -455,7 +456,7 @@ public class HealthFacilityImmunizationCoverageChartFragment extends Fragment {
         chart.setDescriptionTextSize(18f);
 
         Legend l = mChart.getLegend();
-        l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART_CENTER);
+        l.setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
         l.setTextSize(18f);
 
 
