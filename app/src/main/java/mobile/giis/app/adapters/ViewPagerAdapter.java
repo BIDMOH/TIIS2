@@ -8,6 +8,7 @@ import android.util.Log;
 import java.util.Locale;
 
 import mobile.giis.app.fragments.DefaultersReportFragment;
+import mobile.giis.app.fragments.HealthFacilityVisitsAndVaccinationSummaryFragment;
 import mobile.giis.app.fragments.ImmunizedChildrenFragment;
 import mobile.giis.app.fragments.StockTabFragment;
 import mobile.giis.app.fragments.TabFragment;
@@ -19,7 +20,7 @@ import mobile.giis.app.fragments.VaccinationCoverageFragment;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
-    private final String[] TITLES = { "Immunized Children", "Vaccination Coverage", "Stock", "Defaulters List" };
+    private final String[] TITLES = { "Immunized Children", "Vaccination Coverage", "Stock","Health Visits and Vaccination Summary", "Defaulters List" };
 
     public ViewPagerAdapter(FragmentManager fm) {
         super(fm);
@@ -48,6 +49,9 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
             return StockTabFragment.newInstance();
         }
         else if (position == 3){
+            return HealthFacilityVisitsAndVaccinationSummaryFragment.newInstance(position);
+        }
+        else if (position == 4){
             return DefaultersReportFragment.newInstance(position);
         }
         else{

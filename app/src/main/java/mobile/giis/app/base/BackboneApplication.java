@@ -1407,9 +1407,10 @@ public class BackboneApplication extends Application {
                     SQLHandler.VaccinationAppointmentColumns.MODIFIED_BY+","+
                     SQLHandler.VaccinationAppointmentColumns.MODIFIED_ON+","+
                     SQLHandler.VaccinationAppointmentColumns.NOTES+","+
+                    SQLHandler.VaccinationAppointmentColumns.OUTREACH+","+
                     SQLHandler.VaccinationAppointmentColumns.SCHEDULED_DATE+","+
                     SQLHandler.VaccinationAppointmentColumns.SCHEDULED_FACILITY_ID+
-                    " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
 
             SQLiteStatement stmt1 = db1.compileStatement(sql1);
 
@@ -1421,8 +1422,9 @@ public class BackboneApplication extends Application {
                 stmt1.bindString(5, vaccinationAppointment.getModifiedBy());
                 stmt1.bindString(6, vaccinationAppointment.getModifiedOn());
                 stmt1.bindString(7, vaccinationAppointment.getNotes());
-                stmt1.bindString(8, vaccinationAppointment.getScheduledDate());
-                stmt1.bindString(9, vaccinationAppointment.getScheduledFacilityId());
+                stmt1.bindString(8, vaccinationAppointment.getOutreach());
+                stmt1.bindString(9, vaccinationAppointment.getScheduledDate());
+                stmt1.bindString(10, vaccinationAppointment.getScheduledFacilityId());
 
                 stmt1.execute();
                 stmt1.clearBindings();
