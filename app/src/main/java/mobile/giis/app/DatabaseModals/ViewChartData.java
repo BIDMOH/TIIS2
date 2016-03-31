@@ -3,6 +3,8 @@ package mobile.giis.app.DatabaseModals;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.RealmObject;
+
 /**
  * Created by coze on 3/31/16.
  */

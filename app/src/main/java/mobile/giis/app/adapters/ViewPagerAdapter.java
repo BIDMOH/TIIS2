@@ -8,6 +8,7 @@ import android.util.Log;
 import java.util.Locale;
 
 import mobile.giis.app.fragments.DefaultersReportFragment;
+import mobile.giis.app.fragments.HealthFacilityImmunizationCoverageChartFragment;
 import mobile.giis.app.fragments.HealthFacilityImmunizationCoverageReportFragment;
 import mobile.giis.app.fragments.HealthFacilityVisitsAndVaccinationSummaryFragment;
 import mobile.giis.app.fragments.DropoutReportFragment;
@@ -24,7 +25,7 @@ import mobile.giis.app.fragments.VaccinationCoverageFragment;
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
 
-    private final String[] TITLES = { "Immunized Children", "Vaccination Coverage", "Stock","Health Visits and Vaccination Summary","Health Facility Immunization Coverage Report", "Defaulters List", "Stock Balance", "Dropout Report" };
+    private final String[] TITLES = { "Immunized Children", "Vaccination Coverage", "Stock","Health Visits and Vaccination Summary","Health Facility Immunization Coverage Report","Health Facility Immunization Coverage Chart", "Defaulters List", "Stock Balance", "Dropout Report" };
     public ViewPagerAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -56,13 +57,15 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         }
         else if (position == 4){
             return HealthFacilityImmunizationCoverageReportFragment.newInstance(position);
+        }else if (position == 5){
+            return HealthFacilityImmunizationCoverageChartFragment.newInstance(position);
         }
-        else if (position == 5){
+        else if (position == 6){
             return DefaultersReportFragment.newInstance(position);
-        }else if (position == 6){
+        }else if (position == 7){
             return StockBalanceReportFragment.newInstance(position);
         }
-        else if (position == 7){
+        else if (position == 8){
             return DropoutReportFragment.newInstance(position);
         }
         else{
