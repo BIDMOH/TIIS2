@@ -24,7 +24,7 @@ import mobile.giis.app.fragments.VaccinationCoverageFragment;
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
 
-    private final String[] TITLES = { "Immunized Children", "Vaccination Coverage", "Stock","Health Visits and Vaccination Summary","Health Facility Immunization Coverage Report", "Defaulters List", "Stock Balance", "Dropout Report" };
+    private final String[] TITLES = { "Immunized Children", "Vaccination Coverage", "Stock","Health Visits and Vaccination Summary","Health Facility Immunization Coverage Report", "Defaulters List", "Dropout Report" };
     public ViewPagerAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -59,10 +59,8 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         }
         else if (position == 5){
             return DefaultersReportFragment.newInstance(position);
-        }else if (position == 6){
-            return StockBalanceReportFragment.newInstance(position);
         }
-        else if (position == 7){
+        else if (position == 6){
             return DropoutReportFragment.newInstance(position);
         }
         else{

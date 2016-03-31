@@ -82,25 +82,27 @@ public class DropoutReportFragment extends Fragment {
 
         SingleTextViewAdapter dataAdapter = new SingleTextViewAdapter(DropoutReportFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, dateVAlues);
         dateSpinner.setAdapter(dataAdapter);
-        dateSpinner.setSelection(0);
-        currentYearSelected = dateVAlues.get(0);
+        dateSpinner.setSelection(1);
+        currentYearSelected = dateVAlues.get(1);
 
         new getDropOutTable().execute(currentYearSelected);
 
-//        dateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                if (!(i == 0)){
-//                    currentYearSelected = years[i-1];
-//                }
-//                new getDropOutTable().execute(currentYearSelected);
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
+        dateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.d("SpinnerSelection", "Positions is : "+i);
+                if (i != -1){
+                    currentYearSelected = years[i];
+                    new getDropOutTable().execute(currentYearSelected);
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 //
         return rowview;
     }
@@ -193,12 +195,12 @@ public class DropoutReportFragment extends Fragment {
 
                         if (cursor3 != null){
                             cursor3.moveToFirst();
-                            row.setBcgAmount(cursor3.getInt(cursor3.getColumnIndex("PENTA1_COUNT")));
+                            row.setPenta1Amount(cursor3.getInt(cursor3.getColumnIndex("PENTA1_COUNT")));
                         }
 
                         if (cursor4 != null){
                             cursor4.moveToFirst();
-                            row.setBcgAmount(cursor4.getInt(cursor4.getColumnIndex("PENTA3_COUNT")));
+                            row.setPenta3Amount(cursor4.getInt(cursor4.getColumnIndex("PENTA3_COUNT")));
                         }
                         row.generateData();
                         mVar.add(row);
