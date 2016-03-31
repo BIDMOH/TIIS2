@@ -229,13 +229,10 @@ public class ImmunizedChildrenFragment extends Fragment implements OnChartValueS
                     listofCodes.add(a.getLabel());
                 }
             }
-            Log.d("ARSENALTAG", "size of the listofcodes is : "+listofCodes.size());
+
         }
 
-        Log.d("ARSENALTAG", "size of the list is : " + listOfImmunizations.size());
-
         listImmun   =   mydb.getImmunizations(mDate, app);
-        Log.d("MPLAN", listImmun.size() + "");
         setListViewHeightBasedOnChildren(immunizationsList);
 
         if(listImmun.isEmpty()){
@@ -295,7 +292,6 @@ public class ImmunizedChildrenFragment extends Fragment implements OnChartValueS
 
     private void refreshImmunizedChildren(String mDate){
         listOfImmunizedChildren = mydb.getImmunizedChildren(mDate ,app);
-        Log.d("MPLAN", listOfImmunizedChildren.size() + " Refreshing Childrens");
         if(!(listOfImmunizedChildren.size() > 0)){
             emptyImmunizedChildren.setVisibility(View.VISIBLE);
         }else{

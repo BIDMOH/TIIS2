@@ -20,8 +20,10 @@ import org.w3c.dom.Text;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import mobile.giis.app.R;
+import mobile.giis.app.base.BackboneActivity;
 import mobile.giis.app.base.BackboneApplication;
 import mobile.giis.app.database.DatabaseHandler;
 import mobile.giis.app.database.SQLHandler;
@@ -178,11 +180,8 @@ public class DefaultersReportFragment extends Fragment {
                 }
 
                 SimpleDateFormat ft = new SimpleDateFormat("dd/MM/yyyy");
-                try {
-                    childDOB.setText(ft.format(ft.parse(currentChild.getBirthdate())));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                Date date = BackboneActivity.dateParser(currentChild.getBirthdate());
+                childDOB.setText(ft.format(date));
 
                 childMotherNames.setText(currentChild.getMotherFirstname()+ " "+currentChild.getMotherLastname());
 

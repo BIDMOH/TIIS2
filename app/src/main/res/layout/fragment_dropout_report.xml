@@ -14,6 +14,7 @@
             android:layout_margin="8dp"
             android:layout_marginBottom="-2dp"
             android:layout_height="wrap_content">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:padding="16dp"
@@ -196,7 +197,7 @@
                                 android:layout_weight="0.8"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/the_title_value"
-                                android:text="Stock Balance"
+                                android:text="Dropout Report"
                                 android:paddingTop="4dp"
                                 android:paddingBottom="4dp"/>
 
@@ -213,10 +214,12 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="100dp"
+                        android:layout_height="70dp"
                         android:orientation="horizontal"
+                        android:gravity="center_vertical"
                         android:layout_marginTop="32dp"
-                        android:paddingTop="8dp"
+                        android:paddingTop="16dp"
+                        android:paddingBottom="16dp"
                         android:paddingLeft="16dp"
                         android:paddingRight="16dp"
                         android:id="@+id/linear_title"
@@ -226,100 +229,97 @@
                             android:layout_width="0dp"
                             android:layout_weight="0.2"
                             android:layout_height="wrap_content"
-                            android:id="@+id/antigen_title"
-                            android:text="Antigen"
-                            android:layout_marginTop="16dp"
-                            android:textStyle="bold"/>
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.15"
-                            android:textStyle="bold"
-                            android:layout_marginTop="16dp"
-                            android:text="Batch Number"
-                            android:id="@+id/batch_number_title"
-                            />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="0.1"
-                            android:layout_marginTop="16dp"
-                            android:id="@+id/exp_date_title"
-                            android:layout_height="wrap_content"
-                            android:textStyle="bold"
-                            android:text="Expiry Date"
-                            />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="0.1"
-                            android:id="@+id/physical_count_title"
-                            android:layout_height="wrap_content"
-                            android:textStyle="bold"
-                            android:layout_marginTop="16dp"
-                            android:gravity="center"
-                            android:layout_marginRight="8dp"
-                            android:text="Physical Count"/>
+                            android:id="@+id/month_title"
+                            android:text="Month"/>
 
                         <View
                             android:layout_width="1dp"
                             android:layout_height="match_parent"
-                            android:layout_marginTop="-16dp"
-                            android:background="@color/white"/>
+                            android:background="@color/white"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="4dp"/>
 
                         <RelativeLayout
-                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="4dp"
                             android:layout_width="0dp"
-                            android:layout_weight="0.45"
+                            android:layout_weight="0.4"
                             android:layout_height="match_parent">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerHorizontal="true"
-                                android:layout_marginTop="16dp"
-                                android:text="Discarded By Key Reasons"
-                                android:textStyle="bold"
-                                android:id="@+id/section_title"/>
+                                android:text=" BCG - MR 1 "
+                                android:id="@+id/bcg_mri"/>
 
                             <LinearLayout
                                 android:layout_width="match_parent"
+                                android:layout_below="@id/bcg_mri"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.5"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/bcg_mri_number_title"
+                                    android:gravity="center_horizontal"
+                                    android:text="Number"/>
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.5"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/bcg_mri_percent_title"
+                                    android:gravity="center_horizontal"
+                                    android:text="Percent (%) "/>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/white"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="4dp"/>
+
+
+                        <RelativeLayout
+                            android:layout_marginLeft="4dp"
+                            android:layout_width="0dp"
+                            android:layout_weight="0.4"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:layout_alignParentBottom="true"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginBottom="16dp">
+                                android:layout_centerHorizontal="true"
+                                android:text=" PENTA 1 - PENTA 3 "
+                                android:id="@+id/penta1_penta3"/>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_below="@id/penta1_penta3"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical">
 
                                 <TextView
                                     android:layout_width="0dp"
-                                    android:layout_weight="1"
-                                    android:id="@+id/vvm_title"
+                                    android:layout_weight="0.5"
                                     android:layout_height="wrap_content"
-                                    android:textStyle="bold"
+                                    android:id="@+id/penta1_penta3_number_title"
                                     android:gravity="center_horizontal"
-                                    android:layout_marginBottom="8dp"
-                                    android:text="VVM Change"/>
+                                    android:text="Number"/>
 
                                 <TextView
                                     android:layout_width="0dp"
-                                    android:layout_weight="1"
-                                    android:id="@+id/expiry_title"
+                                    android:layout_weight="0.5"
                                     android:layout_height="wrap_content"
-                                    android:textStyle="bold"
+                                    android:id="@+id/penta1_penta3_percent_title"
                                     android:gravity="center_horizontal"
-                                    android:layout_marginBottom="8dp"
-                                    android:text="Expiry"/>
-
-                                <TextView
-                                    android:layout_width="0dp"
-                                    android:layout_weight="1"
-                                    android:id="@+id/physical_damage_title"
-                                    android:layout_height="wrap_content"
-                                    android:textStyle="bold"
-                                    android:gravity="center_horizontal"
-                                    android:layout_marginBottom="8dp"
-                                    android:text="Physical Damage"/>
+                                    android:text="Percent (%)"/>
 
                             </LinearLayout>
 
@@ -331,7 +331,7 @@
                     <TableLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/stock_balance_table"
+                        android:id="@+id/dropout_table"
                         android:layout_below="@id/linear_title"
                         android:background="@color/card_grid_tex">
 
