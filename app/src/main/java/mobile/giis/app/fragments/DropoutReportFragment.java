@@ -239,13 +239,44 @@ public class DropoutReportFragment extends Fragment {
             TextView pentaNumber = (TextView) v.findViewById(R.id.penta1_penta3_number_value);
             TextView pentaPercent = (TextView) v.findViewById(R.id.penta1_penta3_percent_value);
 
-            monthValue.setText(row.getMonthName());
+            monthValue.setText(returnMonthName(row.getMonthName()));
             bcgMriNumber.setText(row.getBcgAmount()+ "");
             bcgMriPercent.setText(row.getBcgPercent()+ "");
             pentaNumber.setText(row.getPentaNumber() + "");
             pentaPercent.setText(row.getPentaPercent()+"");
 
             dropoutTable.addView(v);
+        }
+    }
+
+    public String returnMonthName(String number){
+        switch (number){
+            case "01":
+                return "January";
+            case "02":
+                return "February";
+            case "03":
+                return "March";
+            case "04":
+                return "April";
+            case "05":
+                return "May";
+            case "06":
+                return "June";
+            case "07":
+                return "July";
+            case "08":
+                return "August";
+            case "09":
+                return "September";
+            case "10":
+                return "October";
+            case "11":
+                return "November";
+            case "12":
+                return "December";
+            default:
+                return "";
         }
     }
 
