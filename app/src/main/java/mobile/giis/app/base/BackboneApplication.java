@@ -461,35 +461,39 @@ public class BackboneApplication extends Application {
         final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(AUDIT_MANAGEMENT_GET_CONFIGURATION);
         Log.d("", webServiceUrl.toString());
 
-        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
-        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                throwable.printStackTrace();
-            }
+        try {
+            client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+            RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    throwable.printStackTrace();
+                }
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                try {
-                    JSONArray jarr = new JSONArray(responseString);
-                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + jarr.toString());
-                    for (int i = 0; i < jarr.length(); i++) {
-                        JSONObject jobj = jarr.getJSONObject(i);
-                        if (jobj.getString("key").equals(Constants.LimitNumberOfDaysBeforeExpire)) {
-                            Constants.LimitNumberOfDaysBeforeExpireVal = jobj.getInt("value");
-                            saveConfiguration(Constants.LimitNumberOfDaysBeforeExpire, Constants.LimitNumberOfDaysBeforeExpireVal);
-                        } else if (jobj.getString("key").equals(Constants.EligibleForVaccination)) {
-                            Constants.EligibleForVaccinationVal = jobj.getInt("value");
-                            saveConfiguration(Constants.EligibleForVaccination, Constants.EligibleForVaccinationVal);
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                    try {
+                        JSONArray jarr = new JSONArray(responseString);
+                        Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + jarr.toString());
+                        for (int i = 0; i < jarr.length(); i++) {
+                            JSONObject jobj = jarr.getJSONObject(i);
+                            if (jobj.getString("key").equals(Constants.LimitNumberOfDaysBeforeExpire)) {
+                                Constants.LimitNumberOfDaysBeforeExpireVal = jobj.getInt("value");
+                                saveConfiguration(Constants.LimitNumberOfDaysBeforeExpire, Constants.LimitNumberOfDaysBeforeExpireVal);
+                            } else if (jobj.getString("key").equals(Constants.EligibleForVaccination)) {
+                                Constants.EligibleForVaccinationVal = jobj.getInt("value");
+                                saveConfiguration(Constants.EligibleForVaccination, Constants.EligibleForVaccinationVal);
+                            }
+
                         }
 
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-            }
-        });
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 
@@ -1455,9 +1459,10 @@ public class BackboneApplication extends Application {
                     SQLHandler.VaccinationAppointmentColumns.MODIFIED_BY+","+
                     SQLHandler.VaccinationAppointmentColumns.MODIFIED_ON+","+
                     SQLHandler.VaccinationAppointmentColumns.NOTES+","+
+                    SQLHandler.VaccinationAppointmentColumns.OUTREACH+","+
                     SQLHandler.VaccinationAppointmentColumns.SCHEDULED_DATE+","+
                     SQLHandler.VaccinationAppointmentColumns.SCHEDULED_FACILITY_ID+
-                    " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
 
             SQLiteStatement stmt1 = db1.compileStatement(sql1);
 
@@ -1469,8 +1474,9 @@ public class BackboneApplication extends Application {
                 stmt1.bindString(5, vaccinationAppointment.getModifiedBy());
                 stmt1.bindString(6, vaccinationAppointment.getModifiedOn());
                 stmt1.bindString(7, vaccinationAppointment.getNotes());
-                stmt1.bindString(8, vaccinationAppointment.getScheduledDate());
-                stmt1.bindString(9, vaccinationAppointment.getScheduledFacilityId());
+                stmt1.bindString(8, vaccinationAppointment.getOutreach());
+                stmt1.bindString(9, vaccinationAppointment.getScheduledDate());
+                stmt1.bindString(10, vaccinationAppointment.getScheduledFacilityId());
 
                 stmt1.execute();
                 stmt1.clearBindings();
