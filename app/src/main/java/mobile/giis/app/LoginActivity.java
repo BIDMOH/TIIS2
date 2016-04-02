@@ -46,8 +46,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopj.android.http.AsyncHttpClient;
@@ -77,6 +80,7 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import cz.msebera.android.httpclient.Header;
@@ -87,6 +91,7 @@ import mobile.giis.app.base.BackboneApplication;
 import mobile.giis.app.database.DatabaseHandler;
 import mobile.giis.app.database.SQLHandler;
 import mobile.giis.app.entity.ChildCollector;
+import mobile.giis.app.entity.ChildCollector2;
 import mobile.giis.app.helpers.Utils;
 import mobile.giis.app.postman.RoutineAlarmReceiver;
 import mobile.giis.app.util.Constants;
@@ -140,8 +145,6 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
         rootView = findViewById(R.id.rootView);
 
 
-
-
         // We load the KeyStore
         try {
             /// We initialize a default Keystore
@@ -168,8 +171,13 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
         }
 
 
+
+
         client.setTimeout(DEFAULT_TIMEOUT);
         client.setMaxConnections(20);
+
+
+
         //DatabaseHandler.getDBFile(this);
         //Delete vaccinationQueueRows that are not from today
         TextView titleText = (TextView) findViewById(R.id.login_screen_title);

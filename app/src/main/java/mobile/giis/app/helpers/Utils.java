@@ -68,8 +68,13 @@ public final class Utils {
         ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(
                 Context.CONNECTIVITY_SERVICE);
 
-        return cm.getActiveNetworkInfo() != null &&
-                cm.getActiveNetworkInfo().isConnectedOrConnecting();
+        try {
+            return cm.getActiveNetworkInfo() != null &&
+                    cm.getActiveNetworkInfo().isConnectedOrConnecting();
+        }catch (Exception e){
+            return false;
+        }
+
     }
 
 

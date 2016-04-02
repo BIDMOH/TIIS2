@@ -101,6 +101,7 @@ import mobile.giis.app.entity.VaccinationEvent;
 import mobile.giis.app.entity.Weight;
 import mobile.giis.app.helpers.Utils;
 import mobile.giis.app.postman.PostmanModel;
+import mobile.giis.app.postman.RoutineAlarmReceiver;
 import mobile.giis.app.util.Constants;
 
 /**
@@ -1054,6 +1055,7 @@ public class BackboneApplication extends Application {
     private boolean updateChildResults = false;
     public boolean updateChild(StringBuilder url) {
         url.append("&userId=" + LOGGED_IN_USER_ID);
+        Log.d("coze","updating child url = "+url);
 
         client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
         RequestHandle message = client.get(url.toString(), new TextHttpResponseHandler() {
@@ -1201,7 +1203,61 @@ public class BackboneApplication extends Application {
         return updateVaccinationQueueResult;
     }
 
-    private int requestCode;
+//    private int requestCode;
+//    /**
+//     * this method takes the date of today and the logged in user id and returns 1 and .....(we get data from server),
+//     * 2 if there is no entry for the queue(we dont get data from server) and 3 if statusCode not 200
+//     *
+//     * @return int that shows result interpretation
+//     */
+//    public int getVaccinationQueueByDateAndUser() {
+//        final StringBuilder webServiceUrl = createWebServiceURL("", GET_VACCINATION_QUEUE_BY_DATE_AND_USER);
+//        webServiceUrl.append("?date=").append(new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())).append("&userId=").append(getLOGGED_IN_USER_ID());
+//        Log.e("getVaccQueueByDt&Usr", webServiceUrl.toString());
+//
+//        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+//        client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                requestCode = 3;
+//            }
+//
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, String responseAsString) {
+//                try {
+//                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + responseAsString);
+//                    JSONArray jarr = new JSONArray(responseAsString);
+//                    DatabaseHandler db = getDatabaseInstance();
+//                    String childBarcodesNotInDB = "";
+//                    for (int i = 0; i < jarr.length(); i++) {
+//                        JSONObject jobj = jarr.getJSONObject(i);
+//                        if (db.isBarcodeInChildTable(jobj.getString("BarcodeId"))) {
+//                            String dateNow = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(new Date(Long.parseLong(jobj.getString("Date").substring(6, 19))));
+//
+//                            ContentValues cv = new ContentValues();
+//                            cv.put(SQLHandler.VaccinationQueueColumns.CHILD_ID, db.getChildIdByBarcode(jobj.getString("BarcodeId")));
+//                            cv.put(SQLHandler.VaccinationQueueColumns.DATE, dateNow);
+//                            db.addChildToVaccinationQueue(cv);
+//                        } else {
+//                            if (childBarcodesNotInDB.length() > 0) childBarcodesNotInDB += ",";
+//                            childBarcodesNotInDB += jobj.getString("BarcodeId");
+//                        }
+//                    }
+//
+//                    if (childBarcodesNotInDB.length() > 0) {
+//                        getChildByBarcodeList(childBarcodesNotInDB);
+//                    }
+//                    requestCode = 1;
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    requestCode = 2;
+//                }
+//            }
+//        });
+//        return requestCode;
+//
+//    }
+
     /**
      * this method takes the date of today and the logged in user id and returns 1 and .....(we get data from server),
      * 2 if there is no entry for the queue(we dont get data from server) and 3 if statusCode not 200
@@ -1212,49 +1268,60 @@ public class BackboneApplication extends Application {
         final StringBuilder webServiceUrl = createWebServiceURL("", GET_VACCINATION_QUEUE_BY_DATE_AND_USER);
         webServiceUrl.append("?date=").append(new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())).append("&userId=").append(getLOGGED_IN_USER_ID());
         Log.e("getVaccQueueByDt&Usr", webServiceUrl.toString());
-
-        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
-        client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                requestCode = 3;
+        try {
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
+            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
+            HttpResponse httpResponse = httpClient.execute(httpGet);
+            if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                Utils.writeNetworkLogFileOnSD(
+                        Utils.returnDeviceIdAndTimestamp(getApplicationContext())
+                                + " StatusCode " + httpResponse.getStatusLine().getStatusCode()
+                                + " ReasonPhrase " + httpResponse.getStatusLine().getReasonPhrase()
+                                + " ProtocolVersion " + httpResponse.getStatusLine().getProtocolVersion());
+                return 3;
             }
+            InputStream inputStream = httpResponse.getEntity().getContent();
+            String responseAsString = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + responseAsString);
+            JSONArray jarr = new JSONArray(responseAsString);
+            DatabaseHandler db = getDatabaseInstance();
+            String childBarcodesNotInDB = "";
+            for (int i = 0; i < jarr.length(); i++) {
+                JSONObject jobj = jarr.getJSONObject(i);
+                if (db.isBarcodeInChildTable(jobj.getString("BarcodeId"))) {
+                    String dateNow = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(new Date(Long.parseLong(jobj.getString("Date").substring(6, 19))));
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseAsString) {
-                try {
-                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + responseAsString);
-                    JSONArray jarr = new JSONArray(responseAsString);
-                    DatabaseHandler db = getDatabaseInstance();
-                    String childBarcodesNotInDB = "";
-                    for (int i = 0; i < jarr.length(); i++) {
-                        JSONObject jobj = jarr.getJSONObject(i);
-                        if (db.isBarcodeInChildTable(jobj.getString("BarcodeId"))) {
-                            String dateNow = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(new Date(Long.parseLong(jobj.getString("Date").substring(6, 19))));
-
-                            ContentValues cv = new ContentValues();
-                            cv.put(SQLHandler.VaccinationQueueColumns.CHILD_ID, db.getChildIdByBarcode(jobj.getString("BarcodeId")));
-                            cv.put(SQLHandler.VaccinationQueueColumns.DATE, dateNow);
-                            db.addChildToVaccinationQueue(cv);
-                        } else {
-                            if (childBarcodesNotInDB.length() > 0) childBarcodesNotInDB += ",";
-                            childBarcodesNotInDB += jobj.getString("BarcodeId");
-                        }
-                    }
-
-                    if (childBarcodesNotInDB.length() > 0) {
-                        getChildByBarcodeList(childBarcodesNotInDB);
-                    }
-                    requestCode = 1;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    requestCode = 2;
+                    ContentValues cv = new ContentValues();
+                    cv.put(SQLHandler.VaccinationQueueColumns.CHILD_ID, db.getChildIdByBarcode(jobj.getString("BarcodeId")));
+                    cv.put(SQLHandler.VaccinationQueueColumns.DATE, dateNow);
+                    db.addChildToVaccinationQueue(cv);
+                } else {
+                    if (childBarcodesNotInDB.length() > 0) childBarcodesNotInDB += ",";
+                    childBarcodesNotInDB += jobj.getString("BarcodeId");
                 }
             }
-        });
-        return requestCode;
 
+            if (childBarcodesNotInDB.length() > 0) {
+                getChildByBarcodeList(childBarcodesNotInDB);
+            }
+            return 1;
+        } catch (JsonGenerationException e) {
+            e.printStackTrace();
+            return 2;
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+            return 2;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return 3;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return 2;
+        }
     }
+
 
     /**
      * this method  regiters Audit in Server DB and returns true if statusCode == 200
@@ -2178,7 +2245,7 @@ public class BackboneApplication extends Application {
         client.get(url, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                updatingVaccineOnTheServerResult= -1;
+                updatingVaccineOnTheServerResult = -1;
                 getDatabaseInstance().addPost(url, 1);
             }
 
@@ -2189,7 +2256,7 @@ public class BackboneApplication extends Application {
                     JSONObject jobj = new JSONObject(result);
                     int childID = jobj.getInt("id");
                     if (childID == 1) {
-                        updatingVaccineOnTheServerResult =  childID;
+                        updatingVaccineOnTheServerResult = childID;
                     } else {
                         getDatabaseInstance().addPost(url, 1);
                         updatingVaccineOnTheServerResult = -1;
@@ -2423,6 +2490,51 @@ public class BackboneApplication extends Application {
 
     }
 
+//    /**
+//     * Parsing data from Server after the First login in intervals
+//     */
+//    public void intervalGetChildrenByHealthFacilitySinceLastLogin() {
+//
+//        String url = WCF_URL + "ChildManagement.svc/GetChildrenByHealthFacilitySinceLastLogin?idUser=" + getLOGGED_IN_USER_ID();
+//        Log.e("SinceLastLogin", "GetChildrenByHealthFacilitySinceLastLogin url is: " + url);
+//        try {
+//            client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+//            client.get(url, new TextHttpResponseHandler() {
+//                @Override
+//                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                    throwable.printStackTrace();
+//                }
+//
+//                @Override
+//                public void onSuccess(int statusCode, Header[] headers, String response) {
+//                    Log.d(TAG, "received child since last login  = " + response);
+//                    ChildCollector2 objects2 = new ChildCollector2();
+//                    try {
+//                        Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+//                        ObjectMapper mapper = new ObjectMapper();
+//                        objects2 = mapper.readValue(response, new TypeReference<List<ChildCollector2>>() {
+//                        });
+//
+//                    } catch (JsonGenerationException e) {
+//                        e.printStackTrace();
+//                    } catch (JsonMappingException e) {
+//                        e.printStackTrace();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    } finally {
+//                        addChildVaccinationEventVaccinationAppointment(objects2);
+//                    }
+//
+//                }
+//            });
+//        }catch (Exception e){
+//            RoutineAlarmReceiver.cancelAlarm(getApplicationContext());
+//        }
+//
+//
+//    }
+
+
     /**
      * Parsing data from Server after the First login in intervals
      */
@@ -2431,37 +2543,35 @@ public class BackboneApplication extends Application {
         String url = WCF_URL + "ChildManagement.svc/GetChildrenByHealthFacilitySinceLastLogin?idUser=" + getLOGGED_IN_USER_ID();
         Log.e("SinceLastLogin", "GetChildrenByHealthFacilitySinceLastLogin url is: " + url);
 
-        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
-        client.get(url.toString(), new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                throwable.printStackTrace();
-            }
+        ChildCollector2 objects2 = new ChildCollector2();
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String response) {
-                ChildCollector2 objects2 = new ChildCollector2();
-                try {
-                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-                    ObjectMapper mapper = new ObjectMapper();
-                    objects2 = mapper.readValue(response, new TypeReference<List<ChildCollector2>>() {
-                    });
+        try {
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+            HttpGet httpGet = new HttpGet(url);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + url.toString());
+            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
+            HttpResponse httpResponse = httpClient.execute(httpGet);
+            InputStream inputStream = httpResponse.getEntity().getContent();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Log.e("SinceLastLogin", "responce  is: " + response);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+            ObjectMapper mapper = new ObjectMapper();
+            objects2 = mapper.readValue(response, new TypeReference<List<ChildCollector>>() {
+            });
 
-                } catch (JsonGenerationException e) {
-                    e.printStackTrace();
-                } catch (JsonMappingException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    addChildVaccinationEventVaccinationAppointment(objects2);
-                }
-
-            }
-        });
+        } catch (JsonGenerationException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            addChildVaccinationEventVaccinationAppointment(objects2);
+        }
 
 
     }
+
 
     /**
      * Parsing data from Server getChildByBarcodeList to get children that we dont have but are found in the vacc queue of server
@@ -2505,6 +2615,48 @@ public class BackboneApplication extends Application {
 
 
     }
+//
+//    /**
+//     * Parsing data from Server GetChildByIdListSince to get children or update
+//     * before using this method we need to check if there is a logged in user in the app
+//     */
+//    public void getGetChildByIdListSince() {
+//        String childIds = getDatabaseInstance().getChildrenFromOtherHFIDThanLoggedUser(getLOGGED_IN_USER_HF_ID());
+//        if (childIds == null) return;
+//        String url = WCF_URL + "ChildManagement.svc/GetChildByIdListSince?childIdList=" + childIds + "&userId=" + getLOGGED_IN_USER_ID();
+//        Log.d("getChildByBarcodeList", url);
+//
+//        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+//        RequestHandle message = client.get(url.toString(), new TextHttpResponseHandler() {
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                throwable.printStackTrace();
+//            }
+//
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+//                ChildCollector2 objects2 = new ChildCollector2();
+//
+//                try {
+//                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + responseString);
+//                    ObjectMapper mapper = new ObjectMapper();
+//                    objects2 = mapper.readValue(responseString, new TypeReference<List<ChildCollector>>() {
+//                    });
+//
+//                } catch (JsonGenerationException e) {
+//                    e.printStackTrace();
+//                } catch (JsonMappingException e) {
+//                    e.printStackTrace();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                } finally {
+//                    addChildVaccinationEventVaccinationAppointment(objects2);
+//                }
+//
+//            }
+//        });
+//
+//    }
 
     /**
      * Parsing data from Server GetChildByIdListSince to get children or update
@@ -2516,35 +2668,31 @@ public class BackboneApplication extends Application {
         String url = WCF_URL + "ChildManagement.svc/GetChildByIdListSince?childIdList=" + childIds + "&userId=" + getLOGGED_IN_USER_ID();
         Log.d("getChildByBarcodeList", url);
 
-        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
-        RequestHandle message = client.get(url.toString(), new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                throwable.printStackTrace();
-            }
+        ChildCollector2 objects2 = new ChildCollector2();
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                ChildCollector2 objects2 = new ChildCollector2();
+        try {
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+            HttpGet httpGet = new HttpGet(url);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + url.toString());
+            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
+            HttpResponse httpResponse = httpClient.execute(httpGet);
+            InputStream inputStream = httpResponse.getEntity().getContent();
+            String response = Utils.getStringFromInputStream(inputStream);
+            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+            ObjectMapper mapper = new ObjectMapper();
+            objects2 = mapper.readValue(response, new TypeReference<List<ChildCollector>>() {
+            });
 
-                try {
-                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + responseString);
-                    ObjectMapper mapper = new ObjectMapper();
-                    objects2 = mapper.readValue(responseString, new TypeReference<List<ChildCollector>>() {
-                    });
+        } catch (JsonGenerationException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            addChildVaccinationEventVaccinationAppointment(objects2);
+        }
 
-                } catch (JsonGenerationException e) {
-                    e.printStackTrace();
-                } catch (JsonMappingException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    addChildVaccinationEventVaccinationAppointment(objects2);
-                }
-
-            }
-        });
 
     }
 

@@ -898,22 +898,22 @@ public class ChildSummaryPagerFragment extends Fragment {
             e.printStackTrace();
         }
         try {
-            webServiceUrl.append("&birthplaceId=" + URLEncoder.encode(birthplaceList.get(pobSpinner.getSelectedItemPosition()).getId(), "UTF-8"));
+            webServiceUrl.append("&birthplaceId=" + URLEncoder.encode(birthplaceList.get(pobSpinner.getSelectedItemPosition()-1).getId(), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         try {
-            webServiceUrl.append("&domicileId=" + URLEncoder.encode(placeList.get(villageSpinner.getSelectedItemPosition()).getId(), "UTF-8"));
+            webServiceUrl.append("&domicileId=" + URLEncoder.encode(placeList.get(villageSpinner.getSelectedItemPosition()-1).getId(), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         try {
-            webServiceUrl.append("&healthFacilityId=" + URLEncoder.encode(healthFacilityList.get(healthFacilitySpinner.getSelectedItemPosition()).getId(), "UTF-8"));
+            webServiceUrl.append("&healthFacilityId=" + URLEncoder.encode(healthFacilityList.get(healthFacilitySpinner.getSelectedItemPosition()-1).getId(), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         try {
-            webServiceUrl.append("&statusid=" + URLEncoder.encode(statusList.get(statusSpinner.getSelectedItemPosition()).getId(), "UTF-8"));
+            webServiceUrl.append("&statusid=" + URLEncoder.encode(statusList.get(statusSpinner.getSelectedItemPosition()-1).getId(), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -945,6 +945,7 @@ public class ChildSummaryPagerFragment extends Fragment {
             e.printStackTrace();
         }
         try {
+            Log.d("coze", "updating child modified on = " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(Calendar.getInstance().getTime()));
             webServiceUrl.append("&modifiedOn=" + URLEncoder.encode(new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(Calendar.getInstance().getTime()), "utf-8"));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

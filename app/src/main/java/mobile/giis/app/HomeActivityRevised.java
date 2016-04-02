@@ -847,6 +847,6 @@ public class HomeActivityRevised extends BackboneActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        RoutineAlarmReceiver.cancelAlarm(this);
     }
+
 }
