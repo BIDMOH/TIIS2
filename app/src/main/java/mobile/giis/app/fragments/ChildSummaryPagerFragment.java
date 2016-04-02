@@ -445,21 +445,24 @@ public class ChildSummaryPagerFragment extends Fragment {
                 status_name.add(element.getName());
             }
             status_name.add("");
+
+
             SingleTextViewAdapter statusAdapter = new SingleTextViewAdapter(ChildSummaryPagerFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, status_name);
             statusSpinner.setAdapter(statusAdapter);
             statusSpinner.setEnabled(false);
             pos = statusAdapter.getPosition(currentChild.getStatus());
 
+
             //TODO: Check at what time is the Status of A child inserted because in the
             //TODO: current version it is not captured during registering the child
 
-//            if (pos != -1) {
-//                statusSpinner.setSelection(pos);
-//                statusOrig = pos;
-//            } else {
-//                statusSpinner.setSelection(statusAdapter.getCount() - 1);
-//                statusOrig = statusAdapter.getCount() - 1;
-//            }
+            if (pos != -1) {
+                statusSpinner.setSelection(pos+1);
+                statusOrig = pos;
+            } else {
+                statusSpinner.setSelection(statusAdapter.getCount() - 1);
+                statusOrig = statusAdapter.getCount() - 1;
+            }
 
         }
     }

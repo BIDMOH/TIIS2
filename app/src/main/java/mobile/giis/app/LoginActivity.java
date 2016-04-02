@@ -32,6 +32,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.DisplayMetrics;
@@ -54,6 +55,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.MySSLSocketFactory;
 import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.SyncHttpClient;
+import com.loopj.android.http.TextHttpResponseHandler;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.apache.commons.io.IOUtils;
@@ -129,11 +131,14 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
 
     private static AsyncHttpClient client = new AsyncHttpClient();
     final int DEFAULT_TIMEOUT = 6000000;
+    private View rootView;
 
     @Override
     protected void onCreate(Bundle starter) {
         super.onCreate(starter);
         setContentView(R.layout.login_activity);
+        rootView = findViewById(R.id.rootView);
+
 
 
 
@@ -378,8 +383,170 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
     protected void startWebService(final CharSequence loginURL , final String username, final String password){
         client.setBasicAuth(username, password, true);
 
-        UsePoolThreadResponseHandler poolThreadResponseHandler= new UsePoolThreadResponseHandler();
-        RequestHandle message = client.get(loginURL.toString(), poolThreadResponseHandler);
+        RequestHandle message = client.get(loginURL.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                // This callback is now running within the pool thread execution
+                // scope and not within Android's UI thread, so if we must update
+                // the UI, we'll have to dispatch a runnable to the UI thread.
+                Log.d(TAG, "Error = ");
+                progressDialog.dismiss();
+                loginButton.setEnabled(true);
+                final Snackbar snackbar=Snackbar.make(rootView,"Login Failed. Please try again",Snackbar.LENGTH_LONG);
+                snackbar.setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        snackbar.dismiss();
+                    }
+                });
+                snackbar.show();
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                Log.d(TAG,"receiving data in streams");
+
+                BackboneApplication app = (BackboneApplication)getApplication();
+
+                try {
+                    JsonFactory factory = new JsonFactory();
+                    JsonParser jsonParser = factory.createJsonParser(responseString);
+                    com.fasterxml.jackson.core.JsonToken token = jsonParser.nextToken();
+
+                    int balanceCounter = 0;
+
+                    if (token == JsonToken.START_OBJECT) {
+                        balanceCounter++;
+                        boolean idNextToHfId = false;
+                        while (!(balanceCounter == 0)) {
+                            token = jsonParser.nextToken();
+
+                            if (token == JsonToken.START_OBJECT) {
+                                balanceCounter++;
+                            } else if (token == JsonToken.END_OBJECT) {
+                                balanceCounter--;
+                            } else if (token == JsonToken.FIELD_NAME) {
+                                String object = jsonParser.getCurrentName();
+                                switch (object) {
+                                    case "HealthFacilityId":
+                                        token = jsonParser.nextToken();
+                                        app.setLoggedInUserHealthFacilityId(jsonParser.getText());
+                                        Log.d("", "healthFacilityId is: " + jsonParser.getText());
+                                        idNextToHfId = true;
+                                        break;
+                                    case "Firstname":
+                                        token = jsonParser.nextToken();
+                                        app.setLoggedInFirstname(jsonParser.getText());
+                                        Log.d("", "firstname is: " + jsonParser.getText());
+                                        break;
+                                    case "Lastname":
+                                        token = jsonParser.nextToken();
+                                        app.setLoggedInLastname(jsonParser.getText());
+                                        Log.d("", "lastname is: " + jsonParser.getText());
+                                        break;
+                                    case "Username":
+                                        token = jsonParser.nextToken();
+                                        app.setLoggedInUsername(jsonParser.getText());
+                                        Log.d("", "username is: " + jsonParser.getText());
+                                        break;
+                                    case "Lastlogin":
+                                        token = jsonParser.nextToken();
+                                        Log.d("", "lastlogin is: " + jsonParser.getText());
+                                        break;
+                                    case "Id":
+                                        if (idNextToHfId) {
+                                            token = jsonParser.nextToken();
+                                            app.setLoggedInUserId(jsonParser.getText());
+                                            Log.d("", "Id is: " + jsonParser.getText());
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        }
+
+                        Account account = new Account(username, ACCOUNT_TYPE);
+                        AccountManager accountManager = AccountManager.get(LoginActivity.this);
+
+//                        boolean accountCreated = accountManager.addAccountExplicitly(account, LoginActivity.this.password, null);
+                        boolean accountCreated = accountManager.addAccountExplicitly(account, password, null);
+
+                        Bundle extras = LoginActivity.this.getIntent().getExtras();
+                        if (extras != null) {
+                            if (accountCreated) {  //Pass the new account back to the account manager
+                                AccountAuthenticatorResponse response = extras.getParcelable(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
+                                Bundle res = new Bundle();
+                                res.putString(AccountManager.KEY_ACCOUNT_NAME, username);
+                                res.putString(AccountManager.KEY_ACCOUNT_TYPE, ACCOUNT_TYPE);
+                                res.putString(AccountManager.KEY_PASSWORD, password);
+                                response.onResult(res);
+                            }
+                        }
+//                        login_preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+//                        SharedPreferences.Editor login_editor = login_preferences.edit();
+//                        login_editor.putString(app.getLOGGED_IN_USERNAME(), app.getLOGGED_IN_USER_HF_ID());
+//                        login_editor.putString(app.getLOGGED_IN_USERNAME() + "1", app.getLOGGED_IN_USER_ID());
+//                        login_editor.commit();
+
+                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putBoolean("secondSyncNeeded", true);
+                        editor.commit();
+
+                        ContentValues values = new ContentValues();
+                        values.put(SQLHandler.SyncColumns.UPDATED, 1);
+                        values.put(SQLHandler.UserColumns.FIRSTNAME, app.getLOGGED_IN_FIRSTNAME());
+                        values.put(SQLHandler.UserColumns.LASTNAME, app.getLOGGED_IN_LASTNAME());
+                        values.put(SQLHandler.UserColumns.HEALTH_FACILITY_ID, app.getLOGGED_IN_USER_HF_ID());
+                        values.put(SQLHandler.UserColumns.ID, app.getLOGGED_IN_USER_ID());
+                        values.put(SQLHandler.UserColumns.USERNAME, app.getLOGGED_IN_USERNAME());
+                        DatabaseHandler db = app.getDatabaseInstance();
+                        db.addUser(values);
+
+                        app.initializeOffline(username, password);
+
+                        Intent intent;
+                        if (prefs.getBoolean("synchronization_needed", true)) {
+                            intent = new Intent(LoginActivity.this, HomeActivityRevised.class);
+                        } else {
+                            intent = new Intent(LoginActivity.this, HomeActivityRevised.class);
+                            evaluateIfFirstLogin(app.getLOGGED_IN_USER_ID());
+                        }
+                        app.setUsername(username);
+
+                        startActivity(intent);
+                    }
+                    //if login failed show error
+                    else {
+                        handler.post(new Runnable() {
+                            public void run() {
+                                progressDialog.show();
+                                progressDialog.dismiss();
+                                toastMessage("Login failed.\nPlease check your details!");
+                                loginButton.setEnabled(true);
+                            }
+                        });
+                    }
+                }
+                catch (Exception e)
+                {
+                    handler.post(new Runnable() {
+                        public void run() {
+                            progressDialog.show();
+                            progressDialog.dismiss();
+                            toastMessage("Login failed Login failed.\n" +
+                                    "Please check your details or your web connectivity");
+                            loginButton.setEnabled(true);
+
+                        }
+                    });
+                    e.printStackTrace();
+                }
+
+
+            }
+        });
     }
 
     /**
@@ -458,174 +625,4 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
         }
     }
 
-    private class UsePoolThreadResponseHandler extends AsyncHttpResponseHandler {
-
-        public UsePoolThreadResponseHandler() {
-            super();
-
-            // We wish to use the same pool thread to run the response.
-            setUsePoolThread(true);
-        }
-
-        @Override
-        public void onSuccess(final int statusCode, final Header[] headers, final byte[] responseBody) {
-            Log.d(TAG,"receiving data in streams");
-
-            BackboneApplication app = (BackboneApplication)getApplication();
-
-            try {
-                JsonFactory factory = new JsonFactory();
-                JsonParser jsonParser = factory.createJsonParser(responseBody);
-                com.fasterxml.jackson.core.JsonToken token = jsonParser.nextToken();
-
-                int balanceCounter = 0;
-
-                if (token == JsonToken.START_OBJECT) {
-                    balanceCounter++;
-                    boolean idNextToHfId = false;
-                    while (!(balanceCounter == 0)) {
-                        token = jsonParser.nextToken();
-
-                        if (token == JsonToken.START_OBJECT) {
-                            balanceCounter++;
-                        } else if (token == JsonToken.END_OBJECT) {
-                            balanceCounter--;
-                        } else if (token == JsonToken.FIELD_NAME) {
-                            String object = jsonParser.getCurrentName();
-                            switch (object) {
-                                case "HealthFacilityId":
-                                    token = jsonParser.nextToken();
-                                    app.setLoggedInUserHealthFacilityId(jsonParser.getText());
-                                    Log.d("", "healthFacilityId is: " + jsonParser.getText());
-                                    idNextToHfId = true;
-                                    break;
-                                case "Firstname":
-                                    token = jsonParser.nextToken();
-                                    app.setLoggedInFirstname(jsonParser.getText());
-                                    Log.d("", "firstname is: " + jsonParser.getText());
-                                    break;
-                                case "Lastname":
-                                    token = jsonParser.nextToken();
-                                    app.setLoggedInLastname(jsonParser.getText());
-                                    Log.d("", "lastname is: " + jsonParser.getText());
-                                    break;
-                                case "Username":
-                                    token = jsonParser.nextToken();
-                                    app.setLoggedInUsername(jsonParser.getText());
-                                    Log.d("", "username is: " + jsonParser.getText());
-                                    break;
-                                case "Lastlogin":
-                                    token = jsonParser.nextToken();
-                                    Log.d("", "lastlogin is: " + jsonParser.getText());
-                                    break;
-                                case "Id":
-                                    if (idNextToHfId) {
-                                        token = jsonParser.nextToken();
-                                        app.setLoggedInUserId(jsonParser.getText());
-                                        Log.d("", "Id is: " + jsonParser.getText());
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                    }
-
-                    Account account = new Account(username, ACCOUNT_TYPE);
-                    AccountManager accountManager = AccountManager.get(LoginActivity.this);
-
-//                        boolean accountCreated = accountManager.addAccountExplicitly(account, LoginActivity.this.password, null);
-                    boolean accountCreated = accountManager.addAccountExplicitly(account, password, null);
-
-                    Bundle extras = LoginActivity.this.getIntent().getExtras();
-                    if (extras != null) {
-                        if (accountCreated) {  //Pass the new account back to the account manager
-                            AccountAuthenticatorResponse response = extras.getParcelable(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
-                            Bundle res = new Bundle();
-                            res.putString(AccountManager.KEY_ACCOUNT_NAME, username);
-                            res.putString(AccountManager.KEY_ACCOUNT_TYPE, ACCOUNT_TYPE);
-                            res.putString(AccountManager.KEY_PASSWORD, password);
-                            response.onResult(res);
-                        }
-                    }
-//                        login_preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-//                        SharedPreferences.Editor login_editor = login_preferences.edit();
-//                        login_editor.putString(app.getLOGGED_IN_USERNAME(), app.getLOGGED_IN_USER_HF_ID());
-//                        login_editor.putString(app.getLOGGED_IN_USERNAME() + "1", app.getLOGGED_IN_USER_ID());
-//                        login_editor.commit();
-
-                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                    SharedPreferences.Editor editor = prefs.edit();
-                    editor.putBoolean("secondSyncNeeded", true);
-                    editor.commit();
-
-                    ContentValues values = new ContentValues();
-                    values.put(SQLHandler.SyncColumns.UPDATED, 1);
-                    values.put(SQLHandler.UserColumns.FIRSTNAME, app.getLOGGED_IN_FIRSTNAME());
-                    values.put(SQLHandler.UserColumns.LASTNAME, app.getLOGGED_IN_LASTNAME());
-                    values.put(SQLHandler.UserColumns.HEALTH_FACILITY_ID, app.getLOGGED_IN_USER_HF_ID());
-                    values.put(SQLHandler.UserColumns.ID, app.getLOGGED_IN_USER_ID());
-                    values.put(SQLHandler.UserColumns.USERNAME, app.getLOGGED_IN_USERNAME());
-                    DatabaseHandler db = app.getDatabaseInstance();
-                    db.addUser(values);
-
-                    app.initializeOffline(username, password);
-
-                    Intent intent;
-                    if (prefs.getBoolean("synchronization_needed", true)) {
-                        intent = new Intent(LoginActivity.this, HomeActivityRevised.class);
-                    } else {
-                        intent = new Intent(LoginActivity.this, HomeActivityRevised.class);
-                        evaluateIfFirstLogin(app.getLOGGED_IN_USER_ID());
-                    }
-                    app.setUsername(username);
-
-                    startActivity(intent);
-                }
-                //if login failed show error
-                else {
-                    handler.post(new Runnable() {
-                        public void run() {
-                            progressDialog.show();
-                            progressDialog.dismiss();
-                            toastMessage("Login failed.\nPlease check your details!");
-                            loginButton.setEnabled(true);
-                        }
-                    });
-                }
-            }
-            catch (Exception e)
-            {
-                handler.post(new Runnable() {
-                    public void run() {
-                        progressDialog.show();
-                        progressDialog.dismiss();
-                        toastMessage("Login failed Login failed.\n" +
-                                "Please check your details or your web connectivity");
-                        loginButton.setEnabled(true);
-
-                    }
-                });
-                e.printStackTrace();
-            }
-
-
-
-
-
-
-
-        }
-
-        @Override
-        public void onFailure(final int statusCode, final Header[] headers, final byte[] responseBody, final Throwable error) {
-            // This callback is now running within the pool thread execution
-            // scope and not within Android's UI thread, so if we must update
-            // the UI, we'll have to dispatch a runnable to the UI thread.
-            Log.d(TAG, "Error = ");
-
-        }
-
-
-    }
 }

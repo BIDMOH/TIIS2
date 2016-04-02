@@ -117,7 +117,7 @@ public class RoutineAlarmReceiver extends WakefulBroadcastReceiver {
      * @param context
      */
     // BEGIN_INCLUDE(cancel_alarm)
-    public void cancelAlarm(Context context) {
+    public static void cancelAlarm(Context context) {
         // If the alarm has been set, cancel it.
         if (alarmMgr != null) {
             alarmMgr.cancel(alarmIntent);

@@ -556,6 +556,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                     genderChildWithoutApp = "false";
                 }
 
+                Calendar modifiedOn =Calendar.getInstance();
                 try {
                     registerChildWithoutAppointments(etbarcode.getText().toString(),
                             etFirstName.getText().toString(),
@@ -571,7 +572,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                             etMotherSurname.getText().toString(),
                             etNotes.getText().toString(),
                             app.getLOGGED_IN_USER_ID(),
-                            Calendar.getInstance().getTime(),
+                            modifiedOn.getTime(),
                             uuid,etFirstname2.getText().toString());
                 }catch(Exception exception){
                     exception.printStackTrace();
@@ -654,8 +655,6 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
     private synchronized void registerChildWithoutAppointments(String barcode, String fristname, String lastname, Date bDate, String gender, String  hfid, String birthPlaceId, String domId,
                                                                String addr, String phone, String motherFirstname, String motherLastname, String notes, String userID, Date modOn, final String tempId,String firstname2) {
-
-        Log.d("coze","selected vilage id to be synch = "+domId);
         new Thread() {
             String threadBDateString;
             String threadModOn;
@@ -720,54 +719,8 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
                 BackboneApplication backbone = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
 
-                final int childID = backbone.registerChildWithAppoitments(threadbarcode, threadfristname, threadLastname, threadBDateString, threadGender, threadhfid, threadBirthPlaceID, threadDomID, threadAddr
-                        , threadPhone, threadMotherFirstname, threadMotherLastname, threadNotes, threadUserID, threadModOn, null,threadFirstname2);
-
-
-                if (childID != -1) {
-
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put(SQLHandler.ChildColumns.ID, childID);
-                    DatabaseHandler mydb = backbone.getDatabaseInstance();
-                    if (mydb.updateChildTableWithChildID(contentValues, threadTempId)) {
-
-                        mydb.updateVaccinationAppointementChildId(threadTempId, childID + "");
-                        mydb.updateVaccinationEventChildId(threadTempId, childID + "");
-
-
-                        Intent childDetailsActivity = new Intent(RegisterChildFragment.this.getActivity(), ChildDetailsActivity.class);
-                        Bundle bnd = new Bundle();
-                        bnd.putString(BackboneApplication.CHILD_ID, childID + "");
-                        bnd.putString("barcode", threadbarcode);
-                        bnd.putInt("current", 0);
-                        childDetailsActivity.putExtras(bnd);
-
-//                        Intent viewChild = new Intent(getApplicationContext(), ViewChildActivity.class);
-//                        Bundle bnd = new Bundle();
-//                        bnd.putString(BackboneApplication.CHILD_ID, childID + "");
-//                        bnd.putString("barcode", threadbarcode);
-//                        viewChild.putExtras(bnd);
-
-                        startActivity(childDetailsActivity);
-
-                    }
-
-                } else {
-
-                    Intent childDetailsActivity = new Intent(RegisterChildFragment.this.getActivity(), ChildDetailsActivity.class);
-                    Bundle bnd = new Bundle();
-                    bnd.putString(BackboneApplication.CHILD_ID, threadTempId);
-                    bnd.putString("barcode", threadbarcode);
-                    childDetailsActivity.putExtras(bnd);
-
-//                    Intent viewChild = new Intent(getApplicationContext(), ViewChildActivity.class);
-//                    Bundle bnd = new Bundle();
-//                    bnd.putString(BackboneApplication.CHILD_ID, threadTempId);
-//                    bnd.putString("barcode", threadbarcode);
-//                    viewChild.putExtras(bnd);
-
-                    startActivity(childDetailsActivity);
-                }
+                backbone.registerChildWithAppoitments(threadbarcode, threadfristname, threadLastname, threadBDateString, threadGender, threadhfid, threadBirthPlaceID, threadDomID, threadAddr
+                        , threadPhone, threadMotherFirstname, threadMotherLastname, threadNotes, threadUserID, threadModOn, null,threadFirstname2,threadTempId,threadbarcode);
             }
         }.setData(barcode, fristname, lastname, bDate, gender, hfid, birthPlaceId, domId, addr, phone, motherFirstname, motherLastname, notes, userID, modOn, tempId,firstname2).start();
     }

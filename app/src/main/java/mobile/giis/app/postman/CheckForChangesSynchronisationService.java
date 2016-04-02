@@ -56,7 +56,6 @@ public class CheckForChangesSynchronisationService  extends IntentService {
             app.parseStock();
         }
 
-
         this.stopSelf();
     }
 }

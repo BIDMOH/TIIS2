@@ -709,10 +709,10 @@ public class RegisterChildActivity  extends BackboneActivity implements View.OnC
                     this.threadNotes = threadNotes;
                     this.threadUserID = threadUserID;
                     this.threadTempId = tempId;
-                    this.threadModOn = URLEncoder.encode(new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(threadModOn), "utf-8");
-                    this.threadBDateString = URLEncoder.encode(new SimpleDateFormat("yyyy-MM-dd").format(threadBDate), "utf-8");
+                    this.threadModOn = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(threadModOn);
+                    this.threadBDateString = new SimpleDateFormat("yyyy-MM-dd").format(threadBDate);
                     this.threadGender = threadGender;
-                } catch (UnsupportedEncodingException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 return this;
@@ -724,38 +724,8 @@ public class RegisterChildActivity  extends BackboneActivity implements View.OnC
 
                 BackboneApplication backbone = (BackboneApplication) getApplication();
 
-                final int childID = backbone.registerChildWithAppoitments(threadbarcode, threadfristname, threadLastname, threadBDateString, threadGender, threadhfid, threadBirthPlaceID, threadDomID, threadAddr
-                        , threadPhone, threadMotherFirstname, threadMotherLastname, threadNotes, threadUserID, threadModOn, null,threadFirstname2);
-
-
-                if (childID != -1) {
-
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put(SQLHandler.ChildColumns.ID, childID);
-                    DatabaseHandler mydb = backbone.getDatabaseInstance();
-                    if (mydb.updateChildTableWithChildID(contentValues, threadTempId)) {
-
-                        mydb.updateVaccinationAppointementChildId(threadTempId, childID + "");
-                        mydb.updateVaccinationEventChildId(threadTempId, childID + "");
-
-
-                        Intent viewChild = new Intent(getApplicationContext(), ViewChildActivity.class);
-                        Bundle bnd = new Bundle();
-                        bnd.putString(BackboneApplication.CHILD_ID, childID + "");
-                        bnd.putString("barcode", threadbarcode);
-                        viewChild.putExtras(bnd);
-                        startActivity(viewChild);
-
-                    }
-
-                } else {
-                    Intent viewChild = new Intent(getApplicationContext(), ViewChildActivity.class);
-                    Bundle bnd = new Bundle();
-                    bnd.putString(BackboneApplication.CHILD_ID, threadTempId);
-                    bnd.putString("barcode", threadbarcode);
-                    viewChild.putExtras(bnd);
-                    startActivity(viewChild);
-                }
+                backbone.registerChildWithAppoitments(threadbarcode, threadfristname, threadLastname, threadBDateString, threadGender, threadhfid, threadBirthPlaceID, threadDomID, threadAddr
+                        , threadPhone, threadMotherFirstname, threadMotherLastname, threadNotes, threadUserID, threadModOn, null,threadFirstname2,threadTempId,threadbarcode);
             }
         }.setData(barcode, fristname, lastname, bDate, gender, hfid, birthPlaceId, domId, addr, phone, motherFirstname, motherLastname, notes, userID, modOn, tempId,firstname2).start();
     }

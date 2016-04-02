@@ -516,8 +516,8 @@ public class HomeActivityRevised extends BackboneActivity {
 
                 try {
 //                    application.intervalGetChildrenByHealthFacilitySinceLastLogin(); // old service
-                    application.parseChildCollector(); // old service
-//                    application.parseChildCollector2(); // new service
+//                    application.parseChildCollector(); // old service
+                    application.parseChildCollector2(); // new service
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -548,12 +548,18 @@ public class HomeActivityRevised extends BackboneActivity {
         super.onPostExecute(result);
         Log.e("SYNC FINISHED", "Database synchronization finished.");
 
-        Alarm alarm = new Alarm();
-        alarm.SetAlarm(HomeActivityRevised.this);
+
+        //Starting the repeating synchronisation procedure that happens every 10 minutes
+        // and pulls changes done to children or children added
+        RoutineAlarmReceiver.setAlarmCheckForChangesInChild(HomeActivityRevised.this);
+
         if (!DatabaseHandler.dbPreinstalled)
-            Toast.makeText(getApplicationContext(), "mainSynchronisation finished.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "mainSynchronisation finished.", Toast.LENGTH_LONG).show(
+
+        );
     }
 }
+
 
     private class updateSynchronisation extends AsyncTask<Integer, Integer, Boolean> {
 
@@ -838,4 +844,9 @@ public class HomeActivityRevised extends BackboneActivity {
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        RoutineAlarmReceiver.cancelAlarm(this);
+    }
 }
