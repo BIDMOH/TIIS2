@@ -44,6 +44,7 @@ public class CheckForChangesSynchronisationService  extends IntentService {
                 app.intervalGetChildrenByHealthFacilitySinceLastLogin();
                 app.getGetChildByIdListSince();
                 app.getVaccinationQueueByDateAndUser();
+                app.loginRequest();
             }
 
             String placesFoundInChildOnlyAndNotInPlace = app.getDatabaseInstance().getDomicilesFoundInChildAndNotInPlace();

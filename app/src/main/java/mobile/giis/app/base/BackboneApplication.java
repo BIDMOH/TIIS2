@@ -448,6 +448,33 @@ public class BackboneApplication extends Application {
         });
 
     }
+    public void loginRequest(){
+
+        StringBuilder webServiceLoginURL = null;
+        try {
+
+            webServiceLoginURL = new StringBuilder(WCF_URL).append(USER_MANAGEMENT_SVC)
+                    .append(USER_MANAGEMENT_SVC_GETTER)
+                    .append("?username=").append(URLEncoder.encode(LOGGED_IN_USERNAME, "utf-8"))
+                    .append("&password=").append(URLEncoder.encode(LOGGED_IN_USER_PASS, "utf-8"));
+
+            client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+            client.get(webServiceLoginURL.toString(), new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    throwable.printStackTrace();
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                    Log.d("coze","logen in success");
+                }
+            });
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     public void parseConfiguration() {
         final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(AUDIT_MANAGEMENT_GET_CONFIGURATION);
