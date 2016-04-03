@@ -21,9 +21,11 @@ package mobile.giis.app.base;
 import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
@@ -41,7 +43,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.MySSLSocketFactory;
 import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
@@ -57,21 +59,25 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
-import cz.msebera.android.httpclient.HeaderElement;
-import cz.msebera.android.httpclient.ParseException;
+import cz.msebera.android.httpclient.Header;
+import mobile.giis.app.ChildDetailsActivity;
 import mobile.giis.app.database.DatabaseHandler;
 import mobile.giis.app.database.SQLHandler;
 import mobile.giis.app.entity.AdjustmentReasons;
@@ -95,14 +101,8 @@ import mobile.giis.app.entity.VaccinationEvent;
 import mobile.giis.app.entity.Weight;
 import mobile.giis.app.helpers.Utils;
 import mobile.giis.app.postman.PostmanModel;
+import mobile.giis.app.postman.RoutineAlarmReceiver;
 import mobile.giis.app.util.Constants;
-
-import cz.msebera.android.httpclient.Header;
-
-//import com.android.volley.Request;
-//import com.android.volley.RequestQueue;
-//import com.android.volley.toolbox.ImageLoader;
-//import com.android.volley.toolbox.Volley;
 
 /**
  * Created by Teodor on 2/3/2015.
@@ -378,9 +378,8 @@ public class BackboneApplication extends Application {
         final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, GET_PLACE);
 
 
-        RequestParams params = new RequestParams();
         client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
-        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+        client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
 
@@ -422,28 +421,59 @@ public class BackboneApplication extends Application {
         final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(PLACEMANAGEMENT_GETBIRTHPLACELIST);
         Log.d("", webServiceUrl.toString());
 
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            JSONArray jarr = new JSONArray(Utils.getStringFromInputStream(inputStream));
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + jarr.toString());
-            for (int i = 0; i < jarr.length(); i++) {
-                JSONObject jobj = jarr.getJSONObject(i);
-                ContentValues cv = new ContentValues();
-                cv.put(SQLHandler.PlaceColumns.ID, jobj.getInt("Id") + "");
-                cv.put(SQLHandler.PlaceColumns.NAME, jobj.getString("Name"));
-                getDatabaseInstance().addBirthplaces(cv, jobj.getInt("Id") + "");
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                throwable.printStackTrace();
             }
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                try {
+                    JSONArray jarr = new JSONArray(responseString);
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + jarr.toString());
+                    for (int i = 0; i < jarr.length(); i++) {
+                        JSONObject jobj = jarr.getJSONObject(i);
+                        ContentValues cv = new ContentValues();
+                        cv.put(SQLHandler.PlaceColumns.ID, jobj.getInt("Id") + "");
+                        cv.put(SQLHandler.PlaceColumns.NAME, jobj.getString("Name"));
+                        getDatabaseInstance().addBirthplaces(cv, jobj.getInt("Id") + "");
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
+    public void loginRequest(){
+    Log.d("coze", "inside login request");
+        StringBuilder webServiceLoginURL = null;
+        try {
+
+            webServiceLoginURL = new StringBuilder(WCF_URL).append(USER_MANAGEMENT_SVC)
+                    .append(USER_MANAGEMENT_SVC_GETTER)
+                    .append("?username=").append(URLEncoder.encode(LOGGED_IN_USERNAME, "utf-8"))
+                    .append("&password=").append(URLEncoder.encode(LOGGED_IN_USER_PASS, "utf-8"));
+
+            client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+            client.get(webServiceLoginURL.toString(), new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    throwable.printStackTrace();
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                    Log.d("coze","logen in success");
+                }
+            });
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+
     }
 
     public void parseConfiguration() {
@@ -451,29 +481,36 @@ public class BackboneApplication extends Application {
         Log.d("", webServiceUrl.toString());
 
         try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            JSONArray jarr = new JSONArray(Utils.getStringFromInputStream(inputStream));
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + jarr.toString());
-            for (int i = 0; i < jarr.length(); i++) {
-                JSONObject jobj = jarr.getJSONObject(i);
-                if (jobj.getString("key").equals(Constants.LimitNumberOfDaysBeforeExpire)) {
-                    Constants.LimitNumberOfDaysBeforeExpireVal = jobj.getInt("value");
-                    saveConfiguration(Constants.LimitNumberOfDaysBeforeExpire, Constants.LimitNumberOfDaysBeforeExpireVal);
-                } else if (jobj.getString("key").equals(Constants.EligibleForVaccination)) {
-                    Constants.EligibleForVaccinationVal = jobj.getInt("value");
-                    saveConfiguration(Constants.EligibleForVaccination, Constants.EligibleForVaccinationVal);
+            client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+            RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    throwable.printStackTrace();
                 }
 
-            }
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                    try {
+                        JSONArray jarr = new JSONArray(responseString);
+                        Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + jarr.toString());
+                        for (int i = 0; i < jarr.length(); i++) {
+                            JSONObject jobj = jarr.getJSONObject(i);
+                            if (jobj.getString("key").equals(Constants.LimitNumberOfDaysBeforeExpire)) {
+                                Constants.LimitNumberOfDaysBeforeExpireVal = jobj.getInt("value");
+                                saveConfiguration(Constants.LimitNumberOfDaysBeforeExpire, Constants.LimitNumberOfDaysBeforeExpireVal);
+                            } else if (jobj.getString("key").equals(Constants.EligibleForVaccination)) {
+                                Constants.EligibleForVaccinationVal = jobj.getInt("value");
+                                saveConfiguration(Constants.EligibleForVaccination, Constants.EligibleForVaccinationVal);
+                            }
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }catch (Exception e){
             e.printStackTrace();
         }
     }
@@ -495,181 +532,309 @@ public class BackboneApplication extends Application {
         final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, GET_PLACE_LIST_ID);
         webServiceUrl.append(URLEncoder.encode(idsTokenized));
         Log.d("", webServiceUrl.toString());
-        List<Place> objects = new ArrayList<Place>();
 
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String response = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(response, new TypeReference<List<Place>>() {
-            });
-
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            for (Place object : objects) {
-                ContentValues values = new ContentValues();
-                //Log.d("Place ID", object.getId());
-                values.put(SQLHandler.PlaceColumns.ID, object.getId());
-                values.put(SQLHandler.SyncColumns.UPDATED, 1);
-                values.put(SQLHandler.PlaceColumns.NAME, object.getName());
-                //Log.d("Place NAME", object.getName());
-                values.put(SQLHandler.PlaceColumns.CODE, object.getCode());
-                DatabaseHandler db = getDatabaseInstance();
-                db.addPlacesThatWereNotInDB(values, object.getId());
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                throwable.printStackTrace();
             }
-        }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String response) {
+                List<Place> objects = new ArrayList<Place>();
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                    objects = mapper.readValue(response, new TypeReference<List<Place>>() {
+                    });
+
+                } catch (JsonGenerationException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    for (Place object : objects) {
+                        ContentValues values = new ContentValues();
+                        //Log.d("Place ID", object.getId());
+                        values.put(SQLHandler.PlaceColumns.ID, object.getId());
+                        values.put(SQLHandler.SyncColumns.UPDATED, 1);
+                        values.put(SQLHandler.PlaceColumns.NAME, object.getName());
+                        //Log.d("Place NAME", object.getName());
+                        values.put(SQLHandler.PlaceColumns.CODE, object.getCode());
+                        DatabaseHandler db = getDatabaseInstance();
+                        db.addPlacesThatWereNotInDB(values, object.getId());
+                    }
+                }
+            }
+        });
     }
 
     public void parseHealthFacilityThatAreInVaccEventButNotInHealthFac(String idsTokenized) {
         final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, GET_HEALTH_FACILITY_LIST_ID);
         webServiceUrl.append(URLEncoder.encode(idsTokenized));
         Log.d("", webServiceUrl.toString());
-        List<HealthFacility> objects = new ArrayList<HealthFacility>();
 
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String response = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(response, new TypeReference<List<HealthFacility>>() {
-            });
-
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            for (HealthFacility object : objects) {
-                ContentValues values = new ContentValues();
-                values.put(SQLHandler.HealthFacilityColumns.ID, object.getId());
-                values.put(SQLHandler.SyncColumns.UPDATED, 1);
-                values.put(SQLHandler.HealthFacilityColumns.CODE, object.getCode());
-                values.put(SQLHandler.HealthFacilityColumns.PARENT_ID, object.getParentId());
-                values.put(SQLHandler.HealthFacilityColumns.NAME, object.getName());
-                DatabaseHandler db = getDatabaseInstance();
-                db.addHFIDThatWereNotInDB(values, object.getId());
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                throwable.printStackTrace();
             }
-        }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String response) {
+                List<HealthFacility> objects = new ArrayList<HealthFacility>();
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                    objects = mapper.readValue(response, new TypeReference<List<HealthFacility>>() {
+                    });
+
+                } catch (JsonGenerationException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    for (HealthFacility object : objects) {
+                        ContentValues values = new ContentValues();
+                        values.put(SQLHandler.HealthFacilityColumns.ID, object.getId());
+                        values.put(SQLHandler.SyncColumns.UPDATED, 1);
+                        values.put(SQLHandler.HealthFacilityColumns.CODE, object.getCode());
+                        values.put(SQLHandler.HealthFacilityColumns.PARENT_ID, object.getParentId());
+                        values.put(SQLHandler.HealthFacilityColumns.NAME, object.getName());
+                        DatabaseHandler db = getDatabaseInstance();
+                        db.addHFIDThatWereNotInDB(values, object.getId());
+                    }
+                }
+            }
+        });
     }
 
     public void parseStock() {
         if (LOGGED_IN_USER_HF_ID == null || LOGGED_IN_USER_HF_ID.equals("0")) return;
         final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, GET_STOCK);
         Log.d("", webServiceUrl.toString());
-        List<Stock> objects = new ArrayList<Stock>();
 
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String response = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(response, new TypeReference<List<Stock>>() {
-            });
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
 
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            for (Stock object : objects) {
-                ContentValues values = new ContentValues();
-//                Log.d("balance", object.getBalance()+"");
-//                Log.d("expdate", object.getExpireDate());
-//                Log.d("gtin", object.getGtin());
-//                Log.d("item", object.getItem());
-//                Log.d("lotid", object.getLotId());
-//                Log.d("lotnumber", object.getLotNumber());
-                values.put(SQLHandler.HealthFacilityBalanceColumns.BALANCE, object.getBalance());
-                values.put(SQLHandler.HealthFacilityBalanceColumns.EXPIRE_DATE, object.getExpireDate());
-                values.put(SQLHandler.HealthFacilityBalanceColumns.GTIN, object.getGtin());
-                values.put(SQLHandler.HealthFacilityBalanceColumns.LOT_ID, object.getLotId());
-                values.put(SQLHandler.HealthFacilityBalanceColumns.LOT_NUMBER, object.getLotNumber());
-                values.put(SQLHandler.HealthFacilityBalanceColumns.ITEM, object.getItem());
-                values.put(SQLHandler.HealthFacilityBalanceColumns.REORDER_QTY, object.getReorderQty());
-                values.put(SQLHandler.HealthFacilityBalanceColumns.GTIN_ISACTIVE, object.getGtinIsActive());
-                values.put(SQLHandler.HealthFacilityBalanceColumns.LOT_ISACTIVE, object.getLotIsActive());
-//                Log.d("LotIsActive", object.getLotIsActive());
-//                Log.d("GtinIsActive", object.getGtinIsActive());
-                DatabaseHandler db = getDatabaseInstance();
-                if (!db.isStockInDB(object.getLotId(), object.getGtin())) {
-                    db.addStock(values);
-                } else {
-                    db.updateStock(values, object.getLotId());
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String response) {
+                List<Stock> objects = new ArrayList<Stock>();
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                    objects = mapper.readValue(response, new TypeReference<List<Stock>>() {
+                    });
+
+                } catch (JsonGenerationException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    for (Stock object : objects) {
+                        ContentValues values = new ContentValues();
+                        values.put(SQLHandler.HealthFacilityBalanceColumns.BALANCE, object.getBalance());
+                        values.put(SQLHandler.HealthFacilityBalanceColumns.EXPIRE_DATE, object.getExpireDate());
+                        values.put(SQLHandler.HealthFacilityBalanceColumns.GTIN, object.getGtin());
+                        values.put(SQLHandler.HealthFacilityBalanceColumns.LOT_ID, object.getLotId());
+                        values.put(SQLHandler.HealthFacilityBalanceColumns.LOT_NUMBER, object.getLotNumber());
+                        values.put(SQLHandler.HealthFacilityBalanceColumns.ITEM, object.getItem());
+                        values.put(SQLHandler.HealthFacilityBalanceColumns.REORDER_QTY, object.getReorderQty());
+                        values.put(SQLHandler.HealthFacilityBalanceColumns.GTIN_ISACTIVE, object.getGtinIsActive());
+                        values.put(SQLHandler.HealthFacilityBalanceColumns.LOT_ISACTIVE, object.getLotIsActive());
+                        DatabaseHandler db = getDatabaseInstance();
+                        if (!db.isStockInDB(object.getLotId(), object.getGtin())) {
+                            db.addStock(values);
+                        } else {
+                            db.updateStock(values, object.getLotId());
+                        }
+                    }
                 }
             }
-        }
+        });
     }
 
-    public int parseChildCollector2() {
+    public void parseChildCollector2() {
         final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append("ChildManagement.svc/GetOnlyChildrenDataByHealthFacility?healthfacilityId=").append(LOGGED_IN_USER_HF_ID);
 
-        ChildCollector2 childCollector2;
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                Utils.writeNetworkLogFileOnSD(
-                        Utils.returnDeviceIdAndTimestamp(getApplicationContext())
-                                + " StatusCode " + httpResponse.getStatusLine().getStatusCode()
-                                + " ReasonPhrase " + httpResponse.getStatusLine().getReasonPhrase()
-                                + " ProtocolVersion " + httpResponse.getStatusLine().getProtocolVersion());
-                return 3;
-            }
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String response = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            childCollector2 = mapper.readValue(response, ChildCollector2.class);
+        Log.e("parseChildCollector2", webServiceUrl.toString());
+        List<ChildCollector> objects = new ArrayList<ChildCollector>();
 
-            addChildVaccinationEventVaccinationAppointment(childCollector2);
-            return 1;
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-            return 2;
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-            return 2;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return 3;
-        } finally {
-            childCollector2 = null; // clearing references so that it can be identified as GC material more easilly
-        }
+        UsePoolThreadResponseHandler2 poolThreadResponseHandler= new UsePoolThreadResponseHandler2();
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        client.get(webServiceUrl.toString(), poolThreadResponseHandler);
+
     }
 
-    public void addChildVaccinationEventVaccinationAppointment(ChildCollector2 childCollector) {
+    public boolean addChildVaccinationEventVaccinationAppointment(ChildCollector2 childCollector) {
+        Log.d("coze","saving data to db");
+
+        boolean containsData = false;
+        List<Child> children = childCollector.getChildList();
+        List<VaccinationEvent> vaccinationEvents = childCollector.getVeList();
+        List<VaccinationAppointment> vaccinationAppointments = childCollector.getVaList();
+        DatabaseHandler db = getDatabaseInstance();
+
+        SQLiteDatabase db1 = db.getWritableDatabase();
+        db1.beginTransactionNonExclusive();
+        try {
+
+            if (children != null) {
+                String sql0 = "INSERT OR REPLACE INTO " + SQLHandler.Tables.CHILD + " ( "+
+                        SQLHandler.SyncColumns.UPDATED+", "+
+                        SQLHandler.ChildColumns.ID+","+
+                        SQLHandler.ChildColumns.BARCODE_ID+","+
+                        SQLHandler.ChildColumns.FIRSTNAME1+","+
+                        SQLHandler.ChildColumns.FIRSTNAME2+","+
+                        SQLHandler.ChildColumns.LASTNAME1+","+
+                        SQLHandler.ChildColumns.BIRTHDATE+","+
+                        SQLHandler.ChildColumns.GENDER+","+
+                        SQLHandler.ChildColumns.TEMP_ID+","+
+                        SQLHandler.ChildColumns.HEALTH_FACILITY+","+
+                        SQLHandler.ChildColumns.DOMICILE+","+
+                        SQLHandler.ChildColumns.DOMICILE_ID+","+
+                        SQLHandler.ChildColumns.HEALTH_FACILITY_ID+","+
+                        SQLHandler.ChildColumns.STATUS_ID+","+
+                        SQLHandler.ChildColumns.BIRTHPLACE_ID+","+
+                        SQLHandler.ChildColumns.NOTES+","+
+                        SQLHandler.ChildColumns.STATUS+","+
+                        SQLHandler.ChildColumns.MOTHER_FIRSTNAME+","+
+                        SQLHandler.ChildColumns.MOTHER_LASTNAME+","+
+                        SQLHandler.ChildColumns.PHONE+","+
+                        SQLHandler.ChildColumns.MODIFIED_ON+
+                        " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
+
+                SQLiteStatement stmt0 = db1.compileStatement(sql0);
+                for (Child child : children) {
+                    containsData = true;
+                    stmt0.bindString(1, "1");
+                    stmt0.bindString(2, child.getId()==null?"":child.getId());
+                    stmt0.bindString(3, child.getBarcodeID()==null?"":child.getBarcodeID());
+                    stmt0.bindString(4, child.getFirstname1()==null?"":child.getFirstname1());
+                    stmt0.bindString(5, child.getFirstname2()==null?"":child.getFirstname2());
+                    stmt0.bindString(6, child.getLastname1()==null?"":child.getLastname1());
+                    stmt0.bindString(7, child.getBirthdate()==null?"":child.getBirthdate());
+                    stmt0.bindString(8, child.getGender()==null?"":child.getGender());
+                    stmt0.bindString(9, child.getTempId()==null?"":child.getTempId());
+                    stmt0.bindString(10, child.getHealthcenter()==null?"":child.getHealthcenter());
+                    stmt0.bindString(11, child.getDomicile()==null?"":child.getDomicile());
+                    stmt0.bindString(12, child.getDomicileId()==null?"":child.getDomicileId());
+                    stmt0.bindString(13, child.getHealthcenterId()==null?"":child.getHealthcenterId());
+                    stmt0.bindString(14, child.getStatusId()==null?"":child.getStatusId());
+                    stmt0.bindString(15, child.getBirthplaceId()==null?"":child.getBirthplaceId());
+                    stmt0.bindString(16, child.getNotes()==null?"":child.getNotes());
+                    stmt0.bindString(17, child.getDomicile()==null?"":child.getDomicile());
+                    stmt0.bindString(18, child.getMotherFirstname()==null?"":child.getMotherFirstname());
+                    stmt0.bindString(19, child.getMotherLastname()==null?"":child.getMotherLastname());
+                    stmt0.bindString(20, child.getPhone()==null?"":child.getPhone());
+                    stmt0.bindString(21, child.getModifiedOn()==null?"":child.getModifiedOn());
+                    stmt0.execute();
+                    stmt0.clearBindings();
+                }
+            }
+
+            if (vaccinationEvents != null) {
+                String sql = "INSERT OR REPLACE INTO " + SQLHandler.Tables.VACCINATION_EVENT + " ( "+
+                        SQLHandler.SyncColumns.UPDATED+", "+
+                        SQLHandler.VaccinationEventColumns.APPOINTMENT_ID+","+
+                        SQLHandler.VaccinationEventColumns.CHILD_ID+","+
+                        SQLHandler.VaccinationEventColumns.DOSE_ID+","+
+                        SQLHandler.VaccinationEventColumns.HEALTH_FACILITY_ID+","+
+                        SQLHandler.VaccinationEventColumns.ID+","+
+                        SQLHandler.VaccinationEventColumns.IS_ACTIVE+","+
+                        SQLHandler.VaccinationEventColumns.MODIFIED_BY+","+
+                        SQLHandler.VaccinationEventColumns.MODIFIED_ON+","+
+                        SQLHandler.VaccinationEventColumns.NONVACCINATION_REASON_ID+","+
+                        SQLHandler.VaccinationEventColumns.SCHEDULED_DATE+","+
+                        SQLHandler.VaccinationEventColumns.VACCINATION_DATE+","+
+                        SQLHandler.VaccinationEventColumns.VACCINATION_STATUS+","+
+                        SQLHandler.VaccinationEventColumns.VACCINE_LOT_ID+
+                        " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+                SQLiteStatement stmt = db1.compileStatement(sql);
+
+                for (VaccinationEvent vaccinationEvent : vaccinationEvents) {
+                    containsData = true;
+                    stmt.bindString(1, "1");
+                    stmt.bindString(2, vaccinationEvent.getAppointmentId());
+                    stmt.bindString(3, vaccinationEvent.getChildId());
+                    stmt.bindString(4, vaccinationEvent.getDoseId());
+                    stmt.bindString(5, vaccinationEvent.getHealthFacilityId());
+                    stmt.bindString(6, vaccinationEvent.getId());
+                    stmt.bindString(7, vaccinationEvent.getIsActive());
+                    stmt.bindString(8, vaccinationEvent.getModifiedBy());
+                    stmt.bindString(9, vaccinationEvent.getModifiedOn());
+                    stmt.bindString(10, vaccinationEvent.getNonvaccinationReasonId());
+                    stmt.bindString(11, vaccinationEvent.getScheduledDate());
+                    stmt.bindString(12, vaccinationEvent.getVaccinationDate());
+                    stmt.bindString(13, vaccinationEvent.getVaccinationStatus());
+                    stmt.bindString(14, vaccinationEvent.getVaccineLotId());
+                    stmt.execute();
+                    stmt.clearBindings();
+                }
+            }
+
+            if (vaccinationAppointments != null) {
+                String sql1 = "INSERT OR REPLACE INTO " + SQLHandler.Tables.VACCINATION_APPOINTMENT + " ( "+
+                        SQLHandler.SyncColumns.UPDATED+", "+
+                        SQLHandler.VaccinationAppointmentColumns.CHILD_ID+","+
+                        SQLHandler.VaccinationAppointmentColumns.ID+","+
+                        SQLHandler.VaccinationAppointmentColumns.IS_ACTIVE+","+
+                        SQLHandler.VaccinationAppointmentColumns.MODIFIED_BY+","+
+                        SQLHandler.VaccinationAppointmentColumns.MODIFIED_ON+","+
+                        SQLHandler.VaccinationAppointmentColumns.NOTES+","+
+                        SQLHandler.VaccinationAppointmentColumns.OUTREACH+","+
+                        SQLHandler.VaccinationAppointmentColumns.SCHEDULED_DATE+","+
+                        SQLHandler.VaccinationAppointmentColumns.SCHEDULED_FACILITY_ID+
+                        " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
+
+                SQLiteStatement stmt1 = db1.compileStatement(sql1);
+                for (VaccinationAppointment vaccinationAppointment : vaccinationAppointments) {
+                    containsData = true;
+                    stmt1.bindString(1, "1");
+                    stmt1.bindString(2, vaccinationAppointment.getChildId());
+                    stmt1.bindString(3, vaccinationAppointment.getId());
+                    stmt1.bindString(4, vaccinationAppointment.getIsActive());
+                    stmt1.bindString(5, vaccinationAppointment.getModifiedBy());
+                    stmt1.bindString(6, vaccinationAppointment.getModifiedOn());
+                    stmt1.bindString(7, vaccinationAppointment.getNotes());
+                    stmt1.bindString(8, vaccinationAppointment.getOutreach());
+                    stmt1.bindString(9, vaccinationAppointment.getScheduledDate());
+                    stmt1.bindString(10, vaccinationAppointment.getScheduledFacilityId());
+
+                    stmt1.execute();
+                    stmt1.clearBindings();
+
+                }
+            }
+
+            db1.setTransactionSuccessful();
+            db1.endTransaction();
+        } catch (Exception e) {
+            db1.endTransaction();
+            e.printStackTrace();
+        }
+        Log.d("coze","saving data to db returning = "+containsData);
+        return containsData ;
+    }
+
+
+    public void addChildVaccinationEventVaccinationAppointmentUnOptimisedForSmallAmountsOfData(ChildCollector2 childCollector){
         List<Child> children = childCollector.getChildList();
         List<VaccinationEvent> vaccinationEvents = childCollector.getVeList();
         List<VaccinationAppointment> vaccinationAppointments = childCollector.getVaList();
@@ -723,8 +888,8 @@ public class BackboneApplication extends Application {
                 vaccEventCV.put(SQLHandler.VaccinationEventColumns.SCHEDULED_DATE, vaccinationEvent.getScheduledDate());
                 vaccEventCV.put(SQLHandler.VaccinationEventColumns.VACCINATION_DATE, vaccinationEvent.getVaccinationDate());
                 vaccEventCV.put(SQLHandler.VaccinationEventColumns.VACCINATION_STATUS, vaccinationEvent.getVaccinationStatus());
+                Log.d("daytwo", "Vaccination status : "+vaccinationEvent.getVaccinationStatus());
                 vaccEventCV.put(SQLHandler.VaccinationEventColumns.VACCINE_LOT_ID, vaccinationEvent.getVaccineLotId());
-
                 if (!db.isVaccinationEventInDb(vaccinationEvent.getChildId(), vaccinationEvent.getDoseId())) {
                     db.addVaccinationEvent(vaccEventCV);
                 } else {
@@ -758,6 +923,7 @@ public class BackboneApplication extends Application {
         childCollector = null; // clearing references so that it can be identified as GC material more easilly
     }
 
+
     public void parseChildCollector() {
         final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, GET_CHILD);
         Log.e("parseChildCollector", webServiceUrl.toString());
@@ -768,6 +934,9 @@ public class BackboneApplication extends Application {
         RequestHandle message = client.get(webServiceUrl.toString(), poolThreadResponseHandler);
     }
 
+
+
+    private ArrayList<Child> searchedChild = new ArrayList<>();
     /**
      * @param firstname
      * @param motherFistname
@@ -858,59 +1027,54 @@ public class BackboneApplication extends Application {
         webServiceUrl.append("!");
 
         Log.d("searchChild", webServiceUrl.toString());
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                Utils.writeNetworkLogFileOnSD(
-                        Utils.returnDeviceIdAndTimestamp(getApplicationContext())
-                                + " StatusCode " + httpResponse.getStatusLine().getStatusCode()
-                                + " ReasonPhrase " + httpResponse.getStatusLine().getReasonPhrase()
-                                + " ProtocolVersion " + httpResponse.getStatusLine().getProtocolVersion());
-                return null;
+
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                searchedChild=null;
             }
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String result = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
-            ArrayList<Child> children = new ArrayList<>();
-            JSONArray jChildren = new JSONArray(result);
-            for (int i = 0; i < jChildren.length(); i++) {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String result) {
                 try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
+                    ArrayList<Child> children = new ArrayList<>();
+                    JSONArray jChildren = new JSONArray(result);
+                    for (int i = 0; i < jChildren.length(); i++) {
+                        try {
+                            long tStart = System.currentTimeMillis();
+                            Log.e("TIMING LOG", "Parsing start search children");
 
-                    long tStart = System.currentTimeMillis();
-                    Log.e("TIMING LOG", "Parsing start search children");
-
-                    Child c = new Child();
-                    JSONObject jc = jChildren.getJSONObject(i);
-                    c.setFirstname1(jc.getString("Firstname1"));
-                    c.setFirstname2(jc.getString("Firstname2"));
-                    c.setBarcodeID(jc.getString("BarcodeId"));
-                    c.setLastname1(jc.getString("Lastname1"));
-                    c.setMotherFirstname(jc.getString("MotherFirstname"));
-                    c.setMotherLastname(jc.getString("MotherLastname"));
-                    c.setBirthdate(jc.getString("Birthdate").substring(6, 19));
-                    c.setDomicile(jc.getString("DomicileId"));
-                    c.setGender(jc.getBoolean("Gender") == true ? "Male" : "Female");
-                    c.setHealthcenter(jc.getString("HealthcenterId"));
-                    c.setId(jc.getInt("Id") + "");
-                    children.add(c);
-
-                    Log.e("TIMING LOG", "elapsed time parsing search children (milliseconds): " + (System.currentTimeMillis() - tStart));
-                } catch (Exception e) {
+                            Child c = new Child();
+                            JSONObject jc = jChildren.getJSONObject(i);
+                            c.setFirstname1(jc.getString("Firstname1"));
+                            c.setFirstname2(jc.getString("Firstname2"));
+                            c.setBarcodeID(jc.getString("BarcodeId"));
+                            c.setLastname1(jc.getString("Lastname1"));
+                            c.setMotherFirstname(jc.getString("MotherFirstname"));
+                            c.setMotherLastname(jc.getString("MotherLastname"));
+                            c.setBirthdate(jc.getString("Birthdate").substring(6, 19));
+                            c.setDomicile(jc.getString("DomicileId"));
+                            c.setGender(jc.getBoolean("Gender") == true ? "Male" : "Female");
+                            c.setHealthcenter(jc.getString("HealthcenterId"));
+                            c.setId(jc.getInt("Id") + "");
+                            children.add(c);
+                            Log.e("TIMING LOG", "elapsed time parsing search children (milliseconds): " + (System.currentTimeMillis() - tStart));
+                        } catch (Exception e) {
+                        }
+                    }
+                    Log.e("", "");
+                    searchedChild = children;
+                }catch (JSONException e) {
+                    e.printStackTrace();
                 }
+
             }
-            Log.e("", "");
-            return children;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
+        });
+
+        return searchedChild;
+
     }
 
     /**
@@ -922,36 +1086,37 @@ public class BackboneApplication extends Application {
      * @return
      * @Arinela
      */
+    private boolean weightSaved = false;
     public boolean saveWeight(String barcode, String dateToday, String dateTodayTimestamp, String weight, String modBy) {
         final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC);
         webServiceUrl.append("RegisterChildWeightBarcode?barcode=").append(URLEncoder.encode(barcode)).append("&date=").append(dateToday).append("&weight=").append(weight)
                 .append("&modifiedon=").append(dateTodayTimestamp).append("&modifiedby=").append(modBy);
 
-        Log.e("service weight", webServiceUrl + "");
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
-                Utils.writeNetworkLogFileOnSD(
-                        Utils.returnDeviceIdAndTimestamp(getApplicationContext())
-                                + " StatusCode " + httpResponse.getStatusLine().getStatusCode()
-                                + " ReasonPhrase " + httpResponse.getStatusLine().getReasonPhrase()
-                                + " ProtocolVersion " + httpResponse.getStatusLine().getProtocolVersion());
-                return false;
-            }
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String result = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
-            return true;
 
-        } catch (Exception e) {
-            getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
-            return false;
-        }
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                weightSaved = false;
+                getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + responseString);
+                    weightSaved = true;
+
+                } catch (Exception e) {
+                    getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
+                    weightSaved = false;
+                }
+            }
+        });
+
+        Log.e("service weight", webServiceUrl + "");
+        return weightSaved;
+
 
     }
 
@@ -961,46 +1126,47 @@ public class BackboneApplication extends Application {
      *
      * @param barcode
      */
+    private int parseChildCollectorSearchByBarcodeResults;
     public int parseChildCollectorSearchByBarcode(String barcode) {
         final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, SEARCH_BY_BARCODE);
         webServiceUrl.append("?barcodeId=").append(URLEncoder.encode(barcode));
-        ChildCollector childCollector = new ChildCollector();
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                Utils.writeNetworkLogFileOnSD(
-                        Utils.returnDeviceIdAndTimestamp(getApplicationContext())
-                                + " StatusCode " + httpResponse.getStatusLine().getStatusCode()
-                                + " ReasonPhrase " + httpResponse.getStatusLine().getReasonPhrase()
-                                + " ProtocolVersion " + httpResponse.getStatusLine().getProtocolVersion());
-                return 3;
-            }
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String response = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            childCollector = mapper.readValue(new JSONArray(response).getJSONObject(0).toString(), ChildCollector.class);
 
-            addChildVaccinationEventVaccinationAppointment(childCollector);
-            return 1;
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-            return 2;
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-            return 2;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return 3;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return 2;
-        }
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                parseChildCollectorSearchByBarcodeResults=3;
+                throwable.printStackTrace();
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String response) {
+                ChildCollector childCollector = new ChildCollector();
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                    childCollector = mapper.readValue(new JSONArray(response).getJSONObject(0).toString(), ChildCollector.class);
+
+                    addChildVaccinationEventVaccinationAppointment(childCollector);
+                    parseChildCollectorSearchByBarcodeResults = 1;
+                } catch (JsonGenerationException e) {
+                    e.printStackTrace();
+                    parseChildCollectorSearchByBarcodeResults = 2;
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                    parseChildCollectorSearchByBarcodeResults = 2;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    parseChildCollectorSearchByBarcodeResults = 3;
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    parseChildCollectorSearchByBarcodeResults = 2;
+                }
+
+            }
+        });
+        return parseChildCollectorSearchByBarcodeResults;
     }
 
     /**
@@ -1010,43 +1176,39 @@ public class BackboneApplication extends Application {
      * @param url
      * @return
      */
+    private boolean updateChildResults = false;
     public boolean updateChild(StringBuilder url) {
         url.append("&userId=" + LOGGED_IN_USER_ID);
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(url.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + url.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
+        Log.d("coze","updating child url = "+url);
 
-            if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                InputStream inputStream = httpResponse.getEntity().getContent();
-                String result = Utils.getStringFromInputStream(inputStream);
-                Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
-                JSONObject jsonObject = null;
-                try {
-                    jsonObject = new JSONObject(result);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    return false;
-                }
-                if (jsonObject != null && jsonObject.optString("id", "-1").equalsIgnoreCase("1")) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                Utils.writeNetworkLogFileOnSD(
-                        Utils.returnDeviceIdAndTimestamp(getApplicationContext())
-                                + " StatusCode " + httpResponse.getStatusLine().getStatusCode()
-                                + " ReasonPhrase " + httpResponse.getStatusLine().getReasonPhrase()
-                                + " ProtocolVersion " + httpResponse.getStatusLine().getProtocolVersion());
-                return false;
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(url.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                try {
+                    JSONObject jsonObject = null;
+                    try {
+                        jsonObject = new JSONObject(responseString);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        updateChildResults = false;
+                    }
+                    if (jsonObject != null && jsonObject.optString("id", "-1").equalsIgnoreCase("1")) {
+                        updateChildResults = true;
+                    } else {
+                        updateChildResults = false;
+                    }
+                }catch (Exception e){
+                    updateChildResults =false;
+                }
+            }
+        });
+        return updateChildResults;
     }
 
 
@@ -1057,42 +1219,40 @@ public class BackboneApplication extends Application {
      * @param url
      * @return
      */
+    private boolean updateAefiAppointementResults=false;
     public boolean updateAefiAppointement(StringBuilder url) {
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(url.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + url.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-
-            if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                InputStream inputStream = httpResponse.getEntity().getContent();
-                String result = Utils.getStringFromInputStream(inputStream);
-                Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
-                JSONObject jsonObject = null;
-                try {
-                    jsonObject = new JSONObject(result);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    return false;
-                }
-                if (jsonObject != null && jsonObject.optString("id", "-1").equalsIgnoreCase("1")) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                Utils.writeNetworkLogFileOnSD(
-                        Utils.returnDeviceIdAndTimestamp(getApplicationContext())
-                                + " StatusCode " + httpResponse.getStatusLine().getStatusCode()
-                                + " ReasonPhrase " + httpResponse.getStatusLine().getReasonPhrase()
-                                + " ProtocolVersion " + httpResponse.getStatusLine().getProtocolVersion());
-                return false;
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(url.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                updateAefiAppointementResults=false;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String result) {
+                try {
+
+                        Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
+                        JSONObject jsonObject = null;
+                        try {
+                            jsonObject = new JSONObject(result);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            updateAefiAppointementResults = false;
+                        }
+                        if (jsonObject != null && jsonObject.optString("id", "-1").equalsIgnoreCase("1")) {
+                            updateAefiAppointementResults = true;
+                        } else {
+                            updateAefiAppointementResults = false;
+                        }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    updateAefiAppointementResults = false;
+                }
+            }
+        });
+        return updateAefiAppointementResults;
     }
 
     /**
@@ -1101,85 +1261,126 @@ public class BackboneApplication extends Application {
      * @param url
      * @return - the newly inserted id in the server, or a negative value in case of error
      */
+    private long insertChildSupplementidChildResults = -1;
     public long insertChildSupplementidChild(String url) {
         if (url != null && !url.isEmpty()) {
-            try {
-                DefaultHttpClient httpClient = new DefaultHttpClient();
-                HttpGet httpGet = new HttpGet(url.toString());
-                Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + url.toString());
-                httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-                HttpResponse httpResponse = httpClient.execute(httpGet);
-
-                if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                    InputStream inputStream = httpResponse.getEntity().getContent();
-                    String result = Utils.getStringFromInputStream(inputStream);
-                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
-                    JSONObject jsonObject = null;
-                    try {
-                        jsonObject = new JSONObject(result);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        return -1;
-                    }
-                    if (jsonObject != null) {
-                        long newId = Long.parseLong(jsonObject.optString("id", "-1"));
-                        return newId;
-                    } else {
-                        return -1;
-                    }
-                } else {
-                    Utils.writeNetworkLogFileOnSD(
-                            Utils.returnDeviceIdAndTimestamp(getApplicationContext())
-                                    + " StatusCode " + httpResponse.getStatusLine().getStatusCode()
-                                    + " ReasonPhrase " + httpResponse.getStatusLine().getReasonPhrase()
-                                    + " ProtocolVersion " + httpResponse.getStatusLine().getProtocolVersion());
-                    return -1;
+            client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+            client.get(url.toString(), new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    throwable.printStackTrace();
+                    insertChildSupplementidChildResults=-1;
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-                return -1;
-            }
-        } else {
-            return -1;
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                    try {
+                        JSONObject jsonObject = new JSONObject();
+                        try {
+                            jsonObject = new JSONObject(responseString);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            insertChildSupplementidChildResults = -1;
+                        }
+                        if (jsonObject != null) {
+                            long newId = Long.parseLong(jsonObject.optString("id", "-1"));
+                            insertChildSupplementidChildResults = newId;
+                        } else {
+                            insertChildSupplementidChildResults = -1;
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        insertChildSupplementidChildResults = -1;
+                    }
+                }
+            });
         }
+        return insertChildSupplementidChildResults;
     }
 
     /**
      * this method  updates vaccination Queue table in Server DB and returns true if statusCode == 200
      * or false if not
      */
+    private boolean updateVaccinationQueueResult=false;
     public boolean updateVaccinationQueue(String barcode, String childHfid, String dateNow, String userId) {
         final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, UPDATE_VACCINATION_QUEUE);
         webServiceUrl.append("?barcode=").append(URLEncoder.encode(barcode)).append("&hfid=").append(childHfid)
                 .append("&date=").append(dateNow).append("&userId=").append(userId);
         Log.e("URL upadte VAc queue", webServiceUrl.toString());
-        ChildCollector childCollector = new ChildCollector();
 
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-
-
-            if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                updateVaccinationQueueResult=false;
                 getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
-                Utils.writeNetworkLogFileOnSD(
-                        Utils.returnDeviceIdAndTimestamp(getApplicationContext())
-                                + " StatusCode " + httpResponse.getStatusLine().getStatusCode()
-                                + " ReasonPhrase " + httpResponse.getStatusLine().getReasonPhrase()
-                                + " ProtocolVersion " + httpResponse.getStatusLine().getProtocolVersion());
-                return false;
-            } else {
-                return true;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
-            return false;
-        }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                updateVaccinationQueueResult =true;
+            }
+        });
+
+        return updateVaccinationQueueResult;
     }
+
+//    private int requestCode;
+//    /**
+//     * this method takes the date of today and the logged in user id and returns 1 and .....(we get data from server),
+//     * 2 if there is no entry for the queue(we dont get data from server) and 3 if statusCode not 200
+//     *
+//     * @return int that shows result interpretation
+//     */
+//    public int getVaccinationQueueByDateAndUser() {
+//        final StringBuilder webServiceUrl = createWebServiceURL("", GET_VACCINATION_QUEUE_BY_DATE_AND_USER);
+//        webServiceUrl.append("?date=").append(new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())).append("&userId=").append(getLOGGED_IN_USER_ID());
+//        Log.e("getVaccQueueByDt&Usr", webServiceUrl.toString());
+//
+//        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+//        client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                requestCode = 3;
+//            }
+//
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, String responseAsString) {
+//                try {
+//                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + responseAsString);
+//                    JSONArray jarr = new JSONArray(responseAsString);
+//                    DatabaseHandler db = getDatabaseInstance();
+//                    String childBarcodesNotInDB = "";
+//                    for (int i = 0; i < jarr.length(); i++) {
+//                        JSONObject jobj = jarr.getJSONObject(i);
+//                        if (db.isBarcodeInChildTable(jobj.getString("BarcodeId"))) {
+//                            String dateNow = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(new Date(Long.parseLong(jobj.getString("Date").substring(6, 19))));
+//
+//                            ContentValues cv = new ContentValues();
+//                            cv.put(SQLHandler.VaccinationQueueColumns.CHILD_ID, db.getChildIdByBarcode(jobj.getString("BarcodeId")));
+//                            cv.put(SQLHandler.VaccinationQueueColumns.DATE, dateNow);
+//                            db.addChildToVaccinationQueue(cv);
+//                        } else {
+//                            if (childBarcodesNotInDB.length() > 0) childBarcodesNotInDB += ",";
+//                            childBarcodesNotInDB += jobj.getString("BarcodeId");
+//                        }
+//                    }
+//
+//                    if (childBarcodesNotInDB.length() > 0) {
+//                        getChildByBarcodeList(childBarcodesNotInDB);
+//                    }
+//                    requestCode = 1;
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    requestCode = 2;
+//                }
+//            }
+//        });
+//        return requestCode;
+//
+//    }
 
     /**
      * this method takes the date of today and the logged in user id and returns 1 and .....(we get data from server),
@@ -1245,42 +1446,36 @@ public class BackboneApplication extends Application {
         }
     }
 
+
     /**
      * this method  regiters Audit in Server DB and returns true if statusCode == 200
      * or false if not
      */
+    private boolean registerAuditResult=false;
     public boolean registerAudit(String table, String barcode, String dateNow, String userId, int actionId) {
         final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, REGISTER_AUDIT);
         webServiceUrl.append("?table=").append(table).append("&recordId=").append(barcode)
                 .append("&userId=").append(userId).append("&date=").append(dateNow).append("&activityId=").append(actionId);
         Log.d("", webServiceUrl.toString());
 
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-
-            if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                registerAuditResult=false;
                 getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
-                Utils.writeNetworkLogFileOnSD(
-                        Utils.returnDeviceIdAndTimestamp(getApplicationContext())
-                                + " StatusCode " + httpResponse.getStatusLine().getStatusCode()
-                                + " ReasonPhrase " + httpResponse.getStatusLine().getReasonPhrase()
-                                + " ProtocolVersion " + httpResponse.getStatusLine().getProtocolVersion());
-                return false;
-            } else {
-                return true;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
-            return false;
-        }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                registerAuditResult=true;
+
+            }
+        });
+        return registerAuditResult;
     }
 
-    private static AsyncHttpClient client = new SyncHttpClient();
+    private static SyncHttpClient client = new SyncHttpClient();
     final int DEFAULT_TIMEOUT = 6000000;
 
     @Override
@@ -1288,6 +1483,38 @@ public class BackboneApplication extends Application {
         super.onCreate();
         Log.d(TAG, "application created");
         client.setTimeout(DEFAULT_TIMEOUT);
+        client.setURLEncodingEnabled(false);
+
+
+        // We load the KeyStore
+        try {
+            /// We initialize a default Keystore
+            KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            trustStore.load(null, null);
+            // We initialize a new SSLSocketFacrory
+            MySSLSocketFactory socketFactory = new MySSLSocketFactory(trustStore);
+            // We set that all host names are allowed in the socket factory
+            socketFactory.setHostnameVerifier(MySSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+            // We set the SSL Factory
+            client.setSSLSocketFactory(socketFactory);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        } catch (UnrecoverableKeyException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
+
+
+        client.setTimeout(DEFAULT_TIMEOUT);
+        client.setMaxConnections(20);
+
 
         AsyncHttpClient.allowRetryExceptionClass(IOException.class);
         AsyncHttpClient.allowRetryExceptionClass(IllegalArgumentException.class);
@@ -1443,528 +1670,581 @@ public class BackboneApplication extends Application {
     public void parseHealthFacility() {
         final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, GET_HEALTH_FACILITY);
         Log.d("", webServiceUrl.toString());
-        List<HealthFacility> objects = new ArrayList<HealthFacility>();
 
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String response = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(response, new TypeReference<List<HealthFacility>>() {
-            });
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
 
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            for (HealthFacility object : objects) {
-                ContentValues values = new ContentValues();
-                values.put(SQLHandler.HealthFacilityColumns.ID, object.getId());
-                values.put(SQLHandler.SyncColumns.UPDATED, 1);
-                values.put(SQLHandler.HealthFacilityColumns.CODE, object.getCode());
-                values.put(SQLHandler.HealthFacilityColumns.PARENT_ID, object.getParentId());
-                values.put(SQLHandler.HealthFacilityColumns.NAME, object.getName());
-                DatabaseHandler db = getDatabaseInstance();
-                db.addHealthFacility(values);
             }
-        }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String response) {
+                List<HealthFacility> objects = new ArrayList<HealthFacility>();
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                    objects = mapper.readValue(response, new TypeReference<List<HealthFacility>>() {
+                    });
+
+                } catch (JsonGenerationException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    for (HealthFacility object : objects) {
+                        ContentValues values = new ContentValues();
+                        values.put(SQLHandler.HealthFacilityColumns.ID, object.getId());
+                        values.put(SQLHandler.SyncColumns.UPDATED, 1);
+                        values.put(SQLHandler.HealthFacilityColumns.CODE, object.getCode());
+                        values.put(SQLHandler.HealthFacilityColumns.PARENT_ID, object.getParentId());
+                        values.put(SQLHandler.HealthFacilityColumns.NAME, object.getName());
+                        DatabaseHandler db = getDatabaseInstance();
+                        db.addHealthFacility(values);
+                    }
+                }
+            }
+        });
     }
 
     public void parseStatus() {
         final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, GET_STATUS_LIST);
         Log.d("", webServiceUrl.toString());
-        List<Status> objects = new ArrayList<Status>();
 
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String response = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(response, new TypeReference<List<Status>>() {
-            });
 
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            for (Status object : objects) {
-                ContentValues values = new ContentValues();
-                values.put(SQLHandler.StatusColumns.ID, object.getId());
-                //Log.d("Status ID", object.getId());
-                values.put(SQLHandler.SyncColumns.UPDATED, 1);
-                values.put(SQLHandler.StatusColumns.NAME, object.getName());
-                //Log.d("Status NAME", object.getName());
-                DatabaseHandler db = getDatabaseInstance();
-                db.addUpdateStatus(values, object.getId());
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
             }
-        }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+
+                List<Status> objects = new ArrayList<Status>();
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + responseString);
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                    objects = mapper.readValue(responseString, new TypeReference<List<Status>>() {
+                    });
+
+                } catch (JsonGenerationException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    for (Status object : objects) {
+                        ContentValues values = new ContentValues();
+                        values.put(SQLHandler.StatusColumns.ID, object.getId());
+                        //Log.d("Status ID", object.getId());
+                        values.put(SQLHandler.SyncColumns.UPDATED, 1);
+                        values.put(SQLHandler.StatusColumns.NAME, object.getName());
+                        //Log.d("Status NAME", object.getName());
+                        DatabaseHandler db = getDatabaseInstance();
+                        db.addUpdateStatus(values, object.getId());
+                    }
+                }
+            }
+        });
+
+
     }
 
     public void parseItemLots() {
         final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, GET_ITEM_LOT_ID);
         Log.d("", webServiceUrl.toString());
-        List<ItemLot> objects = new ArrayList<ItemLot>();
 
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String response = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(response, new TypeReference<List<ItemLot>>() {
-            });
 
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            for (ItemLot object : objects) {
-                ContentValues values = new ContentValues();
-                values.put(SQLHandler.ItemLotColumns.ID, object.getId());
-                values.put(SQLHandler.ItemLotColumns.EXPIRE_DATE, object.getExpireDate());
-                values.put(SQLHandler.ItemLotColumns.GTIN, object.getGtin());
-                values.put(SQLHandler.ItemLotColumns.ITEM_ID, object.getItemId());
-                values.put(SQLHandler.ItemLotColumns.LOT_NUMBER, object.getLotNumber());
-                //values.put(SQLHandler.ItemLotColumns.NOTES, object.getNotes());
-                DatabaseHandler db = getDatabaseInstance();
-                db.addUpdateItemLot(values, object.getId());
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
             }
-        }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String response) {
+                List<ItemLot> objects = new ArrayList<ItemLot>();
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                    objects = mapper.readValue(response, new TypeReference<List<ItemLot>>() {
+                    });
+
+                } catch (JsonGenerationException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    for (ItemLot object : objects) {
+                        ContentValues values = new ContentValues();
+                        values.put(SQLHandler.ItemLotColumns.ID, object.getId());
+                        values.put(SQLHandler.ItemLotColumns.EXPIRE_DATE, object.getExpireDate());
+                        values.put(SQLHandler.ItemLotColumns.GTIN, object.getGtin());
+                        values.put(SQLHandler.ItemLotColumns.ITEM_ID, object.getItemId());
+                        values.put(SQLHandler.ItemLotColumns.LOT_NUMBER, object.getLotNumber());
+                        //values.put(SQLHandler.ItemLotColumns.NOTES, object.getNotes());
+                        DatabaseHandler db = getDatabaseInstance();
+                        db.addUpdateItemLot(values, object.getId());
+                    }
+                }
+            }
+        });
     }
 
     public void parseWeight() {
         final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, GET_WEIGHT_LIST);
         Log.d("", webServiceUrl.toString());
-        List<Weight> objects = new ArrayList<Weight>();
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
 
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String response = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(response, new TypeReference<List<Weight>>() {
-            });
-
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            for (Weight object : objects) {
-                ContentValues values = new ContentValues();
-                values.put(SQLHandler.WeightColumns.ID, object.getId());
-                values.put(SQLHandler.SyncColumns.UPDATED, 1);
-                values.put(SQLHandler.WeightColumns.DAY, object.getDay());
-                values.put(SQLHandler.WeightColumns.GENDER, object.getGender());
-                values.put(SQLHandler.WeightColumns.SD0, object.getSD0());
-                values.put(SQLHandler.WeightColumns.SD1, object.getSD1());
-                values.put(SQLHandler.WeightColumns.SD2, object.getSD2());
-                values.put(SQLHandler.WeightColumns.SD3, object.getSD3());
-                values.put(SQLHandler.WeightColumns.SD4, object.getSD4());
-                values.put(SQLHandler.WeightColumns.SD1NEG, object.getSD1neg());
-                values.put(SQLHandler.WeightColumns.SD2NEG, object.getSD2neg());
-                values.put(SQLHandler.WeightColumns.SD3NEG, object.getSD3neg());
-                values.put(SQLHandler.WeightColumns.SD4NEG, object.getSD4neg());
-                DatabaseHandler db = getDatabaseInstance();
-                db.addUpdateWeightList(values, object.getId());
             }
-        }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                List<Weight> objects = new ArrayList<Weight>();
+
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + responseString);
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                    objects = mapper.readValue(responseString, new TypeReference<List<Weight>>() {
+                    });
+
+                } catch (JsonGenerationException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    for (Weight object : objects) {
+                        ContentValues values = new ContentValues();
+                        values.put(SQLHandler.WeightColumns.ID, object.getId());
+                        values.put(SQLHandler.SyncColumns.UPDATED, 1);
+                        values.put(SQLHandler.WeightColumns.DAY, object.getDay());
+                        values.put(SQLHandler.WeightColumns.GENDER, object.getGender());
+                        values.put(SQLHandler.WeightColumns.SD0, object.getSD0());
+                        values.put(SQLHandler.WeightColumns.SD1, object.getSD1());
+                        values.put(SQLHandler.WeightColumns.SD2, object.getSD2());
+                        values.put(SQLHandler.WeightColumns.SD3, object.getSD3());
+                        values.put(SQLHandler.WeightColumns.SD4, object.getSD4());
+                        values.put(SQLHandler.WeightColumns.SD1NEG, object.getSD1neg());
+                        values.put(SQLHandler.WeightColumns.SD2NEG, object.getSD2neg());
+                        values.put(SQLHandler.WeightColumns.SD3NEG, object.getSD3neg());
+                        values.put(SQLHandler.WeightColumns.SD4NEG, object.getSD4neg());
+                        DatabaseHandler db = getDatabaseInstance();
+                        db.addUpdateWeightList(values, object.getId());
+                    }
+                }
+            }
+        });
     }
 
     public void parseNonVaccinationReason() {
         final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, GET_NON_VACCINATION_REASON_LIST);
         Log.d("", webServiceUrl.toString());
-        List<NonVaccinationReason> objects = new ArrayList<NonVaccinationReason>();
 
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String response = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(response, new TypeReference<List<NonVaccinationReason>>() {
-            });
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
 
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            for (NonVaccinationReason object : objects) {
-                ContentValues values = new ContentValues();
-                values.put(SQLHandler.NonVaccinationReasonColumns.ID, object.getId());
-                values.put(SQLHandler.SyncColumns.UPDATED, 1);
-                values.put(SQLHandler.NonVaccinationReasonColumns.NAME, object.getName());
-                values.put(SQLHandler.NonVaccinationReasonColumns.KEEP_CHILD_DUE, object.getKeepChildDue());
-                DatabaseHandler db = getDatabaseInstance();
-                db.addNonVaccinationReason(values);
             }
-        }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String response) {
+                List<NonVaccinationReason> objects = new ArrayList<NonVaccinationReason>();
+
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                    objects = mapper.readValue(response, new TypeReference<List<NonVaccinationReason>>() {
+                    });
+
+                } catch (JsonGenerationException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    for (NonVaccinationReason object : objects) {
+                        ContentValues values = new ContentValues();
+                        values.put(SQLHandler.NonVaccinationReasonColumns.ID, object.getId());
+                        values.put(SQLHandler.SyncColumns.UPDATED, 1);
+                        values.put(SQLHandler.NonVaccinationReasonColumns.NAME, object.getName());
+                        values.put(SQLHandler.NonVaccinationReasonColumns.KEEP_CHILD_DUE, object.getKeepChildDue());
+                        DatabaseHandler db = getDatabaseInstance();
+                        db.addNonVaccinationReason(values);
+                    }
+                }
+            }
+        });
     }
 
     public void parseAgeDefinitions() {
         final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, GET_AGE_DEFINITIONS_LIST);
         Log.d("", webServiceUrl.toString());
-        List<AgeDefinitions> objects = new ArrayList<AgeDefinitions>();
 
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String response = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(response, new TypeReference<List<AgeDefinitions>>() {
-            });
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
 
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            for (AgeDefinitions object : objects) {
-                ContentValues adCV = new ContentValues();
-                DatabaseHandler db = getDatabaseInstance();
-
-                adCV.put(SQLHandler.SyncColumns.UPDATED, 1);
-                adCV.put(SQLHandler.AgeDefinitionsColumns.DAYS, object.getDays());
-                adCV.put(SQLHandler.AgeDefinitionsColumns.ID, object.getId());
-                adCV.put(SQLHandler.AgeDefinitionsColumns.NAME, object.getName());
-                db.addAgeDefinitions(adCV);
             }
-        }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String response) {
+                List<AgeDefinitions> objects = new ArrayList<AgeDefinitions>();
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                    objects = mapper.readValue(response, new TypeReference<List<AgeDefinitions>>() {
+                    });
+
+                } catch (JsonGenerationException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    for (AgeDefinitions object : objects) {
+                        ContentValues adCV = new ContentValues();
+                        DatabaseHandler db = getDatabaseInstance();
+
+                        adCV.put(SQLHandler.SyncColumns.UPDATED, 1);
+                        adCV.put(SQLHandler.AgeDefinitionsColumns.DAYS, object.getDays());
+                        adCV.put(SQLHandler.AgeDefinitionsColumns.ID, object.getId());
+                        adCV.put(SQLHandler.AgeDefinitionsColumns.NAME, object.getName());
+                        db.addAgeDefinitions(adCV);
+                    }
+                }
+            }
+        });
     }
 
     public void parseItem() {
         final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, GET_ITEM_LIST);
         Log.d("", webServiceUrl.toString());
-        List<Item> objects = new ArrayList<Item>();
 
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String response = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(response, new TypeReference<List<Item>>() {
-            });
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
 
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            for (Item object : objects) {
-                ContentValues itemCV = new ContentValues();
-                DatabaseHandler db = getDatabaseInstance();
-
-                itemCV.put(SQLHandler.SyncColumns.UPDATED, 1);
-                itemCV.put(SQLHandler.ItemColumns.CODE, object.getCode());
-                itemCV.put(SQLHandler.ItemColumns.ENTRY_DATE, object.getEntryDate());
-                itemCV.put(SQLHandler.ItemColumns.EXIT_DATE, object.getExitDate());
-                itemCV.put(SQLHandler.ItemColumns.ID, object.getId());
-                itemCV.put(SQLHandler.ItemColumns.ITEM_CATEGORY_ID, object.getItemCategoryId());
-                itemCV.put(SQLHandler.ItemColumns.NAME, object.getName());
-                db.addItem(itemCV);
             }
-        }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String response) {
+                List<Item> objects = new ArrayList<Item>();
+
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                    objects = mapper.readValue(response, new TypeReference<List<Item>>() {
+                    });
+
+                } catch (JsonGenerationException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    for (Item object : objects) {
+                        ContentValues itemCV = new ContentValues();
+                        DatabaseHandler db = getDatabaseInstance();
+
+                        itemCV.put(SQLHandler.SyncColumns.UPDATED, 1);
+                        itemCV.put(SQLHandler.ItemColumns.CODE, object.getCode());
+                        itemCV.put(SQLHandler.ItemColumns.ENTRY_DATE, object.getEntryDate());
+                        itemCV.put(SQLHandler.ItemColumns.EXIT_DATE, object.getExitDate());
+                        itemCV.put(SQLHandler.ItemColumns.ID, object.getId());
+                        itemCV.put(SQLHandler.ItemColumns.ITEM_CATEGORY_ID, object.getItemCategoryId());
+                        itemCV.put(SQLHandler.ItemColumns.NAME, object.getName());
+                        db.addItem(itemCV);
+                    }
+                }
+            }
+        });
     }
 
     public void parseScheduledVaccination() {
         final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, GET_SCHEDULED_VACCINATION_LIST);
         Log.d("", webServiceUrl.toString());
-        List<ScheduledVaccination> objects = new ArrayList<ScheduledVaccination>();
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
 
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String response = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-            ObjectMapper mapper = new ObjectMapper();
-            objects = mapper.readValue(response, new TypeReference<List<ScheduledVaccination>>() {
-            });
-
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            for (ScheduledVaccination object : objects) {
-                ContentValues scheduledVaccinationCV = new ContentValues();
-                DatabaseHandler db = getDatabaseInstance();
-
-                scheduledVaccinationCV.put(SQLHandler.SyncColumns.UPDATED, 1);
-                scheduledVaccinationCV.put(SQLHandler.ScheduledVaccinationColumns.CODE, object.getCode());
-                scheduledVaccinationCV.put(SQLHandler.ScheduledVaccinationColumns.ENTRY_DATE, object.getEntryDate());
-                scheduledVaccinationCV.put(SQLHandler.ScheduledVaccinationColumns.EXIT_DATE, object.getExitDate());
-                scheduledVaccinationCV.put(SQLHandler.ScheduledVaccinationColumns.ID, object.getId());
-                scheduledVaccinationCV.put(SQLHandler.ScheduledVaccinationColumns.ITEM_ID, object.getItemId());
-                scheduledVaccinationCV.put(SQLHandler.ScheduledVaccinationColumns.NAME, object.getName());
-                db.addScheduledVaccination(scheduledVaccinationCV);
             }
-        }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String response) {
+                List<ScheduledVaccination> objects = new ArrayList<ScheduledVaccination>();
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                    ObjectMapper mapper = new ObjectMapper();
+                    objects = mapper.readValue(response, new TypeReference<List<ScheduledVaccination>>() {
+                    });
+
+                } catch (JsonGenerationException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    for (ScheduledVaccination object : objects) {
+                        ContentValues scheduledVaccinationCV = new ContentValues();
+                        DatabaseHandler db = getDatabaseInstance();
+
+                        scheduledVaccinationCV.put(SQLHandler.SyncColumns.UPDATED, 1);
+                        scheduledVaccinationCV.put(SQLHandler.ScheduledVaccinationColumns.CODE, object.getCode());
+                        scheduledVaccinationCV.put(SQLHandler.ScheduledVaccinationColumns.ENTRY_DATE, object.getEntryDate());
+                        scheduledVaccinationCV.put(SQLHandler.ScheduledVaccinationColumns.EXIT_DATE, object.getExitDate());
+                        scheduledVaccinationCV.put(SQLHandler.ScheduledVaccinationColumns.ID, object.getId());
+                        scheduledVaccinationCV.put(SQLHandler.ScheduledVaccinationColumns.ITEM_ID, object.getItemId());
+                        scheduledVaccinationCV.put(SQLHandler.ScheduledVaccinationColumns.NAME, object.getName());
+                        db.addScheduledVaccination(scheduledVaccinationCV);
+                    }
+                }
+            }
+        });
     }
 
     public void parseDose() {
         final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, GET_DOSE_LIST);
         Log.d("", webServiceUrl.toString());
-        List<Dose> objects = new ArrayList<Dose>();
 
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String response = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(response, new TypeReference<List<Dose>>() {
-            });
-
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            for (Dose object : objects) {
-                ContentValues doseCV = new ContentValues();
-                DatabaseHandler db = getDatabaseInstance();
-
-                doseCV.put(SQLHandler.SyncColumns.UPDATED, 1);
-                doseCV.put(SQLHandler.DoseColumns.AGE_DEFINITON_ID, object.getAgeDefinitionId());
-                doseCV.put(SQLHandler.DoseColumns.FULLNAME, object.getFullname());
-                doseCV.put(SQLHandler.DoseColumns.DOSE_NUMBER, object.getDoseNumber());
-                doseCV.put(SQLHandler.DoseColumns.ID, object.getId());
-                doseCV.put(SQLHandler.DoseColumns.FROM_AGE_DEFINITON_ID, object.getFromAgeDefId());
-                doseCV.put(SQLHandler.DoseColumns.TO_AGE_DEFINITON_ID, object.getToAgeDefId());
-                doseCV.put(SQLHandler.DoseColumns.SCHEDULED_VACCINATION_ID, object.getScheduledVaccinationId());
-                db.addDose(doseCV);
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                throwable.printStackTrace();
             }
-        }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String response) {
+                List<Dose> objects = new ArrayList<Dose>();
+
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                    objects = mapper.readValue(response, new TypeReference<List<Dose>>() {
+                    });
+
+                } catch (JsonGenerationException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    for (Dose object : objects) {
+                        ContentValues doseCV = new ContentValues();
+                        DatabaseHandler db = getDatabaseInstance();
+
+                        doseCV.put(SQLHandler.SyncColumns.UPDATED, 1);
+                        doseCV.put(SQLHandler.DoseColumns.AGE_DEFINITON_ID, object.getAgeDefinitionId());
+                        doseCV.put(SQLHandler.DoseColumns.FULLNAME, object.getFullname());
+                        doseCV.put(SQLHandler.DoseColumns.DOSE_NUMBER, object.getDoseNumber());
+                        doseCV.put(SQLHandler.DoseColumns.ID, object.getId());
+                        doseCV.put(SQLHandler.DoseColumns.FROM_AGE_DEFINITON_ID, object.getFromAgeDefId());
+                        doseCV.put(SQLHandler.DoseColumns.TO_AGE_DEFINITON_ID, object.getToAgeDefId());
+                        doseCV.put(SQLHandler.DoseColumns.SCHEDULED_VACCINATION_ID, object.getScheduledVaccinationId());
+                        db.addDose(doseCV);
+                    }
+                }
+            }
+        });
     }
 
+    private int parsedChildResults;
     public int parseChildById(String id) {
         final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC).append("GetChildById?childId=").append(id);
-        //createWebServiceURL(LOGGED_IN_USER_HF_ID, SEARCH_BY_BARCODE); webServiceUrl.append("?barcodeId=").append(barcode);
-        Log.d("parseChildCollectorbyId", webServiceUrl.toString());
-        ChildCollector childCollector = new ChildCollector();
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                Utils.writeNetworkLogFileOnSD(
-                        Utils.returnDeviceIdAndTimestamp(getApplicationContext())
-                                + " StatusCode " + httpResponse.getStatusLine().getStatusCode()
-                                + " ReasonPhrase " + httpResponse.getStatusLine().getReasonPhrase()
-                                + " ProtocolVersion " + httpResponse.getStatusLine().getProtocolVersion());
-                return 3;
-            }
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String response = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            childCollector = mapper.readValue(new JSONArray(response).getJSONObject(0).toString(), ChildCollector.class);
 
-            addChildVaccinationEventVaccinationAppointment(childCollector);
-            return 1;
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-            return 2;
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-            return 2;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return 3;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return 2;
-        }
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                parsedChildResults=3;
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String response) {
+                Log.d("parseChildCollectorbyId", webServiceUrl.toString());
+                ChildCollector childCollector = new ChildCollector();
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                    childCollector = mapper.readValue(new JSONArray(response).getJSONObject(0).toString(), ChildCollector.class);
+
+                    addChildVaccinationEventVaccinationAppointment(childCollector);
+                    parsedChildResults = 1;
+                } catch (JsonGenerationException e) {
+                    e.printStackTrace();
+                    parsedChildResults = 2;
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                    parsedChildResults = 2;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    parsedChildResults = 3;
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    parsedChildResults = 2;
+                }
+            }
+        });
+        return  parsedChildResults;
     }
 
     public void parseCustomHealthFacility(String hf_id) {
         final StringBuilder webServiceUrl = createWebServiceURL(hf_id, GET_HEALTH_FACILITY);
         Log.d("", webServiceUrl.toString());
-        List<HealthFacility> objects = new ArrayList<HealthFacility>();
-
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String response = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(response, new TypeReference<List<HealthFacility>>() {
-            });
-
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            for (HealthFacility object : objects) {
-                ContentValues values = new ContentValues();
-                values.put(SQLHandler.HealthFacilityColumns.ID, object.getId());
-                values.put(SQLHandler.SyncColumns.UPDATED, 1);
-                values.put(SQLHandler.HealthFacilityColumns.CODE, object.getCode());
-                values.put(SQLHandler.HealthFacilityColumns.PARENT_ID, object.getParentId());
-                values.put(SQLHandler.HealthFacilityColumns.NAME, object.getName());
-                DatabaseHandler db = getDatabaseInstance();
-                db.addUpdateHealthFacility(values, object.getId());
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                throwable.printStackTrace();
             }
-        }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String response) {
+                List<HealthFacility> objects = new ArrayList<HealthFacility>();
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                    objects = mapper.readValue(response, new TypeReference<List<HealthFacility>>() {
+                    });
+                } catch (JsonGenerationException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    for (HealthFacility object : objects) {
+                        ContentValues values = new ContentValues();
+                        values.put(SQLHandler.HealthFacilityColumns.ID, object.getId());
+                        values.put(SQLHandler.SyncColumns.UPDATED, 1);
+                        values.put(SQLHandler.HealthFacilityColumns.CODE, object.getCode());
+                        values.put(SQLHandler.HealthFacilityColumns.PARENT_ID, object.getParentId());
+                        values.put(SQLHandler.HealthFacilityColumns.NAME, object.getName());
+                        DatabaseHandler db = getDatabaseInstance();
+                        db.addUpdateHealthFacility(values, object.getId());
+                    }
+                }
+            }
+        });
+
     }
 
     public void parsePlaceById(String placeId) {
         final StringBuilder webServiceUrl = createWebServiceURL(placeId, GET_PLACE_BY_ID);
         Log.d("", webServiceUrl.toString());
-        Place place = null;
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
 
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String response = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            place = mapper.readValue(response, Place.class);
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (place != null) {
-                ContentValues values = new ContentValues();
-                //Log.d("Place ID", object.getId());
-                values.put(SQLHandler.PlaceColumns.ID, place.getId());
-                values.put(SQLHandler.SyncColumns.UPDATED, 1);
-                values.put(SQLHandler.PlaceColumns.NAME, place.getName());
-                //Log.d("Place NAME", object.getName());
-                values.put(SQLHandler.PlaceColumns.CODE, place.getCode());
-                DatabaseHandler db = getDatabaseInstance();
-                db.addPlacesThatWereNotInDB(values, place.getId());
             }
-        }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String response) {
+                Place place = null;
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                    place = mapper.readValue(response, Place.class);
+                } catch (JsonGenerationException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (place != null) {
+                        ContentValues values = new ContentValues();
+                        //Log.d("Place ID", object.getId());
+                        values.put(SQLHandler.PlaceColumns.ID, place.getId());
+                        values.put(SQLHandler.SyncColumns.UPDATED, 1);
+                        values.put(SQLHandler.PlaceColumns.NAME, place.getName());
+                        //Log.d("Place NAME", object.getName());
+                        values.put(SQLHandler.PlaceColumns.CODE, place.getCode());
+                        DatabaseHandler db = getDatabaseInstance();
+                        db.addPlacesThatWereNotInDB(values, place.getId());
+                    }
+                }
+            }
+        });
     }
 
     public void parsePlaceByCustomHfId(String hf_id) {
         final StringBuilder webServiceUrl = createWebServiceURL(hf_id, GET_PLACE);
         Log.d("", webServiceUrl.toString());
-        List<Place> objects = new ArrayList<Place>();
 
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String response = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-            ObjectMapper mapper = new ObjectMapper();
-            objects = mapper.readValue(response, new TypeReference<List<Place>>() {
-            });
 
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            for (Place object : objects) {
-                ContentValues values = new ContentValues();
-                //Log.d("Place ID", object.getId());
-                values.put(SQLHandler.PlaceColumns.ID, object.getId());
-                values.put(SQLHandler.SyncColumns.UPDATED, 1);
-                values.put(SQLHandler.PlaceColumns.NAME, object.getName());
-                //Log.d("Place NAME", object.getName());
-                values.put(SQLHandler.PlaceColumns.CODE, object.getCode());
-                DatabaseHandler db = getDatabaseInstance();
-                db.addPlacesThatWereNotInDB(values, object.getId());
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                throwable.printStackTrace();
             }
-        }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String response) {
+                List<Place> objects = new ArrayList<Place>();
+
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                    ObjectMapper mapper = new ObjectMapper();
+                    objects = mapper.readValue(response, new TypeReference<List<Place>>() {
+                    });
+
+                } catch (JsonGenerationException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    for (Place object : objects) {
+                        ContentValues values = new ContentValues();
+                        //Log.d("Place ID", object.getId());
+                        values.put(SQLHandler.PlaceColumns.ID, object.getId());
+                        values.put(SQLHandler.SyncColumns.UPDATED, 1);
+                        values.put(SQLHandler.PlaceColumns.NAME, object.getName());
+                        //Log.d("Place NAME", object.getName());
+                        values.put(SQLHandler.PlaceColumns.CODE, object.getCode());
+                        DatabaseHandler db = getDatabaseInstance();
+                        db.addPlacesThatWereNotInDB(values, object.getId());
+                    }
+                }
+            }
+        });
     }
 
     //needs to be merged with createWebServiceLoginURL and used with usr/pass as null in case not Login, hf as null in case of Login
@@ -2045,82 +2325,86 @@ public class BackboneApplication extends Application {
      * @return
      * @Arinela
      */
+    private boolean isChildInServer = false;
     public boolean checkChildInServer(String lastname, String bDate, String gender) {
         final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC);
         webServiceUrl.append("ChildExistsByLastnameAndBirthdateAndGender?lastname1=").append(URLEncoder.encode(lastname)).append("&birthdate=")
                 .append(bDate).append("&gender=").append(gender);
 
         Log.e("service weight", webServiceUrl + "");
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                isChildInServer=false;
+                throwable.printStackTrace();
                 getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
-                Utils.writeNetworkLogFileOnSD(
-                        Utils.returnDeviceIdAndTimestamp(getApplicationContext())
-                                + " StatusCode " + httpResponse.getStatusLine().getStatusCode()
-                                + " ReasonPhrase " + httpResponse.getStatusLine().getReasonPhrase()
-                                + " ProtocolVersion " + httpResponse.getStatusLine().getProtocolVersion());
-                return false;
             }
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String result = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
-            if (result.equals("true")) return true;
-            else return false;
-        } catch (Exception e) {
-            getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
-            return false;
-        }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String result) {
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
+                    if (result.equals("true"))
+                        isChildInServer = true;
+                    else
+                        isChildInServer = false;
+                } catch (Exception e) {
+                    getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
+                    isChildInServer = false;
+                }
+            }
+        });
+
+       return isChildInServer;
 
     }
 
-    public int updateVaccinationEventOnServer(String url) {
+    private int updatingVaccineOnTheServerResult = -1;
+    public int updateVaccinationEventOnServer(final String url) {
         Log.e("Adm Vacc Server Upd URL", url);
+        Log.d("daytwo", url);
 
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(url);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + url.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        client.get(url, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                updatingVaccineOnTheServerResult = -1;
                 getDatabaseInstance().addPost(url, 1);
-                Utils.writeNetworkLogFileOnSD(
-                        Utils.returnDeviceIdAndTimestamp(getApplicationContext())
-                                + " StatusCode " + httpResponse.getStatusLine().getStatusCode()
-                                + " ReasonPhrase " + httpResponse.getStatusLine().getReasonPhrase()
-                                + " ProtocolVersion " + httpResponse.getStatusLine().getProtocolVersion());
-                return -1;
-            }
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String result = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
-            JSONObject jobj = new JSONObject(result);
-            int childID = jobj.getInt("id");
-            if (childID == 1) {
-                return childID;
-            } else {
-                getDatabaseInstance().addPost(url, 1);
-                return -1;
             }
 
-        } catch (Exception e) {
-            getDatabaseInstance().addPost(url, 1);
-            return -1;
-        }
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String result) {
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
+                    JSONObject jobj = new JSONObject(result);
+                    int childID = jobj.getInt("id");
+                    if (childID == 1) {
+                        updatingVaccineOnTheServerResult = childID;
+                    } else {
+                        getDatabaseInstance().addPost(url, 1);
+                        updatingVaccineOnTheServerResult = -1;
+                    }
+
+                } catch (Exception e) {
+                    getDatabaseInstance().addPost(url, 1);
+                    updatingVaccineOnTheServerResult = -1;
+                }
+            }
+        });
+        return updatingVaccineOnTheServerResult;
     }
 
     /**
      * @return child ID
      * @Arinela
      */
+    private int childId;
     public int registerChildWithAppoitments(String barcode, String fristname, String lastname, String bDate, String gender, String hfid, String birthPlaceId, String domId,
                                             String addr, String phone, String motherFirstname, String motherLastname, String notes, String userID, String modOn,
-                                            PostmanModel postmanModel, String firstname2) {
+                                            PostmanModel postmanModel, String firstname2,final String threadTempId, final String threadbarcode) {
+        childId = -1;
         final StringBuilder webServiceUrl;
         if (postmanModel == null) {
             webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC);
@@ -2133,42 +2417,54 @@ public class BackboneApplication extends Application {
                     .append("&motherFirstname=").append(URLEncoder.encode(motherFirstname)).append("&motherLastname=").append(URLEncoder.encode(motherLastname))
                     .append("&notes=").append(URLEncoder.encode(notes))
                     .append("&userId=").append(userID).append("&modifiedOn=").append(modOn)
-                    .append("&firstname2=").append((firstname2 != null) ? firstname2 : "");
-
+                    .append("&firstname2=").append((firstname2!=null)?firstname2:"");
 
         } else {
             webServiceUrl = new StringBuilder(postmanModel.getUrl());
         }
 
         Log.e("service weight", webServiceUrl + "");
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                throwable.printStackTrace();
+                Log.e("coze", "adding a post to send data when the connection is available");
                 getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
-                Utils.writeNetworkLogFileOnSD(
-                        Utils.returnDeviceIdAndTimestamp(getApplicationContext())
-                                + " StatusCode " + httpResponse.getStatusLine().getStatusCode()
-                                + " ReasonPhrase " + httpResponse.getStatusLine().getReasonPhrase()
-                                + " ProtocolVersion " + httpResponse.getStatusLine().getProtocolVersion());
-                return -1;
+                childId = -1;
             }
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String result = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
-            JSONObject jobj = new JSONObject(result);
-            int childID = jobj.getInt("id");
 
-            return childID;
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String result) {
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
+                    JSONObject jobj = new JSONObject(result);
+                    childId = jobj.getInt("id");
+                    if (childId != -1) {
 
-        } catch (Exception e) {
-            getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
-            return -1;
-        }
+                        Log.e("coze","data stored successfully");
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put(SQLHandler.ChildColumns.ID, childId);
+                        DatabaseHandler mydb = getDatabaseInstance();
 
+                        mydb.updateChildTableWithChildID(contentValues, threadTempId);
+                        mydb.updateVaccinationAppointementChildId(threadTempId, childId + "");
+                        mydb.updateVaccinationEventChildId(threadTempId, childId + "");
+
+                    } else {
+                        Log.e("coze","data stored failed");
+                        Log.e("coze","adding a post to send data when the connection is available");
+                        getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
+                    }
+
+
+                } catch (Exception e) {
+                    getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
+                    childId = -1;
+                }
+            }
+        });
+        return childId;
     }
 
 
@@ -2177,6 +2473,7 @@ public class BackboneApplication extends Application {
      * // @param childBarcode
      * // @param doseId
      */
+    private int updatingVaccinationAppOutreachResult=-1;
     public int updateVaccinationAppOutreach(String childBarcode, String doseId) {
         final StringBuilder webServiceUrl;
         webServiceUrl = new StringBuilder(WCF_URL).append("VaccinationAppointmentManagement.svc/UpdateVaccinationApp?outreach=true&userId=")
@@ -2186,47 +2483,38 @@ public class BackboneApplication extends Application {
 
 
         Log.e("service appointment outreach", webServiceUrl + "");
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
-                Utils.writeNetworkLogFileOnSD(
-                        Utils.returnDeviceIdAndTimestamp(getApplicationContext())
-                                + " StatusCode " + httpResponse.getStatusLine().getStatusCode()
-                                + " ReasonPhrase " + httpResponse.getStatusLine().getReasonPhrase()
-                                + " ProtocolVersion " + httpResponse.getStatusLine().getProtocolVersion());
-            }
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String result = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
-            JSONObject jobj = new JSONObject(result);
-            int idReturned = jobj.getInt("id");
-            // if any check is needed to be performed after communicating here you have the result parsed into this int
-            return idReturned;
 
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-            return -1;
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-            return -1;
-        } catch (IOException e) {
-            e.printStackTrace();
-            if (webServiceUrl != null) {
-                getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                updatingVaccinationAppOutreachResult=-1;
+                throwable.printStackTrace();
+                if (webServiceUrl != null) {
+                    getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
+                }
             }
-            return -1;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return -1;
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            return -1;
-        }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String result) {
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
+                    JSONObject jobj = new JSONObject(result);
+                    int idReturned = jobj.getInt("id");
+                    // if any check is needed to be performed after communicating here you have the result parsed into this int
+                    updatingVaccinationAppOutreachResult = idReturned;
+
+                }catch (JSONException e) {
+                    e.printStackTrace();
+                    updatingVaccinationAppOutreachResult = -1;
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                    updatingVaccinationAppOutreachResult = -1;
+                }
+            }
+        });
+
+        return updatingVaccinationAppOutreachResult;
 
     }
 
@@ -2239,29 +2527,35 @@ public class BackboneApplication extends Application {
             String url = WCF_URL + "ChildManagement.svc/GetChildrenByHealthFacilityBeforeLastLogin?idUser=" + getLOGGED_IN_USER_ID();
             Log.d("secondLoginURL", url);
 
-            ChildCollector2 objects2 = new ChildCollector2();
+            client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+            client.get(url, new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    throwable.printStackTrace();
+                }
 
-            try {
-                DefaultHttpClient httpClient = new DefaultHttpClient();
-                HttpGet httpGet = new HttpGet(url);
-                Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + url.toString());
-                httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-                HttpResponse httpResponse = httpClient.execute(httpGet);
-                InputStream inputStream = httpResponse.getEntity().getContent();
-                String response = Utils.getStringFromInputStream(inputStream);
-                Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-                ObjectMapper mapper = new ObjectMapper();
-                objects2 = mapper.readValue(response, ChildCollector2.class);
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String response) {
+                    ChildCollector2 objects2 = new ChildCollector2();
+                    try {
+                        Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                        ObjectMapper mapper = new ObjectMapper();
+                        objects2 = mapper.readValue(response, ChildCollector2.class);
 
-            } catch (JsonGenerationException e) {
-                e.printStackTrace();
-            } catch (JsonMappingException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                addChildVaccinationEventVaccinationAppointment(objects2);
-            }
+                    } catch (JsonGenerationException e) {
+                        e.printStackTrace();
+                    } catch (JsonMappingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+//                        addChildVaccinationEventVaccinationAppointment(objects2);
+                        addChildVaccinationEventVaccinationAppointmentUnOptimisedForSmallAmountsOfData(objects2);
+                    }
+                }
+            });
+
+
         }
 
     }
@@ -2275,33 +2569,82 @@ public class BackboneApplication extends Application {
             String url = WCF_URL + "ChildManagement.svc/GetChildrenByHealthFacilityDayFirstLogin?idUser=" + getLOGGED_IN_USER_ID();
             Log.d("secondLoginURL", url);
 
-            ChildCollector2 objects2 = new ChildCollector2();
+            client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+            RequestHandle message = client.get(url, new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    throwable.printStackTrace();
+                }
 
-            try {
-                DefaultHttpClient httpClient = new DefaultHttpClient();
-                HttpGet httpGet = new HttpGet(url);
-                Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + url.toString());
-                httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-                HttpResponse httpResponse = httpClient.execute(httpGet);
-                InputStream inputStream = httpResponse.getEntity().getContent();
-                String response = Utils.getStringFromInputStream(inputStream);
-                Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-                ObjectMapper mapper = new ObjectMapper();
-                objects2 = mapper.readValue(response, new TypeReference<List<ChildCollector>>() {
-                });
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String response) {
+                    ChildCollector2 objects2 = new ChildCollector2();
 
-            } catch (JsonGenerationException e) {
-                e.printStackTrace();
-            } catch (JsonMappingException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                addChildVaccinationEventVaccinationAppointment(objects2);
-            }
+                    try {
+                        Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                        ObjectMapper mapper = new ObjectMapper();
+                        objects2 = mapper.readValue(response, new TypeReference<List<ChildCollector>>() {
+                        });
+
+                    } catch (JsonGenerationException e) {
+                        e.printStackTrace();
+                    } catch (JsonMappingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        addChildVaccinationEventVaccinationAppointment(objects2);
+                    }
+                }
+            });
         }
 
     }
+
+//    /**
+//     * Parsing data from Server after the First login in intervals
+//     */
+//    public void intervalGetChildrenByHealthFacilitySinceLastLogin() {
+//
+//        String url = WCF_URL + "ChildManagement.svc/GetChildrenByHealthFacilitySinceLastLogin?idUser=" + getLOGGED_IN_USER_ID();
+//        Log.e("SinceLastLogin", "GetChildrenByHealthFacilitySinceLastLogin url is: " + url);
+//        try {
+//            client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+//            client.get(url, new TextHttpResponseHandler() {
+//                @Override
+//                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                    throwable.printStackTrace();
+//                }
+//
+//                @Override
+//                public void onSuccess(int statusCode, Header[] headers, String response) {
+//                    Log.d(TAG, "received child since last login  = " + response);
+//                    ChildCollector2 objects2 = new ChildCollector2();
+//                    try {
+//                        Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+//                        ObjectMapper mapper = new ObjectMapper();
+//                        objects2 = mapper.readValue(response, new TypeReference<List<ChildCollector2>>() {
+//                        });
+//
+//                    } catch (JsonGenerationException e) {
+//                        e.printStackTrace();
+//                    } catch (JsonMappingException e) {
+//                        e.printStackTrace();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    } finally {
+//                        addChildVaccinationEventVaccinationAppointment(objects2);
+//                    }
+//
+//                }
+//            });
+//        }catch (Exception e){
+//            RoutineAlarmReceiver.cancelAlarm(getApplicationContext());
+//        }
+//
+//
+//    }
+
 
     /**
      * Parsing data from Server after the First login in intervals
@@ -2321,11 +2664,11 @@ public class BackboneApplication extends Application {
             HttpResponse httpResponse = httpClient.execute(httpGet);
             InputStream inputStream = httpResponse.getEntity().getContent();
             String response = Utils.getStringFromInputStream(inputStream);
+            Log.e("SinceLastLogin", "responce  is: " + response);
             Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
             ObjectMapper mapper = new ObjectMapper();
             objects2 = mapper.readValue(response, new TypeReference<List<ChildCollector>>() {
             });
-
         } catch (JsonGenerationException e) {
             e.printStackTrace();
         } catch (JsonMappingException e) {
@@ -2333,11 +2676,17 @@ public class BackboneApplication extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            addChildVaccinationEventVaccinationAppointment(objects2);
+            Log.d("coze", "before saving to the database");
+            if (addChildVaccinationEventVaccinationAppointment(objects2)) {
+                Log.d("coze","about to re login");
+                loginRequest();
+                objects2 = null; // clearing references so that it can be identified as GC material more easilly;
+            }
         }
 
 
     }
+
 
     /**
      * Parsing data from Server getChildByBarcodeList to get children that we dont have but are found in the vacc queue of server
@@ -2347,35 +2696,82 @@ public class BackboneApplication extends Application {
         String url = WCF_URL + "Childmanagement.svc/GetChildByBarcodeList?childList=" + childIds;
         Log.d("getChildByBarcodeList", url);
 
-        List<ChildCollector> objects2 = new ArrayList<ChildCollector>();
-
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(url);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + url.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String response = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-            ObjectMapper mapper = new ObjectMapper();
-            objects2 = mapper.readValue(response, new TypeReference<List<ChildCollector>>() {
-            });
-
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            for (ChildCollector object : objects2) {
-                addChildVaccinationEventVaccinationAppointment(object);
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        client.get(url.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                throwable.printStackTrace();
             }
-        }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String response) {
+                List<ChildCollector> objects2 = new ArrayList<ChildCollector>();
+
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                    ObjectMapper mapper = new ObjectMapper();
+                    objects2 = mapper.readValue(response, new TypeReference<List<ChildCollector>>() {
+                    });
+
+                } catch (JsonGenerationException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    for (ChildCollector object : objects2) {
+                        addChildVaccinationEventVaccinationAppointment(object);
+                    }
+                }
+
+            }
+        });
 
 
     }
+//
+//    /**
+//     * Parsing data from Server GetChildByIdListSince to get children or update
+//     * before using this method we need to check if there is a logged in user in the app
+//     */
+//    public void getGetChildByIdListSince() {
+//        String childIds = getDatabaseInstance().getChildrenFromOtherHFIDThanLoggedUser(getLOGGED_IN_USER_HF_ID());
+//        if (childIds == null) return;
+//        String url = WCF_URL + "ChildManagement.svc/GetChildByIdListSince?childIdList=" + childIds + "&userId=" + getLOGGED_IN_USER_ID();
+//        Log.d("getChildByBarcodeList", url);
+//
+//        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+//        RequestHandle message = client.get(url.toString(), new TextHttpResponseHandler() {
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                throwable.printStackTrace();
+//            }
+//
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+//                ChildCollector2 objects2 = new ChildCollector2();
+//
+//                try {
+//                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + responseString);
+//                    ObjectMapper mapper = new ObjectMapper();
+//                    objects2 = mapper.readValue(responseString, new TypeReference<List<ChildCollector>>() {
+//                    });
+//
+//                } catch (JsonGenerationException e) {
+//                    e.printStackTrace();
+//                } catch (JsonMappingException e) {
+//                    e.printStackTrace();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                } finally {
+//                    addChildVaccinationEventVaccinationAppointment(objects2);
+//                }
+//
+//            }
+//        });
+//
+//    }
 
     /**
      * Parsing data from Server GetChildByIdListSince to get children or update
@@ -2425,30 +2821,36 @@ public class BackboneApplication extends Application {
         String url = WCF_URL + "ChildManagement.svc/GetChildByIdList?childIdList=" + childIds + "&userId=" + getLOGGED_IN_USER_ID();
         Log.d("getChildByBarcodeList", url);
 
-        ChildCollector2 objects2 = new ChildCollector2();
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(url, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                throwable.printStackTrace();
+            }
 
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(url);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + url.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String response = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-            ObjectMapper mapper = new ObjectMapper();
-            objects2 = mapper.readValue(response, new TypeReference<List<ChildCollector>>() {
-            });
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String response) {
+                ChildCollector2 objects2 = new ChildCollector2();
 
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            addChildVaccinationEventVaccinationAppointment(objects2);
-        }
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                    ObjectMapper mapper = new ObjectMapper();
+                    objects2 = mapper.readValue(response, new TypeReference<List<ChildCollector>>() {
+                    });
+
+                } catch (JsonGenerationException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    addChildVaccinationEventVaccinationAppointment(objects2);
+                }
+            }
+        });
+
+
 
 
     }
@@ -2495,83 +2897,35 @@ public class BackboneApplication extends Application {
 
     }
 
-
-/*
-    //Shtesa per volley
-
-    public static final String TAG = BackboneApplication.class.getSimpleName();
-
-    private RequestQueue mRequestQueue;
-    private ImageLoader mImageLoader;
-
-    private static BackboneApplication mInstance;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        mInstance = this;
-    }
-
-    public static synchronized BackboneApplication getInstance() {
-        return mInstance;
-    }
-
-    public RequestQueue getRequestQueue() {
-        if (mRequestQueue == null) {
-            mRequestQueue = Volley.newRequestQueue(getApplicationContext());
-        }
-
-        return mRequestQueue;
-    }
-
-    public <T> void addToRequestQueue(Request<T> req, String tag) {
-        // set the default tag if tag is empty
-        req.setTag(TextUtils.isEmpty(tag) ? TAG : tag);
-        getRequestQueue().add(req);
-    }
-
-    public <T> void addToRequestQueue(Request<T> req) {
-        req.setTag(TAG);
-        getRequestQueue().add(req);
-    }
-
-    public void cancelPendingRequests(Object tag) {
-        if (mRequestQueue != null) {
-            mRequestQueue.cancelAll(tag);
-        }
-    }*/
-
-
+    private  boolean isHealthFacilityBalanceSaved;
     public boolean saveHealthFacilityBalance(String gtin, String lotno, String qty, String date, String userId) {
         final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(STOCK_MANAGEMENT_SVC);
         webServiceUrl.append("StockCount?gtin=").append(gtin).append("&lotno=").append(lotno).append("&qty=").append(qty)
                 .append("&date=").append(date).append("&userId=").append(userId);
 
-        Log.e(" save health faci", webServiceUrl + "");
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String result = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
-            if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                throwable.printStackTrace();
                 getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
-                Utils.writeNetworkLogFileOnSD(
-                        Utils.returnDeviceIdAndTimestamp(getApplicationContext())
-                                + " StatusCode " + httpResponse.getStatusLine().getStatusCode()
-                                + " ReasonPhrase " + httpResponse.getStatusLine().getReasonPhrase()
-                                + " ProtocolVersion " + httpResponse.getStatusLine().getProtocolVersion());
-                return false;
+                isHealthFacilityBalanceSaved = false;
             }
-            return true;
 
-        } catch (Exception e) {
-            getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
-            return false;
-        }
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String result) {
+                Log.e(" save health faci", webServiceUrl + "");
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
+                    isHealthFacilityBalanceSaved = true;
+
+                } catch (Exception e) {
+                    getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
+                    isHealthFacilityBalanceSaved = false;
+                }
+            }
+        });
+        return isHealthFacilityBalanceSaved;
 
     }
 
@@ -2579,43 +2933,48 @@ public class BackboneApplication extends Application {
 
         final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(STOCK_MANAGEMENT_SVC).append(GET_STOCK_ADJUSTMENT);
         Log.d("", webServiceUrl.toString());
-        List<AdjustmentReasons> objects = new ArrayList<AdjustmentReasons>();
 
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String response = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            objects = mapper.readValue(response, new TypeReference<List<AdjustmentReasons>>() {
-            });
-
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            for (AdjustmentReasons object : objects) {
-                ContentValues adCV = new ContentValues();
-                DatabaseHandler db = getDatabaseInstance();
-
-                adCV.put(SQLHandler.AdjustmentColumns.NAME, object.getName());
-                adCV.put(SQLHandler.AdjustmentColumns.ID, object.getId());
-                adCV.put(SQLHandler.AdjustmentColumns.POSITIVE, object.getPozitive());
-                adCV.put(SQLHandler.AdjustmentColumns.IS_ACTIVE, object.getIsActive());
-                db.addStockAdjustment(adCV);
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                throwable.printStackTrace();
             }
-        }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String response) {
+                List<AdjustmentReasons> objects = new ArrayList<AdjustmentReasons>();
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                    objects = mapper.readValue(response, new TypeReference<List<AdjustmentReasons>>() {
+                    });
+
+                } catch (JsonGenerationException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    for (AdjustmentReasons object : objects) {
+                        ContentValues adCV = new ContentValues();
+                        DatabaseHandler db = getDatabaseInstance();
+
+                        adCV.put(SQLHandler.AdjustmentColumns.NAME, object.getName());
+                        adCV.put(SQLHandler.AdjustmentColumns.ID, object.getId());
+                        adCV.put(SQLHandler.AdjustmentColumns.POSITIVE, object.getPozitive());
+                        adCV.put(SQLHandler.AdjustmentColumns.IS_ACTIVE, object.getIsActive());
+                        db.addStockAdjustment(adCV);
+                    }
+                }
+            }
+        });
     }
 
 
+    private boolean isStockAdjustmentReasonSaved=false;
     public boolean saveStockAdjustmentReasons(String gtin, String lotno, String qty, String date, String reasonId, String userId) {
         final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(STOCK_MANAGEMENT_SVC);
         webServiceUrl.append("StockAdjustment?gtin=").append(gtin).append("&lotno=").append(lotno).append("&qty=").append(qty)
@@ -2623,30 +2982,29 @@ public class BackboneApplication extends Application {
                 append("&userId=").append(userId);
 
         Log.e(" save health faci", webServiceUrl + "");
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + webServiceUrl.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String result = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
-            if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
-                Utils.writeNetworkLogFileOnSD(
-                        Utils.returnDeviceIdAndTimestamp(getApplicationContext())
-                                + " StatusCode " + httpResponse.getStatusLine().getStatusCode()
-                                + " ReasonPhrase " + httpResponse.getStatusLine().getReasonPhrase()
-                                + " ProtocolVersion " + httpResponse.getStatusLine().getProtocolVersion());
-                return false;
-            }
-            return true;
 
-        } catch (Exception e) {
-            getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
-            return false;
-        }
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
+                isStockAdjustmentReasonSaved= false;
+                throwable.printStackTrace();
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                try {
+                    isStockAdjustmentReasonSaved = true;
+
+                } catch (Exception e) {
+                    getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
+                    isStockAdjustmentReasonSaved = false;
+                }
+            }
+        });
+
+        return isStockAdjustmentReasonSaved;
 
     }
 
@@ -2692,7 +3050,50 @@ public class BackboneApplication extends Application {
             // This callback is now running within the pool thread execution
             // scope and not within Android's UI thread, so if we must update
             // the UI, we'll have to dispatch a runnable to the UI thread.
-            Log.d(TAG, "Error = ");
+            Log.d(TAG, "Error = "+statusCode);
+            error.printStackTrace();
+
+        }
+
+
+    }
+
+    private class UsePoolThreadResponseHandler2 extends AsyncHttpResponseHandler {
+
+        public UsePoolThreadResponseHandler2() {
+            super();
+
+            // We wish to use the same pool thread to run the response.
+            setUsePoolThread(true);
+        }
+
+        @Override
+        public void onSuccess(final int statusCode, final Header[] headers, final byte[] responseBody) {
+            Log.d(TAG,"receiving data in streams");
+            ObjectMapper mapper = new ObjectMapper();
+            JsonFactory jsonFactory = mapper.getJsonFactory();
+            try {
+
+                long tStart = System.currentTimeMillis();
+                Log.e("TIMING LOG", "Parsing start ");
+                ChildCollector2 childCollector2 = new ChildCollector2();
+                mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                childCollector2 = mapper.readValue(responseBody, ChildCollector2.class);
+                addChildVaccinationEventVaccinationAppointment(childCollector2);
+
+                Log.e("TIMING LOG", "elapsed total time (milliseconds): " + (System.currentTimeMillis() - tStart));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onFailure(final int statusCode, final Header[] headers, final byte[] responseBody, final Throwable error) {
+            // This callback is now running within the pool thread execution
+            // scope and not within Android's UI thread, so if we must update
+            // the UI, we'll have to dispatch a runnable to the UI thread.
+            Log.d(TAG, "Error = "+statusCode);
+            error.printStackTrace();
 
         }
 

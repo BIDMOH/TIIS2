@@ -306,8 +306,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                 }
                 else{
                     administerVaccineSaveButtonClicked();
-
-                    if (SavedState) {
                         for (AdministerVaccinesModel a : arrayListAdminVacc) {
 
                             updateAdministerVaccine task = new updateAdministerVaccine();
@@ -318,7 +316,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
                             updateBalance balance = new updateBalance();
                             balance.execute(a);
-                        }
                     }
                 }
                 app.saveNeeded = false;
@@ -565,8 +562,10 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         protected Boolean doInBackground(String... params) {
             BackboneApplication application = (BackboneApplication) AdministerVaccineFragment.this.getActivity().getApplication();
             DatabaseHandler db = application.getDatabaseInstance();
+            Log.d("daytwo", "before uploading to server");
             int status = application.updateVaccinationEventOnServer(params[0]);
             Log.d("The status", status + "");
+            Log.d("The status", params[0] + "");
             String dateTodayTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(Calendar.getInstance().getTime());
             try {
                 dateTodayTimestamp = URLEncoder.encode(dateTodayTimestamp, "utf-8");

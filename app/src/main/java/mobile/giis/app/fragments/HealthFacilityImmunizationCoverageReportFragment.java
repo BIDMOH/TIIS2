@@ -358,7 +358,7 @@ public class HealthFacilityImmunizationCoverageReportFragment extends Fragment {
                     LinearLayout doseData = (LinearLayout)inflater.inflate(R.layout.view_health_facility_immunization_coverage_dosage_row,null);
 
 
-                    String dosageNumber = viewChartData.getScheduled_vaccination().getName() + " " + viewRow.getDose().getDose_number();
+                    String dosageNumber = size1 == 1?(viewChartData.getScheduled_vaccination().getName()):(viewChartData.getScheduled_vaccination().getName() + " " + viewRow.getDose().getDose_number());
                     ((TextView) doseData.findViewById(R.id.dose)).setText(dosageNumber);
 
                     String maleWithin = viewRow.getWithinCatchmentMale()+"";

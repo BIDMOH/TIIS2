@@ -11,6 +11,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -404,6 +405,8 @@ public class VaccinationQueueFragment extends android.support.v4.app.DialogFragm
                             ((!ageId.equals(""))?" AND a.ID = "+ ageId :"")+
                             " GROUP BY v.APPOINTMENT_ID, v.SCHEDULED_DATE, a.NAME " +
                             " ORDER BY v.SCHEDULED_DATE";
+
+            Log.d("dayTwo", SQLVaccinationQueue);
             cursor = this_database.getReadableDatabase().rawQuery(SQLVaccinationQueue, null);
             if (cursor != null) {
                 if (cursor.moveToFirst()) {

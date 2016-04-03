@@ -20,6 +20,7 @@ package mobile.giis.app.postman;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.util.Log;
 
 import mobile.giis.app.base.BackboneApplication;
 
@@ -35,12 +36,15 @@ public class CheckForChangesSynchronisationService  extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
+        Log.d("coze", "SynchronisationService2 started");
         BackboneApplication app = (BackboneApplication) getApplication();
         synchronized (app) {
             app.parseConfiguration();
             if(app.getLOGGED_IN_USER_ID()!=null && !app.getLOGGED_IN_USER_ID().equals("0")) {
+                app.continuousModificationParser();
                 app.intervalGetChildrenByHealthFacilitySinceLastLogin();
-                app.getGetChildByIdListSince();
+                app.loginRequest();
+//                app.getGetChildByIdListSince();
                 app.getVaccinationQueueByDateAndUser();
             }
 
@@ -55,7 +59,6 @@ public class CheckForChangesSynchronisationService  extends IntentService {
             }
             app.parseStock();
         }
-
 
         this.stopSelf();
     }
