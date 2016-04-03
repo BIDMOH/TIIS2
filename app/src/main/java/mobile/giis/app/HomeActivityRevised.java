@@ -201,8 +201,9 @@ public class HomeActivityRevised extends BackboneActivity {
 
                 //Starting the repeating synchronisation procedure that happens every 10 minutes
                 // and pulls changes done to children or children added
-                RoutineAlarmReceiver.setAlarmCheckForChangesInChild(this);
+
             }
+            RoutineAlarmReceiver.setAlarmCheckForChangesInChild(this);
 
             nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -573,7 +574,8 @@ public class HomeActivityRevised extends BackboneActivity {
         @Override
         protected Boolean doInBackground(Integer... params) {
             BackboneApplication application = (BackboneApplication) getApplication();
-            application.continuousModificationParser();
+//            application.continuousModificationParser();
+            application.intervalGetChildrenByHealthFacilitySinceLastLogin();
 
             if(application.getLOGGED_IN_USER_ID()!=null && !application.getLOGGED_IN_USER_ID().equals("")){
                 application.getGetChildByIdList();

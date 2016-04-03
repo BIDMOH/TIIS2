@@ -199,8 +199,6 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
         app.LAST_FRAGMENT_TITLE = "Home";
 
         //Starting the repeating synchronisation procedure that happens every 5 minutes
-        RoutineAlarmReceiver.setPostmanAlarm(this);
-
         login_preferences = getSharedPreferences(LOGINPREFERENCE, Context.MODE_PRIVATE);
 
         if (login_preferences.getBoolean("isLoggedIn", false)){

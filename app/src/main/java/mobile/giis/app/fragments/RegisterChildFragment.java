@@ -719,9 +719,29 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
                 BackboneApplication backbone = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
 
-                backbone.registerChildWithAppoitments(threadbarcode, threadfristname, threadLastname, threadBDateString, threadGender, threadhfid, threadBirthPlaceID, threadDomID, threadAddr
+                int results = backbone.registerChildWithAppoitments(threadbarcode, threadfristname, threadLastname, threadBDateString, threadGender, threadhfid, threadBirthPlaceID, threadDomID, threadAddr
                         , threadPhone, threadMotherFirstname, threadMotherLastname, threadNotes, threadUserID, threadModOn, null,threadFirstname2,threadTempId,threadbarcode);
+                if(results!=-1) {
+                    Intent childDetailsActivity = new Intent(getActivity(), ChildDetailsActivity.class);
+                    Bundle bnd = new Bundle();
+                    bnd.putString(BackboneApplication.CHILD_ID, results + "");
+                    bnd.putString("barcode", threadbarcode);
+                    bnd.putInt("current", 0);
+                    childDetailsActivity.putExtras(bnd);
+
+                    Log.d("coze", "starting activity");
+                    startActivity(childDetailsActivity);
+                }else{
+                    Intent childDetailsActivity = new Intent(getActivity(), ChildDetailsActivity.class);
+                    Bundle bnd = new Bundle();
+                    bnd.putString(BackboneApplication.CHILD_ID, threadTempId);
+                    bnd.putString("barcode", threadbarcode);
+                    childDetailsActivity.putExtras(bnd);
+
+                    startActivity(childDetailsActivity);
+                }
             }
+
         }.setData(barcode, fristname, lastname, bDate, gender, hfid, birthPlaceId, domId, addr, phone, motherFirstname, motherLastname, notes, userID, modOn, tempId,firstname2).start();
     }
 

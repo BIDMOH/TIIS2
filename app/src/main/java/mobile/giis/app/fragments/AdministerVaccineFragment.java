@@ -260,7 +260,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
             case R.id.addminister_vaccine_save_button:
                 if (correnctDateSelected){
                     administerVaccineSaveButtonClicked();
-                    if (SavedState) {
                         for (AdministerVaccinesModel a : arrayListAdminVacc) {
                             Log.d("lastupdates", "updating the data to server I think");
                             updateAdministerVaccine task = new updateAdministerVaccine();
@@ -271,7 +270,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
                             updateBalance balance = new updateBalance();
                             balance.execute(a);
-                        }
                     }
                 }else{
                     LayoutInflater li = LayoutInflater.from(AdministerVaccineFragment.this.getActivity());
@@ -542,8 +540,10 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         protected Boolean doInBackground(String... params) {
             BackboneApplication application = (BackboneApplication) AdministerVaccineFragment.this.getActivity().getApplication();
             DatabaseHandler db = application.getDatabaseInstance();
+            Log.d("daytwo", "before uploading to server");
             int status = application.updateVaccinationEventOnServer(params[0]);
             Log.d("The status", status + "");
+            Log.d("The status", params[0] + "");
             String dateTodayTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(Calendar.getInstance().getTime());
             try {
                 dateTodayTimestamp = URLEncoder.encode(dateTodayTimestamp, "utf-8");
