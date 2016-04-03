@@ -378,10 +378,9 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment{
             currentCount = params[1];
 
             Calendar calendar = Calendar.getInstance();
-            String toDate = ((calendar.getTimeInMillis()+(30*24*60*60*1000))/1000)+"";
+            String to_date  = ((calendar.getTimeInMillis()+(30*24*60*60*1000))/1000)+"";
 
-            String from_date ="";
-            String to_date ="";
+            String from_date ="0";
 
             try{
                 from_date = params[2];
