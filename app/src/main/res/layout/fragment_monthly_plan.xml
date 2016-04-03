@@ -7,6 +7,11 @@
     xmlns:materialdesign="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <EditText
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:id="@+id/edit_text_used_to_request_focus2"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
