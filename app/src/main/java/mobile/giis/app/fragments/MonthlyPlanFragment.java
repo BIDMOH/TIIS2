@@ -116,7 +116,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment{
                 int count = Integer.parseInt(currentCount);
                 count = count+10;
                 currentCount = count+"";
-                new filterList().execute(currentCategory, currentCount);
+                new filterList().execute(currentCategory, currentCount,fromDateString, toDateString);
             }
         });
 
@@ -126,7 +126,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment{
                 int count = Integer.parseInt(currentCount);
                 count = count-10;
                 currentCount = count+"";
-                new filterList().execute(currentCategory, currentCount);
+                new filterList().execute(currentCategory, currentCount,fromDateString, toDateString);
             }
         });
 
@@ -379,12 +379,13 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment{
 
             Calendar calendar = Calendar.getInstance();
             String to_date  = ((calendar.getTimeInMillis()+(30*24*60*60*1000))/1000)+"";
-
             String from_date ="0";
 
             try{
-                from_date = params[2];
-                to_date = params[3];
+                if(!params[2].equals("") && !params[3].equals("")) {
+                    from_date = params[2];
+                    to_date = params[3];
+                }
             }catch (Exception e){
                 e.printStackTrace();
             }
