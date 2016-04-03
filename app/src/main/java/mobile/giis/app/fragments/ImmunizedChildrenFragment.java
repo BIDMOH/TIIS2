@@ -201,7 +201,6 @@ public class ImmunizedChildrenFragment extends Fragment implements OnChartValueS
     public void ImmunizedChildrenSnippets(String mDate){
 
         listOfImmunizedChildren = mydb.getImmunizedChildren(mDate, app);
-        Log.d("MPLAN",listOfImmunizedChildren.size()+"");
 
         if(!(listOfImmunizedChildren.size() > 0)){
             emptyImmunizedChildren.setVisibility(View.VISIBLE);

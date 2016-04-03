@@ -1,8 +1,10 @@
 package mobile.giis.app.fragments;
 
+import android.app.Activity;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.util.TypedValue;
@@ -11,15 +13,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TextView;
+
+import com.rengwuxian.materialedittext.MaterialEditText;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import mobile.giis.app.R;
@@ -49,6 +56,11 @@ public class DefaultersReportFragment extends Fragment {
     private DatabaseHandler mydb;
 
     private TableLayout defaultersTable;
+    private LinearLayout dataView;
+    private MaterialEditText metDOBFrom, metDOBTo;
+    final DatePickerDialog fromDatePicker = new DatePickerDialog();
+    final DatePickerDialog toDatePicker = new DatePickerDialog();
+    private String toDateString="",fromDateString="";
 
     private String hf_id, child_id, birthplacestr, villagestr, hfstr, statusstr, gender_val, birthdate_val;
 
@@ -76,7 +88,82 @@ public class DefaultersReportFragment extends Fragment {
         mydb = app.getDatabaseInstance();
         healthFacility.setText(mydb.getHealthCenterName(app.getLOGGED_IN_USER_HF_ID()));
 
-        new getDefaultersList().execute("");
+        metDOBTo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b) {
+                    toDatePicker.show(((Activity) getActivity()).getFragmentManager(), "DatePickerDialogue");
+                    toDatePicker.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                            metDOBTo.setText((dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth) + "-" + ((monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : monthOfYear + 1) + "-"
+                                    + year);
+
+                            Calendar toCalendar = Calendar.getInstance();
+                            toCalendar.set(year, monthOfYear, dayOfMonth);
+                            fromDatePicker.setMaxDate(toCalendar);
+                            toDateString = (toCalendar.getTimeInMillis() / 1000) + "";
+//                            editTextUsedToRequestFocus.requestFocus();
+
+                            if (!fromDateString.equals("")) {
+                                dataView.setVisibility(View.VISIBLE);
+                                new getDefaultersList().execute(fromDateString, toDateString);
+//                                chart_view.setVisibility(View.VISIBLE);
+//                                new FilterList().execute(app.getLOGGED_IN_USER_HF_ID(), fromDateString, toDateString);
+                            } else {
+                                final Snackbar snackbar = Snackbar.make(dataView, "Please select a start date to view the chart", Snackbar.LENGTH_LONG);
+                                snackbar.setAction("OK", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        snackbar.dismiss();
+                                    }
+                                });
+                                snackbar.show();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+
+        metDOBFrom.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b) {
+                    fromDatePicker.show(((Activity) getActivity()).getFragmentManager(), "DatePickerDialogue");
+                    fromDatePicker.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                            metDOBFrom.setText((dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth) + "-" + ((monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : monthOfYear + 1) + "-"
+                                    + year);
+
+                            Calendar fromCalendar = Calendar.getInstance();
+                            fromCalendar.set(year, monthOfYear, dayOfMonth);
+                            toDatePicker.setMinDate(fromCalendar);
+                            fromDateString = (fromCalendar.getTimeInMillis()/1000)+"";
+//                            editTextUsedToRequestFocus.requestFocus();
+
+                            if(!toDateString.equals("")){
+                                dataView.setVisibility(View.VISIBLE);
+//                                new FilterList().execute(app.getLOGGED_IN_USER_HF_ID(), fromDateString, toDateString);
+                                new getDefaultersList().execute(fromDateString, toDateString);
+                            }else{
+                                final Snackbar snackbar=Snackbar.make(dataView,"Please select an end date to view the chart",Snackbar.LENGTH_LONG);
+                                snackbar.setAction("OK", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        snackbar.dismiss();
+                                    }
+                                });
+                                snackbar.show();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
 
         return rowview;
     }
@@ -89,6 +176,12 @@ public class DefaultersReportFragment extends Fragment {
         title           = (TextView) v.findViewById(R.id.the_title);
         progressBar     = (ProgressBar) v.findViewById(R.id.progres_bar);
         defaultersTable = (TableLayout) v.findViewById(R.id.defaulter_table);
+
+        metDOBFrom              = (MaterialEditText) v.findViewById(R.id.met_dob_from);
+        metDOBTo                = (MaterialEditText) v.findViewById(R.id.met_dob_value);
+
+        dataView        = (LinearLayout) v.findViewById(R.id.data_view);
+        dataView        .setVisibility(View.GONE);
     }
 
     public class getDefaultersList extends AsyncTask<String, Void, Integer> {
@@ -102,6 +195,16 @@ public class DefaultersReportFragment extends Fragment {
 
         @Override
         protected Integer doInBackground(String... params) {
+            String fromDate ="";
+            String toDate ="";
+
+            try{
+                fromDate = params[0];
+                toDate = params[1];
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
 
             Cursor cursor;
             mVar = new ArrayList<>();
@@ -112,7 +215,9 @@ public class DefaultersReportFragment extends Fragment {
             SQLDefaultersList =
                     "SELECT DISTINCT CHILD_ID "+
                             " FROM vaccination_event " +
-                            " WHERE HEALTH_FACILITY_ID = '"+app.getLOGGED_IN_USER_HF_ID()+"' AND strftime('%m', datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch')) = strftime('%m','now') "+
+                            " WHERE HEALTH_FACILITY_ID = '"+app.getLOGGED_IN_USER_HF_ID()+"' "+
+                            "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
+                            "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')" +
                             " AND vaccination_event.IS_ACTIVE='true' AND vaccination_event.VACCINATION_STATUS='false' "+
                             " GROUP BY CHILD_ID " ; //+
 //                            " ORDER BY SCHEDULED_DATE "+
