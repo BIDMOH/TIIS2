@@ -49,6 +49,13 @@
             android:textSize="18sp"
             android:id="@+id/balance"/>
 
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:layout_width="@dimen/one_hundred_dp_height"
+            android:layout_height="wrap_content"
+            android:id="@+id/hf_balance_adjustment_value"
+            android:layout_weight="0.20"
+            android:gravity="center_horizontal"/>
+
     </LinearLayout>
 
 </LinearLayout>
