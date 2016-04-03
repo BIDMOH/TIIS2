@@ -82,12 +82,31 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TableLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/hf_balance_table">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        </TableLayout>
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/hf_balance_table">
+
+            </TableLayout>
+
+            <Button
+                android:layout_gravity="right"
+                android:layout_marginRight="32dp"
+                android:layout_marginBottom="16dp"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:id="@+id/savebtn"
+                android:background="@color/light_blue_600"
+                android:text="Save"
+                android:textColor="@color/white"
+                android:textSize="24sp"/>
+
+        </LinearLayout>
 
     </ScrollView>
 
