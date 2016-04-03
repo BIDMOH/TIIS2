@@ -258,11 +258,58 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.addminister_vaccine_save_button:
-                if (correnctDateSelected){
+                if (correnctDateSelected == false){
+                    Log.d("coze", "yes its a warning");
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(AdministerVaccineFragment.this.getActivity());
+
+                    // set title
+                    alertDialogBuilder.setTitle("Warning");
+
+                    // set dialog message
+                    alertDialogBuilder
+                            .setMessage("The selected vaccination date is before due date. Are you sure you want to set this date?")
+                            .setCancelable(false)
+                            .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    administerVaccineSaveButtonClicked();
+
+                                    if (SavedState) {
+                                        for (AdministerVaccinesModel a : arrayListAdminVacc) {
+
+                                            updateAdministerVaccine task = new updateAdministerVaccine();
+                                            task.execute(a.getUpdateURL(), barcode);
+
+                                            updateAppointmentOutreach task2 = new updateAppointmentOutreach();
+                                            task2.execute();
+
+                                            updateBalance balance = new updateBalance();
+                                            balance.execute(a);
+                                        }
+                                    }
+
+                                }
+                            })
+                            .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // if this button is clicked, just close
+                                    // the dialog box and do nothing
+                                    dialog.cancel();
+                                }
+                            });
+
+                    // create alert dialog
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+
+                    // show it
+                    alertDialog.show();
+
+                }
+                else{
                     administerVaccineSaveButtonClicked();
+
                     if (SavedState) {
                         for (AdministerVaccinesModel a : arrayListAdminVacc) {
-                            Log.d("lastupdates", "updating the data to server I think");
+
                             updateAdministerVaccine task = new updateAdministerVaccine();
                             task.execute(a.getUpdateURL(), barcode);
 
@@ -273,30 +320,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                             balance.execute(a);
                         }
                     }
-                }else{
-                    LayoutInflater li = LayoutInflater.from(AdministerVaccineFragment.this.getActivity());
-                    View promptsView = li.inflate(R.layout.custom_alert_dialogue, null);
-
-                    android.support.v7.app.AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(AdministerVaccineFragment.this.getActivity());
-                    alertDialogBuilder.setView(promptsView);
-
-                    TextView message = (TextView) promptsView.findViewById(R.id.dialogMessage);
-                    message.setText("Vaccination Date Cannot Be Before Child's DOB");
-
-                    alertDialogBuilder
-                            .setCancelable(false)
-                            .setPositiveButton("YES",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            dialog.cancel();
-                                        }
-                                    });
-
-                    // create alert dialog
-                    android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
-
-                    // show it
-                    alertDialog.show();
                 }
                 app.saveNeeded = false;
                 break;

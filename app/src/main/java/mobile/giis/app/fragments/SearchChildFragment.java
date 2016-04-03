@@ -680,6 +680,7 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
 
             for (String id : params) {
                 parse_status = application.parseChildById(id);
+                Log.d("parseChildCollectorbyId", parse_status+"");
                 if (parse_status != 2 && parse_status != 3) {
                     DatabaseHandler db = application.getDatabaseInstance();
                     parseHFIDWhenNotInDb(db, application);
@@ -739,6 +740,7 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
         String hfidFoundInVaccEvOnlyAndNotInHealthFac = db.getHFIDFoundInVaccEvAndNotInHealthFac();
         if(hfidFoundInVaccEvOnlyAndNotInHealthFac != null){
             app.parseHealthFacilityThatAreInVaccEventButNotInHealthFac(hfidFoundInVaccEvOnlyAndNotInHealthFac);
+            Log.d("parseChildCollectorbyId", "Parsed the HF");
         }
     }
 

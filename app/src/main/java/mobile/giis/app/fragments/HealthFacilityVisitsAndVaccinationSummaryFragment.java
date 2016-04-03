@@ -209,6 +209,8 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
                     "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"'" +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
+
+            Log.e("SQLCountTotalVisits", SQLCountTotalVisits);
             SQLCountTotalOutReach = "SELECT  COUNT (DISTINCT(vaccination_appointment.ID)) AS IDS FROM  vaccination_event, vaccination_appointment " +
                     "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
                     "AND vaccination_event.CHILD_ID=vaccination_appointment.CHILD_ID " +

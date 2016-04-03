@@ -44,6 +44,7 @@ import mobile.giis.app.database.SQLHandler;
 import mobile.giis.app.entity.Birthplace;
 import mobile.giis.app.entity.Child;
 import mobile.giis.app.entity.HealthFacility;
+import mobile.giis.app.entity.ImmunizationCardItem;
 import mobile.giis.app.entity.Place;
 import mobile.giis.app.entity.Status;
 import mobile.giis.app.util.ViewAppointmentRow;
@@ -191,7 +192,6 @@ public class ChildSummaryPagerFragment extends Fragment {
         }
 
         enableUserInputs(false);
-
         fillUIElements();
 
         editButton.setOnClickListener(new View.OnClickListener() {
@@ -227,17 +227,18 @@ public class ChildSummaryPagerFragment extends Fragment {
     }
 
     public void enableUserInputs(boolean fieldStatus){
-        metBarcodeValue .setEnabled(fieldStatus);
-        metSystemID     .setEnabled(fieldStatus);
-        metFirstName    .setEnabled(fieldStatus);
-        metMiddleName   .setEnabled(fieldStatus);
-        metLastName     .setEnabled(fieldStatus);
-        metNotesValue     .setEnabled(fieldStatus);
 
-        metMothersFirstName     .setEnabled(fieldStatus);
-        metMothersSurname       .setEnabled(fieldStatus);
-        metPhoneNumber          .setEnabled(fieldStatus);
-        metDOB                  .setEnabled(fieldStatus);
+        metBarcodeValue.setFocusableInTouchMode(fieldStatus);
+        metSystemID     .setFocusableInTouchMode(fieldStatus);
+        metFirstName    .setFocusableInTouchMode(fieldStatus);
+        metMiddleName   .setFocusableInTouchMode(fieldStatus);
+        metLastName     .setFocusableInTouchMode(fieldStatus);
+        metNotesValue     .setFocusableInTouchMode(fieldStatus);
+
+        metMothersFirstName     .setFocusableInTouchMode(fieldStatus);
+        metMothersSurname       .setFocusableInTouchMode(fieldStatus);
+        metPhoneNumber          .setFocusableInTouchMode(fieldStatus);
+        metDOB                  .setFocusableInTouchMode(fieldStatus);
 
         ms                      .setEnabled(fieldStatus);
         pobSpinner              .setEnabled(fieldStatus);
@@ -259,6 +260,11 @@ public class ChildSummaryPagerFragment extends Fragment {
             statusSpinner.setBaseColor(R.color.black);
         }
 
+    }
+
+    private void loadVaccinationHistory(){
+         ArrayList<ImmunizationCardItem> immunizationCardList;
+         immunizationCardList = mydb.getImmunizationCard(childId);
     }
 
     private void loadViewAppointementsTable(Boolean b){
@@ -832,8 +838,12 @@ public class ChildSummaryPagerFragment extends Fragment {
                                     e.printStackTrace();
                                 }
                                 //Register Audit
-                                backbone.registerAudit(BackboneApplication.CHILD_AUDIT, metBarcodeValue.getText().toString(), threadTodayTimestamp ,
-                                        backbone.getLOGGED_IN_USER_ID(), 2);
+                                try{
+                                    backbone.registerAudit(BackboneApplication.CHILD_AUDIT, metBarcodeValue.getText().toString(), threadTodayTimestamp ,
+                                            backbone.getLOGGED_IN_USER_ID(), 2);
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
                                 app.saveNeeded = false;
                             }
                         }

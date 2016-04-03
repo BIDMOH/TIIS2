@@ -516,8 +516,8 @@ public class HomeActivityRevised extends BackboneActivity {
 
                 try {
 //                    application.intervalGetChildrenByHealthFacilitySinceLastLogin(); // old service
-                    application.parseChildCollector(); // old service
-//                    application.parseChildCollector2(); // new service
+//                    application.parseChildCollector(); // old service
+                    application.parseChildCollector2(); // new service
                 }catch (Exception e){
                     e.printStackTrace();
                 }

@@ -79,6 +79,8 @@ public class VaccineDoseListAdapter extends ArrayAdapter<AdministerVaccinesModel
     private TextView tempHoldingTextView;
     private AdministerVaccinesModel tempHoldingVaccineModel;
 
+    private Date currentDate = new Date();
+
     public VaccineDoseListAdapter(Context ctx, int resource, List<AdministerVaccinesModel> items,String dob_st,int vac_lot_pos) {
         super(ctx, resource, items);
         this.items = items;
@@ -158,6 +160,31 @@ public class VaccineDoseListAdapter extends ArrayAdapter<AdministerVaccinesModel
             }
         });
 
+        //get the date set
+        //Obtaining time in milliseconds from the scheduled time in string
+        String [] tm = item.getScheduled_Date_field().split("\\(");
+        String [] tLong;
+        if(tm[1].contains("+")){
+            tLong =  tm[1].split("\\+");
+        }else if(tm[1].contains("-")){
+            tLong =  tm[1].split("-");
+        }else {
+            tLong = tm;
+        }
+
+        String timeLong = tLong[0];
+
+        Date scheduledDate = new Date(Long.parseLong(timeLong));
+
+        Calendar now = Calendar.getInstance();
+
+
+        if (new_date.before(scheduledDate)){
+            AdministerVaccineFragment.correnctDateSelected = false;
+        }else{
+            AdministerVaccineFragment.correnctDateSelected = true;
+        }
+
         //Call methods to initialize the spinners and the checkbox values
         setSpinnerVoccLot(item, viewHolder);
         setSpinnerReason(item, viewHolder);
@@ -185,11 +212,7 @@ public class VaccineDoseListAdapter extends ArrayAdapter<AdministerVaccinesModel
         dob.setTimeInMillis(bdate.getTime());
         reaction_start_date_picker.setMinDate(dob);
 
-
-
         reaction_start_date_picker.show(((Activity) ctx).getFragmentManager(), "DatePickerDialogue");
-
-
 
 
     }
@@ -237,14 +260,6 @@ public class VaccineDoseListAdapter extends ArrayAdapter<AdministerVaccinesModel
             e.printStackTrace();
         }
 
-        Log.d("WOWHITS", "##################### New Date is  :  "+ft.format(new_date));
-        Log.d("WOWHITS", "##################### DOB is  :  " + ft.format(bdate));
-
-        if (new_date.before(bdate)){
-            AdministerVaccineFragment.correnctDateSelected = false;
-        }else{
-            AdministerVaccineFragment.correnctDateSelected = true;
-        }
 
         //Obtaining time in milliseconds from the scheduled time in string
         String [] tm = tempHoldingVaccineModel.getScheduled_Date_field().split("\\(");

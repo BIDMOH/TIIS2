@@ -149,6 +149,8 @@ public class DropoutReportFragment extends Fragment {
                         dateRange = dateRange+"-"+monthCursor.getString(monthCursor.getColumnIndex("month"));
 
                         ViewRows row = new ViewRows();
+                        row.clearData();
+
                         row.setMonthName(monthCursor.getString(monthCursor.getColumnIndex("month")));
                         Cursor cursor1, cursor2, cursor3, cursor4;
                         String SQLBcgCount, SQLMr1Count, SQLPenta1Count, SQLPenta3Count;
@@ -156,21 +158,25 @@ public class DropoutReportFragment extends Fragment {
                         SQLBcgCount = "SELECT COUNT ("+SQLHandler.VaccinationEventColumns.DOSE_ID +") AS BCG_COUNT FROM vaccination_event "+
                                 " WHERE strftime('%Y-%m',substr("+SQLHandler.VaccinationEventColumns.VACCINATION_DATE+",7,10), 'unixepoch') =  '"+dateRange+"' "+
                                 " AND "+SQLHandler.VaccinationEventColumns.HEALTH_FACILITY_ID+" = '"+app.getLOGGED_IN_USER_HF_ID()+"'"+
+                                " AND "+SQLHandler.VaccinationEventColumns.VACCINATION_STATUS+" = 'false' "+
                                 " AND "+ SQLHandler.VaccinationEventColumns.DOSE_ID +" = 61";
 
                         SQLMr1Count = "SELECT COUNT ("+SQLHandler.VaccinationEventColumns.DOSE_ID +") AS MR1_COUNT FROM vaccination_event "+
                                 " WHERE strftime('%Y-%m',substr("+SQLHandler.VaccinationEventColumns.VACCINATION_DATE+",7,10), 'unixepoch') = '"+dateRange+"' "+
                                 " AND "+SQLHandler.VaccinationEventColumns.HEALTH_FACILITY_ID+" = '"+app.getLOGGED_IN_USER_HF_ID()+"'"+
+                                " AND "+SQLHandler.VaccinationEventColumns.VACCINATION_STATUS+" = 'false' "+
                                 " AND "+ SQLHandler.VaccinationEventColumns.DOSE_ID +" = 77";
 
                         SQLPenta1Count = "SELECT COUNT ("+SQLHandler.VaccinationEventColumns.DOSE_ID +") AS PENTA1_COUNT FROM vaccination_event "+
                                 " WHERE strftime('%Y-%m',substr("+SQLHandler.VaccinationEventColumns.VACCINATION_DATE+",7,10), 'unixepoch') =  '"+dateRange+"' "+
                                 " AND "+SQLHandler.VaccinationEventColumns.HEALTH_FACILITY_ID+" = '"+app.getLOGGED_IN_USER_HF_ID()+"'"+
+                                " AND "+SQLHandler.VaccinationEventColumns.VACCINATION_STATUS+" = 'false' "+
                                 " AND "+ SQLHandler.VaccinationEventColumns.DOSE_ID +" = 66";
 
                         SQLPenta3Count = "SELECT COUNT ("+SQLHandler.VaccinationEventColumns.DOSE_ID +") AS PENTA3_COUNT FROM vaccination_event "+
                                 " WHERE strftime('%Y-%m',substr("+SQLHandler.VaccinationEventColumns.VACCINATION_DATE+",7,10), 'unixepoch') =  '"+dateRange+"' "+
                                 " AND "+SQLHandler.VaccinationEventColumns.HEALTH_FACILITY_ID+" = '"+app.getLOGGED_IN_USER_HF_ID()+"'"+
+                                " AND "+SQLHandler.VaccinationEventColumns.VACCINATION_STATUS+" = 'false' "+
                                 " AND "+ SQLHandler.VaccinationEventColumns.DOSE_ID +" = 68";
 
                         Log.d("DropoutQueries", SQLBcgCount);
@@ -363,6 +369,12 @@ public class DropoutReportFragment extends Fragment {
             this.pentaNumber = pentaNumber;
         }
 
+        public void clearData(){
+            this.monthName = "";
+            bcgAmount = mr1Amount = penta1Amount = penta3Amount = bcgNumber = pentaNumber = 0;
+            bcgPercent = pentaPercent = 0;
+        }
+
         public void generateData(){
 
             bcgNumber = bcgAmount - mr1Amount;
@@ -377,6 +389,7 @@ public class DropoutReportFragment extends Fragment {
 
             try{
                 pentaPercent = (pentaNumber/penta1Amount)*100;
+                Log.d("DropoutQueries", "percentage PENTA of "+monthName+" is "+pentaPercent);
             }catch (Exception e){
                 e.printStackTrace();
             }
