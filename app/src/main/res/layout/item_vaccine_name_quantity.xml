@@ -19,47 +19,41 @@
   ~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
+
 <LinearLayout
-        android:id="@+id/lin_static"
-        android:layout_width="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:id="@+id/lin_static"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:layout_width="0dp"
+        android:textColor="@color/gray_dark"
+        android:id="@+id/tv_name"
+        android:layout_weight=".50"
+        android:textSize="16sp"
+        android:layout_marginRight="16dp"
+        android:gravity="right"
+        android:text="BCG"
+        android:layout_height="wrap_content" />
+    <View
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_width="1dp"
+        android:background="@color/selected_gray"
+        android:layout_height="match_parent"/>
+
+    <TextView
+        android:textColor="@color/gray_dark"
+        android:id="@+id/tv_quantity"
+        android:layout_width="0dp"
+        android:layout_weight=".50"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_horizontal"
-        android:weightSum="2"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:background="#ffffff">
+        android:textSize="16sp"
+        android:paddingLeft="16dp"
+        android:gravity="left"
+        android:text="17"/>
 
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="center_horizontal"
-            android:orientation="horizontal">
-            <TextView
-                android:id="@+id/tv_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/name"
-                android:layout_gravity="center_vertical"
-                android:textColor="@color/Black"
-                android:textSize="18sp"
-                android:gravity="center_horizontal"/>
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent"
-                android:background="@color/Black"/>
-
-            <TextView
-                android:id="@+id/tv_quantity"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_gravity="center"
-                android:textColor="@color/Black"
-                android:textSize="18sp"
-                android:text="1"
-                android:gravity="center_horizontal"/>
-        </LinearLayout>
-    </LinearLayout>
+</LinearLayout>

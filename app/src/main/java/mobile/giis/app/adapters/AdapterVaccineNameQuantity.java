@@ -56,7 +56,7 @@ public class AdapterVaccineNameQuantity extends ArrayAdapter<FragmentVaccineName
         final FragmentVaccineNameQuantity.VacineNameQuantity item = items.get(position);
         if (rowView == null) {
             LayoutInflater li = (LayoutInflater) ctx.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            rowView = li.inflate(R.layout.item_vaccine_name_quantity, null);
+            rowView = li.inflate(R.layout.item_vaccine_name_quantity, parent,false);
 
             viewHolder = new ViewHolder();
             viewHolder.tvName = (TextView) rowView.findViewById(R.id.tv_name);

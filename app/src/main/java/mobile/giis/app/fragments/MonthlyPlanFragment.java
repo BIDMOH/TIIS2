@@ -1,6 +1,7 @@
 package mobile.giis.app.fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -38,6 +39,7 @@ import mobile.giis.app.CustomViews.ButteryProgressBar;
 import mobile.giis.app.CustomViews.NestedListView;
 import mobile.giis.app.R;
 import mobile.giis.app.adapters.AdapterGridDataSearchResult;
+import mobile.giis.app.adapters.AdapterVaccineNameQuantity;
 import mobile.giis.app.adapters.MonthlyPlanListAdapter;
 import mobile.giis.app.adapters.SingleTextViewAdapter;
 import mobile.giis.app.adapters.VaccinationQueueListAdapter;
@@ -241,18 +243,18 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment{
         lvMonthlyPlanList.addFooterView(listviewFooter);
         adapter = new MonthlyPlanListAdapter(MonthlyPlanFragment.this.getActivity(), var);
         lvMonthlyPlanList.setAdapter(adapter);
-        new filterList().execute(currentCategory, "0"); //pass the initial data index on second parameter
+        new filterList().execute(currentCategory, "0",fromDateString, toDateString); //pass the initial data index on second parameter
 
         agesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 if (position > 0) {
                     currentCategory = ageDef.get(position - 1).getName();
-                    new filterList().execute(currentCategory, "0");
+                    new filterList().execute(currentCategory, "0",fromDateString, toDateString);
 //                    var = getViewAppointmentRows(ageDef.get(position - 1).getId());
                 } else {
                     currentCategory = "";
-                    new filterList().execute(currentCategory, "0");
+                    new filterList().execute(currentCategory, "0",fromDateString, toDateString);
                 }
 //                lvMonthlyPlanList.setAdapter(null);
 //                adapter = new VaccinationQueueListAdapter(MonthlyPlanFragment.this.getActivity(), var);
@@ -266,6 +268,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment{
             }
         });
 
+
         vaccineQuantityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -277,7 +280,18 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment{
                                 dialog.cancel();
                             }
                         });
-                keyBuilder.setView(View.inflate(MonthlyPlanFragment.this.getActivity(), R.layout.vaccination_quantity_custom_dialog, null));
+
+                View dialogLayout = View.inflate(MonthlyPlanFragment.this.getActivity(), R.layout.vaccination_quantity_custom_dialog, null);
+                ListView lvNameQuantity = (ListView)dialogLayout.findViewById(R.id.lv_result);
+                ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> list = this_database.getQuantityOfVaccinesNeededMonthlyPlan(app.getLOGGED_IN_USER_HF_ID());
+                Context ctx = getActivity().getApplicationContext();
+                AdapterVaccineNameQuantity adapter = new AdapterVaccineNameQuantity(ctx,R.layout.item_vaccine_name_quantity,list);
+                lvNameQuantity.setAdapter(adapter);
+
+                keyBuilder.setView(dialogLayout);
+
+
+
                 AlertDialog dialog = keyBuilder.create();
                 dialog.show();
             }

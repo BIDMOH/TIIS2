@@ -2,6 +2,7 @@ package mobile.giis.app.fragments;
 
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -43,6 +44,7 @@ import mobile.giis.app.ChildDetailsActivity;
 import mobile.giis.app.CustomViews.ButteryProgressBar;
 import mobile.giis.app.CustomViews.NestedListView;
 import mobile.giis.app.R;
+import mobile.giis.app.adapters.AdapterVaccineNameQuantity;
 import mobile.giis.app.adapters.SingleTextViewAdapter;
 import mobile.giis.app.adapters.VaccinationQueueListAdapter;
 import mobile.giis.app.base.BackboneActivity;
@@ -92,6 +94,7 @@ public class VaccinationQueueFragment extends android.support.v4.app.DialogFragm
     private Thread thread;
 
     ButteryProgressBar pbar;
+    private Button vaccDoseQuantity;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 
@@ -129,6 +132,8 @@ public class VaccinationQueueFragment extends android.support.v4.app.DialogFragm
         ageTitle.setTypeface(BackboneActivity.Rosario_Regular);
         TextView dateTitle = (TextView) lvHeader.findViewById(R.id.date_title);
         dateTitle.setTypeface(BackboneActivity.Rosario_Regular);
+
+        vaccDoseQuantity=(Button)root.findViewById(R.id.vacc_dose_quantity);
 
         adapter = new VaccinationQueueListAdapter(VaccinationQueueFragment.this.getActivity(), var);
         setListViewHeightBasedOnChildren(lvVaccQList);
@@ -183,6 +188,39 @@ public class VaccinationQueueFragment extends android.support.v4.app.DialogFragm
                     VaccinationQueueFragment.this.getActivity().startActivity(childDetailsActivity);
 
                 }
+            }
+        });
+
+        vaccDoseQuantity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                AlertDialog.Builder keyBuilder = new AlertDialog.Builder(getActivity());
+                keyBuilder
+                        .setCancelable(true)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+                View dialogLayout = View.inflate(getActivity(), R.layout.vaccination_quantity_custom_dialog, null);
+                ListView lvNameQuantity = (ListView)dialogLayout.findViewById(R.id.lv_result);
+                ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> list = this_database.getQuantityOfVaccinesNeededVaccinationQueue();
+                Context ctx = getActivity().getApplicationContext();
+                try {
+                    AdapterVaccineNameQuantity adapter = new AdapterVaccineNameQuantity(ctx, R.layout.item_vaccine_name_quantity, list);
+                    lvNameQuantity.setAdapter(adapter);
+
+                    keyBuilder.setView(dialogLayout);
+
+
+                    AlertDialog dialog = keyBuilder.create();
+                    dialog.show();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
             }
         });
 
