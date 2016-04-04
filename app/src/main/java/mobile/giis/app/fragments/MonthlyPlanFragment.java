@@ -272,28 +272,31 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment{
         vaccineQuantityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder keyBuilder = new AlertDialog.Builder(MonthlyPlanFragment.this.getActivity());
-                keyBuilder
-                        .setCancelable(true)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
+                try {
+                    AlertDialog.Builder keyBuilder = new AlertDialog.Builder(MonthlyPlanFragment.this.getActivity());
+                    keyBuilder
+                            .setCancelable(true)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
 
-                View dialogLayout = View.inflate(MonthlyPlanFragment.this.getActivity(), R.layout.vaccination_quantity_custom_dialog, null);
-                ListView lvNameQuantity = (ListView)dialogLayout.findViewById(R.id.lv_result);
-                ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> list = this_database.getQuantityOfVaccinesNeededMonthlyPlan(app.getLOGGED_IN_USER_HF_ID());
-                Context ctx = getActivity().getApplicationContext();
-                AdapterVaccineNameQuantity adapter = new AdapterVaccineNameQuantity(ctx,R.layout.item_vaccine_name_quantity,list);
-                lvNameQuantity.setAdapter(adapter);
+                    View dialogLayout = View.inflate(MonthlyPlanFragment.this.getActivity(), R.layout.vaccination_quantity_custom_dialog, null);
+                    ListView lvNameQuantity = (ListView) dialogLayout.findViewById(R.id.lv_result);
+                    ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> list = this_database.getQuantityOfVaccinesNeededMonthlyPlan(app.getLOGGED_IN_USER_HF_ID());
+                    Context ctx = getActivity().getApplicationContext();
+                    AdapterVaccineNameQuantity adapter = new AdapterVaccineNameQuantity(ctx, R.layout.item_vaccine_name_quantity, list);
+                    lvNameQuantity.setAdapter(adapter);
 
-                keyBuilder.setView(dialogLayout);
+                    keyBuilder.setView(dialogLayout);
 
 
-
-                AlertDialog dialog = keyBuilder.create();
-                dialog.show();
+                    AlertDialog dialog = keyBuilder.create();
+                    dialog.show();
+                }catch(Exception e ){
+                    e.printStackTrace();
+                }
             }
         });
 
