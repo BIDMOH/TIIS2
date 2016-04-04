@@ -1,23 +1,20 @@
 package mobile.giis.app.fragments;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -31,8 +28,6 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,18 +36,11 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 
-import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import fr.ganfra.materialspinner.MaterialSpinner;
 import mobile.giis.app.ChildDetailsActivity;
-import mobile.giis.app.CustomViews.ButteryProgressBar;
-import mobile.giis.app.CustomViews.NestedListView;
 import mobile.giis.app.R;
-import mobile.giis.app.RegisterChildActivity;
-import mobile.giis.app.ViewChildActivity;
 import mobile.giis.app.adapters.AdapterGridDataSearchResult;
-import mobile.giis.app.adapters.SearchResultListAdapter;
 import mobile.giis.app.adapters.SingleTextViewAdapter;
 import mobile.giis.app.base.BackboneApplication;
 import mobile.giis.app.database.DatabaseHandler;
@@ -101,30 +89,44 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
     boolean isEndingDateSelected = false;
 
     View listviewFooter;
-    ImageButton previous, next;
+    ImageView previous, next;
     RelativeLayout prevLayout, nextLayout;
     public String currentCount = "0";
     ProgressBar pbar;
 
-    CardView searchOutsideFacility, resetButton;
+    CardView searchOutsideFacility;
 
     AlertDialog.Builder alertDialogBuilder;
+
+    ImageButton searchBtn;
 
     String childidToParse;
     ArrayList<Child> childrensrv = new ArrayList<>();
     boolean serverdata = false;
 
     public int currentChildPosition = -1;
+    Button previousBtn, nextBtn, searchOutsideFacilityButton;
 
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_search_child, null);
         setUpView(root);
 
-        listviewFooter  = inflater.inflate(R.layout.loading_list_footer, null);
-        previous        = (ImageButton) listviewFooter.findViewById(R.id.previous_10_contents);
-        next            = (ImageButton) listviewFooter.findViewById(R.id.next_10_contents);
-        prevLayout              = (RelativeLayout) listviewFooter.findViewById(R.id.prev_rl);
-        nextLayout              = (RelativeLayout) listviewFooter.findViewById(R.id.next_rl);
+        previous        = (ImageView) root.findViewById(R.id.previous_10_contents);
+        next            = (ImageView) root.findViewById(R.id.next_10_contents);
+        prevLayout      = (RelativeLayout) root.findViewById(R.id.prev_rl);
+        nextLayout      = (RelativeLayout) root.findViewById(R.id.next_rl);
+        previousBtn     = (Button) root.findViewById(R.id.previous_btn);
+        nextBtn         = (Button) root.findViewById(R.id.next_btn);
+
+//        nextBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                int count = Integer.parseInt(currentCount);
+//                count = count+10;
+//                currentCount = count+"";
+//                new getChildren().execute(currentCount);
+//            }
+//        });
 
         nextLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,6 +137,16 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
                 new getChildren().execute(currentCount);
             }
         });
+
+//        previousBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                int count = Integer.parseInt(currentCount);
+//                count = count - 10;
+//                currentCount = count + "";
+//                new getChildren().execute(currentCount);
+//            }
+//        });
 
         prevLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,18 +159,10 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
             }
         });
 
-        searchOutsideFacility.setOnClickListener(new View.OnClickListener() {
+        searchOutsideFacilityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startSearchingOutsideFacility();
-            }
-        });
-
-        resetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                emptyAllFields();
-                new getChildren().execute("0");
             }
         });
 
@@ -210,9 +214,6 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
         statusSpinner.setAdapter(statusAdapter);
         statusSpinner.setSelection(3);
 
-        //get the list of all children in the local db
-
-        lvChildrenSearchResults.addFooterView(listviewFooter);
         new getChildren().execute("0");
 
         lvChildrenSearchResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -346,10 +347,18 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
 
         searchOutsideFacility   = (CardView) v.findViewById(R.id.search_outside_facility);
 
-        resetButton             = (CardView) v.findViewById(R.id.reset_button);
-
         pbar                    = (ProgressBar) v.findViewById(R.id.pbar);
         pbar.setVisibility(View.GONE);
+
+        searchBtn = (ImageButton) v.findViewById(R.id.search_btn_child);
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new getChildren().execute("0");
+            }
+        });
+
+        searchOutsideFacilityButton = (Button) v.findViewById(R.id.outside_facility_search_btn);
 
     }
 
@@ -362,7 +371,6 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
         metMotSname .setText("");
         metDOBFrom .setText("");
         metDOBTo .setText("");
-        resetButton.setVisibility(View.GONE);
         searchOutsideFacility.setVisibility(View.VISIBLE);
 
     }
@@ -484,13 +492,11 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
         @Override
         protected void onPostExecute(Integer result) {
             if((children == null)){
-                childNotFoundLayout.setVisibility(View.VISIBLE);
-                childListLayout.setVisibility(View.GONE);
                 pbar.setVisibility(View.GONE);
+                lvChildrenSearchResults.setAdapter(null);
                 Log.d("IMELLA", "No children found you have to know how to handle this");
             }else{
                 serverdata = false;
-                childNotFoundLayout.setVisibility(View.GONE);
                 childListLayout.setVisibility(View.VISIBLE);
                 adapter = new AdapterGridDataSearchResult(SearchChildFragment.this.getActivity(), R.layout.children_list_item, children, mydb);
                 lvChildrenSearchResults.setAdapter(adapter);
@@ -609,8 +615,6 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
                         @Override
                         public void run() {
                             alertDialog.dismiss();
-                            searchOutsideFacility.setVisibility(View.GONE);
-                            resetButton.setVisibility(View.VISIBLE);
                             Log.d("EBENSEARCH", "ebenezer was No where to be found");
 //                            Toast.makeText(getApplicationContext(), "Communication was not successful,try again", Toast.LENGTH_LONG).show();
                         }
