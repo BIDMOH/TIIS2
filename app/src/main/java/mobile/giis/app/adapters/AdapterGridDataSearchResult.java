@@ -110,9 +110,13 @@ import mobile.giis.app.entity.Child;
         viewHolder.tvMotherName.setTypeface(Typeface.DEFAULT_BOLD);
         String dateString = new SimpleDateFormat("dd-MMM-yyyy").format(new Date(Long.parseLong(item.getBirthdate().toString())));
         viewHolder.tvDateOfBirth.setText(dateString);
+        viewHolder.tvDateOfBirth.setTextColor(ctx.getResources().getColor(R.color.black));
         viewHolder.tvGender.setText(item.getGender());
+        viewHolder.tvGender.setTextColor(ctx.getResources().getColor(R.color.black));
         viewHolder.tvVillage.setText(item.getDomicile());
+        viewHolder.tvVillage.setTextColor(ctx.getResources().getColor(R.color.black));
         viewHolder.tvHealthFacility.setText(item.getHealthcenter());
+        viewHolder.tvHealthFacility.setTextColor(ctx.getResources().getColor(R.color.black));
         Log.d("coze adpter", "facility One = " + item.getHealthcenter());
         Log.d("coze adpter", "facility Two = " + mydb.getHealthCenterName(item.getHealthcenter()));
 
