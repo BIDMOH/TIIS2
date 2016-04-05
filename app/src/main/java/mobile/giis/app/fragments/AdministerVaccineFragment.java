@@ -32,6 +32,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import mobile.giis.app.CustomViews.NestedListView;
@@ -281,7 +282,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                                     progressDialog.setMessage("Saving data. \nPlease wait ...");
                                     progressDialog.setCanceledOnTouchOutside(false);
                                     progressDialog.setCancelable(false);
-                                    progressDialog.show();
+
 
                                     new AsyncTask<Void,Void,Void>(){
                                         @Override
@@ -376,7 +377,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                                             }
                                             return null;
                                         }
-                                    };
+                                    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 
                                 }
@@ -403,7 +404,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                     progressDialog.setMessage("Saving data. \nPlease wait ...");
                     progressDialog.setCanceledOnTouchOutside(false);
                     progressDialog.setCancelable(false);
-                    progressDialog.show();
+
                     new AsyncTask<Void,Void,Void>(){
                         @Override
                         protected void onPreExecute() {
@@ -495,7 +496,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                             }
                             return null;
                         }
-                    };
+                    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
                 }
                 app.saveNeeded = false;
