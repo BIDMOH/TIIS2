@@ -21,6 +21,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -55,9 +56,12 @@ import mobile.giis.app.database.DatabaseHandler;
 import mobile.giis.app.fragments.FragmentStackManager;
 import mobile.giis.app.fragments.HomeFragment;
 import mobile.giis.app.fragments.RegisterChildFragment;
+import mobile.giis.app.fragments.SearchChildFragment;
+import mobile.giis.app.fragments.VaccinationQueueFragment;
 import mobile.giis.app.helpers.Utils;
 import mobile.giis.app.mObjects.DrawerObjects;
 import mobile.giis.app.postman.Alarm;
+import mobile.giis.app.postman.CheckForChangesSynchronisationService;
 import mobile.giis.app.postman.RoutineAlarmReceiver;
 import mobile.giis.app.postman.SynchronizationService2;
 
@@ -115,6 +119,27 @@ public class HomeActivityRevised extends BackboneActivity {
     public static final String LOGINPREFERENCE = "loginPrefs" ;
 
     public AlertDialog.Builder alertDialogBuilder;
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String s = intent.getStringExtra(CheckForChangesSynchronisationService.SynchronisationService_MESSAGE);
+
+            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
+            try {
+                ((VaccinationQueueFragment) fragment).updateList();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+            try {
+                ((SearchChildFragment) fragment).updateList();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle starter) {
@@ -847,8 +872,18 @@ public class HomeActivityRevised extends BackboneActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(this).registerReceiver((receiver),
+                new IntentFilter(CheckForChangesSynchronisationService.SynchronisationService_RESULT)
+        );
+    }
+
+
+    @Override
     protected void onStop() {
         super.onStop();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
     }
 
 }

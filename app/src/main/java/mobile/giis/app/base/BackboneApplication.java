@@ -2559,7 +2559,6 @@ public class BackboneApplication extends Application {
                         e.printStackTrace();
                     } finally {
                         addChildVaccinationEventVaccinationAppointment(objects2);
-//                        addChildVaccinationEventVaccinationAppointmentUnOptimisedForSmallAmountsOfData(objects2);
                     }
                 }
             });
