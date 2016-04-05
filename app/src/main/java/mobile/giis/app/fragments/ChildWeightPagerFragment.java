@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
 
+import org.w3c.dom.Text;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.ParseException;
@@ -164,22 +166,10 @@ public class ChildWeightPagerFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (Utils.isStringBlank((metWeightValue.getText().toString())) || metWeightValue.getText().toString().substring(0, 1).equals("0")) {
-                    final AlertDialog.Builder ad = new AlertDialog.Builder(ChildWeightPagerFragment.this.getActivity());
-                    ad.setTitle(getString(R.string.warning));
-                    ad.setMessage(getString(R.string.weight_not_correct));
-                    ad.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
-                    // this will solve your error
-                    AlertDialog alert = ad.create();
-                    alert.show();
-                    alert.getWindow().getAttributes();
 
-                    TextView textView = (TextView) alert.findViewById(android.R.id.message);
-                    textView.setTextSize(30);
+                    String message = getString(R.string.weight_not_correct);
+                    showWarningDialogue(message, "-3");
+
                 } else {
                     if (!isWeightSetForChild) {
                         isWeightSetForChild = true;
@@ -211,6 +201,7 @@ public class ChildWeightPagerFragment extends Fragment {
 
                                     String str = "0";
                                     String message = "";
+                                    int flag = 0;
 
                                     weight_value = metWeightValue.getText().toString() + "." + metWeightDecimalValue.getText().toString();
                                     if (Double.parseDouble(weight_value) <= Double.parseDouble(sd3neg)) {
@@ -225,45 +216,7 @@ public class ChildWeightPagerFragment extends Fragment {
                                         str = "OK";
                                     }
 
-                                    switch (str) {
-                                        case "-3":
-                                            message = (getString(R.string.child_significantly_underweight));
-                                            break;
-                                        case "-2":
-                                            message = (getString(R.string.child_weight_too_low));
-                                            break;
-                                        case "3":
-                                            message = (getString(R.string.child_weight_too_hight));
-                                            break;
-                                        case "2":
-                                            message = (getString(R.string.child_weight_too_hight));
-                                            break;
-                                        case "OK":
-                                            message = (getString(R.string.normal_child_weight));
-                                            break;
-                                        default:
-                                            message = (getString(R.string.error_ocurred));
-                                            break;
-                                    }
-
-                                    final AlertDialog.Builder ad = new AlertDialog.Builder(ChildWeightPagerFragment.this.getActivity());
-
-                                    ad.setTitle(getString(R.string.weight_analysis));
-                                    ad.setMessage(message);
-                                    ad.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.cancel();
-                                        }
-                                    });
-
-                                    // this will solve your error
-                                    AlertDialog alert = ad.create();
-                                    alert.show();
-                                    alert.getWindow().getAttributes();
-
-                                    TextView textView = (TextView) alert.findViewById(android.R.id.message);
-                                    textView.setTextSize(30);
+                                    showWarningDialogue(message, str);
 
                                 } else {
                                     final AlertDialog.Builder ad = new AlertDialog.Builder(ChildWeightPagerFragment.this.getActivity());
@@ -400,6 +353,56 @@ public class ChildWeightPagerFragment extends Fragment {
         return v;
     }
 
+    public void showWarningDialogue(String message, String str){
+        android.support.v7.app.AlertDialog.Builder keyBuilder = new android.support.v7.app.AlertDialog.Builder(ChildWeightPagerFragment.this.getActivity());
+        keyBuilder
+                .setCancelable(true)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        View dialogLayout = View.inflate(ChildWeightPagerFragment.this.getActivity(), R.layout.child_weight_warning_dialogue, null);
+        LinearLayout topBar = (LinearLayout) dialogLayout.findViewById(R.id.dialogue_top_bar);
+        TextView warningMessage = (TextView) dialogLayout.findViewById(R.id.warning_message);
+        TextView title          = (TextView) dialogLayout.findViewById(R.id.dialogue_title);
+        String titleText = "";
+
+        switch (str) {
+            case "-3":
+                message = (getString(R.string.child_significantly_underweight));
+                topBar.setBackgroundColor(ChildWeightPagerFragment.this.getActivity().getResources().getColor(R.color.red_500));
+                break;
+            case "-2":
+                message = (getString(R.string.child_weight_too_low));
+                topBar.setBackgroundColor(ChildWeightPagerFragment.this.getActivity().getResources().getColor(R.color.yellow_500));
+                break;
+            case "3":
+                message = (getString(R.string.child_weight_too_hight));
+                topBar.setBackgroundColor(ChildWeightPagerFragment.this.getActivity().getResources().getColor(R.color.red_500));
+                break;
+            case "2":
+                message = (getString(R.string.child_weight_too_hight));
+                topBar.setBackgroundColor(ChildWeightPagerFragment.this.getActivity().getResources().getColor(R.color.red_300));
+                break;
+            case "OK":
+                message = (getString(R.string.normal_child_weight));
+                titleText = "MESSAGE";
+                topBar.setBackgroundColor(ChildWeightPagerFragment.this.getActivity().getResources().getColor(R.color.green_400));
+                break;
+            default:
+                message = (getString(R.string.error_ocurred));
+                break;
+        }
+        title.setText(titleText);
+        warningMessage.setText(message);
+        keyBuilder.setView(dialogLayout);
+
+        android.support.v7.app.AlertDialog dialog = keyBuilder.create();
+        dialog.show();
+    }
+
     public void setUpView(View v){
         metDOB              = (MaterialEditText) v.findViewById(R.id.met_date_value);
         title               = (TextView) v.findViewById(R.id.title);
@@ -484,73 +487,47 @@ public class ChildWeightPagerFragment extends Fragment {
 
         cursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child_weight WHERE CHILD_BARCODE=? ", new String[]{String.valueOf(currentChild.getBarcodeID())});
         if (cursor.getCount() > 0) {
-            mydb.updateWeight(child, currentChild.getBarcodeID());
-            final AlertDialog.Builder ad = new AlertDialog.Builder(ChildWeightPagerFragment.this.getActivity());
-            ad.setMessage(getString(R.string.weight_updated));
-            ad.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-
-            // this will solve your error
-            AlertDialog alert = ad.create();
-            alert.show();
-            alert.getWindow().getAttributes();
-
-            TextView textView = (TextView) alert.findViewById(android.R.id.message);
-            textView.setTextSize(30);
+            String message = getString(R.string.weight_updated);
+            showWarningDialogue(message, "2");
         } else {
             mydb.addChildWeight(child);
-            final AlertDialog.Builder ad = new AlertDialog.Builder(ChildWeightPagerFragment.this.getActivity());
-            ad.setMessage(getString(R.string.weight_registered));
-            ad.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-
-            // this will solve your error
-            AlertDialog alert = ad.create();
-            alert.show();
-            alert.getWindow().getAttributes();
-
-            TextView textView = (TextView) alert.findViewById(android.R.id.message);
-            textView.setTextSize(30);
+            String message  = getString(R.string.weight_registered);
+            showWarningDialogue(message, "OK");
         }
 
     }
 
     private void showAlertThatChildHasWeightInDB() {
-        final AlertDialog.Builder ad = new AlertDialog.Builder(ChildWeightPagerFragment.this.getActivity());
 
-        ad.setTitle(getString(R.string.weight_analysis));
-        ad.setMessage(getString(R.string.child_weight_already_entered));
-        ad.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        ad.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                isWeightSetForChild = false;
-                // as a workaround i just call the on click programmatically since the code that manages te actions is in the on click of the save button
-                saveButton.callOnClick();
-                dialog.dismiss();
-            }
-        });
+        android.support.v7.app.AlertDialog.Builder keyBuilder = new android.support.v7.app.AlertDialog.Builder(ChildWeightPagerFragment.this.getActivity());
+        keyBuilder
+                .setCancelable(true)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        isWeightSetForChild = false;
+                        saveButton.callOnClick();
+                        dialog.cancel();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        dialog.cancel();
+                    }
+                });
 
-        // this will solve your error
-        AlertDialog alert = ad.create();
-        alert.show();
-        alert.getWindow().getAttributes();
+        View dialogLayout = View.inflate(ChildWeightPagerFragment.this.getActivity(), R.layout.child_weight_warning_dialogue, null);
+        LinearLayout topBar = (LinearLayout) dialogLayout.findViewById(R.id.dialogue_top_bar);
+        topBar.setBackgroundColor(ChildWeightPagerFragment.this.getActivity().getResources().getColor(R.color.red_500));
+        TextView warningMessage = (TextView) dialogLayout.findViewById(R.id.warning_message);
+        TextView title          = (TextView) dialogLayout.findViewById(R.id.dialogue_title);
+        String message = getString(R.string.child_weight_already_entered);
+        warningMessage.setText(message);
+        keyBuilder.setView(dialogLayout);
 
-        TextView textView = (TextView) alert.findViewById(android.R.id.message);
-        textView.setTextSize(30);
+        android.support.v7.app.AlertDialog dialog = keyBuilder.create();
+        dialog.show();
+
     }
 
 }
