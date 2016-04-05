@@ -1637,7 +1637,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         if(!DobFrom.equals("") || !DobTo.equals("")){
             thereIsData=true;
-            selectQuery+= ((!DobFrom.equals("")) ? " and datetime(substr(BIRTHDATE,7,10), 'unixepoch') >= datetime( '" + DobFrom + "','unixepoch')" : "") +
+            selectQuery+= ((!DobFrom.equals("")) ? " datetime(substr(BIRTHDATE,7,10), 'unixepoch') >= datetime( '" + DobFrom + "','unixepoch')" : "") +
                     ((!DobTo.equals("")) ? " and datetime(substr(BIRTHDATE,7,10), 'unixepoch') <= datetime( '" + DobTo + "','unixepoch')" : "");
         }else if(thereIsData){
 

@@ -483,7 +483,7 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
             int responce = 0;
 
             children = mydb.searchChild(barcode,
-                    firstname,firstname2, motherfirstname, (dateFrom != null) ? (dateFrom.getTime() / 1000) + "" : "", (dateTo != null) ? (dateTo.getTime() / 1000) + "" : "","", surname, mothersurname,
+                    firstname,firstname2, motherfirstname, ((dateFrom != null) ? (dateFrom.getTime() / 1000) + "" : ""), ((dateTo != null) ? (dateTo.getTime() / 1000) + "" : ""),"", surname, mothersurname,
                     placeodbirthId, healthfacility, villagename, status, params[0]);
 
             return responce;
