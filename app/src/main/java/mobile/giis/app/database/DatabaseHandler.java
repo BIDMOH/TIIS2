@@ -128,7 +128,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.execSQL(SQLHandler.SQLConfigTable);
             db.execSQL(SQLHandler.SQLUserTable);
             db.execSQL(SQLHandler.SQLChildTable);
-            db.execSQL("CREATE INDEX healthfacilityx ON " + Tables.CHILD + "(HEALTH_FACILITY_ID);");
+
+            db.execSQL("CREATE UNIQUE INDEX index_childId ON " + Tables.CHILD + "("+SQLHandler.ChildColumns.ID+")");
+
             db.execSQL(SQLHandler.SQLStatusTable);
             db.execSQL(SQLHandler.SQLCommunityTable);
             db.execSQL(SQLHandler.SQLChildWeightTable);
@@ -138,10 +140,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.execSQL(SQLHandler.SQLScheduledVaccinationTable);
             db.execSQL(SQLHandler.SQLDoseTable);
             db.execSQL(SQLHandler.SQLVaccinationAppointmentTable);
-            db.execSQL("CREATE INDEX childIDx ON " + Tables.VACCINATION_APPOINTMENT + "(CHILD_ID);");
+            db.execSQL("CREATE UNIQUE INDEX index_vaccination_appointment ON " + Tables.VACCINATION_APPOINTMENT + "("+ SQLHandler.VaccinationAppointmentColumns.CHILD_ID +","+ SQLHandler.VaccinationAppointmentColumns.SCHEDULED_DATE +")");
+
+
+
             db.execSQL(SQLHandler.SQLVaccinationEventTable);
             db.execSQL("CREATE INDEX childIdIndex ON " + Tables.VACCINATION_EVENT + "(CHILD_ID);");
-            db.execSQL("CREATE INDEX healthx ON " + Tables.VACCINATION_EVENT + "(HEALTH_FACILITY_ID);");
+            db.execSQL("CREATE UNIQUE INDEX index_vaccination_event ON " + Tables.VACCINATION_EVENT + "("+ SQLHandler.VaccinationEventColumns.CHILD_ID +","+ SQLHandler.VaccinationEventColumns.DOSE_ID+")");
+
+
+
             db.execSQL(SQLHandler.SQLWeightTable);
             db.execSQL(SQLHandler.SQLVaccinationQueueTable);
             db.execSQL(SQLHandler.SQLResponseTypeTable);
