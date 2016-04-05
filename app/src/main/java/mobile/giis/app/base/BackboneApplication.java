@@ -113,11 +113,11 @@ public class BackboneApplication extends Application {
     /**
      * Testing WCF
      */
-//    public static final String WCF_URL = "https://ec2-54-187-21-117.us-west-2.compute.amazonaws.com/SVC/";
+    public static final String WCF_URL = "https://ec2-54-187-21-117.us-west-2.compute.amazonaws.com/SVC/";
     /**
      * Live WCF
      */
-    public static final String WCF_URL = "https://ec2-52-11-215-89.us-west-2.compute.amazonaws.com/SVC/";
+//    public static final String WCF_URL = "https://ec2-52-11-215-89.us-west-2.compute.amazonaws.com/SVC/";
     public static final String USER_MANAGEMENT_SVC = "UserManagement.svc/";
     public static final String PLACE_MANAGEMENT_SVC = "PlaceManagement.svc/";
     public static final String HEALTH_FACILITY_SVC = "HealthFacilityManagement.svc/";
@@ -213,6 +213,10 @@ public class BackboneApplication extends Application {
     public String LAST_FRAGMENT = "mobile.giis.app.fragments.HomeFragment";
     public String LAST_FRAGMENT_TITLE = "Home";
     private String CURRENT_FRAGMENT = "HOME";
+
+    //Added Admin Username and Password variables
+//    private String LOGGED_IN_USERNAME = "admin";
+//    private String LOGGED_IN_USER_PASS = "Tanzania12";
 
     public static String getWcfUrl() {
         return WCF_URL;
@@ -888,12 +892,14 @@ public class BackboneApplication extends Application {
                 vaccEventCV.put(SQLHandler.VaccinationEventColumns.SCHEDULED_DATE, vaccinationEvent.getScheduledDate());
                 vaccEventCV.put(SQLHandler.VaccinationEventColumns.VACCINATION_DATE, vaccinationEvent.getVaccinationDate());
                 vaccEventCV.put(SQLHandler.VaccinationEventColumns.VACCINATION_STATUS, vaccinationEvent.getVaccinationStatus());
-                Log.d("daytwo", "Vaccination status : "+vaccinationEvent.getVaccinationStatus());
+                Log.d("day4", "Vaccination status : "+vaccinationEvent.getVaccinationStatus());
                 vaccEventCV.put(SQLHandler.VaccinationEventColumns.VACCINE_LOT_ID, vaccinationEvent.getVaccineLotId());
                 if (!db.isVaccinationEventInDb(vaccinationEvent.getChildId(), vaccinationEvent.getDoseId())) {
                     db.addVaccinationEvent(vaccEventCV);
+                    Log.d("day4", "Vaccination event not found on DB");
                 } else {
                     db.updateVaccinationEvent(vaccEventCV, vaccinationEvent.getId());
+                    Log.d("day4", "Updating Vaccination Event found on local DB");
                 }
             }
         }
@@ -913,8 +919,10 @@ public class BackboneApplication extends Application {
 
                 if (!db.isVaccinationAppointmentInDb(vaccinationAppointment.getChildId(), vaccinationAppointment.getScheduledDate())) {
                     db.addVaccinationAppointment(vaccAppointmentCV);
+                    Log.d("day4", "Vaccination Appointment not found on DB");
                 } else {
                     db.updateVaccinationAppointment(vaccAppointmentCV, vaccinationAppointment.getId());
+                    Log.d("day4", "Vaccination Appointment found : Updading.....");
                 }
 
             }
@@ -2365,7 +2373,7 @@ public class BackboneApplication extends Application {
     private int updatingVaccineOnTheServerResult = -1;
     public int updateVaccinationEventOnServer(final String url) {
         Log.e("Adm Vacc Server Upd URL", url);
-        Log.d("daytwo", url);
+        Log.d("day4", "Vaccination Update URL : " + url);
 
         client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
         client.get(url, new TextHttpResponseHandler() {
@@ -2550,8 +2558,8 @@ public class BackboneApplication extends Application {
                     } catch (IOException e) {
                         e.printStackTrace();
                     } finally {
-//                        addChildVaccinationEventVaccinationAppointment(objects2);
-                        addChildVaccinationEventVaccinationAppointmentUnOptimisedForSmallAmountsOfData(objects2);
+                        addChildVaccinationEventVaccinationAppointment(objects2);
+//                        addChildVaccinationEventVaccinationAppointmentUnOptimisedForSmallAmountsOfData(objects2);
                     }
                 }
             });

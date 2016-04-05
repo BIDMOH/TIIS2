@@ -264,7 +264,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         switch (view.getId()){
             case R.id.addminister_vaccine_save_button:
                 if (correnctDateSelected == false){
-                    Log.d("coze", "yes its a warning");
+                    Log.d("day4", "yes its a warning");
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(AdministerVaccineFragment.this.getActivity());
 
                     // set title
@@ -319,10 +319,10 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                                                     try {
                                                         BackboneApplication application = (BackboneApplication) AdministerVaccineFragment.this.getActivity().getApplication();
                                                         DatabaseHandler db = application.getDatabaseInstance();
-                                                        Log.d("daytwo", "before uploading to server");
-                                                        int status = application.updateVaccinationEventOnServer(barcode);
-                                                        Log.d("The status", status + "");
-                                                        Log.d("The status", params[0] + "");
+                                                        Log.d("day4", "before uploading to server");
+                                                        int status = application.updateVaccinationEventOnServer(a.getUpdateURL());
+                                                        Log.d("day4", " Status is  : "+status + "");
+
                                                         String dateTodayTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(Calendar.getInstance().getTime());
                                                         try {
                                                             dateTodayTimestamp = URLEncoder.encode(dateTodayTimestamp, "utf-8");
@@ -439,10 +439,9 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                                     try {
                                         BackboneApplication application = (BackboneApplication) AdministerVaccineFragment.this.getActivity().getApplication();
                                         DatabaseHandler db = application.getDatabaseInstance();
-                                        Log.d("daytwo", "before uploading to server");
-                                        int status = application.updateVaccinationEventOnServer(barcode);
-                                        Log.d("The status", status + "");
-                                        Log.d("The status", params[0] + "");
+                                        Log.d("day4", "before uploading to server");
+                                        int status = application.updateVaccinationEventOnServer(a.getUpdateURL());
+                                        Log.d("day4 Status is : ", status + "");
                                         String dateTodayTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(Calendar.getInstance().getTime());
                                         try {
                                             dateTodayTimestamp = URLEncoder.encode(dateTodayTimestamp, "utf-8");

@@ -42,8 +42,8 @@ public class CheckForChangesSynchronisationService  extends IntentService {
             app.parseConfiguration();
             if(app.getLOGGED_IN_USER_ID()!=null && !app.getLOGGED_IN_USER_ID().equals("0")) {
                 app.continuousModificationParser();
-                app.intervalGetChildrenByHealthFacilitySinceLastLogin();
-                app.loginRequest();
+//                app.intervalGetChildrenByHealthFacilitySinceLastLogin();
+//                app.loginRequest();
 //                app.getGetChildByIdListSince();
                 app.getVaccinationQueueByDateAndUser();
             }
