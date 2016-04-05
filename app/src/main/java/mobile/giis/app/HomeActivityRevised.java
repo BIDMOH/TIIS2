@@ -124,6 +124,7 @@ public class HomeActivityRevised extends BackboneActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String s = intent.getStringExtra(CheckForChangesSynchronisationService.SynchronisationService_MESSAGE);
+            Log.d("day5","broadcast service received an intent");
 
             Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
             try {
