@@ -67,7 +67,7 @@ public class VaccinationQueueFragment extends android.support.v4.app.DialogFragm
 
     private NestedListView lvVaccQList;
 
-    private VaccinationQueueListAdapter adapter;
+    public VaccinationQueueListAdapter adapter;
 
     private MaterialSpinner agesSpinner;
 
@@ -249,6 +249,15 @@ public class VaccinationQueueFragment extends android.support.v4.app.DialogFragm
 
     }
 
+    public void updateList(){
+        try {
+            var = compileVaccinationQueueTable("");
+            adapter.notifyDataSetChanged();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     public void setUpView(View v){
         lvVaccQList     = (NestedListView) v.findViewById(R.id.lv_vacc_queue);
         agesSpinner     = (MaterialSpinner) v.findViewById(R.id.vacc_age_spinner);
@@ -363,14 +372,11 @@ public class VaccinationQueueFragment extends android.support.v4.app.DialogFragm
                             @Override
                             public void run() {
                                 Toast.makeText(VaccinationQueueFragment.this.getActivity(), "Child was not to be added to queue", Toast.LENGTH_LONG).show();
-//                                overlay.setVisibility(View.GONE);
                                 pbar.setVisibility(View.GONE);
                                 txtChildBarcode.setText("");
                             }
                         });
                     }
-
-                    //
 
                     app.registerAudit(BackboneApplication.CHILD_AUDIT, barcode, dateNow, app.getLOGGED_IN_USER_ID(), BackboneApplication.ACTION_CHECKIN);
 
@@ -378,13 +384,10 @@ public class VaccinationQueueFragment extends android.support.v4.app.DialogFragm
                         @Override
                         public void run() {
                             Toast.makeText(VaccinationQueueFragment.this.getActivity(), "Child checkin finished", Toast.LENGTH_LONG).show();
-//                            overlay.setVisibility(View.GONE);
-
                             var = compileVaccinationQueueTable("");
                             lvVaccQList.setAdapter(null);
                             adapter = new VaccinationQueueListAdapter(VaccinationQueueFragment.this.getActivity(), var);
                             lvVaccQList.setAdapter(adapter);
-
                             pbar.setVisibility(View.GONE);
                             txtChildBarcode.setText("");
                         }
@@ -470,85 +473,6 @@ public class VaccinationQueueFragment extends android.support.v4.app.DialogFragm
         ProgressDialog progressDialog =  new ProgressDialog(this.getActivity(), 0);
         progressDialog.setMessage("Loading Children from database...");
         progressDialog.show();
-
-
-//        for(final ViewAppointmentRow a: var){
-//
-//
-//
-//            TableRow row = new TableRow(this);
-//            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,TableRow.LayoutParams.WRAP_CONTENT);
-//            lp.setMargins(10, 10, 10, 10);
-//            row.setLayoutParams(lp);
-//            row.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    startAdministerVaccinesActivity(a,a.getChild_id());
-//                }
-//
-//
-//            });
-//
-//            TextView name = new TextView(this);
-//            name.setTextColor(Color.parseColor("#333333"));
-//            name.setBackgroundColor(Color.parseColor("#33819fd1"));
-//            name.setGravity(Gravity.CENTER_HORIZONTAL);
-//            name.setLayoutParams(new TableRow.LayoutParams(0,TableRow.LayoutParams.MATCH_PARENT,1.0f));
-//            name.setPadding(10,10,0,10);
-//            //name.setHeight(100);
-//            //name.setWidth(200);
-//
-//            DatabaseHandler db = app.getDatabaseInstance();
-//            Cursor naming = null;
-//            naming = db.getReadableDatabase().rawQuery("SELECT FIRSTNAME1 , LASTNAME1,FIRSTNAME2 FROM child WHERE ID=?", new String[]{a.getChild_id()});
-//            if (naming != null) {
-//                if (naming.moveToFirst()) {
-//                    name.setText(naming.getString(naming.getColumnIndex("FIRSTNAME1"))+" " + naming.getString(naming.getColumnIndex("FIRSTNAME2")) +" "+naming.getString(naming.getColumnIndex("LASTNAME1")));
-//                }
-//            }
-//
-//            TextView vac_dose = new TextView(this);
-//            vac_dose.setTextColor(Color.parseColor("#333333"));
-//            vac_dose.setBackgroundColor(Color.parseColor("#33819fd1"));
-//            vac_dose.setGravity(Gravity.CENTER_HORIZONTAL);
-//            vac_dose.setLayoutParams(new TableRow.LayoutParams(0,TableRow.LayoutParams.MATCH_PARENT,1.0f));
-////            vac_dose.setHeight(100);
-////            vac_dose.setWidth(250);
-//            vac_dose.setPadding(10,10,0,10);
-//            vac_dose.setText(a.getVaccine_dose());
-//
-//            TextView schedule = new TextView(this);
-//            schedule.setTextColor(Color.parseColor("#333333"));
-//            schedule.setBackgroundColor(Color.parseColor("#33819fd1"));
-//            schedule.setGravity(Gravity.CENTER_HORIZONTAL);
-//            schedule.setLayoutParams(new TableRow.LayoutParams(0,TableRow.LayoutParams.MATCH_PARENT,1.0f));
-//            //schedule.setHeight(100);
-//            //schedule.setWidth(150);
-//            schedule.setPadding(10,10,0,10);
-//            schedule.setText(a.getSchedule());
-//
-//            TextView sch_date = new TextView(this);
-//            sch_date.setTextColor(Color.parseColor("#333333"));
-//            sch_date.setBackgroundColor(Color.parseColor("#33819fd1"));
-//            sch_date.setGravity(Gravity.CENTER_HORIZONTAL);
-//            sch_date.setLayoutParams(new TableRow.LayoutParams(0,TableRow.LayoutParams.MATCH_PARENT,1.0f));
-//            //sch_date.setHeight(100);
-//            //sch_date.setWidth(200);
-//            sch_date.setPadding(10,10,0,10);
-//
-//            Date scheduled_date = dateParser(a.getScheduled_date());
-//            SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy");
-//            sch_date.setText(ft.format(scheduled_date));
-//
-//            row.addView(name);
-//            row.addView(vac_dose);
-//            row.addView(schedule);
-//            row.addView(sch_date);
-//            layout.addView(row);
-
-
-
-//        }
 
         progressDialog.dismiss();
         return var;

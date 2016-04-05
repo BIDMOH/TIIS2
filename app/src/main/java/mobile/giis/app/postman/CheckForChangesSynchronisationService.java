@@ -20,6 +20,7 @@ package mobile.giis.app.postman;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import mobile.giis.app.base.BackboneApplication;
@@ -28,6 +29,10 @@ import mobile.giis.app.base.BackboneApplication;
  * Created by utente1 on 4/8/2015.
  */
 public class CheckForChangesSynchronisationService  extends IntentService {
+    private LocalBroadcastManager broadcaster = LocalBroadcastManager.getInstance(this);
+    static final public String SynchronisationService_RESULT = "mobile,giis.app.CheckForChangesSynchronisationService.REQUEST_PROCESSED";
+    static final public String SynchronisationService_MESSAGE = "mobile,giis.app.CheckForChangesSynchronisationService..MSG";
+
 
     public CheckForChangesSynchronisationService() {
         super(CheckForChangesSynchronisationService.class.getName());
@@ -42,9 +47,6 @@ public class CheckForChangesSynchronisationService  extends IntentService {
             app.parseConfiguration();
             if(app.getLOGGED_IN_USER_ID()!=null && !app.getLOGGED_IN_USER_ID().equals("0")) {
                 app.continuousModificationParser();
-//                app.intervalGetChildrenByHealthFacilitySinceLastLogin();
-//                app.loginRequest();
-//                app.getGetChildByIdListSince();
                 app.getVaccinationQueueByDateAndUser();
             }
 
@@ -58,8 +60,18 @@ public class CheckForChangesSynchronisationService  extends IntentService {
                 app.parseHealthFacilityThatAreInVaccEventButNotInHealthFac(hfidFoundInVaccEvOnlyAndNotInHealthFac);
             }
             app.parseStock();
+
+            sendResult("data_received");
         }
 
         this.stopSelf();
     }
+
+    public void sendResult(String message) {
+        Intent intent = new Intent(SynchronisationService_RESULT);
+        if(message != null)
+            intent.putExtra(SynchronisationService_MESSAGE, message);
+        broadcaster.sendBroadcast(intent);
+    }
+
 }

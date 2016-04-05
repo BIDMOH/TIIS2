@@ -289,7 +289,13 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
 
         return root;
     }
-
+    public void updateList(){
+        try {
+            new getChildren().execute("0");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
     public void pickDate(){
         Calendar now = Calendar.getInstance();
         DatePickerDialog dpd = DatePickerDialog.newInstance(
