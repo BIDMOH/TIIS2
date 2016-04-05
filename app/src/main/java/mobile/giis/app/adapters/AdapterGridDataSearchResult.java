@@ -41,6 +41,7 @@ import mobile.giis.app.entity.Child;
  * Created by Arinela on 13/3/2015.
  */
  public class AdapterGridDataSearchResult extends ArrayAdapter<Child> {
+
     List<Child> items;
     Context ctx;
     DatabaseHandler mydb;

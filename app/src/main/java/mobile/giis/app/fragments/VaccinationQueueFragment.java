@@ -251,8 +251,9 @@ public class VaccinationQueueFragment extends android.support.v4.app.DialogFragm
 
     public void updateList(){
         try {
+            Log.d("day5", "get the new data to display");
             var = compileVaccinationQueueTable("");
-            adapter.notifyDataSetChanged();
+            adapter.updateReceiptsList(var);
         }catch (Exception e){
             e.printStackTrace();
         }

@@ -13,6 +13,7 @@ import org.w3c.dom.Text;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import mobile.giis.app.HomeActivityRevised;
 import mobile.giis.app.R;
@@ -94,6 +95,12 @@ public class VaccinationQueueListAdapter extends BaseAdapter {
 //        childNames.setText(objects.get(position).getChild_id());
 
         return convertView;
+    }
+
+    public void updateReceiptsList(List<ViewAppointmentRow> newlist) {
+        objects.clear();
+        objects.addAll(newlist);
+        this.notifyDataSetChanged();
     }
 
 }
