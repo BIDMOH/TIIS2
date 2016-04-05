@@ -29,7 +29,7 @@ import mobile.giis.app.base.BackboneApplication;
  * Created by utente1 on 4/8/2015.
  */
 public class CheckForChangesSynchronisationService  extends IntentService {
-    private LocalBroadcastManager broadcaster = LocalBroadcastManager.getInstance(this);
+    private LocalBroadcastManager broadcaster;
     static final public String SynchronisationService_RESULT = "mobile,giis.app.CheckForChangesSynchronisationService.REQUEST_PROCESSED";
     static final public String SynchronisationService_MESSAGE = "mobile,giis.app.CheckForChangesSynchronisationService..MSG";
 
@@ -40,7 +40,7 @@ public class CheckForChangesSynchronisationService  extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-
+        broadcaster = LocalBroadcastManager.getInstance(getApplicationContext());
         Log.d("coze", "SynchronisationService2 started");
         BackboneApplication app = (BackboneApplication) getApplication();
         synchronized (app) {
