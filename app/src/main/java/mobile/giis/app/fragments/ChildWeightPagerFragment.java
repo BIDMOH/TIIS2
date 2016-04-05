@@ -366,6 +366,7 @@ public class ChildWeightPagerFragment extends Fragment {
         View dialogLayout = View.inflate(ChildWeightPagerFragment.this.getActivity(), R.layout.child_weight_warning_dialogue, null);
         LinearLayout topBar = (LinearLayout) dialogLayout.findViewById(R.id.dialogue_top_bar);
         TextView warningMessage = (TextView) dialogLayout.findViewById(R.id.warning_message);
+        warningMessage.setTypeface(BackboneActivity.Rosario_Regular);
         TextView title          = (TextView) dialogLayout.findViewById(R.id.dialogue_title);
         String titleText = "";
 
