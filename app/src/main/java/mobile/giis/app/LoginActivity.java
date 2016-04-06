@@ -136,13 +136,11 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
 
     private static AsyncHttpClient client = new AsyncHttpClient();
     final int DEFAULT_TIMEOUT = 6000000;
-    private View rootView;
 
     @Override
     protected void onCreate(Bundle starter) {
         super.onCreate(starter);
         setContentView(R.layout.login_activity);
-        rootView = findViewById(R.id.rootView);
 
 
         // We load the KeyStore
@@ -398,14 +396,6 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
                 Log.d(TAG, "Error = ");
                 progressDialog.dismiss();
                 loginButton.setEnabled(true);
-                final Snackbar snackbar=Snackbar.make(rootView,"Login Failed. Please try again",Snackbar.LENGTH_LONG);
-                snackbar.setAction("OK", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        snackbar.dismiss();
-                    }
-                });
-                snackbar.show();
             }
 
             @Override

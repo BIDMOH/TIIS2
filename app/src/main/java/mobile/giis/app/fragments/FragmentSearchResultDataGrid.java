@@ -142,7 +142,7 @@ public class FragmentSearchResultDataGrid extends DialogFragment {
         mydb = app.getDatabaseInstance();
 
         Context ctx = getActivity().getApplicationContext();
-        AdapterGridDataSearchResult adapter = new AdapterGridDataSearchResult(ctx, R.layout.item_grid_search_result, listChild, mydb);
+        AdapterGridDataSearchResult adapter = new AdapterGridDataSearchResult(ctx,  listChild, mydb);
         lvSearchResultData.setAdapter(adapter);
 
         lvSearchResultData.setOnItemClickListener(new AdapterView.OnItemClickListener() {

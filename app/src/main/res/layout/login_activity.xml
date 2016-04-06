@@ -20,7 +20,6 @@
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:id="@+id/rootView"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:app_ms="http://schemas.android.com/apk/res-auto"
@@ -58,7 +57,7 @@
                 android:layout_marginLeft="32dp"
                 android:layout_centerVertical="true"
                 android:textColor="@color/white"
-                android:text="Tanzania Immunization Register (TImR) "/>
+                android:text="Tanzania Immunization Registry (TImR) "/>
 
         </RelativeLayout>
 

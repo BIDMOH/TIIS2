@@ -71,6 +71,8 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
     MaterialEditText etNotes;
     FragmentStackManager fm;
     private ProgressDialog progressDialog;
+    private LinearLayout llSup;
+    private String age = "";
 
     public static final int getMonthsDifference(Date date1, Date date2) {
         int m1 = date1.getYear() * 12 + date1.getMonth();
@@ -126,9 +128,27 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
             int month = getMonthsDifference(date1, date2);
             daysDiff = getDaysDifference(date1, date2);
 
+            if (month != 0) {
+                age = month + " months";
+            } else {
+                long diff = date2.getTime() - date1.getTime();
+                long difference = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+                Log.d("", "The diff" + difference);
+                age = difference + " days";
+            }
+
+            if(age.equals("9 months") || age.equals("6 months") || age.equals("18 months")){
+                llSup.setVisibility(View.VISIBLE);
+            }
+            else{
+                llSup.setVisibility(View.GONE);
+            }
+
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+
 
         Date todayD = new Date();
         SimpleDateFormat ftD = new SimpleDateFormat("dd-MMM-yyyy");
@@ -216,6 +236,10 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         vitADate                = (TextView) v.findViewById(R.id.vit_a_date);
         mabendazolDate          = (TextView) v.findViewById(R.id.mabendazol_date);
         etNotes                 = (MaterialEditText) v.findViewById(R.id.notes);
+
+        llSup                   = (LinearLayout) v.findViewById(R.id.ll_sup);
+        llSup                   . setVisibility(View.GONE);
+
         saveButton              = (Button) v.findViewById(R.id.addminister_vaccine_save_button);
         saveButton              .setOnClickListener(this);
     }

@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+import mobile.giis.app.ChildDetailsActivity;
 import mobile.giis.app.R;
 import mobile.giis.app.base.BackboneActivity;
 import mobile.giis.app.base.BackboneApplication;
@@ -173,6 +174,7 @@ public class ChildWeightPagerFragment extends Fragment {
                 } else {
                     if (!isWeightSetForChild) {
                         isWeightSetForChild = true;
+
                         updateWeight((metWeightValue.getText().toString()) + "." + (metWeightDecimalValue.getText().toString().trim().equals("") ? "00" : metWeightDecimalValue.getText().toString()));
 
                         if (!Utils.isStringBlank(birthday) && !Utils.isStringBlank((metWeightValue.getText().toString()))) {

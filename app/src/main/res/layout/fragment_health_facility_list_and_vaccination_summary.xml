@@ -33,7 +33,7 @@
                     android:gravity="center"
                     android:paddingTop="16dp"
                     android:paddingBottom="16dp"
-                    android:text="Health facility vaccination Summary"
+                    android:text="Health facility Visit And Vaccination Summary"
                     android:textStyle="bold"/>
 
                 <RelativeLayout
@@ -653,7 +653,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_height="wrap_content"
                                 android:textSize="16sp"
-                                android:text="New Immunizations" />
+                                android:text="New Registrations" />
                             <LinearLayout
                                 android:layout_weight="0.2"
                                 android:layout_width="0dp"

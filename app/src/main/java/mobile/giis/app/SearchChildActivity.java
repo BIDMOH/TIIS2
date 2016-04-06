@@ -337,7 +337,7 @@ public class SearchChildActivity extends BackboneActivity implements View.OnClic
                 if (0 < children.size() && children.size() < 0) {
                     hideSoftKeyboard();
                     linLista.setVisibility(View.VISIBLE);
-                    AdapterGridDataSearchResult adapter = new AdapterGridDataSearchResult(getApplicationContext(), R.layout.item_grid_search_result, children, mydb);
+                    AdapterGridDataSearchResult adapter = new AdapterGridDataSearchResult(getApplicationContext(), children, mydb);
                     listSearch.setAdapter(adapter);
                     listSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
@@ -462,7 +462,7 @@ public class SearchChildActivity extends BackboneActivity implements View.OnClic
                                             hideSoftKeyboard();
                                             linLista.setVisibility(View.VISIBLE);
 
-                                            AdapterGridDataSearchResult adapter = new AdapterGridDataSearchResult(getApplicationContext(), R.layout.item_grid_search_result, childrensrv, mydb);
+                                            AdapterGridDataSearchResult adapter = new AdapterGridDataSearchResult(getApplicationContext(), childrensrv, mydb);
                                             listSearch.setAdapter(adapter);
                                             listSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                                 @Override

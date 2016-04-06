@@ -59,6 +59,8 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
 
     boolean barcodeNull = true;
 
+    public static String age = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

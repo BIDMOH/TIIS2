@@ -26,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -36,18 +37,18 @@ import mobile.giis.app.ChildDetailsActivity;
 import mobile.giis.app.R;
 import mobile.giis.app.database.DatabaseHandler;
 import mobile.giis.app.entity.Child;
+import mobile.giis.app.util.ViewAppointmentRow;
 
 /**
  * Created by Arinela on 13/3/2015.
  */
- public class AdapterGridDataSearchResult extends ArrayAdapter<Child> {
+ public class AdapterGridDataSearchResult extends BaseAdapter {
 
     List<Child> items;
     Context ctx;
     DatabaseHandler mydb;
 
-    public AdapterGridDataSearchResult(Context ctx, int resource, List<Child> items,DatabaseHandler mydb) {
-        super(ctx, resource, items);
+    public AdapterGridDataSearchResult(Context ctx, List<Child> items,DatabaseHandler mydb) {
         this.items = items;
         this.ctx = ctx;
         this.mydb = mydb;
@@ -57,10 +58,6 @@ import mobile.giis.app.entity.Child;
     static class ViewHolder {
         public TextView tvName,tvMotherName,tvDateOfBirth,tvGender,tvVillage,tvHealthFacility;
 
-    }
-
-    public void replaceData(List<Child> items){
-        this.items = items;
     }
 
     public String getBarcode(int position){
@@ -73,6 +70,27 @@ import mobile.giis.app.entity.Child;
 
     public String getChildid(int position){
         return items.get(position).getId();
+    }
+
+    @Override
+    public int getCount() {
+        return items.size();
+    }
+
+    @Override
+    public Object getItem(int i) {
+        return items.get(i);
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return 0;
+    }
+
+    public void updateReceiptsList(List<Child> newlist) {
+        items.clear();
+        items.addAll(newlist);
+        this.notifyDataSetChanged();
     }
 
     @Override

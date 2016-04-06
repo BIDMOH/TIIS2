@@ -24,7 +24,7 @@ import mobile.giis.app.fragments.VaccinationCoverageFragment;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
-    private final String[] TITLES = { "Immunized Children", "Vaccination Coverage", "Stock","Health Visits and Vaccination Summary","Health Facility Immunization Coverage Report","Health Facility Immunization Coverage Chart", "Defaulters List", "Dropout Report" };
+    private final String[] TITLES = { "Immunized Children", "Vaccination Coverage", "Stock","Health Facility Visits and Vaccination Summary","Health Facility Immunization Coverage Report","Health Facility Immunization Coverage Chart", "Defaulters List", "Dropout Report" };
 
     public ViewPagerAdapter(FragmentManager fm) {
         super(fm);

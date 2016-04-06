@@ -92,6 +92,7 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
     ImageView previous, next;
     RelativeLayout prevLayout, nextLayout;
     public String currentCount = "0";
+    public boolean autorefreshTriggered = false;
     ProgressBar pbar;
 
     CardView searchOutsideFacility;
@@ -289,13 +290,16 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
 
         return root;
     }
+
     public void updateList(){
         try {
-            new getChildren().execute("0");
+            autorefreshTriggered = true;
+            new getChildren().execute(currentCount);
         }catch (Exception e){
             e.printStackTrace();
         }
     }
+
     public void pickDate(){
         Calendar now = Calendar.getInstance();
         DatePickerDialog dpd = DatePickerDialog.newInstance(
@@ -500,13 +504,18 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
             if((children == null)){
                 pbar.setVisibility(View.GONE);
                 lvChildrenSearchResults.setAdapter(null);
-                Log.d("IMELLA", "No children found you have to know how to handle this");
             }else{
                 serverdata = false;
                 childListLayout.setVisibility(View.VISIBLE);
-                adapter = new AdapterGridDataSearchResult(SearchChildFragment.this.getActivity(), R.layout.children_list_item, children, mydb);
-                lvChildrenSearchResults.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
+                if (autorefreshTriggered){
+                    adapter.updateReceiptsList(children);
+                    adapter.notifyDataSetChanged();
+                }
+                else {
+                    adapter = new AdapterGridDataSearchResult(SearchChildFragment.this.getActivity(), children, mydb);
+                    lvChildrenSearchResults.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                }
                 pbar.setVisibility(View.GONE);
             }
 
@@ -638,7 +647,7 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
                                 childNotFoundLayout.setVisibility(View.GONE);
                                 childListLayout.setVisibility(View.VISIBLE);
                                 lvChildrenSearchResults.setVisibility(View.VISIBLE);
-                                adapter = new AdapterGridDataSearchResult(SearchChildFragment.this.getActivity(), R.layout.children_list_item, childrensrv, mydb);
+                                adapter = new AdapterGridDataSearchResult(SearchChildFragment.this.getActivity(), childrensrv, mydb);
                                 lvChildrenSearchResults.setAdapter(null);
 //                                adapter.replaceData(childrensrv);
                                 lvChildrenSearchResults.setAdapter(adapter);
