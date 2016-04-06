@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -330,6 +331,10 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
                                                     ad2.dismiss();
+
+                                                    Log.d("day6","poping a fragment");
+                                                    FragmentManager manager = getActivity().getSupportFragmentManager();
+                                                    manager.popBackStack("AdministerVaccineFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE);
                                                 }
                                             });
                                             ad2.show();

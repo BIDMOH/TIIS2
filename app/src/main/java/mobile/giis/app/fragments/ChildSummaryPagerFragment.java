@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -94,6 +95,7 @@ public class ChildSummaryPagerFragment extends Fragment {
     private Thread thread;
 
     public String value;
+    private boolean editable = false;
 
     public MaterialEditText metBarcodeValue, metSystemID, metFirstName, metNotesValue,metMiddleName, metLastName, metMothersFirstName, metMothersSurname, metPhoneNumber, metDOB;
 
@@ -112,6 +114,8 @@ public class ChildSummaryPagerFragment extends Fragment {
     BackboneApplication app;
 
     List<String> place_names;
+
+    final DatePickerDialog doBDatePicker = new DatePickerDialog();
 
     public static final long getDaysDifference(Date d1, Date d2) {
         long diff = d2.getTime() - d1.getTime();
@@ -159,6 +163,26 @@ public class ChildSummaryPagerFragment extends Fragment {
         metMothersSurname   = (MaterialEditText) header.findViewById(R.id.met_mother_surname_value);
         metPhoneNumber      = (MaterialEditText) header.findViewById(R.id.met_phone_value);
         metDOB              = (MaterialEditText) header.findViewById(R.id.met_dob_value);
+        metDOB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (editable) {
+                    doBDatePicker.show(((Activity) getActivity()).getFragmentManager(), "DatePickerDialogue");
+                    doBDatePicker.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                            metDOB.setText((dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth) + "-" + ((monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : monthOfYear + 1) + "-"
+                                    + year);
+                            Calendar toCalendar = Calendar.getInstance();
+                            toCalendar.set(year, monthOfYear, dayOfMonth);
+                        }
+
+                    });
+                }
+            }
+        });
+
         metNotesValue       = (MaterialEditText) header.findViewById(R.id.met_notes_value);
 
         ms                  = (MaterialSpinner) header.findViewById(R.id.spin_gender);
@@ -227,7 +251,7 @@ public class ChildSummaryPagerFragment extends Fragment {
     }
 
     public void enableUserInputs(boolean fieldStatus){
-
+        editable = fieldStatus;
         metBarcodeValue.setFocusableInTouchMode(fieldStatus);
         metSystemID     .setFocusableInTouchMode(fieldStatus);
         metFirstName    .setFocusableInTouchMode(fieldStatus);
@@ -238,7 +262,7 @@ public class ChildSummaryPagerFragment extends Fragment {
         metMothersFirstName     .setFocusableInTouchMode(fieldStatus);
         metMothersSurname       .setFocusableInTouchMode(fieldStatus);
         metPhoneNumber          .setFocusableInTouchMode(fieldStatus);
-        metDOB                  .setFocusableInTouchMode(fieldStatus);
+        metDOB                  .setFocusableInTouchMode(false);
 
         ms                      .setEnabled(fieldStatus);
         pobSpinner              .setEnabled(fieldStatus);
@@ -662,7 +686,7 @@ public class ChildSummaryPagerFragment extends Fragment {
             alertDialogBuilder.show();
             return false;
         }
-        if (healthFacilitySpinner.getSelectedItemPosition() == healthFacilityList.size()) {
+        if (healthFacilitySpinner.getSelectedItemPosition() == healthFacilityList.size()+1) {
             alertDialogBuilder.setMessage(getString(R.string.empty_healthfacility));
             alertDialogBuilder.show();
             return false;
