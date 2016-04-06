@@ -372,7 +372,7 @@
                                 android:layout_height="50dp"
                                 android:id="@+id/reg_submit_btn"
                                 android:textColor="@color/white"
-                                android:text="Submit"
+                                android:text="Save"
                                 android:background="@color/light_blue_600"/>
 
                         </LinearLayout>

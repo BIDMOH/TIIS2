@@ -72,7 +72,7 @@ public class StockAdjustmentFragment extends Fragment{
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_stock_adjustment, null);
 
         View saveFooterView             = inflater.inflate(R.layout.stock_adjustment_footer, null);
-        Button saveButton               = (Button) saveFooterView.findViewById(R.id.save_btn);
+        Button saveButton               = (Button) root.findViewById(R.id.save_btn);
         stockHostTable                  = (TableLayout) root.findViewById(R.id.stock_table_container);
 
         application = (BackboneApplication) this.getActivity().getApplication();
@@ -80,9 +80,24 @@ public class StockAdjustmentFragment extends Fragment{
 
         listAdjustmentReasons = database.getAdjustmentReasons();
         rowCollectorList = getHealthFacilityBalanceRows();
+        addViewsToTable();
 
+        //stockHostTable.addView(saveFooterView);
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveButtonClicked();
+            }
+        });
+
+        return root;
+    }
+
+    public void addViewsToTable(){
+        stockHostTable.removeAllViews();
         for (final HealthFacilityBalance healthFacilityBalance : rowCollectorList){
-            View rowView = inflater.inflate(R.layout.stock_adjustment_list_item, null);
+            View rowView = View.inflate(StockAdjustmentFragment.this.getActivity(), R.layout.stock_adjustment_list_item, null);
 
             TextView vaccineName = (TextView) rowView.findViewById(R.id.item_name);
             vaccineName.setTypeface(BackboneActivity.Rosario_Regular);
@@ -135,17 +150,6 @@ public class StockAdjustmentFragment extends Fragment{
 
             stockHostTable.addView(rowView);
         }
-
-        stockHostTable.addView(saveFooterView);
-
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveButtonClicked();
-            }
-        });
-
-        return root;
     }
 
     private void saveButtonClicked(){
@@ -201,6 +205,9 @@ public class StockAdjustmentFragment extends Fragment{
         } else {
             showDialogWhenSavedSucc(getResources().getString(R.string.choose_both_qty_reason));
         }
+
+        addViewsToTable();
+
     }
 
     public void showDialogWhenSavedSucc(String text) {
