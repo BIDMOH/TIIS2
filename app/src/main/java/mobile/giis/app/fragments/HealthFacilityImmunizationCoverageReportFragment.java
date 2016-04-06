@@ -109,77 +109,72 @@ public class HealthFacilityImmunizationCoverageReportFragment extends Fragment {
         metDOBTo                = (MaterialEditText) v.findViewById(R.id.met_dob_value);
 
 
-        metDOBTo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        metDOBTo.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFocusChange(View view, boolean b) {
-                if(b){
-                    toDatePicker.show(((Activity) getActivity()).getFragmentManager(), "DatePickerDialogue");
-                    toDatePicker.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
-                        @Override
-                        public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-                            metDOBTo.setText((dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth) + "-" + ((monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : monthOfYear + 1) + "-"
-                                    + year);
+            public void onClick(View v) {
+                toDatePicker.show(((Activity) getActivity()).getFragmentManager(), "DatePickerDialogue");
+                toDatePicker.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                        metDOBTo.setText((dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth) + "-" + ((monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : monthOfYear + 1) + "-"
+                                + year);
 
-                            Calendar toCalendar = Calendar.getInstance();
-                            toCalendar.set(year, monthOfYear, dayOfMonth);
-                            fromDatePicker.setMaxDate(toCalendar);
-                            toDateString = (toCalendar.getTimeInMillis()/1000)+"";
-                            editTextUsedToRequestFocus.requestFocus();
+                        Calendar toCalendar = Calendar.getInstance();
+                        toCalendar.set(year, monthOfYear, dayOfMonth);
+                        fromDatePicker.setMaxDate(toCalendar);
+                        toDateString = (toCalendar.getTimeInMillis() / 1000) + "";
+                        editTextUsedToRequestFocus.requestFocus();
 
-                            if(!fromDateString.equals("")){
-                                chart_view.setVisibility(View.VISIBLE);
-                                new FilterList().execute(app.getLOGGED_IN_USER_HF_ID(),fromDateString,toDateString);
-                            }else{
-                                final Snackbar snackbar=Snackbar.make(rowview,"Please select a start date to view the chart",Snackbar.LENGTH_LONG);
-                                snackbar.setAction("OK", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        snackbar.dismiss();
-                                    }
-                                });
-                                snackbar.show();
-                            }
+                        if (!fromDateString.equals("")) {
+                            chart_view.setVisibility(View.VISIBLE);
+                            new FilterList().execute(app.getLOGGED_IN_USER_HF_ID(), fromDateString, toDateString);
+                        } else {
+                            final Snackbar snackbar = Snackbar.make(rowview, "Please select a start date to view the chart", Snackbar.LENGTH_LONG);
+                            snackbar.setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    snackbar.dismiss();
+                                }
+                            });
+                            snackbar.show();
                         }
-                    });
-                }
+                    }
+                });
             }
         });
 
 
-
-        metDOBFrom.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        metDOBFrom.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFocusChange(View view, boolean b) {
-                if (b) {
-                    fromDatePicker.show(((Activity) getActivity()).getFragmentManager(), "DatePickerDialogue");
-                    fromDatePicker.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
-                        @Override
-                        public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-                            metDOBFrom.setText((dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth) + "-" + ((monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : monthOfYear + 1) + "-"
-                                    + year);
+            public void onClick(View v) {
+                fromDatePicker.show(((Activity) getActivity()).getFragmentManager(), "DatePickerDialogue");
+                fromDatePicker.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                        metDOBFrom.setText((dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth) + "-" + ((monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : monthOfYear + 1) + "-"
+                                + year);
 
-                            Calendar fromCalendar = Calendar.getInstance();
-                            fromCalendar.set(year, monthOfYear, dayOfMonth);
-                            toDatePicker.setMinDate(fromCalendar);
-                            fromDateString = (fromCalendar.getTimeInMillis()/1000)+"";
-                            editTextUsedToRequestFocus.requestFocus();
+                        Calendar fromCalendar = Calendar.getInstance();
+                        fromCalendar.set(year, monthOfYear, dayOfMonth);
+                        toDatePicker.setMinDate(fromCalendar);
+                        fromDateString = (fromCalendar.getTimeInMillis()/1000)+"";
+                        editTextUsedToRequestFocus.requestFocus();
 
-                            if(!toDateString.equals("")){
-                                chart_view.setVisibility(View.VISIBLE);
-                                new FilterList().execute(app.getLOGGED_IN_USER_HF_ID(),fromDateString,toDateString);
-                            }else{
-                                final Snackbar snackbar=Snackbar.make(rowview,"Please select an end date to view the chart",Snackbar.LENGTH_LONG);
-                                snackbar.setAction("OK", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        snackbar.dismiss();
-                                    }
-                                });
-                                snackbar.show();
-                            }
+                        if(!toDateString.equals("")){
+                            chart_view.setVisibility(View.VISIBLE);
+                            new FilterList().execute(app.getLOGGED_IN_USER_HF_ID(),fromDateString,toDateString);
+                        }else{
+                            final Snackbar snackbar=Snackbar.make(rowview,"Please select an end date to view the chart",Snackbar.LENGTH_LONG);
+                            snackbar.setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    snackbar.dismiss();
+                                }
+                            });
+                            snackbar.show();
                         }
-                    });
-                }
+                    }
+                });
             }
         });
 
