@@ -331,11 +331,11 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
 
-                                                    Log.d("day6","poping a fragment");
+                                                    ad2.dismiss();
+                                                    Log.d("day6", "poping a fragment");
                                                     FragmentManager manager = getActivity().getSupportFragmentManager();
                                                     manager.popBackStack("AdministerVaccineFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
-                                                    ad2.dismiss();
                                                 }
                                             });
                                             ad2.show();
@@ -457,6 +457,9 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     ad2.dismiss();
+                                    Log.d("day6", "poping a fragment");
+                                    FragmentManager manager = getActivity().getSupportFragmentManager();
+                                    manager.popBackStack("AdministerVaccineFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE);
                                 }
                             });
                             ad2.show();
