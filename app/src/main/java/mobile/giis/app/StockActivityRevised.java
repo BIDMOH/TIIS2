@@ -93,11 +93,11 @@ public class StockActivityRevised extends BackboneActivity {
             BackboneApplication app = (BackboneApplication) getApplication();
             ImageView wifi_logo = (ImageView)findViewById(R.id.home_wifi_icon);
             if(Utils.isOnline(context)){
-                wifi_logo.setBackgroundColor(0xff00ff00);
+                wifi_logo.setImageResource(R.drawable.network_on);
                 app.setOnlineStatus(true);
             }
             else{
-                wifi_logo.setBackgroundColor(0xffff0000);
+                wifi_logo.setImageResource(R.drawable.network_off);
                 app.setOnlineStatus(false);
             }
         }
