@@ -218,7 +218,6 @@
                             android:layout_marginLeft="32dp"
                             android:textSize="18sp"
                             android:textColor="@color/light_blue_600"/>
-
                         <com.rengwuxian.materialedittext.MaterialEditText
                             android:layout_width="350dp"
                             android:layout_height="wrap_content"

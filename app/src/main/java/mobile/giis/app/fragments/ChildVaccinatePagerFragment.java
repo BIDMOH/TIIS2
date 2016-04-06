@@ -181,11 +181,19 @@ public class ChildVaccinatePagerFragment extends Fragment {
         bundle.putString("barcode", currentChild.getBarcodeID());
         bundle.putString("birthdate", currentChild.getBirthdate());
         appointmentsListFragment.setArguments(bundle);
+//
+//        //add the Fragment to display a list of current child's appointments
+//        fm = new FragmentStackManager(this.getActivity());
+//        app.setCurrentFragment(app.APPOINTMENT_LIST_FRAGMENT);
+//        fm.addFragment(appointmentsListFragment, R.id.vacc_fragment_frame, true, FragmentTransaction.TRANSIT_FRAGMENT_FADE, false);
 
-        //add the Fragment to display a list of current child's appointments
-        fm = new FragmentStackManager(this.getActivity());
         app.setCurrentFragment(app.APPOINTMENT_LIST_FRAGMENT);
-        fm.addFragment(appointmentsListFragment, R.id.vacc_fragment_frame, true, FragmentTransaction.TRANSIT_FRAGMENT_FADE, false);
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.vacc_fragment_frame, appointmentsListFragment);
+        ft.addToBackStack("fragmentVaccineList");
+        ft.commit();
+
+
 
         Date todayD = new Date();
         SimpleDateFormat ftD = new SimpleDateFormat("dd-MMM-yyyy");

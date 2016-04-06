@@ -99,10 +99,16 @@ public class ChildAppointmentsListFragment extends BackHandledFragment{
                 bundle.putString("appointment_id", appointmentId);
                 bundle.putString("birthdate", birthdate);
                 bundle.putString("barcode", childBarcode);
-                Log.d("appointmentID", "Appointment Id is : "+appointmentId);
+                Log.d("appointmentID", "Appointment Id is : " + appointmentId);
                 administerVaccineFragment.setArguments(bundle);
                 app.setCurrentFragment(app.VACCINATE_CHILD_FRAGMENT);
-                fm.addFragment(administerVaccineFragment, R.id.vacc_fragment_frame, true, FragmentTransaction.TRANSIT_FRAGMENT_FADE, false);
+//                fm.addFragment(administerVaccineFragment, R.id.vacc_fragment_frame, true, FragmentTransaction.TRANSIT_FRAGMENT_FADE, false);
+
+
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.vacc_fragment_frame, administerVaccineFragment);
+                ft.addToBackStack("AdministerVaccineFragment");
+                ft.commit();
             }
         });
 
