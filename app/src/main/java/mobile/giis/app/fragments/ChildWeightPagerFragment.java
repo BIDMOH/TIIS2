@@ -100,8 +100,6 @@ public class ChildWeightPagerFragment extends Fragment {
         cursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",
                 new String[]{String.valueOf(mValue)});
 
-        Log.d("childfound", "Cursor count" + cursor.getCount());
-
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
 
@@ -130,13 +128,10 @@ public class ChildWeightPagerFragment extends Fragment {
             childWeightCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child_weight WHERE CHILD_BARCODE=? " +
                     " AND datetime(DATE, 'unixepoch') <= datetime('now')", new String[]{currentChild.getBarcodeID()});
 
-            Log.d("childfound", "before getting weight");
             if (childWeightCursor.getCount() > 0) {
                 isWeightSetForChild = true;
-                Log.d("childfound", "Cursor count" + childWeightCursor.getCount());
                 childWeightCursor.moveToFirst();
-                String weight = childWeightCursor.getString(childWeightCursor.getColumnIndex(SQLHandler.ChildWeightColumns.WEIGHT));
-                Log.d(" ", "Weight" + weight);
+                String weight = childWeightCursor.getString(childWeightCursor.getColumnIndex(SQLHandler.ChildWeightColumns.WEIGHT));;
                 prevWeightValue.setText(weight);
                 metWeightValue.setText(weight.split("\\.")[0]);
                 metWeightDecimalValue.setText(weight.split("\\.")[1]);
@@ -479,6 +474,9 @@ public class ChildWeightPagerFragment extends Fragment {
     }
 
     public void updateWeight(String weight) {
+        boolean isweightsaved = false;
+        Log.d("day6", "Weight Of a child is : "+weight);
+
         BackboneApplication app = (BackboneApplication) ChildWeightPagerFragment.this.getActivity().getApplication();
         DatabaseHandler mydb = app.getDatabaseInstance();
         ContentValues child = new ContentValues();
@@ -490,13 +488,23 @@ public class ChildWeightPagerFragment extends Fragment {
 
         cursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child_weight WHERE CHILD_BARCODE=? ", new String[]{String.valueOf(currentChild.getBarcodeID())});
         if (cursor.getCount() > 0) {
+            isweightsaved = true;
             String message = getString(R.string.weight_updated);
             showWarningDialogue(message, "2");
         } else {
+            isweightsaved = true;
             mydb.addChildWeight(child);
             String message  = getString(R.string.weight_registered);
             showWarningDialogue(message, "OK");
         }
+
+        lnPreviousDateAndWeight.setVisibility(View.VISIBLE);
+        SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy");
+        prevWeightValue.setText(weight);
+        Calendar calendar = Calendar.getInstance();
+        Date now = calendar.getTime();
+        prevWeightDate.setText(ft.format(now));
+
 
     }
 

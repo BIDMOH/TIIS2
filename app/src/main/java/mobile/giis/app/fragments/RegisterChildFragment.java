@@ -247,7 +247,6 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                 if (mydb.isChildinDb(etSurname.getText().toString(), bdate.getTime(), gender_val)) {
                     createDialogAlertIsInChild().show();
                 } else {
-
                     askServerIfthereIsSimilarChild(etSurname.getText().toString(), bdate, gen);
                     Log.e("CheckInSever", "CheckInSever");
                 }
@@ -397,7 +396,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
     private boolean checkDataIntegrityBeforeSave() {
 
-        if (etbarcode.getText().toString().isEmpty()) {
+        if (etbarcode.getText().toString().isEmpty() || etbarcode.getText().equals("")) {
             etbarcode.setErrorColor(Color.RED);
             etbarcode.setError(getString(R.string.empty_barcode));
             return false;
