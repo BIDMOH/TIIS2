@@ -166,7 +166,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
             starter_set = true;
 
             dbh.getPartTwoAdminVacc(adminVacc, daysDiff, DateDiffDialog);
-            
+
             SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy");
             adminVacc.setTime(ft.format(newest_date));
             adminVacc.setTime2(newest_date);
@@ -330,11 +330,12 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                                             ad2.setButton("OK", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
-                                                    ad2.dismiss();
 
                                                     Log.d("day6","poping a fragment");
                                                     FragmentManager manager = getActivity().getSupportFragmentManager();
                                                     manager.popBackStack("AdministerVaccineFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+                                                    ad2.dismiss();
                                                 }
                                             });
                                             ad2.show();
@@ -799,9 +800,9 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
             AdministerVaccineFragment.this.getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                 if (cbOutreach.isChecked()){
-                     outreachChecked = true;
-                 }
+                    if (cbOutreach.isChecked()){
+                        outreachChecked = true;
+                    }
                 }
             });
             if(outreachChecked && arrayListAdminVacc!=null && arrayListAdminVacc.size()>0) {
