@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -166,16 +167,39 @@ public class ChildSummaryPagerFragment extends Fragment {
         metDOB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (editable) {
                     doBDatePicker.show(((Activity) getActivity()).getFragmentManager(), "DatePickerDialogue");
                     doBDatePicker.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+
+                            Cursor vacinationCursor = mydb.getReadableDatabase().rawQuery("SELECT COUNT(*) FROM " + SQLHandler.Tables.VACCINATION_EVENT +
+                                            " where " + SQLHandler.VaccinationEventColumns.CHILD_ID + "=? and " +
+                                            SQLHandler.VaccinationEventColumns.VACCINATION_STATUS + "= 'true'",
+                                    new String[]{currentChild.getId()});
+                            vacinationCursor.moveToFirst();
+                            if (vacinationCursor.getInt(0) > 0) {
+                                //TODO : Something has to be done here
+                                final AlertDialog ad2 = new AlertDialog.Builder((Activity)getActivity()).create();
+                                ad2.setTitle(getResources().getString(R.string.error_editing_dob));
+                                ad2.setMessage(getResources().getString(R.string.error_message_editing_dob));
+                                ad2.setButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        ad2.dismiss();
+                                    }
+                                });
+                                ad2.show();
+
+                                return;
+                            }
+
+
                             metDOB.setText((dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth) + "-" + ((monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : monthOfYear + 1) + "-"
                                     + year);
                             Calendar toCalendar = Calendar.getInstance();
                             toCalendar.set(year, monthOfYear, dayOfMonth);
+                            bdate = toCalendar.getTime();
                         }
 
                     });
@@ -562,15 +586,7 @@ public class ChildSummaryPagerFragment extends Fragment {
 //        status.setEnabled(true);
 
         //if the child have done vacinations in the past we can not anymore change birthday
-        Cursor vacinationCursor = mydb.getReadableDatabase().rawQuery("SELECT COUNT(*) FROM " + SQLHandler.Tables.VACCINATION_EVENT +
-                        " where " + SQLHandler.VaccinationEventColumns.CHILD_ID + "=? and " +
-                        SQLHandler.VaccinationEventColumns.VACCINATION_STATUS + "= 'true'",
-                new String[]{currentChild.getId()});
-        vacinationCursor.moveToFirst();
-        if (vacinationCursor.getInt(0) <= 0) {
-            //TODO : Something has to be done here
-//            metDOB.setOnClickListener(this);
-        }
+
 //        weight.setOnClickListener(this);
 //        aefi.setOnClickListener(this);
 //        immunization_card.setOnClickListener(this);

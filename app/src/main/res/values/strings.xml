@@ -262,6 +262,8 @@
     </string-array>
 
     <string name="ok_text">Okay</string>
+    <string name="error_editing_dob">Haiwezi Kubadilish</string>
+    <string name="error_message_editing_dob">Haiwezi Kubadilisha, Mtoto amekwisha pewa chanjo</string>
 
 
 </resources>
