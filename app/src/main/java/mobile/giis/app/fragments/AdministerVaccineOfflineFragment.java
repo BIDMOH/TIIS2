@@ -1,6 +1,7 @@
 package mobile.giis.app.fragments;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
@@ -52,6 +53,7 @@ public class AdministerVaccineOfflineFragment extends Fragment {
     private BackboneApplication application;
     private DatabaseHandler database;
     private TableLayout tableLayout;
+    private ProgressDialog progressDialog;
 
     public static AdministerVaccineOfflineFragment newInstance(String barcode) {
         AdministerVaccineOfflineFragment f = new AdministerVaccineOfflineFragment();
@@ -254,6 +256,12 @@ public class AdministerVaccineOfflineFragment extends Fragment {
                 saveButtonClickEvent();
             }
         });
+
+
+        progressDialog =  new ProgressDialog(getActivity());
+        progressDialog.setMessage("Saving data. \nPlease wait ...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
 
         return rootview;
     }
@@ -482,6 +490,8 @@ public class AdministerVaccineOfflineFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            progressDialog.show();
+
         }
 
         @Override
@@ -498,6 +508,11 @@ public class AdministerVaccineOfflineFragment extends Fragment {
         @Override
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
+
+            if(progressDialog!=null && progressDialog.isShowing()){
+                progressDialog.dismiss();
+            }
+
         }
     }
 }
