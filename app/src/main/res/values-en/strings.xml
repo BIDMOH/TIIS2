@@ -390,6 +390,8 @@
     <string name="home_reports">Reports</string>
     <string name="home_stock">Stock</string>
     <string name="home_logout">Logout</string>
+    <string name="error_editing_dob">Error. Cannot Edit</string>
+    <string name="error_message_editing_dob">Can not edit birth date of a child already vaccinated</string>
 
 
 </resources>
