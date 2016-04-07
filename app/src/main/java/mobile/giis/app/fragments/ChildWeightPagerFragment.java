@@ -385,7 +385,7 @@ public class ChildWeightPagerFragment extends Fragment {
                 topBar.setBackgroundColor(ChildWeightPagerFragment.this.getActivity().getResources().getColor(R.color.red_300));
                 break;
             case "OK":
-                message = (getString(R.string.normal_child_weight));
+                message = message+" "+(getString(R.string.normal_child_weight));
                 titleText = "MESSAGE";
                 topBar.setBackgroundColor(ChildWeightPagerFragment.this.getActivity().getResources().getColor(R.color.green_400));
                 break;
@@ -490,12 +490,12 @@ public class ChildWeightPagerFragment extends Fragment {
         if (cursor.getCount() > 0) {
             isweightsaved = true;
             String message = getString(R.string.weight_updated);
-            showWarningDialogue(message, "2");
+            showWarningDialogue(message, "DONE");
         } else {
             isweightsaved = true;
             mydb.addChildWeight(child);
             String message  = getString(R.string.weight_registered);
-            showWarningDialogue(message, "OK");
+            showWarningDialogue(message, "DONE");
         }
 
         lnPreviousDateAndWeight.setVisibility(View.VISIBLE);
