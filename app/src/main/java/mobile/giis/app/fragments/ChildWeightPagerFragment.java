@@ -385,7 +385,11 @@ public class ChildWeightPagerFragment extends Fragment {
                 topBar.setBackgroundColor(ChildWeightPagerFragment.this.getActivity().getResources().getColor(R.color.red_300));
                 break;
             case "OK":
-                message = message+" "+(getString(R.string.normal_child_weight));
+                message = (getString(R.string.normal_child_weight));
+                titleText = "MESSAGE";
+                topBar.setBackgroundColor(ChildWeightPagerFragment.this.getActivity().getResources().getColor(R.color.green_400));
+                break;
+            case "DONE":
                 titleText = "MESSAGE";
                 topBar.setBackgroundColor(ChildWeightPagerFragment.this.getActivity().getResources().getColor(R.color.green_400));
                 break;
