@@ -395,6 +395,7 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
                 // the UI, we'll have to dispatch a runnable to the UI thread.
                 Log.d(TAG, "Error = ");
                 progressDialog.dismiss();
+                toastMessage("Login failed.\nPlease check your details or be online for first login!");
                 loginButton.setEnabled(true);
             }
 
