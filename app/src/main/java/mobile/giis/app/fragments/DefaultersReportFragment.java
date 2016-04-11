@@ -139,7 +139,7 @@ public class DefaultersReportFragment extends Fragment {
                         Calendar fromCalendar = Calendar.getInstance();
                         fromCalendar.set(year, monthOfYear, dayOfMonth);
                         toDatePicker.setMinDate(fromCalendar);
-                        fromDateString = (fromCalendar.getTimeInMillis()/1000)+"";
+                        fromDateString = ((fromCalendar.getTimeInMillis() - 24*60*60*1000) / 1000) + "";
 //                            editTextUsedToRequestFocus.requestFocus();
 
                         if(!toDateString.equals("")){
