@@ -48,6 +48,7 @@ public class CheckForChangesSynchronisationService  extends IntentService {
             if(app.getLOGGED_IN_USER_ID()!=null && !app.getLOGGED_IN_USER_ID().equals("0")) {
                 app.continuousModificationParser();
                 app.getVaccinationQueueByDateAndUser();
+                app.getGetChildByIdListSince();
             }
 
             String placesFoundInChildOnlyAndNotInPlace = app.getDatabaseInstance().getDomicilesFoundInChildAndNotInPlace();

@@ -2734,7 +2734,6 @@ public class BackboneApplication extends Application {
                         addChildVaccinationEventVaccinationAppointment(object);
                     }
                 }
-
             }
         });
 
