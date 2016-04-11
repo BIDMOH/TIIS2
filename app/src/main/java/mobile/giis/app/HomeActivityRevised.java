@@ -240,6 +240,7 @@ public class HomeActivityRevised extends BackboneActivity {
                     switch (item.getItemId()) {
                         case R.id.drawer_home:
                             if (app.saveNeeded) {
+                                app.LAST_FRAGMENT = HOME_FRAGMENT;
                                 alertUserLeavingScreen(HOME_FRAGMENT, getString(R.string.home));
                             } else {
                                 app.LAST_FRAGMENT = HOME_FRAGMENT;
@@ -249,6 +250,7 @@ public class HomeActivityRevised extends BackboneActivity {
                             break;
                         case R.id.reg_child:
                             if (app.saveNeeded) {
+                                app.LAST_FRAGMENT = REGISTER_CHILD_FRAGMENT;
                                 alertUserLeavingScreen(REGISTER_CHILD_FRAGMENT, getString(R.string.home_register_child));
                             } else {
                                 app.LAST_FRAGMENT = REGISTER_CHILD_FRAGMENT;
@@ -258,6 +260,7 @@ public class HomeActivityRevised extends BackboneActivity {
                             break;
                         case R.id.search_child:
                             if (app.saveNeeded) {
+                                app.LAST_FRAGMENT = SEARCH_CHILD_FRAGMENT;
                                 alertUserLeavingScreen(SEARCH_CHILD_FRAGMENT, getString(R.string.home_search_child));
                             } else {
                                 app.LAST_FRAGMENT = SEARCH_CHILD_FRAGMENT;
@@ -267,6 +270,7 @@ public class HomeActivityRevised extends BackboneActivity {
                             break;
                         case R.id.vac_queue:
                             if (app.saveNeeded) {
+                                app.LAST_FRAGMENT = VACCINATION_QUEUE_FRAGMENT;
                                 alertUserLeavingScreen(VACCINATION_QUEUE_FRAGMENT, getString(R.string.home_vac_queue));
                             } else {
                                 app.LAST_FRAGMENT = VACCINATION_QUEUE_FRAGMENT;
@@ -276,6 +280,7 @@ public class HomeActivityRevised extends BackboneActivity {
                             break;
                         case R.id.reports:
                             if (app.saveNeeded) {
+                                app.LAST_FRAGMENT = HOME_FRAGMENT;
                                 alertUserLeavingScreen(REPORTS_FRAGMENT, getString(R.string.home_reports));
                             } else {
                                 app.LAST_FRAGMENT = HOME_FRAGMENT;
@@ -286,6 +291,7 @@ public class HomeActivityRevised extends BackboneActivity {
                             break;
                         case R.id.month_plan:
                             if (app.saveNeeded) {
+                                app.LAST_FRAGMENT = MONTHLY_PLAN_FRAGMENT;
                                 alertUserLeavingScreen(MONTHLY_PLAN_FRAGMENT, getString(R.string.home_monthly_plan));
                             } else {
                                 app.LAST_FRAGMENT = MONTHLY_PLAN_FRAGMENT;
@@ -295,6 +301,7 @@ public class HomeActivityRevised extends BackboneActivity {
                             break;
                         case R.id.stock:
                             if (app.saveNeeded) {
+                                app.LAST_FRAGMENT = HOME_FRAGMENT;
                                 alertUserLeavingScreen(STOCK_FRAGMENT, getString(R.string.home_stock));
                             } else {
                                 app.LAST_FRAGMENT = HOME_FRAGMENT;

@@ -90,7 +90,7 @@ public class AdministerVaccineOfflineRevisedActivity extends BackboneActivity {
         alertDialogBuilder = new AlertDialog.Builder(AdministerVaccineOfflineRevisedActivity.this);
         alertDialogBuilder.setView(promptsView);
         TextView message = (TextView) promptsView.findViewById(R.id.dialogMessage);
-        message.setText("Child was not found localy and you there is no internet connection");
+        message.setText("Child was not found locally and there is no internet connection click ok to proceed");
         alertDialogBuilder.setCancelable(false);
         alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override

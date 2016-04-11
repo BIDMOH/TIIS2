@@ -180,6 +180,9 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
         initChart();
         renderChartData();
 
+        BackboneApplication app = (BackboneApplication) HomeFragment.this.getActivity().getApplication();
+        app.LAST_FRAGMENT_TITLE = getString(R.string.home);
+
         homeActivityRevised = (HomeActivityRevised) getActivity();
 
         Bundle extras = HomeFragment.this.getActivity().getIntent().getExtras();

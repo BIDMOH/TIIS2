@@ -113,12 +113,12 @@ public class BackboneApplication extends Application {
     /**
      * Testing WCF
      */
-//    public static final String WCF_URL = "https://ec2-54-187-21-117.us-west-2.compute.amazonaws.com/SVC/";
+    public static final String WCF_URL = "https://ec2-54-187-21-117.us-west-2.compute.amazonaws.com/SVC/";
     /**
      * Live WCF
      */
 
-    public static final String WCF_URL = "https://ec2-52-11-215-89.us-west-2.compute.amazonaws.com/SVC/";
+//    public static final String WCF_URL = "https://ec2-52-11-215-89.us-west-2.compute.amazonaws.com/SVC/";
 
     public static final String USER_MANAGEMENT_SVC = "UserManagement.svc/";
     public static final String PLACE_MANAGEMENT_SVC = "PlaceManagement.svc/";
@@ -2788,35 +2788,40 @@ public class BackboneApplication extends Application {
      */
     public void getGetChildByIdListSince() {
         String childIds = getDatabaseInstance().getChildrenFromOtherHFIDThanLoggedUser(getLOGGED_IN_USER_HF_ID());
-        if (childIds == null) return;
-        String url = WCF_URL + "ChildManagement.svc/GetChildByIdListSince?childIdList=" + childIds + "&userId=" + getLOGGED_IN_USER_ID();
-        Log.d("getChildByBarcodeList", url);
-
-        ChildCollector2 objects2 = new ChildCollector2();
-
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(url);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + url.toString());
-            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            String response = Utils.getStringFromInputStream(inputStream);
-            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-            ObjectMapper mapper = new ObjectMapper();
-            objects2 = mapper.readValue(response, new TypeReference<List<ChildCollector>>() {
-            });
-
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            addChildVaccinationEventVaccinationAppointment(objects2);
+        if (childIds == null){
+            return;
+        }else {
+            getChildByBarcodeList(childIds);
         }
 
+//        String url = WCF_URL + "ChildManagement.svc/GetChildByIdListSince?childIdList=" + childIds + "&userId=" + getLOGGED_IN_USER_ID();
+//        Log.d("getChildByBarcodeList", url);
+//
+//        ChildCollector2 objects2 = new ChildCollector2();
+//
+//        try {
+//            DefaultHttpClient httpClient = new DefaultHttpClient();
+//            HttpGet httpGet = new HttpGet(url);
+//            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + url.toString());
+//            httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
+//            HttpResponse httpResponse = httpClient.execute(httpGet);
+//            InputStream inputStream = httpResponse.getEntity().getContent();
+//            String response = Utils.getStringFromInputStream(inputStream);
+//            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+//            ObjectMapper mapper = new ObjectMapper();
+//            objects2 = mapper.readValue(response, new TypeReference<List<ChildCollector>>() {
+//            });
+//
+//        } catch (JsonGenerationException e) {
+//            e.printStackTrace();
+//        } catch (JsonMappingException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } finally {
+//            addChildVaccinationEventVaccinationAppointment(objects2);
+//        }
+//
 
     }
 
