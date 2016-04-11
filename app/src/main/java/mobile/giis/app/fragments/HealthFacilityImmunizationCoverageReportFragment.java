@@ -71,6 +71,7 @@ public class HealthFacilityImmunizationCoverageReportFragment extends Fragment {
         super.onCreate(savedInstanceState);
         position = getArguments().getInt(ARG_POSITION);
         app = (BackboneApplication) this.getActivity().getApplication();
+        toDatePicker.setMaxDate(Calendar.getInstance());
     }
 
     @Override

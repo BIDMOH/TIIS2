@@ -64,6 +64,7 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         position = getArguments().getInt(ARG_POSITION);
+        toDatePicker.setMaxDate(Calendar.getInstance());
         app = (BackboneApplication) this.getActivity().getApplication();
     }
 
