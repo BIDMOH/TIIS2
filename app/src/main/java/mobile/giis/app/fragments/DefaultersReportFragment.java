@@ -88,82 +88,77 @@ public class DefaultersReportFragment extends Fragment {
         mydb = app.getDatabaseInstance();
         healthFacility.setText(mydb.getHealthCenterName(app.getLOGGED_IN_USER_HF_ID()));
 
-        metDOBTo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if (b) {
-                    toDatePicker.show(((Activity) getActivity()).getFragmentManager(), "DatePickerDialogue");
-                    toDatePicker.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
-                        @Override
-                        public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-                            metDOBTo.setText((dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth) + "-" + ((monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : monthOfYear + 1) + "-"
-                                    + year);
 
-                            Calendar toCalendar = Calendar.getInstance();
-                            toCalendar.set(year, monthOfYear, dayOfMonth);
-                            fromDatePicker.setMaxDate(toCalendar);
-                            toDateString = (toCalendar.getTimeInMillis() / 1000) + "";
+        metDOBTo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toDatePicker.show(((Activity) getActivity()).getFragmentManager(), "DatePickerDialogue");
+                toDatePicker.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                        metDOBTo.setText((dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth) + "-" + ((monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : monthOfYear + 1) + "-"
+                                + year);
+
+                        Calendar toCalendar = Calendar.getInstance();
+                        toCalendar.set(year, monthOfYear, dayOfMonth);
+                        fromDatePicker.setMaxDate(toCalendar);
+                        toDateString = (toCalendar.getTimeInMillis() / 1000) + "";
 //                            editTextUsedToRequestFocus.requestFocus();
 
-                            if (!fromDateString.equals("")) {
-                                dataView.setVisibility(View.VISIBLE);
-                                new getDefaultersList().execute(fromDateString, toDateString);
+                        if (!fromDateString.equals("")) {
+                            dataView.setVisibility(View.VISIBLE);
+                            new getDefaultersList().execute(fromDateString, toDateString);
 //                                chart_view.setVisibility(View.VISIBLE);
 //                                new FilterList().execute(app.getLOGGED_IN_USER_HF_ID(), fromDateString, toDateString);
-                            } else {
-                                final Snackbar snackbar = Snackbar.make(dataView, "Please select a start date to view the chart", Snackbar.LENGTH_LONG);
-                                snackbar.setAction("OK", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        snackbar.dismiss();
-                                    }
-                                });
-                                snackbar.show();
-                            }
+                        } else {
+                            final Snackbar snackbar = Snackbar.make(dataView, "Please select a start date to view the chart", Snackbar.LENGTH_LONG);
+                            snackbar.setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    snackbar.dismiss();
+                                }
+                            });
+                            snackbar.show();
                         }
-                    });
-                }
+                    }
+                });
             }
         });
 
-
-        metDOBFrom.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        metDOBFrom.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFocusChange(View view, boolean b) {
-                if (b) {
-                    fromDatePicker.show(((Activity) getActivity()).getFragmentManager(), "DatePickerDialogue");
-                    fromDatePicker.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
-                        @Override
-                        public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-                            metDOBFrom.setText((dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth) + "-" + ((monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : monthOfYear + 1) + "-"
-                                    + year);
+            public void onClick(View v) {
+                fromDatePicker.show(((Activity) getActivity()).getFragmentManager(), "DatePickerDialogue");
+                fromDatePicker.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                        metDOBFrom.setText((dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth) + "-" + ((monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : monthOfYear + 1) + "-"
+                                + year);
 
-                            Calendar fromCalendar = Calendar.getInstance();
-                            fromCalendar.set(year, monthOfYear, dayOfMonth);
-                            toDatePicker.setMinDate(fromCalendar);
-                            fromDateString = (fromCalendar.getTimeInMillis()/1000)+"";
+                        Calendar fromCalendar = Calendar.getInstance();
+                        fromCalendar.set(year, monthOfYear, dayOfMonth);
+                        toDatePicker.setMinDate(fromCalendar);
+                        fromDateString = (fromCalendar.getTimeInMillis()/1000)+"";
 //                            editTextUsedToRequestFocus.requestFocus();
 
-                            if(!toDateString.equals("")){
-                                dataView.setVisibility(View.VISIBLE);
+                        if(!toDateString.equals("")){
+                            dataView.setVisibility(View.VISIBLE);
 //                                new FilterList().execute(app.getLOGGED_IN_USER_HF_ID(), fromDateString, toDateString);
-                                new getDefaultersList().execute(fromDateString, toDateString);
-                            }else{
-                                final Snackbar snackbar=Snackbar.make(dataView,"Please select an end date to view the chart",Snackbar.LENGTH_LONG);
-                                snackbar.setAction("OK", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        snackbar.dismiss();
-                                    }
-                                });
-                                snackbar.show();
-                            }
+                            new getDefaultersList().execute(fromDateString, toDateString);
+                        }else{
+                            final Snackbar snackbar=Snackbar.make(dataView,"Please select an end date to view the chart",Snackbar.LENGTH_LONG);
+                            snackbar.setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    snackbar.dismiss();
+                                }
+                            });
+                            snackbar.show();
                         }
-                    });
-                }
+                    }
+                });
             }
         });
-
 
         return rowview;
     }
