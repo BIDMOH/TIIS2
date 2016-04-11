@@ -69,6 +69,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
     public Button scanButton, submitButton;
 
     int spPlacePos, spVillagePos , notApplicablePos = -1;
+    private boolean isSavingDate = false;
 
     protected MaterialEditText etbarcode, etFirstName, etSurname, etMotherFirstName, etMotherSurname, etPhone, etNotes,etFirstname2;
 
@@ -225,33 +226,36 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         }
 
         if(v.getId() == R.id.reg_submit_btn){
-            BackboneApplication app = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
-            DatabaseHandler mydb = app.getDatabaseInstance();
+            if(!isSavingDate) {
+                isSavingDate = true;
+                BackboneApplication app = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
+                DatabaseHandler mydb = app.getDatabaseInstance();
 
-            if (checkDataIntegrityBeforeSave()) {
+                if (checkDataIntegrityBeforeSave()) {
+                    if (mydb.isBarcodeInChildTable(etbarcode.getText().toString())) {
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(RegisterChildFragment.this.getActivity())
+                                .setTitle(getString(R.string.same_barcode))
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        ((AlertDialog) dialog).dismiss();
+                                    }
+                                });
+                        alertDialogBuilder.show();
+                        isSavingDate=false;
+                        return;
+                    }
 
-                if (mydb.isBarcodeInChildTable(etbarcode.getText().toString())) {
+//                  progBar.setVisibility(View.VISIBLE);
+                    //kontrrollojme nese kemi ne db kete child me keto te dhena,nese true nxjerim dialog,nese false bejme regjistrimin
+                    if (mydb.isChildinDb(etSurname.getText().toString(), bdate.getTime(), gender_val)) {
+                        createDialogAlertIsInChild().show();
+                        isSavingDate=false;
+                    } else {
+                        askServerIfthereIsSimilarChild(etSurname.getText().toString(), bdate, gen);
+                        Log.e("CheckInSever", "CheckInSever");
+                    }
 
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(RegisterChildFragment.this.getActivity())
-                            .setTitle(getString(R.string.same_barcode))
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    ((AlertDialog) dialog).dismiss();
-                                }
-                            });
-                    alertDialogBuilder.show();
-                    return;
                 }
-
-//                progBar.setVisibility(View.VISIBLE);
-                //kontrrollojme nese kemi ne db kete child me keto te dhena,nese true nxjerim dialog,nese false bejme regjistrimin
-                if (mydb.isChildinDb(etSurname.getText().toString(), bdate.getTime(), gender_val)) {
-                    createDialogAlertIsInChild().show();
-                } else {
-                    askServerIfthereIsSimilarChild(etSurname.getText().toString(), bdate, gen);
-                    Log.e("CheckInSever", "CheckInSever");
-                }
-
             }
 
         }
@@ -581,6 +585,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
             }else{
 //                progBar.setVisibility(View.GONE);
             }
+            isSavingDate=false;
 
         }
 
