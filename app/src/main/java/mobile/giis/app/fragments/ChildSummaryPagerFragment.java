@@ -224,6 +224,13 @@ public class ChildSummaryPagerFragment extends Fragment {
         lvImmunizationHistory.addHeaderView(appointmentTableHeader);
         lvImmunizationHistory.addFooterView(appointmentTableFooter);
 
+        lvImmunizationHistory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+            }
+        });
+
         app = (BackboneApplication) ChildSummaryPagerFragment.this.getActivity().getApplication();
         mydb = app.getDatabaseInstance();
 
@@ -471,16 +478,7 @@ public class ChildSummaryPagerFragment extends Fragment {
             healthFacilitySpinner.setAdapter(healthAdapter);
             healthFacilitySpinner.setEnabled(false);
 
-            //mydb.getHealthCenterName(item.getHealthcenter())
-            Log.d("coze", "facility = " + currentChild.getHealthcenter());
-            Log.d("coze", "facility 2 = " + mydb.getHealthCenterName(currentChild.getHealthcenter()));
             int index =facility_name.indexOf(currentChild.getHealthcenter());
-
-            Log.d("coze", "village = " + currentChild.getDomicile());
-            Log.d("coze", "village ID = " + currentChild.getDomicileId());
-
-
-            Log.d("coze","facility index = "+index);
             if (index != -1) {
                 healthFacilitySpinner.setSelection(index+1);
                 healthFacOrig = index+1;
