@@ -2348,7 +2348,7 @@ public class BackboneApplication extends Application {
         client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                isChildInServer=false;
+                isChildInServer = false;
                 throwable.printStackTrace();
                 getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
             }
@@ -2483,9 +2483,68 @@ public class BackboneApplication extends Application {
      * this method expects the childBarcode value and one of doseId(not needed a precise one)
      * // @param childBarcode
      * // @param doseId
+     *
      */
     private int updatingVaccinationAppOutreachResult=-1;
+
     public int updateVaccinationAppOutreach(String childBarcode, String doseId) {
+
+//        final StringBuilder webServiceUrl;
+//        webServiceUrl = new StringBuilder(WCF_URL).append("VaccinationAppointmentManagement.svc/UpdateVaccinationApp?outreach=true&userId=")
+//                .append(getLOGGED_IN_USER_ID())
+//                .append("&barcode=").append(childBarcode)
+//                .append("&doseId=").append(doseId);
+//
+//
+//        Log.e("service appointment outreach",webServiceUrl+"");
+//        try
+//        {
+//            DefaultHttpClient httpClient = new DefaultHttpClient();
+//            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
+//            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+webServiceUrl.toString());
+//            httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
+//            HttpResponse httpResponse = httpClient.execute(httpGet);
+//            if(httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+//                getDatabaseInstance().addPost(webServiceUrl.toString(),1);
+//                Utils.writeNetworkLogFileOnSD(
+//                        Utils.returnDeviceIdAndTimestamp(getApplicationContext())
+//                                + " StatusCode " + httpResponse.getStatusLine().getStatusCode()
+//                                + " ReasonPhrase " + httpResponse.getStatusLine().getReasonPhrase()
+//                                + " ProtocolVersion " + httpResponse.getStatusLine().getProtocolVersion());
+//            }
+//            InputStream inputStream = httpResponse.getEntity().getContent();
+//            String result =  Utils.getStringFromInputStream(inputStream);
+//            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+result);
+//            JSONObject jobj = new JSONObject(result);
+//            int idReturned = jobj.getInt("id");
+//            // if any check is needed to be performed after communicating here you have the result parsed into this int
+//            return idReturned;
+//
+//        }
+//        catch (JsonGenerationException e) {
+//            e.printStackTrace();
+//            return -1;
+//        }
+//        catch (JsonMappingException e){
+//            e.printStackTrace();
+//            return -1;
+//        }
+//        catch (IOException e){
+//            e.printStackTrace();
+//            if(webServiceUrl != null){
+//                getDatabaseInstance().addPost(webServiceUrl.toString(),1);
+//            }
+//            return -1;
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//            return -1;
+//        }
+//        catch (NullPointerException e){
+//            e.printStackTrace();
+//            return -1;
+//        }
+
+
         final StringBuilder webServiceUrl;
         webServiceUrl = new StringBuilder(WCF_URL).append("VaccinationAppointmentManagement.svc/UpdateVaccinationApp?outreach=true&userId=")
                 .append(getLOGGED_IN_USER_ID())
@@ -2493,7 +2552,7 @@ public class BackboneApplication extends Application {
                 .append("&doseId=").append(doseId);
 
 
-        Log.e("service appointment outreach", webServiceUrl + "");
+        Log.e("day13", webServiceUrl + "");
 
         client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
         client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {

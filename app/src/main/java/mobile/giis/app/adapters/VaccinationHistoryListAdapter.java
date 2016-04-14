@@ -57,8 +57,8 @@ public class VaccinationHistoryListAdapter extends BaseAdapter {
     }
 
     @Override
-    public long getItemId(int position) {
-        return Integer.parseInt(var.get(position).getAppointment_id());
+    public long getItemId(int i) {
+        return 0;
     }
 
     @Override

@@ -248,6 +248,7 @@
         </activity>
 
         <activity android:name=".ReportsActivityRevised"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:parentActivityName=".HomeActivityRevised">
         </activity>
 

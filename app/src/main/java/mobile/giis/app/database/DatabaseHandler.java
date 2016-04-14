@@ -2829,7 +2829,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public String getChildrenFromOtherHFIDThanLoggedUser(String hfid) {
         //Query on Child Table
         String selectQuery =
-                " SELECT BARCODE_ID FROM child WHERE HEALTH_FACILITY_ID  != '"+hfid+"' AND HEALTH_FACILITY_ID <> 0";
+                " SELECT ID FROM child WHERE HEALTH_FACILITY_ID  != '"+hfid+"' AND HEALTH_FACILITY_ID <> 0";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);

@@ -74,14 +74,36 @@
         </android.support.design.widget.CoordinatorLayout>
 
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/white">
+
         <android.support.design.widget.NavigationView
+            android:background="@color/white"
             android:id="@+id/navigation_view"
             android:layout_width="@dimen/drawer_size"
             android:layout_height="match_parent"
-            android:layout_gravity="start"
             android:theme="@style/NavigationDrawerStyle"
+            android:layout_marginBottom="50dp"
             app:headerLayout="@layout/drawer_layout_header"
             app:itemTextColor="@color/black"
             app:menu="@menu/navigation_view"/>
+
+        <TextView
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/light_blue_600"
+            android:layout_marginLeft="32dp"
+            android:text="TImR V 2.0.0"/>
+
+
+    </RelativeLayout>
+
 
     </android.support.v4.widget.DrawerLayout>

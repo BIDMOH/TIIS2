@@ -300,7 +300,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                             .setMessage("The selected vaccination date is before due date. Are you sure you want to set this date?")
                             .setCancelable(false)
                             .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
+                                public void onClick(final DialogInterface dialog, int id) {
                                     administerVaccineSaveButtonClicked();
                                     progressDialog =  new ProgressDialog(getActivity());
 
@@ -372,11 +372,13 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                                                             public void run() {
                                                                 if (cbOutreach.isChecked()) {
                                                                     outreachChecked = true;
+                                                                    Log.d("day13", "outreach is checked...........");
                                                                 }
                                                             }
                                                         });
                                                         if (outreachChecked && arrayListAdminVacc != null && arrayListAdminVacc.size() > 0) {
-                                                            application.updateVaccinationAppOutreach(barcode, arrayListAdminVacc.get(0).getDose_id());
+                                                            int i = application.updateVaccinationAppOutreach(barcode, arrayListAdminVacc.get(0).getDose_id());
+                                                            Log.d("day13", "called app outreach and resuld is  : "+i);
                                                         }
 
 
@@ -487,18 +489,19 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
                                         //a.syncVaccines();
 
-
                                         outreachChecked = false;
                                         AdministerVaccineFragment.this.getActivity().runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
                                                 if (cbOutreach.isChecked()) {
                                                     outreachChecked = true;
+                                                    Log.d("day13", "outreach is checked...........");
                                                 }
                                             }
                                         });
                                         if (outreachChecked && arrayListAdminVacc != null && arrayListAdminVacc.size() > 0) {
-                                            application.updateVaccinationAppOutreach(barcode, arrayListAdminVacc.get(0).getDose_id());
+                                            int i = application.updateVaccinationAppOutreach(barcode, arrayListAdminVacc.get(0).getDose_id());
+                                            Log.d("day13", "called app outreach and resuld is  : "+i);
                                         }
 
 

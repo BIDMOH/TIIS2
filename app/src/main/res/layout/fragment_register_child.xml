@@ -60,6 +60,7 @@
                                 android:layout_weight=".30"/>
 
                             <Button
+                                android:visibility="invisible"
                                 android:id="@+id/reg_scan_btn"
                                 android:layout_width="0dp"
                                 android:layout_weight=".35"

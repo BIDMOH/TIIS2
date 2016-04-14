@@ -586,34 +586,47 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
 
 
             synchronized (this) {
-
+                int emptyInputDetected = 0;
                 String childBarcode = null;
                 if (!(metBarcode.getText().toString().equals("") || metBarcode.getText().toString().isEmpty())){
                     childBarcode = metBarcode.getText().toString();
+                }else{
+                    emptyInputDetected++;
                 }
+
                 String childFName  = null;
                 if (!(metFName.getText().toString().equals("") || metFName.getText().toString().isEmpty())){
                     childFName = metFName.getText().toString();
+                }else{
+                    emptyInputDetected++;
                 }
 
                 String ChildMName = null;
                 if (!(metMName.getText().toString().equals("") || metMName.getText().toString().isEmpty())){
                     ChildMName = metMName.getText().toString();
+                }else{
+                    emptyInputDetected++;
                 }
 
                 String motherFname = null;
                 if (!(metMotFname.getText().toString().equals("") || metMotFname.getText().toString().isEmpty())) {
                     motherFname = metMotFname.getText().toString();
+                }else{
+                    emptyInputDetected++;
                 }
 
                 String surname = null;
                 if (!(metSurname.getText().toString().equals("") || metSurname.getText().toString().isEmpty())) {
                     surname = metSurname.getText().toString();
+                }else{
+                    emptyInputDetected++;
                 }
 
                 String motherSName = null;
                 if (!(metMotSname.getText().toString().equals("") || metMotSname.getText().toString().isEmpty())) {
                     motherSName = metMotSname.getText().toString();
+                }else{
+                    emptyInputDetected++;
                 }
 
                 String placeOBId = null;
@@ -621,42 +634,52 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
                 String villageName = null;
                 String status = null;
 
-                BackboneApplication backbone = (BackboneApplication) SearchChildFragment.this.getActivity().getApplication();
-                childrensrv = backbone.searchChild(childBarcode, childFName, ChildMName, motherFname, null,null,null,surname,
-                        motherSName,placeOBId,healthFacility, villageName, status);
+               if (emptyInputDetected == 6){
+                   SearchChildFragment.this.getActivity().runOnUiThread(new Runnable() {
+                       @Override
+                       public void run() {
+                           Toast.makeText(SearchChildFragment.this.getActivity(), "Please Enter Search Credentials", Toast.LENGTH_LONG).show();
+                           alertDialog.dismiss();
+                       }
+                   });
+               }else {
+                   BackboneApplication backbone = (BackboneApplication) SearchChildFragment.this.getActivity().getApplication();
+                   childrensrv = backbone.searchChild(childBarcode, childFName, ChildMName, motherFname, null, null, null, surname,
+                           motherSName, placeOBId, healthFacility, villageName, status);
 
-                if (childrensrv == null || childrensrv.isEmpty()) {
-                    SearchChildFragment.this.getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            alertDialog.dismiss();
-                            Log.d("EBENSEARCH", "ebenezer was No where to be found");
-//                            Toast.makeText(getApplicationContext(), "Communication was not successful,try again", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                } else if (childrensrv.size() > 0) {
-                    alertDialog.dismiss();
-                    Log.d("EBENSEARCH", "ebenezer was found : "+childrensrv.get(0).getFirstname1());
+                   if (childrensrv == null || childrensrv.isEmpty()) {
+                       SearchChildFragment.this.getActivity().runOnUiThread(new Runnable() {
+                           @Override
+                           public void run() {
+                               alertDialog.dismiss();
+                               Log.d("EBENSEARCH", "ebenezer was No where to be found");
+                               //                            Toast.makeText(getApplicationContext(), "Communication was not successful,try again", Toast.LENGTH_LONG).show();
+                           }
+                       });
+                   } else if (childrensrv.size() > 0) {
+                       alertDialog.dismiss();
+                       Log.d("EBENSEARCH", "ebenezer was found : " + childrensrv.get(0).getFirstname1());
 
-                    SearchChildFragment.this.getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            // Create and show the dialog.
-                            if (childrensrv.size() >  0) {
-                                serverdata = true;
-                                childNotFoundLayout.setVisibility(View.GONE);
-                                childListLayout.setVisibility(View.VISIBLE);
-                                lvChildrenSearchResults.setVisibility(View.VISIBLE);
-                                adapter = new AdapterGridDataSearchResult(SearchChildFragment.this.getActivity(), childrensrv, mydb);
-                                lvChildrenSearchResults.setAdapter(null);
-//                                adapter.replaceData(childrensrv);
-                                lvChildrenSearchResults.setAdapter(adapter);
-                                adapter.notifyDataSetChanged();
+                       SearchChildFragment.this.getActivity().runOnUiThread(new Runnable() {
+                           @Override
+                           public void run() {
+                               // Create and show the dialog.
+                               if (childrensrv.size() > 0) {
+                                   serverdata = true;
+                                   childNotFoundLayout.setVisibility(View.GONE);
+                                   childListLayout.setVisibility(View.VISIBLE);
+                                   lvChildrenSearchResults.setVisibility(View.VISIBLE);
+                                   adapter = new AdapterGridDataSearchResult(SearchChildFragment.this.getActivity(), childrensrv, mydb);
+                                   lvChildrenSearchResults.setAdapter(null);
+                                   //                                adapter.replaceData(childrensrv);
+                                   lvChildrenSearchResults.setAdapter(adapter);
+                                   adapter.notifyDataSetChanged();
 
-                            }
-                        }
-                    });
-                }
+                               }
+                           }
+                       });
+                   }
+               }
             }
         }
         }.setData(dateFromForSRV, dateToForSRV).start();

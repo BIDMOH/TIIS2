@@ -128,13 +128,14 @@ public class HomeActivityRevised extends BackboneActivity {
 
             Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
             try {
-                ((VaccinationQueueFragment) fragment).updateList();
+                 ((VaccinationQueueFragment) fragment).updateList();
             }catch (Exception e){
                 e.printStackTrace();
             }
 
             try {
-                ((SearchChildFragment) fragment).updateList();
+                // TODO: Auto Refresh search list from here (uncoment)
+                // ((SearchChildFragment) fragment).updateList();
             }catch (Exception e){
                 e.printStackTrace();
             }

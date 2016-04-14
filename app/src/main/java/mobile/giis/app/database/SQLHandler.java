@@ -407,7 +407,7 @@ public class SQLHandler {
                     " UNION SELECT 1,'child_weight_already_entered','Weight for this child has already been entered are you sure you want to override it ','App';";
     public static final String SQLMonthlyPlanView =
             " CREATE VIEW " + Views.MONTHLY_PLAN + " AS  " +
-                    " SELECT v.APPOINTMENT_ID AS APPOINTMENT_ID,   c.ID AS CHILD_ID, c.FIRSTNAME1 || c.LASTNAME1 AS NAME, a.NAME AS SCHEDULE,   v.SCHEDULED_DATE AS SCHEDULED_DATE ," +
+                    " SELECT v._ID, v.APPOINTMENT_ID AS APPOINTMENT_ID,   c.ID AS CHILD_ID, c.FIRSTNAME1 || c.LASTNAME1 AS NAME, a.NAME AS SCHEDULE,   v.SCHEDULED_DATE AS SCHEDULED_DATE ," +
                     " PLACE.NAME AS DOMICILE,  v.HEALTH_FACILITY_ID AS HEALTH_FACILITY_ID , DOSE.SCHEDULED_VACCINATION_ID AS SCHEDULED_VACCINATION_ID,  c.DOMICILE_ID AS DOMICILE_ID,  a.ID AS SCHEDULE_ID, DOSE.ID as DOSE_ID" +
                     " FROM CHILD c JOIN PLACE ON c.DOMICILE_ID = PLACE.ID   JOIN VACCINATION_EVENT v ON c.ID = v.CHILD_ID " +
                     " JOIN DOSE ON v.DOSE_ID = DOSE.ID  JOIN AGE_DEFINITIONS a ON DOSE.AGE_DEFINITON_ID = a.ID" +

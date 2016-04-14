@@ -69,6 +69,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
     public Button scanButton, submitButton;
 
     int spPlacePos, spVillagePos , notApplicablePos = -1;
+
     private boolean isSavingDate = false;
 
     protected MaterialEditText etbarcode, etFirstName, etSurname, etMotherFirstName, etMotherSurname, etPhone, etNotes,etFirstname2;
@@ -255,6 +256,8 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                         Log.e("CheckInSever", "CheckInSever");
                     }
 
+                }else{
+                    isSavingDate=false;
                 }
             }
 
