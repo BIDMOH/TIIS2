@@ -189,6 +189,11 @@ public class DropoutReportFragment extends Fragment {
                         cursor3 = mydb.getReadableDatabase().rawQuery(SQLPenta1Count, null);
                         cursor4 = mydb.getReadableDatabase().rawQuery(SQLPenta3Count, null);
 
+                        Log.d("day14", cursor1.getInt(cursor1.getColumnIndex("BCG_COUNT"))+ " of BCG for "+monthCursor.getString(monthCursor.getColumnIndex("month")));
+                        Log.d("day14", cursor2.getInt(cursor1.getColumnIndex("MR1_COUNT"))+ " of MR1 for "+monthCursor.getString(monthCursor.getColumnIndex("month")));
+                        Log.d("day14", cursor3.getInt(cursor1.getColumnIndex("PENTA1_COUNT"))+ " of PENTA 1 for "+monthCursor.getString(monthCursor.getColumnIndex("month")));
+                        Log.d("day14", cursor4.getInt(cursor1.getColumnIndex("PENTA3_COUNT"))+ " of PENTA 3 for "+monthCursor.getString(monthCursor.getColumnIndex("month")));
+
                         if (cursor1 != null){
                             cursor1.moveToFirst();
                             row.setBcgAmount(cursor1.getInt(cursor1.getColumnIndex("BCG_COUNT")));
@@ -208,7 +213,7 @@ public class DropoutReportFragment extends Fragment {
                             cursor4.moveToFirst();
                             row.setPenta3Amount(cursor4.getInt(cursor4.getColumnIndex("PENTA3_COUNT")));
                         }
-                        row.generateData();
+//                        row.generateData();
                         mVar.add(row);
 
                     }while (monthCursor.moveToNext());
@@ -289,13 +294,14 @@ public class DropoutReportFragment extends Fragment {
     }
 
     class ViewRows{
+
         public ViewRows(){}
 
         String monthName;
 
         int bcgAmount, mr1Amount, penta1Amount, penta3Amount, bcgNumber, pentaNumber;
 
-        float bcgPercent, pentaPercent;
+        double bcgPercent, pentaPercent;
 
         public String getMonthName() {
             return monthName;
@@ -337,20 +343,12 @@ public class DropoutReportFragment extends Fragment {
             this.penta3Amount = penta3Amount;
         }
 
-        public float getBcgPercent() {
+        public double getBcgPercent() {
             return bcgPercent;
         }
 
-        public void setBcgPercent(float bcgPercent) {
-            this.bcgPercent = bcgPercent;
-        }
-
-        public float getPentaPercent() {
+        public double getPentaPercent() {
             return pentaPercent;
-        }
-
-        public void setPentaPercent(float pentaPercent) {
-            this.pentaPercent = pentaPercent;
         }
 
         public int getBcgNumber() {
@@ -377,19 +375,17 @@ public class DropoutReportFragment extends Fragment {
 
         public void generateData(){
 
-            bcgNumber = bcgAmount - mr1Amount;
-
-            pentaNumber = penta1Amount - penta3Amount;
+            double deviderBCG = bcgAmount+0.001;
+            double deviderPENTA = penta1Amount + 0.001;
 
             try{
-                bcgPercent = (bcgNumber/bcgAmount)*100;
+                bcgPercent = ((bcgAmount - mr1Amount)/deviderBCG)*100;
             }catch (Exception e){
                 e.printStackTrace();
             }
 
             try{
-                pentaPercent = (pentaNumber/penta1Amount)*100;
-                Log.d("DropoutQueries", "percentage PENTA of "+monthName+" is "+pentaPercent);
+                pentaPercent = ((penta1Amount - penta3Amount)/deviderPENTA)*100;
             }catch (Exception e){
                 e.printStackTrace();
             }

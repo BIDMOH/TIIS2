@@ -207,7 +207,8 @@ public class VaccineDoseListAdapter extends ArrayAdapter<AdministerVaccinesModel
 
 
         Log.d("coze", "my date is " + bdate.getTime());
-
+        Calendar toCalendar = Calendar.getInstance();
+        reaction_start_date_picker.setMaxDate(toCalendar);
         Calendar dob=Calendar.getInstance();
         dob.setTimeInMillis(bdate.getTime());
         reaction_start_date_picker.setMinDate(dob);

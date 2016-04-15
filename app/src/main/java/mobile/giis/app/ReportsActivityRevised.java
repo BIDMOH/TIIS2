@@ -7,11 +7,14 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -31,6 +34,7 @@ public class ReportsActivityRevised extends BackboneActivity {
     private ViewPagerAdapter adapter;public Toolbar toolbar;
     private String title = "";
     public TextView toolbarTitle;
+    ProgressBar loadingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,14 +53,39 @@ public class ReportsActivityRevised extends BackboneActivity {
 
         toolbarTitle.setText(title);
 
-        adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        pager.setOffscreenPageLimit(10);
-        pager.setAdapter(adapter);
-
         tabs.setTextColor(Color.WHITE);
 
-        tabs.setViewPager(pager);
+        new stallRendering().execute();
 
+    }
+
+    class stallRendering extends AsyncTask<Void,Void,Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loadingBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            loadingBar.setVisibility(View.GONE);
+            adapter = new ViewPagerAdapter(getSupportFragmentManager());
+            pager.setOffscreenPageLimit(10);
+            pager.setAdapter(adapter);
+            tabs.setViewPager(pager);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 
     @Override
@@ -66,6 +95,7 @@ public class ReportsActivityRevised extends BackboneActivity {
 
     public void setUpView(){
         tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        loadingBar = (ProgressBar) findViewById(R.id.loading_bar);
         pager = (ViewPager) findViewById(R.id.pager);
         toolbar         = (Toolbar) findViewById(R.id.reports_activity_toolbar);
         toolbarTitle    = (TextView) findViewById(R.id.reports_activity_toolbar_title);

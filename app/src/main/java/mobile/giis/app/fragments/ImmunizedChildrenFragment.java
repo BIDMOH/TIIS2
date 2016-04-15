@@ -127,20 +127,6 @@ public class ImmunizedChildrenFragment extends Fragment implements OnChartValueS
 
         ImmunizationsSnippets(dataFromDataPicker);
 
-        ImmunizationChartSnippets(dataFromDataPicker);
-
-//        YAxis leftYAxis     = mChart.getAxisLeft();
-//        YAxis rightYAxis    = mChart.getAxisRight();
-//        leftYAxis   .setAxisMaxValue(100f+1f);
-//        rightYAxis  .setAxisMaxValue(100f+1f);
-//
-//        dataset     = new mBarDataSet(entries, "Stock Status", maximumIndex);
-//        dataset     .setColors(new int[]{this.getActivity().getResources().getColor(R.color.red_500), this.getActivity().getResources().getColor(R.color.orange_500), this.getActivity().getResources().getColor(R.color.green_500)});
-//
-//        data    = new BarData(labels, dataset);
-//        mChart  .setData(data);
-//        mChart  .animateY(500);
-
         dateTextCardWrapper.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -152,7 +138,6 @@ public class ImmunizedChildrenFragment extends Fragment implements OnChartValueS
     }
 
     private void setUpViews(View v){
-        mChart                  = (BarChart)        v.findViewById(R.id.immunization_chart);
         immChildrenList         = (NestedListView)  v.findViewById(R.id.immunized_children_list);
         immunizationsList       = (NestedListView)  v.findViewById(R.id.immunizations_list);
         emptyImmunizedChildren  = (RelativeLayout) v.findViewById(R.id.rl_empty_immunized_children);
@@ -232,8 +217,8 @@ public class ImmunizedChildrenFragment extends Fragment implements OnChartValueS
         }
 
         listImmun   =   mydb.getImmunizations(mDate, app);
-        setListViewHeightBasedOnChildren(immunizationsList);
 
+        setListViewHeightBasedOnChildren(immunizationsList);
         if(listImmun.isEmpty()){
             emptyImmunizations.setVisibility(View.VISIBLE);
         }else {
@@ -245,47 +230,6 @@ public class ImmunizedChildrenFragment extends Fragment implements OnChartValueS
 //            immunizationsList   .setAdapter(immAdapter);
 
         }
-
-    }
-
-    public void ImmunizationChartSnippets(String mDate){
-        mChart.setOnChartValueSelectedListener(ImmunizedChildrenFragment.this);
-        mChart.setDescription("");
-        mChart.setPinchZoom(false);
-        mChart.setPinchZoom(false);
-        mChart.setDrawBarShadow(false);
-        mChart.setDrawGridBackground(false);
-        mChart.setDescriptionTextSize(16f);
-
-        MyMarkerView mv = new MyMarkerView(ImmunizedChildrenFragment.this.getActivity(), R.layout.custom_marker_view);
-        mChart.setMarkerView(mv);
-
-        Legend l = mChart.getLegend();
-        l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART_CENTER);
-        l.setTextSize(18f);
-
-        YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setValueFormatter(new LargeValueFormatter());
-        leftAxis.setDrawGridLines(false);
-        leftAxis.setDrawLabels(true);
-        leftAxis.setDrawAxisLine(false); // no axis line
-        leftAxis.setDrawGridLines(false); // no grid lines
-        leftAxis.setDrawZeroLine(true); // draw a zero line
-        mChart.getAxisRight().setEnabled(false); // no right axis
-
-
-        XAxis yAxis = mChart.getXAxis();
-        yAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        yAxis.setTextSize(14f);
-        yAxis.setTextColor(Color.RED);
-        yAxis.setDrawAxisLine(true);
-        yAxis.setDrawGridLines(false);
-
-
-        mChart.getAxisRight().setEnabled(false);
-
-
-        renderChart();
 
     }
 

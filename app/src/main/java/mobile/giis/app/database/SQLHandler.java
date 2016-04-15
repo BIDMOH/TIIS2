@@ -133,7 +133,7 @@ public class SQLHandler {
                     + GIISContract.HealthFacilityBalanceColumns.GTIN + " TEXT,"
                     + GIISContract.HealthFacilityBalanceColumns.LOT_NUMBER + " TEXT,"
                     + GIISContract.HealthFacilityBalanceColumns.ITEM + " TEXT,"
-                    + GIISContract.HealthFacilityBalanceColumns.BALANCE + " INTEGER,"
+                    + GIISContract.HealthFacilityBalanceColumns.BALANCE + " TEXT,"
                     + GIISContract.HealthFacilityBalanceColumns.EXPIRE_DATE + " DATE,"
                     + HealthFacilityBalanceColumns.GTIN_ISACTIVE + " TEXT,"
                     + HealthFacilityBalanceColumns.LOT_ISACTIVE + " TEXT,"

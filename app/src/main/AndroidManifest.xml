@@ -249,6 +249,7 @@
 
         <activity android:name=".ReportsActivityRevised"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:parentActivityName=".HomeActivityRevised">
         </activity>
 

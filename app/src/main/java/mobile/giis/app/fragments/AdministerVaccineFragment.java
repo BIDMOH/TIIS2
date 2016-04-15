@@ -41,6 +41,7 @@ import mobile.giis.app.R;
 import mobile.giis.app.SubClassed.BackHandledFragment;
 import mobile.giis.app.adapters.AdapterAdministerVaccines;
 import mobile.giis.app.adapters.VaccineDoseListAdapter;
+import mobile.giis.app.base.BackboneActivity;
 import mobile.giis.app.base.BackboneApplication;
 import mobile.giis.app.database.DatabaseHandler;
 import mobile.giis.app.database.SQLHandler;
@@ -117,14 +118,16 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         appointment_id  = getArguments().getString("appointment_id");
         birthdate       = getArguments().getString("birthdate");
         barcode         = getArguments().getString("barcode");
-
-        Log.d("EBENSEARCH", "Birth date is : "+birthdate);
+        SimpleDateFormat ft1 = new SimpleDateFormat("dd-MMM-yyyy");
+        Log.d("EBENSEARCH", "Birth date is : "+ft1.format(BackboneActivity.dateParser(birthdate)));
 
         try {
             Date dNow = new Date();
             SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy");
             String today = ft.format(dNow);
-            Date date1 = ft.parse(birthdate);
+            Date bdate = BackboneActivity.dateParser(birthdate);
+            String birthdateString = ft.format(bdate);
+            Date date1 = ft.parse(birthdateString);
             Date date2 = ft.parse(today);
             int month = getMonthsDifference(date1, date2);
             daysDiff = getDaysDifference(date1, date2);
@@ -137,6 +140,8 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                 Log.d("", "The diff" + difference);
                 age = difference + " days";
             }
+
+            Log.d("day14", "Age is : "+age);
 
             if(age.equals("9 months") || age.equals("6 months") || age.equals("18 months")){
                 llSup.setVisibility(View.VISIBLE);
@@ -159,6 +164,35 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         dosekeeper = dbh.getDosesForAppointmentID(appointment_id);
         arrayListAdminVacc = new ArrayList<AdministerVaccinesModel>();
         newest_date = new Date();
+
+        try {
+            Date dNow = new Date();
+            SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy");
+            String today = ft.format(dNow);
+            Date date1 = ft.parse(birthdate);
+            Date date2 = ft.parse(today);
+            int month = getMonthsDifference(date1, date2);
+            daysDiff = getDaysDifference(date1, date2);
+            if (month != 0) {
+                age= month+" months";
+            } else {
+                long diff = date2.getTime() - date1.getTime();
+                long difference = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+                Log.d("", "The diff" + difference);
+                age = difference +" days";
+            }
+            Log.d("day14", "child age is : "+age);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+        dosekeeper = dbh.getDosesForAppointmentID(appointment_id);
+
+        if(age.equals("9 months") || age.equals("6 months") || age.equals("18 months")){
+            llSup.setVisibility(View.VISIBLE);
+        }
 
 
         for (String dose : dosekeeper) {

@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -39,6 +42,7 @@ import java.util.List;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import fr.ganfra.materialspinner.MaterialSpinner;
+import mobile.giis.app.ChildDetailsActivity;
 import mobile.giis.app.CustomViews.ButteryProgressBar;
 import mobile.giis.app.CustomViews.NestedListView;
 import mobile.giis.app.HomeActivityRevised;
@@ -89,6 +93,8 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
     public RelativeLayout prevLayout, nextLayout;
 
     public ProgressBar loadingBar;
+    public ImageView previousTenItems, nextTenItems;
+    public String childBarcode = "";
 
 
     final DatePickerDialog fromDatePicker = new DatePickerDialog();
@@ -104,6 +110,8 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
     private List<TextView> indicatorItems = new ArrayList<>();
     private LinearLayout llPagesContainer;
     private String selectedAgeDefinition = "";
+
+    private CardView previousCard, nextCard;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_monthly_plan, null);
@@ -128,7 +136,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
         editTextUsedToRequestFocus.requestFocus();
 
 
-        nextLayout.setOnClickListener(new View.OnClickListener() {
+        nextTenItems.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int count = Integer.parseInt(currentCount);
@@ -138,7 +146,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
             }
         });
 
-        prevLayout.setOnClickListener(new View.OnClickListener() {
+        previousTenItems.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int count = Integer.parseInt(currentCount);
@@ -243,47 +251,26 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
         TextView dateTitle = (TextView) lvHeader.findViewById(R.id.date_title);
         dateTitle.setTypeface(BackboneActivity.Rosario_Regular);
 
-//        adapter = new MonthlyPlanListAdapter(MonthlyPlanFragment.this.getActivity(), children);
-//        var = getViewAppointmentRows("");
-//        adapter = new VaccinationQueueListAdapter(MonthlyPlanFragment.this.getActivity(), var);
-//        lvMonthlyPlanList.setAdapter(adapter);
-
-//        setListViewHeightBasedOnChildren(lvMonthlyPlanList);
-//        lvMonthlyPlanList.addFooterView(listviewFooter);
-//        adapter = new MonthlyPlanListAdapter(MonthlyPlanFragment.this.getActivity(), var);
-//        lvMonthlyPlanList.setAdapter(adapter);
-//        new filterList().execute(currentCategory, "0", fromDateString, toDateString); //pass the initial data index on second parameter
-
         agesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 selectedPage = 0;
                 previousSelectedPage = 0;
-                if(position > 0) {
+                if (position > 0) {
                     Log.d("day13", "spinner selected");
                     selectedAgeDefinition = ageDef.get(position - 1).getName();
+                    currentCategory = selectedAgeDefinition;
                     populatePageIndicatorContainer(getNumPages(selectedAgeDefinition));
-                    compileVaccinationQueueTable(selectedAgeDefinition, selectedPage);
-                }else{
+//                    compileVaccinationQueueTable(selectedAgeDefinition, selectedPage);
+                    new filterList().execute(currentCategory, "0", fromDateString, toDateString);
+                } else {
                     selectedAgeDefinition = "";
+                    currentCategory = selectedAgeDefinition;
                     populatePageIndicatorContainer(getNumPages(selectedAgeDefinition));
-                    compileVaccinationQueueTable(selectedAgeDefinition, selectedPage);
+//                    compileVaccinationQueueTable(selectedAgeDefinition, selectedPage);
+                    new filterList().execute(currentCategory, "0", fromDateString, toDateString);
                 }
 
-//                if (position > 0) {
-//                    currentCategory = ageDef.get(position - 1).getName();
-//                    new filterList().execute(currentCategory, "0", fromDateString, toDateString);
-////                    var = getViewAppointmentRows(ageDef.get(position - 1).getId());
-//                } else {
-//                    currentCategory = "";
-//                    new filterList().execute(currentCategory, "0", fromDateString, toDateString);
-//                }
-
-
-//                lvMonthlyPlanList.setAdapter(null);
-//                adapter = new VaccinationQueueListAdapter(MonthlyPlanFragment.this.getActivity(), var);
-//                lvMonthlyPlanList.setAdapter(adapter);
-//                pbar.setVisibility(View.GONE);
             }
 
             @Override
@@ -291,7 +278,6 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
 
             }
         });
-
 
         vaccineQuantityButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -324,6 +310,8 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
             }
         });
 
+        new filterList().execute(currentCategory, "0");
+
         return root;
     }
 
@@ -334,6 +322,12 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
         vaccineQuantityButton = (Button) v.findViewById(R.id.vac_qnt_btn);
         loadingBar = (ProgressBar) v.findViewById(R.id.loading_bar);
         loadingBar.setVisibility(View.GONE);
+
+        previousTenItems = (ImageView) v.findViewById(R.id.previous_10_contents);
+        nextTenItems    = (ImageView) v.findViewById(R.id.next_10_contents);
+        previousCard    = (CardView) v.findViewById(R.id.prev_card);
+        nextCard        = (CardView) v.findViewById(R.id.next_card);
+
     }
 
     private ArrayList<VQAgeDefinitions> getAllAgeDeffinitions() {
@@ -382,8 +376,8 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
     public class filterList extends AsyncTask<String, Void, Integer> {
 
         ArrayList<ViewAppointmentRow> mVar;
-
-
+        boolean blockPrevious = false;
+        boolean blockNext = false;
         @Override
         protected void onPreExecute() {
             loadingBar.setVisibility(View.VISIBLE);
@@ -395,13 +389,16 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
             String startRow = params[1];
             currentCount = params[1];
 
-            Calendar calendar = Calendar.getInstance();
-            String to_date = ((calendar.getTimeInMillis() + (30 * 24 * 60 * 60 * 1000)) / 1000) + "";
-            String from_date = "0";
+            long t = Calendar.getInstance().getTimeInMillis()/1000;
+            long t1 = (t + (30 * 24 * 60 * 60));
+            long t2 = (t - (30 * 24 * 60 * 60));
+            String to_date =  t1+ "";
+            String from_date = t2+ "";
 
             try {
                 if (!params[2].equals("") && !params[3].equals("")) {
                     from_date = params[2];
+                    Log.d("day13", "from picker : "+from_date);
                     to_date = params[3];
                 }
             } catch (Exception e) {
@@ -414,36 +411,50 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
             BackboneApplication application = (BackboneApplication) MonthlyPlanFragment.this.getActivity().getApplication();
             DatabaseHandler mydb            = application.getDatabaseInstance();
 
-           String insertToMonthlyPlanQuery = "INSERT INTO MONTHLY_PLAN (APPOINTMENT_ID, CHILD_ID, NAME, SCHEDULE, SCHEDULED_DATE, DOMICILE, HEALTH_FACILITY_ID, SCHEDULED_VACCINATION_ID, DOMICILE_ID, SCHEDULE_ID, DOSE_ID) SELECT v.APPOINTMENT_ID AS APPOINTMENT_ID,   c.ID AS CHILD_ID, c.FIRSTNAME1 || c.LASTNAME1 AS NAME, a.NAME AS SCHEDULE,   v.SCHEDULED_DATE AS SCHEDULED_DATE ," +
-                    " PLACE.NAME AS DOMICILE,  v.HEALTH_FACILITY_ID AS HEALTH_FACILITY_ID , DOSE.SCHEDULED_VACCINATION_ID AS SCHEDULED_VACCINATION_ID,  c.DOMICILE_ID AS DOMICILE_ID,  a.ID AS SCHEDULE_ID, DOSE.ID as DOSE_ID" +
-                    " FROM CHILD c JOIN PLACE ON c.DOMICILE_ID = PLACE.ID   JOIN VACCINATION_EVENT v ON c.ID = v.CHILD_ID " +
-                    " JOIN DOSE ON v.DOSE_ID = DOSE.ID  JOIN AGE_DEFINITIONS a ON DOSE.AGE_DEFINITON_ID = a.ID" +
-                    " WHERE c.STATUS_ID = 1 AND  v.IS_ACTIVE = 'true' AND v.VACCINATION_STATUS = 'false' AND  (v.NONVACCINATION_REASON_ID=0  OR v.NONVACCINATION_REASON_ID in (Select ID from nonvaccination_reason where KEEP_CHILD_DUE = 'true'));";
-
-            mydb.getWritableDatabase().rawQuery("delete from MONTHLY_PLAN", null);
-            mydb.getWritableDatabase().rawQuery(insertToMonthlyPlanQuery, null);
-
             String SQLVaccinationQueue =
                     "SELECT DISTINCT APPOINTMENT_ID, CHILD_ID " +
                             " ,(SELECT GROUP_CONCAT(dose.FULLNAME) FROM vaccination_event INNER JOIN dose ON vaccination_event.DOSE_ID = dose.ID left join age_definitions on dose.TO_AGE_DEFINITON_ID = age_definitions.ID WHERE monthly_plan.APPOINTMENT_ID=vaccination_event.APPOINTMENT_ID AND datetime(substr(vaccination_event.SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('now','+30 days') AND vaccination_event.IS_ACTIVE='true' AND vaccination_event.VACCINATION_STATUS='false' AND (vaccination_event.NONVACCINATION_REASON_ID=0  OR vaccination_event.NONVACCINATION_REASON_ID in (Select ID from nonvaccination_reason where KEEP_CHILD_DUE = 'true')) AND (DAYS IS NULL or (datetime(substr(vaccination_event.SCHEDULED_DATE,7,10),'unixepoch') > datetime('now','-' || DAYS || ' days')) )) AS VACCINES " +
                             " , SCHEDULE, SCHEDULED_DATE " +
                             " FROM MONTHLY_PLAN join dose on DOSE_ID = dose.ID" +
                             " WHERE HEALTH_FACILITY_ID = '" + app.getLOGGED_IN_USER_HF_ID() + "' AND SCHEDULE like '%" + ageName + "%' " +
-                            "AND datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('" + to_date + "','unixepoch') " +
-                            "AND datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') > datetime('" + from_date + "','unixepoch') " +
-                            "AND ( (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) IS NULL " +
+                            " AND datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') > datetime('" +from_date+ "','unixepoch') " +
+                            " AND datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('" +to_date+ "','unixepoch') " +
+                            " AND ( (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) IS NULL " +
                             " OR (datetime(substr(SCHEDULED_DATE,7,10),'unixepoch') > datetime('now','-' || (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) || ' days' )) )" +
                             " GROUP BY APPOINTMENT_ID, SCHEDULED_DATE, DOMICILE, NAME, SCHEDULE, CHILD_ID, SCHEDULE_ID " +
-                            " ORDER BY SCHEDULED_DATE ";// +
-//                            " LIMIT " + startRow + ", 10 ; ";
+                            " ORDER BY SCHEDULED_DATE "+
+                            " LIMIT " + startRow + ", 10; ";
 
             Log.e("SQLVaccinationQueue", SQLVaccinationQueue);
+            long tStart = System.currentTimeMillis();
             cursor = mydb.getReadableDatabase().rawQuery(SQLVaccinationQueue, null);
+            Log.e("MON_TIMING_LOG", "Querying time  = elapsed total time (milliseconds): " + (System.currentTimeMillis() - tStart));
+
+            if (startRow.equals("0")){
+                blockPrevious = true;
+            }else {
+                blockPrevious = false;
+            }
+
+            if (cursor.getCount() < 10 && blockPrevious == false){
+                blockNext = true;
+            }else {
+                blockNext = false;
+            }
+
             Log.d("SQLVaccinationQueue", "Done with getting the Monthly plan data");
             if (cursor != null) {
+                tStart = System.currentTimeMillis();
                 Log.d("SQLVaccinationQueue", "cursor not null SIZE IS : "+cursor.getCount());
+                Log.e("MON_TIMING_LOG", "Getting total size time  = elapsed total time (milliseconds): " + (System.currentTimeMillis() - tStart));
+
+
+                tStart = System.currentTimeMillis();
                 if (cursor.moveToFirst()) {
                     Log.d("SQLVaccinationQueue", "Moved to first item in the cursor");
+                    Log.e("MON_TIMING_LOG", "moving cursor to first time  = elapsed total time (milliseconds): " + (System.currentTimeMillis() - tStart));
+
+                    tStart = System.currentTimeMillis();
                     do {
                         Log.d("SQLVaccinationQueue", "the loop here");
                         ViewAppointmentRow row = new ViewAppointmentRow();
@@ -454,6 +465,9 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
                         row.setChild_id(cursor.getString(cursor.getColumnIndex("CHILD_ID")));
                         mVar.add(row);
                     } while (cursor.moveToNext());
+                    Log.e("MON_TIMING_LOG", "Looping to get data  = elapsed total time (milliseconds): " + (System.currentTimeMillis() - tStart));
+
+
                 }
                 cursor.close();
             }
@@ -463,11 +477,21 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
 
         @Override
         protected void onPostExecute(Integer result) {
-//            Log.d("MPLAN", mVar.size() + "");
-//            adapter.updateData(mVar);
             var = mVar;
             displayMonthlyPlanList(mVar);
             loadingBar.setVisibility(View.GONE);
+            if (blockPrevious) {
+                previousCard.setVisibility(View.INVISIBLE);
+            }
+            else{
+                previousCard.setVisibility(View.VISIBLE);
+            }
+            if (blockNext){
+                nextCard.setVisibility(View.INVISIBLE);
+            }
+            else {
+                nextCard.setVisibility(View.VISIBLE);
+            }
         }
 
         @Override
@@ -478,6 +502,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
 
     public void displayMonthlyPlanList(ArrayList<ViewAppointmentRow> mVar) {
         ArrayList<ViewAppointmentRow> nVar = mVar;
+        monthlyPlanTable.removeAllViews();
         for (final ViewAppointmentRow a : nVar) {
 
             View convertView = View.inflate(MonthlyPlanFragment.this.getActivity(), R.layout.vacination_queue_list_item, null);
@@ -492,11 +517,14 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
             date.setTypeface(BackboneActivity.Rosario_Regular);
 
             DatabaseHandler db = app.getDatabaseInstance();
+            String barcode_id = "";
             Cursor naming = null;
-            naming = db.getReadableDatabase().rawQuery("SELECT FIRSTNAME1 , LASTNAME1,FIRSTNAME2 FROM child WHERE ID=?", new String[]{a.getChild_id()});
+            naming = db.getReadableDatabase().rawQuery("SELECT BARCODE_ID, FIRSTNAME1 , LASTNAME1,FIRSTNAME2 FROM child WHERE ID=?", new String[]{a.getChild_id()});
             if (naming != null) {
                 if (naming.moveToFirst()) {
                     name.setText(naming.getString(naming.getColumnIndex("FIRSTNAME1")) + " " + naming.getString(naming.getColumnIndex("FIRSTNAME2")) + " " + naming.getString(naming.getColumnIndex("LASTNAME1")));
+                    barcode_id = naming.getString(naming.getColumnIndex("BARCODE_ID"));
+                    setChildBarcode(barcode_id);
                 }
                 naming.close();
             }
@@ -509,11 +537,16 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
             date.setText(ft.format(scheduled_date));
 
             convertView.setOnClickListener(new View.OnClickListener() {
+                String barcodeId = getChildBarcode();
                 @Override
                 public void onClick(View v) {
-                    //startAdministerVaccinesActivity(a,a.getChild_id());
-                }
+                    Intent childDetailsActivity = new Intent(MonthlyPlanFragment.this.getActivity(), ChildDetailsActivity.class);
+                    childDetailsActivity.putExtra("barcode", barcodeId);
+                    childDetailsActivity.putExtra("current", 2);
+                    childDetailsActivity.putExtra(BackboneApplication.CHILD_ID, a.getChild_id());
+                    startActivity(childDetailsActivity);
 
+                }
 
             });
 
@@ -521,6 +554,14 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
         }
 
 
+    }
+
+    public void setChildBarcode(String bc){
+        childBarcode = bc;
+    }
+
+    public String getChildBarcode(){
+        return childBarcode;
     }
 
     private int getNumPages(String ageName){
@@ -532,7 +573,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
         String SQLVaccinationQueue =
                 "SELECT count(DISTINCT APPOINTMENT_ID)" +
                         " FROM monthly_plan join dose on DOSE_ID = dose.ID" +
-                        " WHERE HEALTH_FACILITY_ID = '" + app.getLOGGED_IN_USER_HF_ID()+"' AND SCHEDULE like '%"+ageName+"%' AND datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('now','+30 days') "+
+                        " WHERE HEALTH_FACILITY_ID = '" + app.getLOGGED_IN_USER_HF_ID()+"' AND SCHEDULE like '%"+ageName+"%' AND datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('now','+30 days') AND datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') > datetime('now','-30 days')"+
                         " AND ( (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) IS NULL \n" +
                         " OR (datetime(substr(SCHEDULED_DATE,7,10),'unixepoch') > datetime('now','-' || (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) || ' days' )) )" +
                         " ";
@@ -555,6 +596,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
         int margins = (int)getResources().getDimension(R.dimen.ten_dp_width);
         p.setMargins(margins, 0, margins, 0);
         tvPagesLabel.setLayoutParams(p);
+        tvPagesLabel.setVisibility(View.GONE);
         tvPagesLabel.setText(getString(R.string.pages));
         tvPagesLabel.setTextSize(getResources().getDimension(R.dimen.fifteen_dp_width));
         tvPagesLabel.setTextColor(Color.BLACK);
@@ -587,7 +629,8 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
             selectedPage = index;
             indicatorItems.get(previousSelectedPage).setTextColor(Color.GRAY);
             indicatorItems.get(selectedPage).setTextColor(Color.BLUE);
-            compileVaccinationQueueTable(selectedAgeDefinition, selectedPage);
+//            compileVaccinationQueueTable(selectedAgeDefinition, selectedPage);
+//            new filterList().execute(currentCategory, "0", "", "");
         }
     };
 

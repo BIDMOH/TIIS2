@@ -203,7 +203,6 @@
                     android:layout_height="70dp"
                     android:orientation="horizontal"
                     android:id="@+id/ll_sup"
-                    android:visibility="gone"
                     android:background="@color/yellow_500">
 
                     <TextView

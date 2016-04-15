@@ -37,9 +37,11 @@ public class VaccinationHistoryListAdapter extends BaseAdapter {
 
     private ArrayList<ViewAppointmentRow> var;
 
+    private BackboneApplication app;
 
-    public VaccinationHistoryListAdapter(Context context, ArrayList<ViewAppointmentRow> var) {
-        this.objects = objects;
+
+    public VaccinationHistoryListAdapter(Context context, ArrayList<ViewAppointmentRow> var, BackboneApplication application) {
+        app = application;
         inflator = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.var = var;
@@ -76,11 +78,14 @@ public class VaccinationHistoryListAdapter extends BaseAdapter {
 
         TextView antigen = (TextView) convertView.findViewById(R.id.antigen_value);
         TextView week0 = (TextView) convertView.findViewById(R.id.week_o_value);
+        TextView week2 = (TextView) convertView.findViewById(R.id.week_2_value);
+        TextView month1 = (TextView) convertView.findViewById(R.id.month_1_value);
         TextView week6 = (TextView) convertView.findViewById(R.id.week_6_value);
         TextView week10 = (TextView) convertView.findViewById(R.id.week_10_value);
         TextView week14 = (TextView) convertView.findViewById(R.id.week_14_value);
         TextView month9 = (TextView) convertView.findViewById(R.id.month_9_value);
         TextView month18= (TextView) convertView.findViewById(R.id.month_18_value);
+        TextView month21= (TextView) convertView.findViewById(R.id.month_21_value);
 
 
 //        getSchedule
@@ -89,9 +94,17 @@ public class VaccinationHistoryListAdapter extends BaseAdapter {
         Date scheduled_date = BackboneActivity.dateParser(var.get(position).getScheduled_date());
         SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy");
 
+        DatabaseHandler mydb = app.getDatabaseInstance();
+
         switch (var.get(position).getSchedule()){
             case "At birth":
                 week0.setText(ft.format(scheduled_date));
+                break;
+            case "2 weeks":
+                week2.setText(ft.format(scheduled_date));
+                break;
+            case "1 Month":
+                month1.setText(ft.format(scheduled_date));
                 break;
             case "6 weeks":
                 week6.setText(ft.format(scheduled_date));
@@ -99,11 +112,17 @@ public class VaccinationHistoryListAdapter extends BaseAdapter {
             case "10 weeks":
                 week10.setText(ft.format(scheduled_date));
                 break;
+            case "14 weeks":
+                week14.setText(ft.format(scheduled_date));
+                break;
             case "9 Months":
                 month9.setText(ft.format(scheduled_date));
                 break;
-            case "14 weeks":
-                week14.setText(ft.format(scheduled_date));
+            case "18 Months":
+                month18.setText(ft.format(scheduled_date));
+                break;
+            case "21 Months":
+                month21.setText(ft.format(scheduled_date));
                 break;
         }
 

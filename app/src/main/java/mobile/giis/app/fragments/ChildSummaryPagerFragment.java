@@ -352,7 +352,7 @@ public class ChildSummaryPagerFragment extends Fragment {
 
         }
 
-        adapter = new VaccinationHistoryListAdapter(ChildSummaryPagerFragment.this.getActivity(), var);
+        adapter = new VaccinationHistoryListAdapter(ChildSummaryPagerFragment.this.getActivity(), var, app);
         lvImmunizationHistory.setAdapter(adapter);
 
     }

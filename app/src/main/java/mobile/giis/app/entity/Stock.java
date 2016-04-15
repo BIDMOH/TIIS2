@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Stock {
 
-    private int balance;
+    private long balance;
     private String expireDate;
     private String gtin;
     private String item;
@@ -35,7 +35,7 @@ public class Stock {
     public Stock(){}
 
     @JsonProperty("Balance")
-    public int getBalance() {
+    public long getBalance() {
         return balance;
     }
 
