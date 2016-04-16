@@ -203,7 +203,8 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
                     "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
                     "AND vaccination_event.CHILD_ID=vaccination_appointment.CHILD_ID " +
                     "AND vaccination_event.CHILD_ID=child.ID " +
-                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"'" +
+                    "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"' " +
+                    "AND vaccination_event.VACCINATION_STATUS = 'true' " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
 
@@ -213,6 +214,7 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
                     "AND vaccination_event.CHILD_ID=child.ID " +
                     "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"'" +
                     "AND vaccination_appointment.OUTREACH = 'true' " +
+                    "AND vaccination_event.VACCINATION_STATUS = 'true' " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
 
@@ -222,6 +224,7 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
                     +"AND vaccination_event.CHILD_ID=child.ID " +
                     "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"'" +
                     "AND vaccination_appointment.OUTREACH  = 'false' " +
+                    "AND vaccination_event.VACCINATION_STATUS = 'true' " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
             SQLCountTotalWithin = "SELECT  COUNT (DISTINCT(child.ID)) AS IDS  FROM  vaccination_event, vaccination_appointment,child " +
@@ -229,11 +232,13 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
                     "AND vaccination_event.CHILD_ID=child.ID " +
                     "AND child.HEALTH_FACILITY_ID = '"+healthFacilityId+"' " +
                     "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"' " +
+                    "AND vaccination_event.VACCINATION_STATUS = 'true' " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
             SQLCountTotalOutside = "SELECT  COUNT (DISTINCT(child.ID)) AS IDS  FROM  vaccination_event, vaccination_appointment,child " +
                     "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
                     "AND vaccination_event.CHILD_ID=child.ID " +
+                    "AND vaccination_event.VACCINATION_STATUS = 'true' " +
                     "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"'" +
                     "AND child.HEALTH_FACILITY_ID <> '"+healthFacilityId+"' " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
@@ -288,6 +293,7 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
             SQLCountTotalNewVisits="SELECT  COUNT (DISTINCT(vaccination_event.CHILD_ID)) AS IDS FROM  vaccination_event, vaccination_appointment " +
                     "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID  " +
                     "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"' " +
+                    "AND vaccination_event.VACCINATION_STATUS = 'true' " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')" +
                     "AND  vaccination_event.CHILD_ID NOT IN (" +
@@ -302,6 +308,7 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
                     "SELECT  * FROM  vaccination_event, vaccination_appointment " +
                     "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID  " +
                     "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"' " +
+                    "AND vaccination_event.VACCINATION_STATUS = 'true' " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')" +
                     "AND  vaccination_event.CHILD_ID NOT IN (" +
@@ -319,6 +326,7 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
                     "SELECT  * FROM  vaccination_event, vaccination_appointment " +
                     "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID  " +
                     "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"' " +
+                    "AND vaccination_event.VACCINATION_STATUS = 'true' " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')" +
                     "AND  vaccination_event.CHILD_ID NOT IN (" +
@@ -336,6 +344,7 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
                     "SELECT  vaccination_event.CHILD_ID AS CHILD_ID,child.HEALTH_FACILITY_ID AS HEALTH_FACILITY_ID  FROM  vaccination_event, vaccination_appointment,child " +
                     "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID   " +
                     "AND vaccination_event.CHILD_ID=child.ID " +
+                    "AND vaccination_event.VACCINATION_STATUS = 'true' " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch')  " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')" +
                     "AND  vaccination_event.CHILD_ID NOT IN ( " +
@@ -352,6 +361,7 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
                     "SELECT  vaccination_event.CHILD_ID AS CHILD_ID,child.HEALTH_FACILITY_ID AS HEALTH_FACILITY_ID  FROM  vaccination_event, vaccination_appointment,child " +
                     "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID   " +
                     "AND vaccination_event.CHILD_ID=child.ID " +
+                    "AND vaccination_event.VACCINATION_STATUS = 'true' " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch')  " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')" +
                     "AND  vaccination_event.CHILD_ID NOT IN ( " +
