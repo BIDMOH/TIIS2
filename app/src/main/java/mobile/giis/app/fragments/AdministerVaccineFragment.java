@@ -411,8 +411,8 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                                                                     }
                                                                 }
                                                             });
-                                                            if (outreachChecked && arrayListAdminVacc != null && arrayListAdminVacc.size() > 0) {
-                                                                int i = application.updateVaccinationAppOutreach(barcode, arrayListAdminVacc.get(0).getDose_id());
+                                                            if (outreachChecked) {
+                                                                int i = application.updateVaccinationAppOutreach(barcode, a.getDose_id());
                                                                 Log.d("day13", "called app outreach and resuld is  : " + i);
                                                             }
 
@@ -534,8 +534,8 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                                                     }
                                                 }
                                             });
-                                            if (outreachChecked && arrayListAdminVacc != null && arrayListAdminVacc.size() > 0) {
-                                                int i = application.updateVaccinationAppOutreach(barcode, arrayListAdminVacc.get(0).getDose_id());
+                                            if (outreachChecked) {
+                                                int i = application.updateVaccinationAppOutreach(barcode, a.getDose_id());
                                                 Log.d("day13", "called app outreach and resuld is  : " + i);
                                             }
 

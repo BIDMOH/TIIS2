@@ -2341,7 +2341,6 @@ public class BackboneApplication extends Application {
         final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC);
         webServiceUrl.append("ChildExistsByLastnameAndBirthdateAndGender?lastname1=").append(URLEncoder.encode(lastname)).append("&birthdate=")
                 .append(bDate).append("&gender=").append(gender);
-
         Log.e("service weight", webServiceUrl + "");
 
         client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
@@ -2452,7 +2451,6 @@ public class BackboneApplication extends Application {
                     JSONObject jobj = new JSONObject(result);
                     childId = jobj.getInt("id");
                     if (childId != -1) {
-
                         Log.e("coze","data stored successfully");
                         ContentValues contentValues = new ContentValues();
                         contentValues.put(SQLHandler.ChildColumns.ID, childId);
@@ -2461,11 +2459,9 @@ public class BackboneApplication extends Application {
                         mydb.updateChildTableWithChildID(contentValues, threadTempId);
                         mydb.updateVaccinationAppointementChildId(threadTempId, childId + "");
                         mydb.updateVaccinationEventChildId(threadTempId, childId + "");
-
                     } else {
                         Log.e("coze","data stored failed");
                         Log.e("coze","adding a post to send data when the connection is available");
-                        getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
                     }
 
 
@@ -2488,63 +2484,6 @@ public class BackboneApplication extends Application {
     private int updatingVaccinationAppOutreachResult=-1;
 
     public int updateVaccinationAppOutreach(String childBarcode, String doseId) {
-
-//        final StringBuilder webServiceUrl;
-//        webServiceUrl = new StringBuilder(WCF_URL).append("VaccinationAppointmentManagement.svc/UpdateVaccinationApp?outreach=true&userId=")
-//                .append(getLOGGED_IN_USER_ID())
-//                .append("&barcode=").append(childBarcode)
-//                .append("&doseId=").append(doseId);
-//
-//
-//        Log.e("service appointment outreach",webServiceUrl+"");
-//        try
-//        {
-//            DefaultHttpClient httpClient = new DefaultHttpClient();
-//            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-//            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+webServiceUrl.toString());
-//            httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-//            HttpResponse httpResponse = httpClient.execute(httpGet);
-//            if(httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-//                getDatabaseInstance().addPost(webServiceUrl.toString(),1);
-//                Utils.writeNetworkLogFileOnSD(
-//                        Utils.returnDeviceIdAndTimestamp(getApplicationContext())
-//                                + " StatusCode " + httpResponse.getStatusLine().getStatusCode()
-//                                + " ReasonPhrase " + httpResponse.getStatusLine().getReasonPhrase()
-//                                + " ProtocolVersion " + httpResponse.getStatusLine().getProtocolVersion());
-//            }
-//            InputStream inputStream = httpResponse.getEntity().getContent();
-//            String result =  Utils.getStringFromInputStream(inputStream);
-//            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+result);
-//            JSONObject jobj = new JSONObject(result);
-//            int idReturned = jobj.getInt("id");
-//            // if any check is needed to be performed after communicating here you have the result parsed into this int
-//            return idReturned;
-//
-//        }
-//        catch (JsonGenerationException e) {
-//            e.printStackTrace();
-//            return -1;
-//        }
-//        catch (JsonMappingException e){
-//            e.printStackTrace();
-//            return -1;
-//        }
-//        catch (IOException e){
-//            e.printStackTrace();
-//            if(webServiceUrl != null){
-//                getDatabaseInstance().addPost(webServiceUrl.toString(),1);
-//            }
-//            return -1;
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//            return -1;
-//        }
-//        catch (NullPointerException e){
-//            e.printStackTrace();
-//            return -1;
-//        }
-
-
         final StringBuilder webServiceUrl;
         webServiceUrl = new StringBuilder(WCF_URL).append("VaccinationAppointmentManagement.svc/UpdateVaccinationApp?outreach=true&userId=")
                 .append(getLOGGED_IN_USER_ID())
