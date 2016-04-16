@@ -822,7 +822,7 @@ public class BackboneApplication extends Application {
                     stmt1.bindString(8, vaccinationAppointment.getOutreach());
                     stmt1.bindString(9, vaccinationAppointment.getScheduledDate());
                     stmt1.bindString(10, vaccinationAppointment.getScheduledFacilityId());
-
+                    Log.d("day20", "Out Reach for "+vaccinationAppointment.getChild()+" is : "+vaccinationAppointment.getOutreach());
                     stmt1.execute();
                     stmt1.clearBindings();
 
