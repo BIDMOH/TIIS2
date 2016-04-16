@@ -199,7 +199,7 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
             String SQLCountTotalVisits,SQLCountTotalOutReach,SQLCountTotalFixed,SQLCountTotalWithin,SQLCountTotalOutside,SQLCountVaccinedOutReach,SQLCountVaccinedFixed,SQLCountVaccinedlVisits,SQLCountVaccinedWithin,
                     SQLCountVaccinedOutside,SQLCountTotalNewVisits,SQLCountNewVisitsOutreach,SQLCountNewVisitsFixed,SQLCountNewVisitsWithin,SQLCountNewVisitsOutside,SQLCountUnderImmunizedTotal,SQLCountUnderImmunizedOutreach,
                     SQLCountUnderImmunizedFixed,SQLCountUnderImmunizedWithin,SQLCountUnderImmunizedOutside,SQLCountFullyImmunized,SQLCountFullyImmunizedOutreach,SQLCountFullyImmunizedFixed,SQLCountFullyImmunizedWithin,SQLCountFullyImmunizedOutside;
-            SQLCountTotalVisits = "SELECT  COUNT (DISTINCT(child.CHILD_ID)) AS IDS  FROM  vaccination_event, vaccination_appointment,child " +
+            SQLCountTotalVisits = "SELECT  COUNT (DISTINCT(child.ID)) AS IDS  FROM  vaccination_event, vaccination_appointment,child " +
                     "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
                     "AND vaccination_event.CHILD_ID=vaccination_appointment.CHILD_ID " +
                     "AND vaccination_event.CHILD_ID=child.ID " +
@@ -241,8 +241,8 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
 
             SQLCountVaccinedOutReach = "SELECT  COUNT (DISTINCT(child.ID)) AS IDS FROM  vaccination_event, vaccination_appointment,child " +
                     "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
-                    "AND vaccination_appointment.OUTREACH  = 'true' "
-                    +"AND vaccination_event.CHILD_ID=child.ID " +
+                    "AND vaccination_appointment.OUTREACH  = 'true' "+
+                    "AND vaccination_event.CHILD_ID=child.ID " +
                     "AND vaccination_event.VACCINATION_STATUS='true' " +
                     "AND vaccination_event.HEALTH_FACILITY_ID = '"+healthFacilityId+"'" +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
@@ -257,7 +257,7 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
                     "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
 
-            SQLCountVaccinedlVisits = "SELECT  COUNT (DISTINCT(child.ID)) AS IDS  FROM  vaccination_event, vaccination_appointment " +
+            SQLCountVaccinedlVisits = "SELECT  COUNT (DISTINCT(child.ID)) AS IDS  FROM  vaccination_event, vaccination_appointment, child " +
                     "WHERE vaccination_event.APPOINTMENT_ID=vaccination_appointment.ID " +
                     "AND vaccination_event.VACCINATION_STATUS='true' " +
                     "AND vaccination_event.CHILD_ID=child.ID " +

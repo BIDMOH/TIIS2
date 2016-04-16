@@ -101,7 +101,7 @@ public class ImmunizedChildrenFragment extends Fragment implements OnChartValueS
         root = inflater.inflate(R.layout.immunized_children_fragment, null);
         //::..
         setUpViews(root);
-        createXYValues();
+//        createXYValues();
 
         immunizationsHeaderView   = inflater.inflate(R.layout.immunizations_list_title, null);
         immChildrenListHeader = inflater.inflate(R.layout.imm_children_list_item_title, null);
@@ -179,7 +179,7 @@ public class ImmunizedChildrenFragment extends Fragment implements OnChartValueS
 
         refreshImmunizationList(date);
         refreshImmunizedChildren(date);
-        renderChart();
+//        renderChart();
 
     }
 
@@ -276,59 +276,59 @@ public class ImmunizedChildrenFragment extends Fragment implements OnChartValueS
         }
     }
 
-    private void  renderChart(){
-        List<ChartDataModel> listItems = mydb.getMonthlyPerformance(app);
-        ArrayList<String> xVals = new ArrayList<String>();
+//    private void  renderChart(){
+//        List<ChartDataModel> listItems = mydb.getMonthlyPerformance(app);
+//        ArrayList<String> xVals = new ArrayList<String>();
+//
+//        ArrayList<BarEntry> noVals = new ArrayList<BarEntry>();
+//        ArrayList<BarEntry> cummNoVals = new ArrayList<BarEntry>();
+//
+//        for (int i = 0; i < listItems.size(); i++) {
+//            ChartDataModel item = listItems.get(i);
+//            xVals.add(item.getLabel());
+//
+//            noVals.add(new BarEntry((float)item.getValue(), i));
+//
+//            cummNoVals.add(new BarEntry((float)summPreviousEntries(listItems, i), i));
+//        }
+//
+//        BarDataSet set1 = new BarDataSet(noVals, app.getString(R.string.no_of_children_immunized));
+//        // set1.setColors(ColorTemplate.createColors(getApplicationContext(),
+//        // ColorTemplate.FRESH_COLORS));
+//        set1.setColor(Color.rgb(109, 164, 213));
+//        BarDataSet set2 = new BarDataSet(cummNoVals, app.getString(R.string.cumm_no_children_immunized));
+//        set2.setColor(Color.rgb(235, 139, 75));
+//
+//        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+//        dataSets.add(set1);
+//        dataSets.add(set2);
+//
+//        BarData data = new BarData(xVals, dataSets);
+//        data.setValueFormatter(new LargeValueFormatter());
+//
+//        mChart.setData(data);
+//        mChart.invalidate();
+//
+//    }
 
-        ArrayList<BarEntry> noVals = new ArrayList<BarEntry>();
-        ArrayList<BarEntry> cummNoVals = new ArrayList<BarEntry>();
-
-        for (int i = 0; i < listItems.size(); i++) {
-            ChartDataModel item = listItems.get(i);
-            xVals.add(item.getLabel());
-
-            noVals.add(new BarEntry((float)item.getValue(), i));
-
-            cummNoVals.add(new BarEntry((float)summPreviousEntries(listItems, i), i));
-        }
-
-        BarDataSet set1 = new BarDataSet(noVals, app.getString(R.string.no_of_children_immunized));
-        // set1.setColors(ColorTemplate.createColors(getApplicationContext(),
-        // ColorTemplate.FRESH_COLORS));
-        set1.setColor(Color.rgb(109, 164, 213));
-        BarDataSet set2 = new BarDataSet(cummNoVals, app.getString(R.string.cumm_no_children_immunized));
-        set2.setColor(Color.rgb(235, 139, 75));
-
-        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
-        dataSets.add(set1);
-        dataSets.add(set2);
-
-        BarData data = new BarData(xVals, dataSets);
-        data.setValueFormatter(new LargeValueFormatter());
-
-        mChart.setData(data);
-        mChart.invalidate();
-
-    }
-
-    private void createXYValues(){
-
-        entries = new ArrayList<>();
-        entries.add(new BarEntry(21f, 0));
-        entries.add(new BarEntry(21f, 1));
-        entries.add(new BarEntry(70f, 2));
-        entries.add(new BarEntry(91f, 3));
-
-        //According to the maximum value of the Y axis set the maximumIndex value
-        maximumIndex = 18;
-
-        labels = new ArrayList<String>();
-        labels.add("January");
-        labels.add("February");
-        labels.add("March");
-        labels.add("April");
-
-    }
+//    private void createXYValues(){
+//
+//        entries = new ArrayList<>();
+//        entries.add(new BarEntry(21f, 0));
+//        entries.add(new BarEntry(21f, 1));
+//        entries.add(new BarEntry(70f, 2));
+//        entries.add(new BarEntry(91f, 3));
+//
+//        //According to the maximum value of the Y axis set the maximumIndex value
+//        maximumIndex = 18;
+//
+//        labels = new ArrayList<String>();
+//        labels.add("January");
+//        labels.add("February");
+//        labels.add("March");
+//        labels.add("April");
+//
+//    }
 
     private String getYesterdayDateStringDashyyyyMMdd() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
