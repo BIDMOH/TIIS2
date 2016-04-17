@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -269,6 +270,13 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         vitACheckbox            = (CheckBox) v.findViewById(R.id.vit_a_check);
         mabendazolCheckbox      = (CheckBox) v.findViewById(R.id.mabendazol_check);
         cbOutreach              = (CheckBox) v.findViewById(R.id.cb_outreach);
+        cbOutreach.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                outreachChecked=isChecked;
+            }
+        });
+
         vitADate                = (TextView) v.findViewById(R.id.vit_a_date);
         mabendazolDate          = (TextView) v.findViewById(R.id.mabendazol_date);
         etNotes                 = (MaterialEditText) v.findViewById(R.id.notes);
@@ -400,20 +408,9 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
                                                             //a.syncVaccines();
 
-
-                                                            outreachChecked = false;
-                                                            AdministerVaccineFragment.this.getActivity().runOnUiThread(new Runnable() {
-                                                                @Override
-                                                                public void run() {
-                                                                    if (cbOutreach.isChecked()) {
-                                                                        outreachChecked = true;
-                                                                        Log.d("day13", "outreach is checked...........");
-                                                                    }
-                                                                }
-                                                            });
                                                             if (outreachChecked) {
                                                                 int i = application.updateVaccinationAppOutreach(barcode, a.getDose_id());
-                                                                Log.d("day13", "called app outreach and resuld is  : " + i);
+                                                                Log.d("day20", "called app outreach and result is  : " + i);
                                                             }
 
 
@@ -522,21 +519,10 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                                             application.registerAudit(BackboneApplication.CHILD_AUDIT, barcode, dateTodayTimestamp,
                                                     application.getLOGGED_IN_USER_ID(), 7);
 
-                                            //a.syncVaccines();
 
-                                            outreachChecked = false;
-                                            AdministerVaccineFragment.this.getActivity().runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    if (cbOutreach.isChecked()) {
-                                                        outreachChecked = true;
-                                                        Log.d("day13", "outreach is checked...........");
-                                                    }
-                                                }
-                                            });
                                             if (outreachChecked) {
                                                 int i = application.updateVaccinationAppOutreach(barcode, a.getDose_id());
-                                                Log.d("day13", "called app outreach and resuld is  : " + i);
+                                                Log.d("day20", "called app outreach and result is  : " + i);
                                             }
 
 

@@ -65,7 +65,7 @@
 
         <FrameLayout
             android:id="@+id/content_frame"
-            android:background="@color/blue_grey_600"
+            android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:foregroundGravity="top"

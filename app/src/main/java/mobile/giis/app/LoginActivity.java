@@ -194,7 +194,7 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
         app.getDatabaseInstance().deleteVaccinationQueueEntriesOfOtherDays(dateNow);
 
         app.LAST_FRAGMENT = "mobile.giis.app.fragments.HomeFragment";
-        app.LAST_FRAGMENT_TITLE = "Home";
+        app.LAST_FRAGMENT_TITLE = getString(R.string.home);
 
         //Starting the repeating synchronisation procedure that happens every 5 minutes
         login_preferences = getSharedPreferences(LOGINPREFERENCE, Context.MODE_PRIVATE);
@@ -387,72 +387,75 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
     protected void startWebService(final CharSequence loginURL , final String username, final String password){
         client.setBasicAuth(username, password, true);
 
-        RequestHandle message = client.get(loginURL.toString(), new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                // This callback is now running within the pool thread execution
-                // scope and not within Android's UI thread, so if we must update
-                // the UI, we'll have to dispatch a runnable to the UI thread.
-                Log.d(TAG, "Error = ");
-                progressDialog.dismiss();
-                toastMessage("Login failed.\nPlease check your details or be online for first login!");
-                loginButton.setEnabled(true);
-            }
+        //new handler in case of login error in the thread
+        handler = new Handler();
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                Log.d(TAG,"receiving data in streams");
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+                try
+                {
+                    BackboneApplication app = (BackboneApplication)getApplication();
+                    int balanceCounter = 0;
+                    DefaultHttpClient httpClient = new DefaultHttpClient();
+                    HttpGet httpGet = new HttpGet(loginURL.toString());
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+loginURL.toString());
+                    httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((username + ":" + password).getBytes(), Base64.NO_WRAP));
+                    HttpResponse httpResponse = httpClient.execute(httpGet);
+                    InputStream inputStream = httpResponse.getEntity().getContent();
+                    Log.d("", loginURL.toString());
 
-                BackboneApplication app = (BackboneApplication)getApplication();
 
-                try {
+                    ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
+                    bais.reset();
                     JsonFactory factory = new JsonFactory();
-                    JsonParser jsonParser = factory.createJsonParser(responseString);
+                    JsonParser jsonParser = factory.createJsonParser(bais);
                     com.fasterxml.jackson.core.JsonToken token = jsonParser.nextToken();
 
-                    int balanceCounter = 0;
-
-                    if (token == JsonToken.START_OBJECT) {
+                    if (token == JsonToken.START_OBJECT){
                         balanceCounter++;
-                        boolean idNextToHfId = false;
-                        while (!(balanceCounter == 0)) {
+                        boolean idNextToHfId =false;
+                        while (!(balanceCounter==0))
+                        {
                             token = jsonParser.nextToken();
 
-                            if (token == JsonToken.START_OBJECT) {
+                            if(token == JsonToken.START_OBJECT){
                                 balanceCounter++;
-                            } else if (token == JsonToken.END_OBJECT) {
+                            }
+                            else if(token == JsonToken.END_OBJECT){
                                 balanceCounter--;
-                            } else if (token == JsonToken.FIELD_NAME) {
+                            }
+                            else if(token == JsonToken.FIELD_NAME){
                                 String object = jsonParser.getCurrentName();
-                                switch (object) {
+                                switch (object){
                                     case "HealthFacilityId":
-                                        token = jsonParser.nextToken();
+                                        token=jsonParser.nextToken();
                                         app.setLoggedInUserHealthFacilityId(jsonParser.getText());
                                         Log.d("", "healthFacilityId is: " + jsonParser.getText());
-                                        idNextToHfId = true;
+                                        idNextToHfId=true;
                                         break;
                                     case "Firstname":
-                                        token = jsonParser.nextToken();
+                                        token=jsonParser.nextToken();
                                         app.setLoggedInFirstname(jsonParser.getText());
                                         Log.d("", "firstname is: " + jsonParser.getText());
                                         break;
                                     case "Lastname":
-                                        token = jsonParser.nextToken();
+                                        token=jsonParser.nextToken();
                                         app.setLoggedInLastname(jsonParser.getText());
                                         Log.d("", "lastname is: " + jsonParser.getText());
                                         break;
                                     case "Username":
-                                        token = jsonParser.nextToken();
+                                        token=jsonParser.nextToken();
                                         app.setLoggedInUsername(jsonParser.getText());
                                         Log.d("", "username is: " + jsonParser.getText());
                                         break;
                                     case "Lastlogin":
-                                        token = jsonParser.nextToken();
+                                        token=jsonParser.nextToken();
                                         Log.d("", "lastlogin is: " + jsonParser.getText());
                                         break;
                                     case "Id":
-                                        if (idNextToHfId) {
-                                            token = jsonParser.nextToken();
+                                        if(idNextToHfId){
+                                            token=jsonParser.nextToken();
                                             app.setLoggedInUserId(jsonParser.getText());
                                             Log.d("", "Id is: " + jsonParser.getText());
                                         }
@@ -465,7 +468,6 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
 
                         Account account = new Account(username, ACCOUNT_TYPE);
                         AccountManager accountManager = AccountManager.get(LoginActivity.this);
-
 //                        boolean accountCreated = accountManager.addAccountExplicitly(account, LoginActivity.this.password, null);
                         boolean accountCreated = accountManager.addAccountExplicitly(account, password, null);
 
@@ -504,9 +506,9 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
                         app.initializeOffline(username, password);
 
                         Intent intent;
-                        if (prefs.getBoolean("synchronization_needed", true)) {
+                        if(prefs.getBoolean("synchronization_needed", true)){
                             intent = new Intent(LoginActivity.this, HomeActivityRevised.class);
-                        } else {
+                        }else{
                             intent = new Intent(LoginActivity.this, HomeActivityRevised.class);
                             evaluateIfFirstLogin(app.getLOGGED_IN_USER_ID());
                         }
@@ -540,10 +542,10 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
                     });
                     e.printStackTrace();
                 }
-
-
             }
         });
+        thread.start();
+
     }
 
     /**

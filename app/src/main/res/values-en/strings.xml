@@ -392,6 +392,9 @@
     <string name="home_logout">Logout</string>
     <string name="error_editing_dob">Error. Cannot Edit</string>
     <string name="error_message_editing_dob">Can not edit birth date of a child already vaccinated</string>
+    <string name="type_scan">Type/Scan</string>
+    <string name="device_camera">User Device Camera</string>
+    <string name="stock_balance">Stock Balance Graph</string>
 
 
 </resources>

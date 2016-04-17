@@ -155,29 +155,29 @@ public class DropoutReportFragment extends Fragment {
                         Cursor cursor1, cursor2, cursor3, cursor4;
                         String SQLBcgCount, SQLMr1Count, SQLPenta1Count, SQLPenta3Count;
 
-                        SQLBcgCount = "SELECT COUNT ("+SQLHandler.VaccinationEventColumns.DOSE_ID +") AS BCG_COUNT FROM vaccination_event "+
+                        SQLBcgCount = "SELECT COUNT (DISTINCT ("+SQLHandler.VaccinationEventColumns.ID +")) AS BCG_COUNT FROM vaccination_event "+
                                 " WHERE strftime('%Y-%m',substr("+SQLHandler.VaccinationEventColumns.VACCINATION_DATE+",7,10), 'unixepoch') =  '"+dateRange+"' "+
                                 " AND "+SQLHandler.VaccinationEventColumns.HEALTH_FACILITY_ID+" = '"+app.getLOGGED_IN_USER_HF_ID()+"'"+
-                                " AND "+SQLHandler.VaccinationEventColumns.VACCINATION_STATUS+" = 'false' "+
-                                " AND "+ SQLHandler.VaccinationEventColumns.DOSE_ID +" = 61";
+                                " AND "+SQLHandler.VaccinationEventColumns.VACCINATION_STATUS+" = 'true' "+
+                                " AND "+ SQLHandler.VaccinationEventColumns.DOSE_ID +" = '61' ";
 
-                        SQLMr1Count = "SELECT COUNT ("+SQLHandler.VaccinationEventColumns.DOSE_ID +") AS MR1_COUNT FROM vaccination_event "+
+                        SQLMr1Count = "SELECT COUNT (DISTINCT("+SQLHandler.VaccinationEventColumns.ID +")) AS MR1_COUNT FROM vaccination_event "+
                                 " WHERE strftime('%Y-%m',substr("+SQLHandler.VaccinationEventColumns.VACCINATION_DATE+",7,10), 'unixepoch') = '"+dateRange+"' "+
                                 " AND "+SQLHandler.VaccinationEventColumns.HEALTH_FACILITY_ID+" = '"+app.getLOGGED_IN_USER_HF_ID()+"'"+
-                                " AND "+SQLHandler.VaccinationEventColumns.VACCINATION_STATUS+" = 'false' "+
-                                " AND "+ SQLHandler.VaccinationEventColumns.DOSE_ID +" = 77";
+                                " AND "+SQLHandler.VaccinationEventColumns.VACCINATION_STATUS+" = 'true' "+
+                                " AND "+ SQLHandler.VaccinationEventColumns.DOSE_ID +" = '77' ";
 
-                        SQLPenta1Count = "SELECT COUNT ("+SQLHandler.VaccinationEventColumns.DOSE_ID +") AS PENTA1_COUNT FROM vaccination_event "+
+                        SQLPenta1Count = "SELECT COUNT (DISTINCT("+SQLHandler.VaccinationEventColumns.ID +")) AS PENTA1_COUNT FROM vaccination_event "+
                                 " WHERE strftime('%Y-%m',substr("+SQLHandler.VaccinationEventColumns.VACCINATION_DATE+",7,10), 'unixepoch') =  '"+dateRange+"' "+
                                 " AND "+SQLHandler.VaccinationEventColumns.HEALTH_FACILITY_ID+" = '"+app.getLOGGED_IN_USER_HF_ID()+"'"+
-                                " AND "+SQLHandler.VaccinationEventColumns.VACCINATION_STATUS+" = 'false' "+
-                                " AND "+ SQLHandler.VaccinationEventColumns.DOSE_ID +" = 66";
+                                " AND "+SQLHandler.VaccinationEventColumns.VACCINATION_STATUS+" = 'true' "+
+                                " AND "+ SQLHandler.VaccinationEventColumns.DOSE_ID +" = '66' ";
 
-                        SQLPenta3Count = "SELECT COUNT ("+SQLHandler.VaccinationEventColumns.DOSE_ID +") AS PENTA3_COUNT FROM vaccination_event "+
+                        SQLPenta3Count = "SELECT COUNT (DISTINCT("+SQLHandler.VaccinationEventColumns.ID +")) AS PENTA3_COUNT FROM vaccination_event "+
                                 " WHERE strftime('%Y-%m',substr("+SQLHandler.VaccinationEventColumns.VACCINATION_DATE+",7,10), 'unixepoch') =  '"+dateRange+"' "+
                                 " AND "+SQLHandler.VaccinationEventColumns.HEALTH_FACILITY_ID+" = '"+app.getLOGGED_IN_USER_HF_ID()+"'"+
-                                " AND "+SQLHandler.VaccinationEventColumns.VACCINATION_STATUS+" = 'false' "+
-                                " AND "+ SQLHandler.VaccinationEventColumns.DOSE_ID +" = 68";
+                                " AND "+SQLHandler.VaccinationEventColumns.VACCINATION_STATUS+" = 'true' "+
+                                " AND "+ SQLHandler.VaccinationEventColumns.DOSE_ID +" = '68' ";
 
                         Log.d("DropoutQueries", SQLBcgCount);
                         Log.d("DropoutQueries", SQLMr1Count);
@@ -213,7 +213,7 @@ public class DropoutReportFragment extends Fragment {
                             cursor4.moveToFirst();
                             row.setPenta3Amount(cursor4.getInt(cursor4.getColumnIndex("PENTA3_COUNT")));
                         }
-//                        row.generateData();
+                        row.generateData();
                         mVar.add(row);
 
                     }while (monthCursor.moveToNext());
@@ -253,7 +253,7 @@ public class DropoutReportFragment extends Fragment {
             TextView pentaPercent = (TextView) v.findViewById(R.id.penta1_penta3_percent_value);
 
             monthValue.setText(returnMonthName(row.getMonthName()));
-            bcgMriNumber.setText(row.getBcgAmount()+ "");
+            bcgMriNumber.setText(row.getBcgNumber()+ "");
             bcgMriPercent.setText(row.getBcgPercent()+ "");
             pentaNumber.setText(row.getPentaNumber() + "");
             pentaPercent.setText(row.getPentaPercent()+"");
@@ -378,14 +378,19 @@ public class DropoutReportFragment extends Fragment {
             double deviderBCG = bcgAmount+0.001;
             double deviderPENTA = penta1Amount + 0.001;
 
+            bcgNumber = bcgAmount - mr1Amount;
+            pentaNumber = penta1Amount - penta3Amount;
+
             try{
                 bcgPercent = ((bcgAmount - mr1Amount)/deviderBCG)*100;
+                bcgPercent = Math.round(bcgPercent * 100) / 100;
             }catch (Exception e){
                 e.printStackTrace();
             }
 
             try{
                 pentaPercent = ((penta1Amount - penta3Amount)/deviderPENTA)*100;
+                pentaPercent = Math.round(pentaPercent * 100) / 100;
             }catch (Exception e){
                 e.printStackTrace();
             }

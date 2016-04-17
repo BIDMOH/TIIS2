@@ -112,6 +112,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
 
+    @Override
+    public SQLiteDatabase getWritableDatabase() {
+        SQLiteDatabase db = super.getWritableDatabase();
+        db.execSQL("PRAGMA automatic_index = false;");
+        return db;
+    }
+
     public static boolean checkIfThereIsDatabaseFile(Context ctx){
         String currentDBPath = "/data/data/" + ctx.getPackageName() + "/databases/giis_mobile.db";
         File currentDB = new File(currentDBPath);
@@ -149,7 +156,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.execSQL("CREATE UNIQUE INDEX index_vaccination_event ON " + Tables.VACCINATION_EVENT + "("+ SQLHandler.VaccinationEventColumns.CHILD_ID +","+ SQLHandler.VaccinationEventColumns.DOSE_ID+")");
 
 
-
             db.execSQL(SQLHandler.SQLWeightTable);
             db.execSQL(SQLHandler.SQLVaccinationQueueTable);
             db.execSQL(SQLHandler.SQLResponseTypeTable);
@@ -160,6 +166,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.execSQL(SQLHandler.SQLFillUitValuesTable);
 
             db.execSQL(SQLHandler.SQLMonthlyPlanView);
+
             db.execSQL(SQLHandler.SQLChildSupplements);
             db.execSQL(SQLHandler.SQLItemLot);
             db.execSQL(SQLHandler.SQLHealthFacilityBalance);
@@ -2829,7 +2836,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public String getChildrenFromOtherHFIDThanLoggedUser(String hfid) {
         //Query on Child Table
         String selectQuery =
-                " SELECT ID FROM child WHERE HEALTH_FACILITY_ID  != '"+hfid+"' AND HEALTH_FACILITY_ID <> 0";
+                " SELECT BARCODE_ID FROM child WHERE HEALTH_FACILITY_ID  != '"+hfid+"' AND HEALTH_FACILITY_ID <> 0";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -2922,7 +2929,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 " FROM vaccination_event as ve inner join dose as d " +
                 "ON ve.dose_id = d.ID " +
                 " WHERE v.APPOINTMENT_ID = ve.APPOINTMENT_ID AND ve.VACCINATION_STATUS = 'true'  " +
-                " AND strftime('%Y-%m-%d',substr(ve.VACCINATION_DATE ,7,10), 'unixepoch') = strftime('%Y-%m-%d','"+dateVar+"')) as VACCINES " +
+                " AND strftime('%Y-%m-%d',substr(ve.VACCINATION_DATE ,7,10), 'unixepoch') = strftime('%Y-%m-%d','"+dateVar+"')) as VACCINES, " +
+                "( SELECT va.OUTREACH FROM vaccination_event vee inner join vaccination_appointment as va ON vee.APPOINTMENT_ID = va.ID "+
+                " WHERE v.APPOINTMENT_ID = vee.APPOINTMENT_ID AND vee.VACCINATION_STATUS = 'true'  " +
+                " AND strftime('%Y-%m-%d',substr(vee.VACCINATION_DATE ,7,10), 'unixepoch') = strftime('%Y-%m-%d','"+dateVar+"')) as OUTREACH " +
                 " FROM VACCINATION_EVENT v  join CHILD " +
                 " on v.CHILD_ID= CHILD.ID  " +
                 " WHERE strftime('%Y-%m-%d',substr(VACCINATION_DATE ,7,10), 'unixepoch') = strftime('%Y-%m-%d','"+dateVar+"')" +
@@ -2940,6 +2950,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 children.setName(cursor.getString(1));
                 children.setLastname(cursor.getString(2));
                 children.setVaccine(cursor.getString(3));
+                children.setOutreach(cursor.getString(4));
                 childrenList.add(children);
             } while (cursor.moveToNext());
         }

@@ -36,7 +36,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/scan_camera_button"
                     android:layout_marginTop="8dp"
-                    android:text="Use Device Camera"
+                    android:text="@string/device_camera"
                     android:textSize="18sp"
                     android:layout_marginLeft="32dp"/>
 
@@ -59,7 +59,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="32dp"
                     android:layout_marginBottom="16dp"
-                    android:text="Search"/>
+                    android:text="@string/search"/>
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:focusableInTouchMode="true"
@@ -68,7 +68,7 @@
                     android:id="@+id/met_home_barcode"
                     android:focusable="true"
                     android:inputType="number"
-                    android:hint="Type / Scan Barcode"
+                    android:hint="@string/type_scan"
                     app:met_floatingLabelText="Barcode"
                     app:met_floatingLabel="normal"
                     app:met_floatingLabelTextColor="@color/light_blue_500"
@@ -169,7 +169,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
                     android:textColor="@color/blue_500"
-                    android:text="Stock Balance Graph"/>
+                    android:text="@string/stock_balance"/>
 
                 <com.github.mikephil.charting.charts.BarChart
                     android:id="@+id/home_stock_chart"

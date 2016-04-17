@@ -253,8 +253,9 @@
     <string name="home_stock">Stoku</string>
     <string name="home_logout">Ondoka</string>
     <string name="pages">Pages:</string>
-
-
+    <string name="type_scan">Andika/Skani</string>
+    <string name="device_camera">Tumia Kamera ya Simu</string>
+    <string name="stock_balance">Chati ya Stoku</string>
 
     <string-array name="languages">
         <item>Swahili(Set)</item>

@@ -23,7 +23,7 @@ package mobile.giis.app.entity;
  */
 public class ModelImmunizedChild {
 
-    private String name,lastname,vaccine,appId;
+    private String name,lastname,vaccine,appId, outreach;
 
     public String getVaccine() {
         return vaccine;
@@ -55,6 +55,14 @@ public class ModelImmunizedChild {
 
     public void setAppId(String appId) {
         this.appId = appId;
+    }
+
+    public String getOutreach() {
+        return outreach;
+    }
+
+    public void setOutreach(String outreach) {
+        this.outreach = outreach;
     }
 
     public ModelImmunizedChild(String appId, String name, String lastname, String vaccine) {

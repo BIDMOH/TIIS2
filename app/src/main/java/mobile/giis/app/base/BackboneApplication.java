@@ -113,12 +113,12 @@ public class BackboneApplication extends Application {
     /**
      * Testing WCF
      */
-    public static final String WCF_URL = "https://ec2-54-187-21-117.us-west-2.compute.amazonaws.com/SVC/";
+//    public static final String WCF_URL = "https://ec2-54-187-21-117.us-west-2.compute.amazonaws.com/SVC/";
     /**
      * Live WCF
      */
 
-//    public static final String WCF_URL = "https://ec2-52-11-215-89.us-west-2.compute.amazonaws.com/SVC/";
+    public static final String WCF_URL = "https://ec2-52-11-215-89.us-west-2.compute.amazonaws.com/SVC/";
 
     public static final String USER_MANAGEMENT_SVC = "UserManagement.svc/";
     public static final String PLACE_MANAGEMENT_SVC = "PlaceManagement.svc/";
@@ -822,7 +822,7 @@ public class BackboneApplication extends Application {
                     stmt1.bindString(8, vaccinationAppointment.getOutreach());
                     stmt1.bindString(9, vaccinationAppointment.getScheduledDate());
                     stmt1.bindString(10, vaccinationAppointment.getScheduledFacilityId());
-                    Log.d("day20", "Out Reach for "+vaccinationAppointment.getChild()+" is : "+vaccinationAppointment.getOutreach());
+                    Log.d("day20", "Out Reach for "+vaccinationAppointment.getChildId()+" is : "+vaccinationAppointment.getOutreach());
                     stmt1.execute();
                     stmt1.clearBindings();
 
@@ -2489,65 +2489,10 @@ public class BackboneApplication extends Application {
 
     public int updateVaccinationAppOutreach(String childBarcode, String doseId) {
 
-//        final StringBuilder webServiceUrl;
-//        webServiceUrl = new StringBuilder(WCF_URL).append("VaccinationAppointmentManagement.svc/UpdateVaccinationApp?outreach=true&userId=")
-//                .append(getLOGGED_IN_USER_ID())
-//                .append("&barcode=").append(childBarcode)
-//                .append("&doseId=").append(doseId);
-//
-//
-//        Log.e("service appointment outreach",webServiceUrl+"");
-//        try
-//        {
-//            DefaultHttpClient httpClient = new DefaultHttpClient();
-//            HttpGet httpGet = new HttpGet(webServiceUrl.toString());
-//            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+webServiceUrl.toString());
-//            httpGet.setHeader("Authorization","Basic " + Base64.encodeToString((LOGGED_IN_USERNAME + ":" + LOGGED_IN_USER_PASS).getBytes(), Base64.NO_WRAP));
-//            HttpResponse httpResponse = httpClient.execute(httpGet);
-//            if(httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-//                getDatabaseInstance().addPost(webServiceUrl.toString(),1);
-//                Utils.writeNetworkLogFileOnSD(
-//                        Utils.returnDeviceIdAndTimestamp(getApplicationContext())
-//                                + " StatusCode " + httpResponse.getStatusLine().getStatusCode()
-//                                + " ReasonPhrase " + httpResponse.getStatusLine().getReasonPhrase()
-//                                + " ProtocolVersion " + httpResponse.getStatusLine().getProtocolVersion());
-//            }
-//            InputStream inputStream = httpResponse.getEntity().getContent();
-//            String result =  Utils.getStringFromInputStream(inputStream);
-//            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+result);
-//            JSONObject jobj = new JSONObject(result);
-//            int idReturned = jobj.getInt("id");
-//            // if any check is needed to be performed after communicating here you have the result parsed into this int
-//            return idReturned;
-//
-//        }
-//        catch (JsonGenerationException e) {
-//            e.printStackTrace();
-//            return -1;
-//        }
-//        catch (JsonMappingException e){
-//            e.printStackTrace();
-//            return -1;
-//        }
-//        catch (IOException e){
-//            e.printStackTrace();
-//            if(webServiceUrl != null){
-//                getDatabaseInstance().addPost(webServiceUrl.toString(),1);
-//            }
-//            return -1;
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//            return -1;
-//        }
-//        catch (NullPointerException e){
-//            e.printStackTrace();
-//            return -1;
-//        }
-
-
+//TODO remove hardcoding of userID
         final StringBuilder webServiceUrl;
         webServiceUrl = new StringBuilder(WCF_URL).append("VaccinationAppointmentManagement.svc/UpdateVaccinationApp?outreach=true&userId=")
-                .append(getLOGGED_IN_USER_ID())
+                .append("12832")
                 .append("&barcode=").append(childBarcode)
                 .append("&doseId=").append(doseId);
 
@@ -2564,6 +2509,7 @@ public class BackboneApplication extends Application {
                     getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
                 }
             }
+
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String result) {

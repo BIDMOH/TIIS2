@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -27,7 +26,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.UUID;
@@ -35,9 +33,7 @@ import java.util.concurrent.TimeUnit;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
 import mobile.giis.app.ChildDetailsActivity;
-import mobile.giis.app.HomeActivityRevised;
 import mobile.giis.app.R;
-import mobile.giis.app.ViewChildActivity;
 import mobile.giis.app.adapters.PlacesOfBirthAdapter;
 import mobile.giis.app.adapters.SingleTextViewAdapter;
 import mobile.giis.app.base.BackboneActivity;
@@ -70,7 +66,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
     int spPlacePos, spVillagePos , notApplicablePos = -1;
 
-    private boolean isSavingDate = false;
+    private boolean isSavingData = false;
 
     protected MaterialEditText etbarcode, etFirstName, etSurname, etMotherFirstName, etMotherSurname, etPhone, etNotes,etFirstname2;
 
@@ -227,8 +223,8 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         }
 
         if(v.getId() == R.id.reg_submit_btn){
-            if(!isSavingDate) {
-                isSavingDate = true;
+            if(!isSavingData) {
+                isSavingData = true;
                 BackboneApplication app = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
                 DatabaseHandler mydb = app.getDatabaseInstance();
 
@@ -242,7 +238,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                                     }
                                 });
                         alertDialogBuilder.show();
-                        isSavingDate=false;
+                        isSavingData =false;
                         return;
                     }
 
@@ -250,14 +246,14 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                     //kontrrollojme nese kemi ne db kete child me keto te dhena,nese true nxjerim dialog,nese false bejme regjistrimin
                     if (mydb.isChildinDb(etSurname.getText().toString(), bdate.getTime(), gender_val)) {
                         createDialogAlertIsInChild().show();
-                        isSavingDate=false;
+                        isSavingData =false;
                     } else {
                         askServerIfthereIsSimilarChild(etSurname.getText().toString(), bdate, gen);
                         Log.e("CheckInSever", "CheckInSever");
                     }
 
                 }else{
-                    isSavingDate=false;
+                    isSavingData =false;
                 }
             }
 
@@ -588,7 +584,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
             }else{
 //                progBar.setVisibility(View.GONE);
             }
-            isSavingDate=false;
+            isSavingData =false;
 
         }
 
