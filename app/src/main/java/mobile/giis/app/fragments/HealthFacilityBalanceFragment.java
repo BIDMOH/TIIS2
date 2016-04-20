@@ -183,6 +183,7 @@ public class HealthFacilityBalanceFragment extends Fragment {
     public void showDialogWhenSavedSucc() {
         final Dialog d = new Dialog(HealthFacilityBalanceFragment.this.getActivity());
         d.setContentView(R.layout.layout_stock_child);
+        d.setCancelable(false);
         TextView tvView = (TextView)d.findViewById(R.id.textView2);
         tvView.setText(getString(R.string.saved_successfully));
 
