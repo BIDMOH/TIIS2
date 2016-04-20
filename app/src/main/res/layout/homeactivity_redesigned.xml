@@ -100,7 +100,7 @@
             android:textStyle="bold"
             android:textColor="@color/light_blue_600"
             android:layout_marginLeft="32dp"
-            android:text="TImR V 2.0.0"/>
+            android:text="@string/version_no"/>
 
 
     </RelativeLayout>
