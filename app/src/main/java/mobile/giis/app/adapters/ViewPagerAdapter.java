@@ -25,7 +25,7 @@ import mobile.giis.app.fragments.VaccinationCoverageFragment;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
-    private final String[] TITLES = { "Immunized Children", "Immunization Chart", "Vaccination Coverage", "Stock","Health Facility Visits and Vaccination Summary","Health Facility Immunization Coverage Report","Health Facility Immunization Coverage Chart", "Defaulters List", "Dropout Report" };
+    private final String[] TITLES = { "Visits and Vaccination Summary","Immunization Coverage Report", "Defaulters List", "Dropout Report", "Stock", "Immunized Children", "Immunization Chart", "Vaccination Coverage" };
 
     public ViewPagerAdapter(FragmentManager fm) {
         super(fm);
@@ -45,31 +45,31 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         Log.d("ChartsLog", position+"");
         if (position == 0){
-            return ImmunizationChartFragment.newInstance();
-        }
-        else if (position == 1){
-            return ImmunizedChildrenFragment.newInstance();
-        }
-        else if (position == 2){
-            return VaccinationCoverageFragment.newInstance();
-        }
-        else if (position == 3){
-            return StockTabFragment.newInstance();
-        }
-        else if (position == 4){
             return HealthFacilityVisitsAndVaccinationSummaryFragment.newInstance(position);
         }
-        else if (position == 5){
+        else if (position == 1){
             return HealthFacilityImmunizationCoverageReportFragment.newInstance(position);
         }
-        else if (position == 6){
-            return HealthFacilityImmunizationCoverageChartFragment.newInstance(position);
-        }
-        else if (position == 7){
+//        else if (position == 2){
+//            return HealthFacilityImmunizationCoverageChartFragment.newInstance(position);
+//        }
+        else if (position == 2){
             return DefaultersReportFragment.newInstance(position);
         }
-        else if (position == 8){
+        else if (position == 3){
             return DropoutReportFragment.newInstance(position);
+        }
+        else if (position == 4){
+            return StockTabFragment.newInstance();
+        }
+        else if (position == 5){
+            return ImmunizationChartFragment.newInstance();
+        }
+        else if (position == 6){
+            return ImmunizedChildrenFragment.newInstance();
+        }
+        else if (position == 7){
+            return VaccinationCoverageFragment.newInstance();
         }
         else{
             return TabFragment.newInstance(position);

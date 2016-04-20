@@ -77,11 +77,6 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
         healthFacility.setText(mydb.getHealthCenterName(app.getLOGGED_IN_USER_HF_ID()));
 //        reportingPeriod.setText(mydb.getUserHFIDByUserId(app.getLOGGED_IN_USER_ID()));
 
-
-
-
-
-
         return rowview;
     }
 

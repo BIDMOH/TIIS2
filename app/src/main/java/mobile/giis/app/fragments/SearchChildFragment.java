@@ -108,6 +108,8 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
     public int currentChildPosition = -1;
     Button previousBtn, nextBtn, searchOutsideFacilityButton;
 
+    CardView previousCard, forwardCard;
+
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_search_child, null);
         setUpView(root);
@@ -118,6 +120,8 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
         nextLayout      = (RelativeLayout) root.findViewById(R.id.next_rl);
         previousBtn     = (Button) root.findViewById(R.id.previous_btn);
         nextBtn         = (Button) root.findViewById(R.id.next_btn);
+        previousCard    = (CardView) root.findViewById(R.id.previous_card);
+        forwardCard     = (CardView) root.findViewById(R.id.forward_card);
 
 //        nextBtn.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -486,6 +490,13 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
             } catch (Exception e) {
             }
 
+            if (currentCount.equals("0")){
+                previousCard.setVisibility(View.GONE);
+            }else{
+                previousCard.setVisibility(View.VISIBLE);
+            }
+
+
         }
 
         @Override
@@ -504,6 +515,8 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
             if((children == null)){
                 pbar.setVisibility(View.GONE);
                 lvChildrenSearchResults.setAdapter(null);
+                previousCard.setVisibility(View.GONE);
+                forwardCard.setVisibility(View.GONE);
             }else{
                 serverdata = false;
                 childListLayout.setVisibility(View.VISIBLE);
@@ -517,6 +530,11 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
                     adapter.notifyDataSetChanged();
                 }
                 pbar.setVisibility(View.GONE);
+                if (children.size() < 10){
+                    forwardCard.setVisibility(View.GONE);
+                }else{
+                    forwardCard.setVisibility(View.VISIBLE);
+                }
             }
 
         }

@@ -253,10 +253,18 @@ public class DropoutReportFragment extends Fragment {
             TextView pentaPercent = (TextView) v.findViewById(R.id.penta1_penta3_percent_value);
 
             monthValue.setText(returnMonthName(row.getMonthName()));
+
             bcgMriNumber.setText(row.getBcgNumber()+ "");
             bcgMriPercent.setText(row.getBcgPercent()+ "");
+            if (row.getBcgPercent() > 10){
+                bcgMriPercent.setBackgroundColor(DropoutReportFragment.this.getActivity().getResources().getColor(R.color.red_400));
+            }
+
             pentaNumber.setText(row.getPentaNumber() + "");
             pentaPercent.setText(row.getPentaPercent()+"");
+            if (row.getPentaPercent() > 10){
+                pentaPercent.setBackgroundColor(DropoutReportFragment.this.getActivity().getResources().getColor(R.color.red_400));
+            }
 
             dropoutTable.addView(v);
         }
@@ -375,8 +383,8 @@ public class DropoutReportFragment extends Fragment {
 
         public void generateData(){
 
-            double deviderBCG = bcgAmount+0.001;
-            double deviderPENTA = penta1Amount + 0.001;
+            double deviderBCG = bcgAmount+0.000000001;
+            double deviderPENTA = penta1Amount + 0.000000001;
 
             bcgNumber = bcgAmount - mr1Amount;
             pentaNumber = penta1Amount - penta3Amount;
