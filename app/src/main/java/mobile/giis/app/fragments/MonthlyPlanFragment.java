@@ -522,7 +522,11 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
             naming = db.getReadableDatabase().rawQuery("SELECT BARCODE_ID, FIRSTNAME1 , LASTNAME1,FIRSTNAME2 FROM child WHERE ID=?", new String[]{a.getChild_id()});
             if (naming != null) {
                 if (naming.moveToFirst()) {
-                    name.setText(naming.getString(naming.getColumnIndex("FIRSTNAME1")) + " " + naming.getString(naming.getColumnIndex("FIRSTNAME2")) + " " + naming.getString(naming.getColumnIndex("LASTNAME1")));
+                    String childName = "";
+                    if (!(naming.getString(naming.getColumnIndex("FIRSTNAME1")) == null && naming.getString(naming.getColumnIndex("FIRSTNAME2")) == null && naming.getString(naming.getColumnIndex("LASTNAME1")) ==  null)){
+                        childName = naming.getString(naming.getColumnIndex("FIRSTNAME1"))+ " "+naming.getString(naming.getColumnIndex("FIRSTNAME2"))+" "+naming.getString(naming.getColumnIndex("LASTNAME1"));
+                    }
+                    name.setText(childName);
                     barcode_id = naming.getString(naming.getColumnIndex("BARCODE_ID"));
                     setChildBarcode(barcode_id);
                 }

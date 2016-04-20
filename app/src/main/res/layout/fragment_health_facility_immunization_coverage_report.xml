@@ -32,7 +32,7 @@
                     android:gravity="center"
                     android:paddingTop="16dp"
                     android:paddingBottom="16dp"
-                    android:text="Health facility Immunization Coverage Report"
+                    android:text="Immunization Coverage Report"
                     android:textStyle="bold"/>
 
                 <RelativeLayout
@@ -211,7 +211,7 @@
                                 android:layout_weight="0.8"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/the_title_value"
-                                android:text="Health facility Immunization Coverage Report"
+                                android:text="Immunization Coverage Report"
                                 android:paddingTop="4dp"
                                 android:paddingBottom="4dp"/>
 
