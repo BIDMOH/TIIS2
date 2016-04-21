@@ -19,7 +19,7 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="mobile.giis.app"
+    package="mobile.tiis.app"
     android:installLocation="auto"
     android:largeHeap="true">
 
@@ -68,21 +68,21 @@
         android:smallScreens="true"
         android:anyDensity="true"/>
 
-    <application android:name="mobile.giis.app.base.BackboneApplication"
+    <application android:name="mobile.tiis.app.base.BackboneApplication"
         android:icon="@drawable/newloginlogo"
         android:logo="@drawable/newloginlogo"
         android:theme="@style/TIISTheme"
         android:label="@string/app_name"
         android:allowBackup="true">
 
-        <activity android:name="mobile.giis.app.LoginActivity"
+        <activity android:name="mobile.tiis.app.LoginActivity"
             android:label="Tanzania ImR"
             android:stateNotNeeded="true"
             android:configChanges="keyboard|keyboardHidden|uiMode|screenSize|smallestScreenSize"
             android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
 
-        <activity android:name="mobile.giis.app.HomeActivity"
+        <activity android:name="mobile.tiis.app.HomeActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -91,7 +91,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".HomeActivityRevised"
+        <activity android:name="mobile.tiis.app.HomeActivityRevised"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:windowSoftInputMode="stateAlwaysHidden">
             <action android:name="android.intent.action.MAIN" />
@@ -99,100 +99,100 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </activity>
 
-        <activity android:name="mobile.giis.app.ScanHandlerActivity"
+        <activity android:name="mobile.tiis.app.ScanHandlerActivity"
             android:screenOrientation="user"
             android:windowSoftInputMode="adjustResize">
         </activity>
 
-        <activity android:name="mobile.giis.app.SearchChildActivity"
+        <activity android:name="mobile.tiis.app.SearchChildActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize">
         </activity>
 
-        <activity android:name="mobile.giis.app.SupplementsActivity"
+        <activity android:name="mobile.tiis.app.SupplementsActivity"
             android:screenOrientation="user">
         </activity>
 
-        <activity android:name="mobile.giis.app.AefiActivity"
+        <activity android:name="mobile.tiis.app.AefiActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize">
         </activity>
 
-        <activity android:name="mobile.giis.app.ImmunizationCardActivity"
+        <activity android:name="mobile.tiis.app.ImmunizationCardActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize">
         </activity>
-        <activity android:name="mobile.giis.app.ImmunizedChildrenActivity"
+        <activity android:name="mobile.tiis.app.ImmunizedChildrenActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:windowSoftInputMode="adjustResize" >
         </activity>
 
-        <activity android:name="mobile.giis.app.SearchChildResultActivity"
+        <activity android:name="mobile.tiis.app.SearchChildResultActivity"
             android:screenOrientation="user">
         </activity>
 
-        <activity android:name="mobile.giis.app.RegisterChildActivity"
+        <activity android:name="mobile.tiis.app.RegisterChildActivity"
             android:screenOrientation="user">
         </activity>
 
-        <activity android:name="mobile.giis.app.VaccinationQueueActivity"
+        <activity android:name="mobile.tiis.app.VaccinationQueueActivity"
             android:screenOrientation="user">
         </activity>
 
-        <activity android:name="mobile.giis.app.ViewAppointmentActivity"
+        <activity android:name="mobile.tiis.app.ViewAppointmentActivity"
             android:screenOrientation="user">
         </activity>
 
-        <activity android:name="mobile.giis.app.MonthlyPlanActivity"
+        <activity android:name="mobile.tiis.app.MonthlyPlanActivity"
             android:screenOrientation="user">
         </activity>
 
-        <activity android:name="mobile.giis.app.StockActivity"
+        <activity android:name="mobile.tiis.app.StockActivity"
             android:screenOrientation="user">
         </activity>
-        <activity android:name="mobile.giis.app.StockAdjustmentReasonsActivity"
-            android:screenOrientation="user">
-        </activity>
-
-        <activity android:name="mobile.giis.app.AdministerVaccinesOfflineActivity"
+        <activity android:name="mobile.tiis.app.StockAdjustmentReasonsActivity"
             android:screenOrientation="user">
         </activity>
 
-        <activity android:name="mobile.giis.app.ScanResultActivity"
+        <activity android:name="mobile.tiis.app.AdministerVaccinesOfflineActivity"
             android:screenOrientation="user">
         </activity>
 
-        <activity android:name="mobile.giis.app.AdministerVaccinesActivity"
-            android:screenOrientation="user">
-        </activity>
-        <activity android:name=".StockMenuActivity"
-            android:screenOrientation="user">
-        </activity>
-        <activity android:name="mobile.giis.app.AdministerVaccines2"
+        <activity android:name="mobile.tiis.app.ScanResultActivity"
             android:screenOrientation="user">
         </activity>
 
-        <activity android:name="mobile.giis.app.WeightActivity"
+        <activity android:name="mobile.tiis.app.AdministerVaccinesActivity"
+            android:screenOrientation="user">
+        </activity>
+        <activity android:name="mobile.tiis.app.StockMenuActivity"
+            android:screenOrientation="user">
+        </activity>
+        <activity android:name="mobile.tiis.app.AdministerVaccines2"
+            android:screenOrientation="user">
+        </activity>
+
+        <activity android:name="mobile.tiis.app.WeightActivity"
             android:screenOrientation="user"
             android:windowSoftInputMode="adjustResize">
         </activity>
 
-        <activity android:name="mobile.giis.app.ViewChildActivity"
+        <activity android:name="mobile.tiis.app.ViewChildActivity"
             android:screenOrientation="user"
             android:windowSoftInputMode="adjustResize">
         </activity>
 
         //services
         <service
-            android:name="mobile.giis.app.helpers.NetworkStatusService"
+            android:name="mobile.tiis.app.helpers.NetworkStatusService"
             android:label="network_status_service">
         </service>
 
         <service
-            android:name=".postman.SynchronizationService2">
+            android:name="mobile.tiis.app.postman.SynchronizationService2">
         </service>
 
 
-        <receiver android:name=".postman.Alarm" />
+        <receiver android:name="mobile.tiis.app.postman.Alarm" />
         <service
-            android:name="mobile.giis.app.authentication.LoginAuthenticationService"
+            android:name="mobile.tiis.app.authentication.LoginAuthenticationService"
             android:exported="true"
             android:process=":auth">
             <intent-filter>
@@ -204,57 +204,57 @@
                 android:resource="@xml/authenticator" />
         </service>
 
-        <receiver android:name="mobile.giis.app.postman.RoutineAlarmReceiver" >
+        <receiver android:name="mobile.tiis.app.postman.RoutineAlarmReceiver" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
         </receiver>
 
         <service
-            android:name="mobile.giis.app.postman.SynchronisationService"
+            android:name="mobile.tiis.app.postman.SynchronisationService"
             android:exported="false" >
         </service>
         <service
-            android:name="mobile.giis.app.postman.CheckForChangesSynchronisationService"
+            android:name="mobile.tiis.app.postman.CheckForChangesSynchronisationService"
             android:exported="false"
             >
         </service>
 
         <activity
-            android:name=".HealthFacilityBalanceChartActivity"
+            android:name="mobile.tiis.app.HealthFacilityBalanceChartActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:windowSoftInputMode="adjustResize" >
         </activity>
 
         <activity
-            android:name=".VaccinationCoverageActivity"
+            android:name="mobile.tiis.app.VaccinationCoverageActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:windowSoftInputMode="adjustResize" >
         </activity>
 
         <activity
-            android:name=".ReportsActivity"
+            android:name="mobile.tiis.app.ReportsActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:windowSoftInputMode="adjustResize" >
         </activity>
 
-        <activity android:name=".ChildDetailsActivity"
-            android:parentActivityName=".HomeActivityRevised">
+        <activity android:name="mobile.tiis.app.ChildDetailsActivity"
+            android:parentActivityName="mobile.tiis.app.HomeActivityRevised">
         </activity>
 
-        <activity android:name=".StockActivityRevised"
+        <activity android:name="mobile.tiis.app.StockActivityRevised"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:parentActivityName=".HomeActivityRevised">
+            android:parentActivityName="mobile.tiis.app.HomeActivityRevised">
         </activity>
 
-        <activity android:name=".ReportsActivityRevised"
+        <activity android:name="mobile.tiis.app.ReportsActivityRevised"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="stateAlwaysHidden"
-            android:parentActivityName=".HomeActivityRevised">
+            android:parentActivityName="mobile.tiis.app.HomeActivityRevised">
         </activity>
 
-        <activity android:name=".AdministerVaccineOfflineRevisedActivity"
-            android:parentActivityName=".HomeActivityRevised">
+        <activity android:name="mobile.tiis.app.AdministerVaccineOfflineRevisedActivity"
+            android:parentActivityName="mobile.tiis.app.HomeActivityRevised">
         </activity>
 
     </application>

@@ -1,4 +1,4 @@
-package mobile.giis.app;
+package mobile.tiis.app;
 
 import org.junit.Test;
 

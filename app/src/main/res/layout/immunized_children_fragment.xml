@@ -77,13 +77,13 @@
 
                             </RelativeLayout>
 
-                            <mobile.giis.app.CustomViews.NestedListView
+                            <mobile.tiis.app.CustomViews.NestedListView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/immunized_children_list"
                                 android:scrollbars="none">
 
-                            </mobile.giis.app.CustomViews.NestedListView>
+                            </mobile.tiis.app.CustomViews.NestedListView>
 
                         </RelativeLayout>
                     </LinearLayout>
@@ -190,13 +190,13 @@
 
                             </RelativeLayout>
 
-                            <mobile.giis.app.CustomViews.NestedListView
+                            <mobile.tiis.app.CustomViews.NestedListView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/immunizations_list"
                                 android:scrollbars="none">
 
-                            </mobile.giis.app.CustomViews.NestedListView>
+                            </mobile.tiis.app.CustomViews.NestedListView>
 
                         </RelativeLayout>
                     </LinearLayout>

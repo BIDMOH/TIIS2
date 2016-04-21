@@ -335,7 +335,7 @@
 
             </HorizontalScrollView>
 
-            <mobile.giis.app.CustomViews.NestedListView
+            <mobile.tiis.app.CustomViews.NestedListView
                 android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
