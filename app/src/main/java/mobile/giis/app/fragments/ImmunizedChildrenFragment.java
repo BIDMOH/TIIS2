@@ -192,7 +192,7 @@ public class ImmunizedChildrenFragment extends Fragment implements OnChartValueS
         }else{
             emptyImmunizedChildren.setVisibility(View.GONE);
         }
-
+        Log.d("coze","refreshing snippet");
         immChildAdapter                 = new ImmunizedChildrenListAdapter(ImmunizedChildrenFragment.this.getActivity(), listOfImmunizedChildren);
 
         setListViewHeightBasedOnChildren(immChildrenList);
@@ -234,6 +234,7 @@ public class ImmunizedChildrenFragment extends Fragment implements OnChartValueS
     }
 
     private void refreshImmunizedChildren(String mDate){
+        Log.d("coze","refreshing");
         listOfImmunizedChildren = mydb.getImmunizedChildren(mDate ,app);
         if(!(listOfImmunizedChildren.size() > 0)){
             emptyImmunizedChildren.setVisibility(View.VISIBLE);

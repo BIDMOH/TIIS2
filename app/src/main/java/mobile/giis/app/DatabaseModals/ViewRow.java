@@ -14,6 +14,7 @@ public class ViewRow {
     private int outsideCatchmentMale;
     private int outsideCatchmentFemale;
     private int expectedCatchmentTotal;
+    private int cummulativeTotal;
 
     public Dose getDose() {
         return dose;
@@ -61,5 +62,13 @@ public class ViewRow {
 
     public void setExpectedCatchmentTotal(int expectedCatchmentTotal) {
         this.expectedCatchmentTotal = expectedCatchmentTotal;
+    }
+
+    public int getCummulativeTotal() {
+        return cummulativeTotal;
+    }
+
+    public void setCummulativeTotal(int cummulativeTotal) {
+        this.cummulativeTotal = cummulativeTotal;
     }
 }

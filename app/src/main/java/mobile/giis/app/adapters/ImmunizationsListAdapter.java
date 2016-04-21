@@ -58,8 +58,6 @@ public class ImmunizationsListAdapter extends BaseAdapter {
         List<String> childreValues = new ArrayList<>();
 
         for (NewChartDataTable a : newChartDataTables){
-            Log.d("ARSENALTAG", "Dose number is : "+a.getDosenumber());
-            Log.d("ARSENALTAG", "Label is : "+a.getLabel());
             if(a.getLabel().equals(items.get(position))){
                 children.add(a.getDosenumber());
                 childreValues.add(a.getValue()+"");

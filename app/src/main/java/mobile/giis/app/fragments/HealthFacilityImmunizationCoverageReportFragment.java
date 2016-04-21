@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -53,11 +54,12 @@ public class HealthFacilityImmunizationCoverageReportFragment extends Fragment {
     final DatePickerDialog fromDatePicker = new DatePickerDialog();
     final DatePickerDialog toDatePicker = new DatePickerDialog();
 
-    private String toDateString="",fromDateString="";
+    private String toDateString="",fromDateString="",cummulativeDateString="";
     private EditText editTextUsedToRequestFocus;
     private LayoutInflater inflater;
     private LinearLayout chart_list;
-
+    private EditText populationValue;
+    private int populationV;
     public static HealthFacilityImmunizationCoverageReportFragment newInstance(int position) {
         HealthFacilityImmunizationCoverageReportFragment f = new HealthFacilityImmunizationCoverageReportFragment();
         Bundle b = new Bundle();
@@ -104,6 +106,7 @@ public class HealthFacilityImmunizationCoverageReportFragment extends Fragment {
         reportingPeriod = (TextView) v.findViewById(R.id.period_title);
         title           = (TextView) v.findViewById(R.id.the_title);
         progressBar     = (ProgressBar) v.findViewById(R.id.progres_bar);
+        populationValue= (EditText)v.findViewById(R.id.population_value);
         chartList     = v.findViewById(R.id.chartList);
 
         metDOBFrom              = (MaterialEditText) v.findViewById(R.id.met_dob_from);
@@ -122,15 +125,35 @@ public class HealthFacilityImmunizationCoverageReportFragment extends Fragment {
 
                         Calendar toCalendar = Calendar.getInstance();
                         toCalendar.set(year, monthOfYear, dayOfMonth);
+
+                        Calendar cummulative = Calendar.getInstance();
+                        cummulative.set(year,0,1);
+                        cummulativeDateString = ((cummulative.getTimeInMillis() - 24*60*60*1000) / 1000) + "";
+
+
                         fromDatePicker.setMaxDate(toCalendar);
                         toDateString = (toCalendar.getTimeInMillis() / 1000) + "";
                         editTextUsedToRequestFocus.requestFocus();
 
-                        if (!fromDateString.equals("")) {
-                            chart_view.setVisibility(View.VISIBLE);
-                            new FilterList().execute(app.getLOGGED_IN_USER_HF_ID(), fromDateString, toDateString);
-                        } else {
+                        if (!fromDateString.equals("") && !populationValue.getText().toString().equals("")) {
+                            try {
+                                populationV = Integer.parseInt(populationValue.getText().toString());
+                                chart_view.setVisibility(View.VISIBLE);
+                                new FilterList().execute(app.getLOGGED_IN_USER_HF_ID(), fromDateString, toDateString, cummulativeDateString);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        } else if(populationValue.getText().toString().equals("")){
                             final Snackbar snackbar = Snackbar.make(rowview, "Please select a start date to view the chart", Snackbar.LENGTH_LONG);
+                            snackbar.setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    snackbar.dismiss();
+                                }
+                            });
+                            snackbar.show();
+                        } else {
+                            final Snackbar snackbar = Snackbar.make(rowview, "Please enter the monthly vaccination population number.", Snackbar.LENGTH_LONG);
                             snackbar.setAction("OK", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -157,15 +180,31 @@ public class HealthFacilityImmunizationCoverageReportFragment extends Fragment {
 
                         Calendar fromCalendar = Calendar.getInstance();
                         fromCalendar.set(year, monthOfYear, dayOfMonth);
+
+                        Calendar cummulative = Calendar.getInstance();
+                        cummulative.set(year,0,1);
+                        cummulativeDateString = ((cummulative.getTimeInMillis() - 24*60*60*1000) / 1000) + "";
+
+
                         toDatePicker.setMinDate(fromCalendar);
                         fromDateString = ((fromCalendar.getTimeInMillis() - 24*60*60*1000) / 1000) + "";
                         editTextUsedToRequestFocus.requestFocus();
 
-                        if(!toDateString.equals("")){
+                        if(!toDateString.equals("") && !populationValue.getText().toString().equals("")){
                             chart_view.setVisibility(View.VISIBLE);
-                            new FilterList().execute(app.getLOGGED_IN_USER_HF_ID(),fromDateString,toDateString);
-                        }else{
+                            populationV = Integer.parseInt(populationValue.getText().toString());
+                            new FilterList().execute(app.getLOGGED_IN_USER_HF_ID(),fromDateString,toDateString,cummulativeDateString);
+                        }else if(toDateString.equals("")){
                             final Snackbar snackbar=Snackbar.make(rowview,"Please select an end date to view the chart",Snackbar.LENGTH_LONG);
+                            snackbar.setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    snackbar.dismiss();
+                                }
+                            });
+                            snackbar.show();
+                        }else{
+                            final Snackbar snackbar = Snackbar.make(rowview, "Please enter the monthly vaccination population number.", Snackbar.LENGTH_LONG);
                             snackbar.setAction("OK", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -200,10 +239,13 @@ public class HealthFacilityImmunizationCoverageReportFragment extends Fragment {
             String healthFacilityId = params[0];
             String fromDate ="";
             String toDate ="";
+            String cummulativeFromDate = "";
 
             try{
                 fromDate = params[1];
                 toDate = params[2];
+                cummulativeFromDate = params[3];
+
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -317,7 +359,23 @@ public class HealthFacilityImmunizationCoverageReportFragment extends Fragment {
 
                     Cursor cursor5 = db.rawQuery(SQLOutsideCatchmentFemale,null);
                     cursor5.moveToFirst();
-                    viewRow.setOutsideCatchmentFemale(cursor5.getInt(cursor3.getColumnIndex("number")));
+                    viewRow.setOutsideCatchmentFemale(cursor5.getInt(cursor5.getColumnIndex("number")));
+
+
+                    String cummCoverageSQL = "SELECT COUNT (DISTINCT(c.ID)) AS number FROM vaccination_event as ve " +
+                            "INNER JOIN " +
+                            "   dose as d on d.ID = ve.DOSE_ID " +
+                            "INNER JOIN " +
+                            "   child as c on c.ID = ve.CHILD_ID " +
+                            "WHERE d.ID = '"+dose.getId()+"' " +
+                            "   AND ve.HEALTH_FACILITY_ID = '"+healthFacilityId+"' " +
+                            "   AND ve.VACCINATION_STATUS = 'true'" +
+                            "   AND datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+cummulativeFromDate+"','unixepoch')" +
+                            "   AND datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
+
+                    Cursor cursor6 = db.rawQuery(cummCoverageSQL,null);
+                    cursor6.moveToFirst();
+                    viewRow.setCummulativeTotal(cursor6.getInt(cursor6.getColumnIndex("number")));
 
 
                     rowList.add(viewRow);
@@ -398,6 +456,27 @@ public class HealthFacilityImmunizationCoverageReportFragment extends Fragment {
                     String coverage = coveragePercentage+"%";
 
                     ((TextView) doseData.findViewById(R.id.coverage)).setText(coverage);
+
+
+
+
+
+
+                    int cummCoveragePercentage=0;
+                    try {
+                        int z = viewRow.getCummulativeTotal();
+                        cummCoveragePercentage= (z*100)/(populationV*12);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                    String cummCoverage = cummCoveragePercentage+"%";
+
+                    ((TextView) doseData.findViewById(R.id.cumm_coverage)).setText(cummCoverage);
+
+
+
+
 
                     if(j==(size1-1)){
                         Log.d("coze","adding a divider");
