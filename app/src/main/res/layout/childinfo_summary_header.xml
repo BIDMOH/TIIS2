@@ -59,8 +59,8 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/met_barcode_value"
                             android:hint="barcode"
+                            android:textColor="@color/black"
                             android:inputType="number"
-                            android:enabled="false"
                             android:text=""
                             app:met_floatingLabelText="Barcode"
                             app:met_floatingLabel="normal"
@@ -70,12 +70,13 @@
                             android:layout_centerVertical="true"/>
 
                         <com.rengwuxian.materialedittext.MaterialEditText
+                            android:visibility="gone"
                             android:layout_width="350dp"
                             android:layout_height="wrap_content"
                             android:id="@+id/met_sysId_value"
                             android:hint="barcode"
+                            android:textColor="@color/black"
                             android:text=""
-                            android:enabled="false"
                             app:met_floatingLabelText="System Id"
                             app:met_floatingLabel="normal"
                             app:met_floatingLabelTextColor="@color/light_blue_500"
@@ -95,10 +96,10 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/met_fname_value"
                             android:inputType="textPersonName"
+                            android:textColor="@color/black"
                             android:focusable="true"
                             android:hint="First Name"
                             android:text="Abigael"
-                            android:enabled="false"
                             app:met_floatingLabelText="First Name"
                             app:met_floatingLabel="normal"
                             app:met_floatingLabelTextColor="@color/light_blue_500"
@@ -111,8 +112,8 @@
                                 android:id="@+id/met_mname_value"
                                 android:inputType="textPersonName"
                                 android:focusable="true"
+                                android:textColor="@color/black"
                                 android:hint="Middle Name"
-                                android:enabled="false"
                                 android:layout_alignParentRight="true"
                                 android:layout_marginRight="32dp"
                                 android:layout_centerHorizontal="true"
@@ -133,7 +134,7 @@
                             android:layout_height="wrap_content"
                             android:focusable="true"
                             android:hint="surname"
-                            android:enabled="false"
+                            android:textColor="@color/black"
                             android:text="Msama"
                             android:inputType="textPersonName"
                             android:id="@+id/met_surname_value"
@@ -148,12 +149,12 @@
                             android:layout_width="350dp"
                             android:layout_height="wrap_content"
                             android:focusable="true"
+                            android:textColor="@color/black"
                             android:hint="Mother's First Name"
                             android:layout_alignParentRight="true"
                             android:layout_marginRight="32dp"
                             android:text="Neema"
                             android:inputType="textPersonName"
-                            android:enabled="false"
                             android:id="@+id/met_mother_fname_value"
                             android:layout_centerVertical="true"
                             app:met_floatingLabelText="Mother's First Name"
@@ -174,7 +175,7 @@
                             android:layout_height="wrap_content"
                             android:focusable="true"
                             android:text="Msama"
-                            android:enabled="false"
+                            android:textColor="@color/black"
                             android:inputType="textPersonName"
                             android:hint="Mother's Surname"
                             android:id="@+id/met_mother_surname_value"
@@ -190,8 +191,8 @@
                             android:focusable="true"
                             android:hint="Phone Number"
                             android:inputType="phone"
+                            android:textColor="@color/black"
                             android:text="+255 755688678"
-                            android:enabled="false"
                             android:layout_alignParentRight="true"
                             android:layout_marginRight="32dp"
                             android:id="@+id/met_phone_value"
@@ -218,15 +219,14 @@
                             android:layout_marginLeft="32dp"
                             android:textSize="18sp"
                             android:textColor="@color/light_blue_600"/>
-
                         <com.rengwuxian.materialedittext.MaterialEditText
                             android:layout_width="350dp"
                             android:layout_height="wrap_content"
                             android:focusable="true"
+                            android:textColor="@color/black"
                             android:hint="Date of birth"
                             android:text="26th December 2015"
                             android:layout_marginLeft="32dp"
-                            android:enabled="false"
                             android:id="@+id/met_dob_value"
                             app:met_iconRight="@drawable/ic_monthly_plan"
                             app:met_floatingLabelText="Date of birth"
@@ -369,17 +369,17 @@
 
 
                     <RelativeLayout
-                        android:visibility="gone"
+                        android:visibility="visible"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="100dp"
                         android:layout_marginTop="32dp">
 
                         <android.support.v7.widget.AppCompatTextView
-                            android:visibility="gone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:id="@+id/txt_notes_title"
+                            android:layout_marginTop="20dp"
                             android:text="Notes"
                             android:minWidth="120dp"
                             android:layout_marginLeft="32dp"
@@ -387,6 +387,7 @@
                             android:textColor="@color/light_blue_600"/>
 
                         <Button
+                            android:visibility="gone"
                             android:layout_width="70dp"
                             android:layout_height="70dp"
                             android:id="@+id/btn_submit_child_info"
@@ -396,10 +397,10 @@
                             />
 
                         <com.rengwuxian.materialedittext.MaterialEditText
-                            android:visibility="gone"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:minLines="3"
+                            android:gravity="top"
                             android:focusable="true"
                             android:hint="Coments"
                             android:layout_marginLeft="16dp"

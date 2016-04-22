@@ -23,7 +23,6 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:app_ms="http://schemas.android.com/apk/res-auto"
-    xmlns:materialdesign="http://schemas.android.com/tools"
     android:background="@color/white">
 
     <RelativeLayout
@@ -52,7 +51,7 @@
                 android:layout_marginLeft="32dp"
                 android:layout_centerVertical="true"
                 android:textColor="@color/white"
-                android:text="Tanzania Immunization Information System"/>
+                android:text="Tanzania Immunization Registry (TImR)"/>
 
         </RelativeLayout>
 
@@ -106,7 +105,7 @@
                             android:textStyle="bold"
                             android:gravity="center"
                             android:id="@+id/ministry_name"
-                            android:text="Wizara ya Afya na Ustawi wa Jamii \n Mpango wa Taifa wa Chanjo"/>
+                            android:text="Wizara ya Afya, Maendeleo ya Jamii, \nJinsia, Wazee na Watoto. \n Mpango wa Taifa wa Chanjo"/>
 
                         <LinearLayout
                             android:id="@+id/big_lin"

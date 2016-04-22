@@ -363,8 +363,8 @@
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="reorder_qty">Reorder Quantity</string>
-    <string name="no_of_children_immunized"># of children immunized</string>
-    <string name="cumm_no_children_immunized">Cumm # of children immunized</string>
+    <string name="no_of_children_immunized">No. of children immunized</string>
+    <string name="cumm_no_children_immunized">Cumm No. of children immunized</string>
     <string name="child_is_register">Child Registered Successfully!</string>
     <string name="empty_gender">Please select child gender!</string>
 
@@ -390,6 +390,11 @@
     <string name="home_reports">Reports</string>
     <string name="home_stock">Stock</string>
     <string name="home_logout">Logout</string>
+    <string name="error_editing_dob">Error. Cannot Edit</string>
+    <string name="error_message_editing_dob">Can not edit birth date of a child already vaccinated</string>
+    <string name="type_scan">Type/Scan</string>
+    <string name="device_camera">User Device Camera</string>
+    <string name="stock_balance">Stock Balance Graph</string>
 
 
 </resources>

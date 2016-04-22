@@ -34,7 +34,7 @@
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:layout_centerVertical="true"
-                    android:text="TIIS"/>
+                    android:text="TImR"/>
 
                 <ImageView
                     android:layout_alignParentRight="true"
@@ -57,7 +57,7 @@
                     android:layout_marginRight="8dp"
                     android:layout_centerVertical="true"
                     android:scaleType="fitXY"
-                    android:src="@drawable/wifi32" />
+                    android:src="@drawable/network_off" />
 
             </RelativeLayout>
 
@@ -65,22 +65,45 @@
 
         <FrameLayout
             android:id="@+id/content_frame"
-            android:background="@color/blue_grey_600"
+            android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:foregroundGravity="top"
-            android:layout_marginTop="?attr/actionBarSize"
-            android:layout_marginLeft="8dp"/>
+            android:layout_marginTop="?attr/actionBarSize"/>
 
         </android.support.design.widget.CoordinatorLayout>
 
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/white">
+
         <android.support.design.widget.NavigationView
+            android:background="@color/white"
             android:id="@+id/navigation_view"
             android:layout_width="@dimen/drawer_size"
             android:layout_height="match_parent"
-            android:layout_gravity="start"
+            android:theme="@style/NavigationDrawerStyle"
+            android:layout_marginBottom="50dp"
             app:headerLayout="@layout/drawer_layout_header"
+            app:itemTextColor="@color/black"
             app:menu="@menu/navigation_view"/>
+
+        <TextView
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/light_blue_600"
+            android:layout_marginLeft="32dp"
+            android:text="@string/version_no"/>
+
+
+    </RelativeLayout>
+
 
     </android.support.v4.widget.DrawerLayout>

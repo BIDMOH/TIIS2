@@ -126,13 +126,13 @@
             </RelativeLayout>
 
 
-            <mobile.giis.app.CustomViews.NestedListView
+            <mobile.tiis.app.CustomViews.NestedListView
                 android:background="@color/white"
                 android:id="@+id/imm_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1">
-            </mobile.giis.app.CustomViews.NestedListView>
+            </mobile.tiis.app.CustomViews.NestedListView>
 
         </LinearLayout>
 

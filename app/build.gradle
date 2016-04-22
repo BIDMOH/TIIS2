@@ -12,11 +12,11 @@ android {
     buildToolsVersion '23.0.1'
 
     defaultConfig {
-        applicationId "mobile.giis.app"
+        applicationId "mobile.tiis.app"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 1
-        versionName "1.0"
+        versionCode 103
+        versionName "2.0.8"
 
     }
     buildTypes {
@@ -26,6 +26,12 @@ android {
         }
 
     }
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
 
 }
 
@@ -34,14 +40,14 @@ repositories {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:recyclerview-v7:23.1.1'
     compile 'com.android.support:palette-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:cardview-v7:23.0.1'
-    compile 'com.github.PhilJay:MPAndroidChart:v2.1.5'
+    compile 'com.android.support:cardview-v7:23.1.1'
+    compile 'com.github.PhilJay:MPAndroidChart:v2.2.3'
     compile 'com.journeyapps:zxing-android-embedded:3.0.2@aar'
     compile 'com.google.zxing:core:3.2.0'
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
@@ -49,8 +55,12 @@ dependencies {
         exclude group: 'com.nineoldandroids', module: 'library'
         exclude group: 'com.android.support', module: 'appcompat-v7'
     }
-    compile 'com.wdullaer:materialdatetimepicker:1.5.4'
+
+    compile 'com.loopj.android:android-async-http:1.4.9'
+    compile 'io.realm:realm-android:0.87.5'
+    compile 'com.wdullaer:materialdatetimepicker:2.3.0'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
+    compile 'io.realm:realm-android:0.87.5'
     compile 'com.hannesdorfmann.smoothprogressbar:library:1.0.0'
     compile files('libs/jackson-databind-2.7.1-1.jar')
     compile files('libs/jackson-annotations-2.7.0.jar')

@@ -27,13 +27,14 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:layout_centerVertical="true"
-                android:text="TIIS"/>
+                android:text="TImR"/>
+
 
             <ImageView
-                android:visibility="invisible"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:id="@+id/home_start_continuous_sync"
+                android:onClick="onClickContinuousSync"
                 android:layout_width="@dimen/fifty_dp_height"
                 android:layout_height="@dimen/forty_dp_height"
                 android:layout_gravity="center"

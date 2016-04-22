@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <mobile.giis.app.CustomViews.ButteryProgressBar
+        <mobile.tiis.app.CustomViews.ButteryProgressBar
             android:layout_width="match_parent"
             android:layout_height="5dp"
             materialdesign:barColor="@color/orange_700"
@@ -110,7 +110,7 @@
                     android:id="@+id/met_vacc_queue_barcode"
                     android:focusable="true"
                     android:inputType="number"
-                    android:hint="Type Barcode"
+                    android:hint="Type or Scan"
                     app:met_floatingLabelText="Barcode"
                     app:met_floatingLabel="normal"
                     app:met_floatingLabelTextColor="@color/light_blue_500"
@@ -215,7 +215,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <mobile.giis.app.CustomViews.NestedListView
+            <mobile.tiis.app.CustomViews.NestedListView
                 android:background="@color/white"
                 android:id="@+id/lv_vacc_queue"
                 android:layout_width="match_parent"
@@ -223,7 +223,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginBottom="2dp"
                 android:layout_weight="1">
-            </mobile.giis.app.CustomViews.NestedListView>
+            </mobile.tiis.app.CustomViews.NestedListView>
 
             <RelativeLayout
                 android:layout_width="match_parent"

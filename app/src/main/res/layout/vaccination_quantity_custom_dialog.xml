@@ -12,7 +12,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="64dp"
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
@@ -39,141 +39,33 @@
 
             <TextView
                 android:layout_width="0dp"
-                android:layout_weight=".50"
+                android:layout_marginLeft="9dp"
+                android:layout_weight=".51"
+                android:layout_marginRight="16dp"
                 android:textSize="16sp"
-                android:gravity="center"
-                android:text="Name"
+                android:gravity="right"
+                android:text="Vaccine"
                 android:layout_height="wrap_content" />
+            <View
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_width="1dp"
+                android:background="@color/selected_gray"
+                android:layout_height="match_parent"/>
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_weight=".50"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
-                android:gravity="center"
-                android:text="Quantity"/>
+                android:layout_marginLeft="16dp"
+                android:text="Doses"/>
 
         </LinearLayout>
-
-        <LinearLayout
+        <ListView
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight=".50"
-                android:textSize="16sp"
-                android:gravity="center"
-                android:text="BCG"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight=".50"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:gravity="center"
-                android:text="17"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight=".50"
-                android:textSize="16sp"
-                android:gravity="center"
-                android:text="OPV"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight=".50"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:gravity="center"
-                android:text="82"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight=".50"
-                android:textSize="16sp"
-                android:gravity="center"
-                android:text="DTP-HepB-Hib"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight=".50"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:gravity="center"
-                android:text="72"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight=".50"
-                android:textSize="16sp"
-                android:gravity="center"
-                android:text="Rota"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight=".50"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:gravity="center"
-                android:text="72"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight=".50"
-                android:textSize="16sp"
-                android:gravity="center"
-                android:text="PVC-13"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight=".50"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:gravity="center"
-                android:text="72"/>
-
-        </LinearLayout>
+            android:id="@+id/lv_result"
+            android:layout_height="wrap_content"/>
 
 
     </LinearLayout>

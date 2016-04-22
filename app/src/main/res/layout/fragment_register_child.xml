@@ -60,6 +60,7 @@
                                 android:layout_weight=".30"/>
 
                             <Button
+                                android:visibility="invisible"
                                 android:id="@+id/reg_scan_btn"
                                 android:layout_width="0dp"
                                 android:layout_weight=".35"
@@ -372,7 +373,7 @@
                                 android:layout_height="50dp"
                                 android:id="@+id/reg_submit_btn"
                                 android:textColor="@color/white"
-                                android:text="Submit"
+                                android:text="Save"
                                 android:background="@color/light_blue_600"/>
 
                         </LinearLayout>

@@ -20,11 +20,10 @@
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="0dp"
-            android:layout_weight="0.40"
+            android:layout_weight="0.30"
             android:id="@+id/antigen_value"
-            android:text="Vaccine Dose"
+            android:text="Vaccine Doses"
             android:layout_marginLeft="16dp"
-            android:textStyle="bold"
             android:textSize="16sp"
             android:layout_centerVertical="true"
             android:textColor="@color/black"/>
@@ -45,7 +44,6 @@
             android:id="@+id/week_o_value"
             android:text="At Birth"
             android:gravity="center"
-            android:textStyle="bold"
             android:layout_toRightOf="@id/sep_one"
             android:textSize="16sp"
             android:layout_centerVertical="true"
@@ -64,10 +62,30 @@
             android:layout_weight="0.10"
             android:layout_marginLeft="8dp"
             android:layout_height="wrap_content"
-            android:id="@+id/week_6_value"
+            android:id="@+id/week_2_value"
+            android:text="2 Weeks"
             android:gravity="center"
-            android:text="Week 6"
-            android:textStyle="bold"
+            android:layout_toRightOf="@id/sep_one"
+            android:textSize="16sp"
+            android:layout_centerVertical="true"
+            android:textColor="@color/black"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="2dp"
+            android:id="@+id/sep_two_"
+            android:background="@color/card_grid_tex"
+            android:layout_toRightOf="@id/week_o_value"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="0.10"
+            android:layout_marginLeft="8dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/month_1_value"
+            android:text="1 Month"
+            android:gravity="center"
             android:layout_toRightOf="@id/sep_two"
             android:textSize="16sp"
             android:layout_centerVertical="true"
@@ -78,17 +96,15 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="2dp"
             android:id="@+id/sep_three"
-            android:background="@color/card_grid_tex"
-            android:layout_toRightOf="@id/week_6_value"/>
+            android:background="@color/card_grid_tex"/>
 
         <TextView
             android:layout_width="0dp"
             android:layout_weight="0.10"
             android:layout_marginLeft="8dp"
             android:layout_height="wrap_content"
-            android:id="@+id/week_10_value"
-            android:text="Week 10"
-            android:textStyle="bold"
+            android:id="@+id/week_6_value"
+            android:text="6 Weeks"
             android:gravity="center"
             android:layout_toRightOf="@id/sep_three"
             android:textSize="16sp"
@@ -100,18 +116,16 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="2dp"
             android:id="@+id/sep_four"
-            android:background="@color/card_grid_tex"
-            android:layout_toRightOf="@id/week_10_value"/>
+            android:background="@color/card_grid_tex" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_weight="0.10"
             android:layout_marginLeft="8dp"
             android:layout_height="wrap_content"
-            android:id="@+id/week_14_value"
-            android:text="Week 14"
+            android:id="@+id/week_10_value"
+            android:text="10 Weeks"
             android:gravity="center"
-            android:textStyle="bold"
             android:layout_toRightOf="@id/sep_four"
             android:textSize="16sp"
             android:layout_centerVertical="true"
@@ -122,18 +136,16 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="2dp"
             android:id="@+id/sep_five"
-            android:background="@color/card_grid_tex"
-            android:layout_toRightOf="@id/week_14_value"/>
+            android:background="@color/card_grid_tex" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_weight="0.10"
             android:layout_marginLeft="8dp"
             android:layout_height="wrap_content"
-            android:id="@+id/month_9_value"
-            android:text="Month 9"
+            android:id="@+id/week_14_value"
+            android:text="14 Weeks"
             android:gravity="center"
-            android:textStyle="bold"
             android:layout_toRightOf="@id/sep_five"
             android:textSize="16sp"
             android:layout_centerVertical="true"
@@ -144,18 +156,16 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="2dp"
             android:id="@+id/sep_six"
-            android:background="@color/card_grid_tex"
-            android:layout_toRightOf="@id/month_9_value"/>
+            android:background="@color/card_grid_tex" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_weight="0.10"
             android:layout_marginLeft="8dp"
             android:layout_height="wrap_content"
-            android:id="@+id/month_18_value"
-            android:text="Month 18"
+            android:id="@+id/month_9_value"
+            android:text="9 Months"
             android:gravity="center"
-            android:textStyle="bold"
             android:layout_toRightOf="@id/sep_six"
             android:textSize="16sp"
             android:layout_centerVertical="true"
@@ -166,8 +176,40 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="2dp"
             android:id="@+id/sep_seven"
-            android:background="@color/card_grid_tex"
-            android:layout_toRightOf="@id/month_18_value"/>
+            android:background="@color/card_grid_tex" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="0.10"
+            android:layout_marginLeft="8dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/month_18_value"
+            android:text="18 Months"
+            android:gravity="center"
+            android:layout_toRightOf="@id/sep_six"
+            android:textSize="16sp"
+            android:layout_centerVertical="true"
+            android:textColor="@color/black"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="2dp"
+            android:id="@+id/sep_seven_"
+            android:background="@color/card_grid_tex" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="0.10"
+            android:layout_marginLeft="8dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/month_21_value"
+            android:text="21 Months"
+            android:gravity="center"
+            android:layout_toRightOf="@id/sep_six"
+            android:textSize="16sp"
+            android:layout_centerVertical="true"
+            android:textColor="@color/black"/>
 
 
     </LinearLayout>

@@ -3,7 +3,7 @@
 
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~   ~ Copyright (C)AIRIS Solutions 2015 TIIS App - Tanzania Immunization Information System App
+  ~   ~ Copyright (C)AIRIS Solutions 2015 TIIS App - Tanzania Immunization Register App
   ~   ~
   ~   ~    Licensed under the Apache License, Version 2.0 (the "License");
   ~   ~    you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <resources>
+
+    <string name="reports_title"> Ministry Of Health And Social Welfare \n Immunization And Vaccine Development Program \n Health Facility Level Report </string>
 
     <string name="app_name">TImR</string>
     <string name="login">Ingia</string>
@@ -224,8 +226,8 @@
     <string name="november">November</string>
     <string name="december">December</string>
     <string name="reorder_qty">Reorder Quantity</string>
-    <string name="no_of_children_immunized"># of children immunized</string>
-    <string name="cumm_no_children_immunized">Cumm # of children immunized</string>
+    <string name="no_of_children_immunized">No. of children immunized</string>
+    <string name="cumm_no_children_immunized">Cumm No. of children immunized</string>
     <string name="child_is_register">Child Registered Successfully!</string>
     <string name="empty_gender">Please select gender!</string>
     <string name="balance_stock_count">Balance / Stock count</string>
@@ -250,8 +252,10 @@
     <string name="home_reports">Ripoti</string>
     <string name="home_stock">Stoku</string>
     <string name="home_logout">Ondoka</string>
-
-
+    <string name="pages">Pages:</string>
+    <string name="type_scan">Andika/Skani</string>
+    <string name="device_camera">Tumia Kamera ya Simu</string>
+    <string name="stock_balance">Chati ya Stoku</string>
 
     <string-array name="languages">
         <item>Swahili(Set)</item>
@@ -260,6 +264,9 @@
     </string-array>
 
     <string name="ok_text">Okay</string>
+    <string name="error_editing_dob">Haiwezi Kubadilish</string>
+    <string name="error_message_editing_dob">Haiwezi Kubadilisha, Mtoto amekwisha pewa chanjo</string>
+    <string name="version_no">TImR V 2.0.8</string>
 
 
 </resources>

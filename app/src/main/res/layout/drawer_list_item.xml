@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:text="Item A"
             android:id="@+id/title"
-            android:textColor="#395670"
+            android:textColor="@color/black"
             android:layout_marginLeft="24dp"
             android:layout_toRightOf="@id/title_image_icon"
             android:layout_centerVertical="true"
