@@ -5,10 +5,12 @@
     android:background="#e5e5e5"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#e5e5e5">
         <EditText
             android:layout_width="1dp"
             android:layout_height="1dp"
@@ -32,7 +34,7 @@
                     android:gravity="center"
                     android:paddingTop="16dp"
                     android:paddingBottom="16dp"
-                    android:text="Immunization Coverage Report (Target)"
+                    android:text="Immunization Coverage Report (Scheduled)"
                     android:textStyle="bold"/>
 
                 <RelativeLayout
@@ -211,55 +213,11 @@
                                 android:layout_weight="0.8"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/the_title_value"
-                                android:text="Immunization Coverage Report (Target) "
+                                android:text="Immunization Coverage Report (Shceduled)"
                                 android:paddingTop="4dp"
                                 android:paddingBottom="4dp"/>
 
                         </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:layout_marginTop="16dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="0.8"
-                                android:gravity="right"
-                                android:layout_height="wrap_content"
-                                android:textStyle="italic|bold"
-                                android:text="Vaccination Population per month"
-                                android:paddingTop="4dp"
-                                android:paddingBottom="4dp"/>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="|"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginRight="16dp"/>
-                            <FrameLayout
-                                android:layout_width="0dp"
-                                android:layout_weight="0.8"
-                                android:layout_height="wrap_content">
-                                <com.rengwuxian.materialedittext.MaterialEditText
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:hint="Population"
-                                    android:textSize="12sp"
-                                    android:inputType="number"
-                                    android:id="@+id/population_value"
-                                    app:met_floatingLabelText="Population"
-                                    app:met_floatingLabel="normal"
-                                    app:met_floatingLabelTextColor="@color/light_blue_500"
-                                    android:layout_marginRight="16dp"
-                                    android:layout_centerVertical="true"/>
-                            </FrameLayout>
-
-
-                        </LinearLayout>
-
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -418,7 +376,7 @@
                                     android:textSize="18sp"
                                     android:layout_gravity="center_horizontal"
                                     android:textStyle="bold"
-                                    android:text="Monthly Coverage Report (Target) "/>
+                                    android:text="Monthly Coverage Report (Scheduled)"/>
 
                                 <View
                                     android:layout_width="match_parent"
@@ -557,6 +515,7 @@
                                         android:layout_width="1dp"
                                         android:layout_height="match_parent"
                                         android:background="@color/black"/>
+
                                     <LinearLayout
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
@@ -578,48 +537,29 @@
                                             android:layout_height="1dp"
                                             android:background="@color/black"/>
                                         <LinearLayout
+                                            android:layout_marginTop="8dp"
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
                                             android:orientation="horizontal">
                                             <TextView
-                                                android:layout_marginTop="4dp"
                                                 android:layout_width="0dp"
-                                                android:layout_weight="0.1"
+                                                android:layout_weight="0.2"
                                                 android:textSize="15sp"
-                                                android:layout_gravity="center"
                                                 android:gravity="center"
                                                 android:layout_height="wrap_content"
                                                 android:text="Total"
                                                 android:textStyle="bold" />
                                             <View
-                                                android:layout_marginTop="8dp"
                                                 android:layout_width="1dp"
                                                 android:layout_height="match_parent"
                                                 android:background="@color/black"/>
                                             <TextView
                                                 android:layout_width="0dp"
                                                 android:gravity="center"
-                                                android:layout_marginTop="4dp"
-                                                android:layout_weight="0.17"
-                                                android:layout_gravity="center"
+                                                android:layout_weight="0.3"
                                                 android:textSize="15sp"
                                                 android:layout_height="wrap_content"
                                                 android:text="Coverage(%)"
-                                                android:textStyle="bold" />
-                                            <View
-                                                android:layout_width="1dp"
-                                                android:layout_marginTop="8dp"
-                                                android:layout_height="match_parent"
-                                                android:background="@color/black"/>
-                                            <TextView
-                                                android:layout_width="0dp"
-                                                android:gravity="center"
-                                                android:layout_marginTop="4dp"
-                                                android:layout_gravity="center"
-                                                android:layout_weight="0.2"
-                                                android:textSize="14sp"
-                                                android:layout_height="wrap_content"
-                                                android:text="Cumm. Coverage(%)"
                                                 android:textStyle="bold" />
                                         </LinearLayout>
                                     </LinearLayout>

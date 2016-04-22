@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -35,7 +36,7 @@ public class ReportsActivityRevised extends BackboneActivity {
     private ViewPagerAdapter adapter;public Toolbar toolbar;
     private String title = "";
     public TextView toolbarTitle;
-    ProgressBar loadingBar;
+    RelativeLayout loadingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +97,7 @@ public class ReportsActivityRevised extends BackboneActivity {
 
     public void setUpView(){
         tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-        loadingBar = (ProgressBar) findViewById(R.id.loading_bar);
+        loadingBar = (RelativeLayout) findViewById(R.id.loading_bar);
         pager = (ViewPager) findViewById(R.id.pager);
         toolbar         = (Toolbar) findViewById(R.id.reports_activity_toolbar);
         toolbarTitle    = (TextView) findViewById(R.id.reports_activity_toolbar_title);

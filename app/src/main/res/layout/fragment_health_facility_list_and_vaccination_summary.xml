@@ -33,7 +33,7 @@
                     android:gravity="center"
                     android:paddingTop="16dp"
                     android:paddingBottom="16dp"
-                    android:text="Visit And Vaccination Summary Report"
+                    android:text="Vaccination Summary Report"
                     android:textStyle="bold"/>
 
                 <RelativeLayout
@@ -212,7 +212,7 @@
                                 android:layout_weight="0.8"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/the_title_value"
-                                android:text="Visits and vaccination Summary"
+                                android:text="Vaccination Summary"
                                 android:paddingTop="4dp"
                                 android:paddingBottom="4dp"/>
 

@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingTop="8dp"
@@ -60,7 +60,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_weight="0.2"
-            android:gravity="center_horizontal"
+            android:paddingLeft="16dp"
             android:id="@+id/mothers_names_value"
             android:layout_height="wrap_content"
             android:text="Mother's Names"/>
@@ -68,7 +68,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_weight="0.1"
-            android:gravity="center_horizontal"
+            android:textSize="12sp"
             android:id="@+id/mothers_contacts_value"
             android:layout_height="wrap_content"
             android:text="Mother Contacts"/>
@@ -77,7 +77,6 @@
             android:layout_marginLeft="8dp"
             android:layout_width="0dp"
             android:layout_weight="0.15"
-            android:gravity="center_horizontal"
             android:id="@+id/village_value"
             android:layout_height="wrap_content"
             android:text="Village"/>

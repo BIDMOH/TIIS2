@@ -245,8 +245,10 @@ public class DefaultersReportFragment extends Fragment {
     }
 
     private void FillDefaultersTable(ArrayList<ViewRows> items){
+        int count  = 0;
         ArrayList<ViewRows> VR = items;
         for (ViewRows row : VR){
+            count = count + 1;
             View v  = View.inflate(DefaultersReportFragment.this.getActivity(), R.layout.defaulter_list_table_item, null);
 
             TextView childNames = (TextView) v.findViewById(R.id.child_names_value);
@@ -256,6 +258,9 @@ public class DefaultersReportFragment extends Fragment {
             TextView childMotherNames = (TextView) v.findViewById(R.id.mothers_names_value);
             TextView childMotherContacts = (TextView) v.findViewById(R.id.mothers_contacts_value);
             TextView childVillage = (TextView) v.findViewById(R.id.village_value);
+            TextView snValue    = (TextView) v.findViewById(R.id.sn_value);
+            snValue.setTypeface(BackboneActivity.Rosario_Regular);
+            snValue.setText(count+"");
 
             Cursor cursor;
             cursor =  mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",

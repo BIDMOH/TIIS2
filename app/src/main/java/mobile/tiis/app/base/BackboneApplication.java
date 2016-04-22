@@ -378,8 +378,12 @@ public class BackboneApplication extends Application {
     public void parsePlace() {
         final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, GET_PLACE);
 
+        try{
+            client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
-        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
         client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
