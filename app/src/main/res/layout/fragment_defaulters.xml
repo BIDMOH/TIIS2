@@ -398,7 +398,7 @@
 
                         <TextView
                             android:layout_width="0dp"
-                            android:layout_weight="0.2"
+                            android:layout_weight="0.17"
                             android:gravity="center_horizontal"
                             android:id="@+id/mothers_names_title"
                             android:layout_height="wrap_content"
@@ -412,7 +412,7 @@
 
                         <TextView
                             android:layout_width="0dp"
-                            android:layout_weight="0.1"
+                            android:layout_weight="0.13"
                             android:gravity="center_horizontal"
                             android:id="@+id/mothers_contacts_title"
                             android:layout_height="wrap_content"
