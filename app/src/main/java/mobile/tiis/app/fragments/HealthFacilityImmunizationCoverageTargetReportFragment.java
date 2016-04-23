@@ -446,9 +446,7 @@ public class HealthFacilityImmunizationCoverageTargetReportFragment extends Frag
 
                     int coveragePercentage=0;
                     try {
-                        int z = viewRow.getExpectedCatchmentTotal();
-                        Log.d("coze","Expected = "+ z);
-                        coveragePercentage= (totalCatchment*100)/z;
+                        coveragePercentage= (totalCatchment*100)/populationV;
                     }catch (Exception e){
                         e.printStackTrace();
                     }
