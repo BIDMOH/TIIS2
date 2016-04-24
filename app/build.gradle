@@ -15,8 +15,8 @@ android {
         applicationId "mobile.tiis.app"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 104
-        versionName "2.0.9"
+        versionCode 105
+        versionName "2.0.10"
 
     }
     buildTypes {
