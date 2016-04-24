@@ -229,7 +229,7 @@
                                 android:gravity="right"
                                 android:layout_height="wrap_content"
                                 android:textStyle="italic|bold"
-                                android:text="Vaccination Population per month"
+                                android:text="Target Population per month"
                                 android:paddingTop="4dp"
                                 android:paddingBottom="4dp"/>
                             <TextView
