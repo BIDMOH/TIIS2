@@ -195,7 +195,7 @@ public class HealthFacilityImmunizationCoverageTargetReportFragment extends Frag
                             populationV = Integer.parseInt(populationValue.getText().toString());
                             new FilterList().execute(app.getLOGGED_IN_USER_HF_ID(),fromDateString,toDateString,cummulativeDateString);
                         }else if(toDateString.equals("")){
-                            final Snackbar snackbar=Snackbar.make(rowview,"Please select an end date to view the chart",Snackbar.LENGTH_LONG);
+                            final Snackbar snackbar=Snackbar.make(rowview,"Please select an end date to view the report",Snackbar.LENGTH_LONG);
                             snackbar.setAction("OK", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
