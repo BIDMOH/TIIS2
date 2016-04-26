@@ -359,7 +359,7 @@
                                 android:layout_height="wrap_content"
                                 android:minLines="3"
                                 android:focusable="true"
-                                android:hint="Coments"
+                                android:hint="@string/comments"
                                 android:layout_marginRight="32dp"
                                 android:id="@+id/reg_notes"
                                 android:layout_centerVertical="true"

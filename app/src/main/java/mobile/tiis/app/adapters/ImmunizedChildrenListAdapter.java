@@ -73,7 +73,7 @@ public class ImmunizedChildrenListAdapter extends BaseAdapter{
 
         viewHolder.tvName.setText(item.getName());
         viewHolder.tvName.setTypeface(BackboneActivity.Rosario_Regular);
-        viewHolder.tvLastname.setText(item.getOutreach());
+        viewHolder.tvLastname.setText(item.getLastname());
         viewHolder.tvLastname.setTypeface(BackboneActivity.Rosario_Regular);
         viewHolder.tvVaccine.setTypeface(BackboneActivity.Rosario_Regular);
         try {
