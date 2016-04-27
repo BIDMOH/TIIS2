@@ -30,8 +30,8 @@ import mobile.tiis.app.base.BackboneApplication;
  */
 public class CheckForChangesSynchronisationService  extends IntentService {
     private LocalBroadcastManager broadcaster;
-    static final public String SynchronisationService_RESULT = "mobile,tiis.app.CheckForChangesSynchronisationService.REQUEST_PROCESSED";
-    static final public String SynchronisationService_MESSAGE = "mobile,tiis.app.CheckForChangesSynchronisationService..MSG";
+    static final public String SynchronisationService_RESULT = "mobile,giis.app.CheckForChangesSynchronisationService.REQUEST_PROCESSED";
+    static final public String SynchronisationService_MESSAGE = "mobile,giis.app.CheckForChangesSynchronisationService..MSG";
 
 
     public CheckForChangesSynchronisationService() {
@@ -48,9 +48,6 @@ public class CheckForChangesSynchronisationService  extends IntentService {
             if(app.getLOGGED_IN_USER_ID()!=null && !app.getLOGGED_IN_USER_ID().equals("0")) {
                 app.continuousModificationParser();
                 app.getVaccinationQueueByDateAndUser();
-                app.getGetChildByIdListSince();
-                //Added inorder to obtain vaccination appointments from the server.
-                app.intervalGetChildrenByHealthFacilitySinceLastLogin();
             }
 
             String placesFoundInChildOnlyAndNotInPlace = app.getDatabaseInstance().getDomicilesFoundInChildAndNotInPlace();
