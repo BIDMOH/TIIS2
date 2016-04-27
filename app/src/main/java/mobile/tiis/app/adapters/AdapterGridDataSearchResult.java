@@ -34,6 +34,7 @@ import java.util.List;
 import mobile.tiis.app.R;
 import mobile.tiis.app.database.DatabaseHandler;
 import mobile.tiis.app.entity.Child;
+import mobile.tiis.app.fragments.SearchChildFragment;
 
 /**
  * Created by Arinela on 13/3/2015.
@@ -43,16 +44,17 @@ import mobile.tiis.app.entity.Child;
     List<Child> items;
     Context ctx;
     DatabaseHandler mydb;
+    int snCount = Integer.parseInt(SearchChildFragment.currentCount);
 
-    public AdapterGridDataSearchResult(Context ctx, List<Child> items,DatabaseHandler mydb) {
+    public AdapterGridDataSearchResult(Context ctx, List<Child> items,DatabaseHandler mydb, String currentCount) {
         this.items = items;
         this.ctx = ctx;
         this.mydb = mydb;
-        Log.d("coze adpter", " Size of list is : "+items.size());
+        Log.d("coze adpter", " number of count is : "+currentCount);
     }
 
     static class ViewHolder {
-        public TextView tvName,tvMotherName,tvDateOfBirth,tvGender,tvVillage,tvHealthFacility;
+        public TextView tvName,tvMotherName,tvDateOfBirth,tvGender,tvVillage,tvHealthFacility, tvSnNumber;
 
     }
 
@@ -92,13 +94,13 @@ import mobile.tiis.app.entity.Child;
     @Override
     public View getView(final int position, View convertView, ViewGroup parent)
     {
+
         View rowView = convertView;
         ViewHolder viewHolder;
         final Child item = items.get(position);
         if (rowView == null) {
             LayoutInflater li = (LayoutInflater) ctx.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             rowView = li.inflate(R.layout.children_list_item, null);
-
 
             viewHolder = new ViewHolder();
             viewHolder.tvName = (TextView) rowView.findViewById(R.id.txt_child_names);
@@ -107,10 +109,9 @@ import mobile.tiis.app.entity.Child;
             viewHolder.tvGender = (TextView) rowView.findViewById(R.id.txt_child_gender);
             viewHolder.tvVillage = (TextView) rowView.findViewById(R.id.txt_child_village_domicile);
             viewHolder.tvHealthFacility = (TextView) rowView.findViewById(R.id.txt_child_health_facility);
-
+            viewHolder.tvSnNumber   = (TextView) rowView.findViewById(R.id.sn_number);
 
             rowView.setTag(viewHolder);
-
 
         } else {
             viewHolder = (ViewHolder) rowView.getTag();
@@ -132,19 +133,7 @@ import mobile.tiis.app.entity.Child;
         viewHolder.tvVillage.setTextColor(ctx.getResources().getColor(R.color.black));
         viewHolder.tvHealthFacility.setText(item.getHealthcenter());
         viewHolder.tvHealthFacility.setTextColor(ctx.getResources().getColor(R.color.black));
-        Log.d("coze adpter", "facility One = " + item.getHealthcenter());
-        Log.d("coze adpter", "facility Two = " + mydb.getHealthCenterName(item.getHealthcenter()));
-
-//        rowView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (!(position == -1)) {
-//                    Intent childDetailsActivity = new Intent(ctx, ChildDetailsActivity.class);
-//                    childDetailsActivity.putExtra("barcode", item.getBarcodeID());
-//                    ctx.startActivity(childDetailsActivity);
-//                }
-//            }
-//        });
+        viewHolder.tvSnNumber.setText((snCount+position+1)+"");
 
     return rowView;
 

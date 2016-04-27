@@ -50,6 +50,7 @@
             android:textColor="@color/black"/>
 
         <View
+            android:visibility="gone"
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="2dp"
@@ -58,6 +59,7 @@
             android:layout_toRightOf="@id/week_o_value"/>
 
         <TextView
+            android:visibility="gone"
             android:layout_width="0dp"
             android:layout_weight="0.10"
             android:layout_marginLeft="8dp"
@@ -71,6 +73,7 @@
             android:textColor="@color/black"/>
 
         <View
+            android:visibility="gone"
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="2dp"
@@ -79,6 +82,7 @@
             android:layout_toRightOf="@id/week_o_value"/>
 
         <TextView
+            android:visibility="gone"
             android:layout_width="0dp"
             android:layout_weight="0.10"
             android:layout_marginLeft="8dp"
@@ -205,6 +209,7 @@
             android:layout_toRightOf="@id/month_18_value"/>
 
         <TextView
+            android:visibility="gone"
             android:layout_width="0dp"
             android:layout_weight="0.10"
             android:layout_marginLeft="8dp"

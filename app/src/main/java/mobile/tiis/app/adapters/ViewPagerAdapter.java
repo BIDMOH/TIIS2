@@ -22,7 +22,7 @@ import mobile.tiis.app.fragments.VaccinationCoverageFragment;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
-    private final String[] TITLES = { "Vaccination Summary", "Immunization Coverage Report (Scheduled)", "Immunization Coverage Report (Target)", "Defaulters List", "Dropout Report", "Immunized Children", "Immunization Chart", "Stock",  "Vaccination Coverage" };
+    private final String[] TITLES = { "Vaccination Summary", "Immunization Coverage Report (Scheduled)", "Immunization Coverage Report (Target)", "Defaulters List", "Dropout Report", "Immunized Children", "Immunization Chart", "Stock"};
 
     public ViewPagerAdapter(FragmentManager fm) {
         super(fm);
@@ -68,9 +68,9 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         else if (position == 7){
             return StockTabFragment.newInstance();
         }
-        else if (position == 8){
-            return VaccinationCoverageFragment.newInstance();
-        }
+//        else if (position == 8){
+//            return VaccinationCoverageFragment.newInstance();
+//        }
         else{
             return TabFragment.newInstance(position);
         }

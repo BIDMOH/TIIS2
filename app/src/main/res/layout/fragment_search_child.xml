@@ -515,7 +515,7 @@
                                 android:layout_width="220dp"
                                 android:id="@+id/outside_facility_search_btn"
                                 android:layout_height="wrap_content"
-                                android:text="Search Outside Facility"
+                                android:text="Search Outside Catchment"
                                 android:background="@color/white"/>
 
                         </android.support.v7.widget.CardView>

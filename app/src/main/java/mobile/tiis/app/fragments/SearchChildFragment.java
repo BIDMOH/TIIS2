@@ -91,7 +91,7 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
     View listviewFooter;
     ImageView previous, next;
     RelativeLayout prevLayout, nextLayout;
-    public String currentCount = "0";
+    public static String currentCount = "0";
     public boolean autorefreshTriggered = false;
     ProgressBar pbar;
 
@@ -431,6 +431,8 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
 
     private class getChildren extends AsyncTask<String, Void, Integer> {
 
+        String num = "0";
+
         @Override
         protected void onPreExecute() {
             pbar.setVisibility(View.VISIBLE);
@@ -502,7 +504,7 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
         @Override
         protected Integer doInBackground(String... params) {
             int responce = 0;
-
+            num = params[0];
             children = mydb.searchChild(barcode,
                     firstname,firstname2, motherfirstname, ((dateFrom != null) ? (dateFrom.getTime() / 1000) + "" : ""), ((dateTo != null) ? (dateTo.getTime() / 1000) + "" : ""),"", surname, mothersurname,
                     placeodbirthId, healthfacility, villagename, status, params[0]);
@@ -525,7 +527,7 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
                     adapter.notifyDataSetChanged();
                 }
                 else {
-                    adapter = new AdapterGridDataSearchResult(SearchChildFragment.this.getActivity(), children, mydb);
+                    adapter = new AdapterGridDataSearchResult(SearchChildFragment.this.getActivity(), children, mydb, num);
                     lvChildrenSearchResults.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                 }
@@ -687,7 +689,7 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
                                    childNotFoundLayout.setVisibility(View.GONE);
                                    childListLayout.setVisibility(View.VISIBLE);
                                    lvChildrenSearchResults.setVisibility(View.VISIBLE);
-                                   adapter = new AdapterGridDataSearchResult(SearchChildFragment.this.getActivity(), childrensrv, mydb);
+                                   adapter = new AdapterGridDataSearchResult(SearchChildFragment.this.getActivity(), childrensrv, mydb, currentCount);
                                    lvChildrenSearchResults.setAdapter(null);
                                    //                                adapter.replaceData(childrensrv);
                                    lvChildrenSearchResults.setAdapter(adapter);

@@ -34,7 +34,7 @@
                     android:gravity="center"
                     android:paddingTop="16dp"
                     android:paddingBottom="16dp"
-                    android:text="Immunization Coverage Report (Scheduled)"
+                    android:text="Immunization Coverage Report (Scheduled Monthly)"
                     android:textStyle="bold"/>
 
                 <RelativeLayout
