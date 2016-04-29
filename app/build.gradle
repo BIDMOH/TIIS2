@@ -15,13 +15,13 @@ android {
         applicationId "mobile.tiis.app"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 107
-        versionName "2.1.0"
+        versionCode 108
+        versionName "2.1.1"
 
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 

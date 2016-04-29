@@ -229,7 +229,6 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:id="@+id/titles_rl"
-            android:layout_below="@id/child_aefi_title"
             android:paddingLeft="32dp"
             android:paddingRight="32dp"
             android:background="@color/cardview_light_background"

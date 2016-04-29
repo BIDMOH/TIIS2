@@ -35,16 +35,9 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import mobile.tiis.app.HomeActivity;
 import mobile.tiis.app.HomeActivityRevised;
-import mobile.tiis.app.MonthlyPlanActivity;
 import mobile.tiis.app.R;
-import mobile.tiis.app.RegisterChildActivity;
-import mobile.tiis.app.ReportsActivity;
-import mobile.tiis.app.ScanHandlerActivity;
-import mobile.tiis.app.SearchChildActivity;
-import mobile.tiis.app.StockMenuActivity;
-import mobile.tiis.app.VaccinationQueueActivity;
+import mobile.tiis.app.ReportsActivityRevised;
 import mobile.tiis.app.helpers.Utils;
 
 /**
@@ -59,39 +52,12 @@ public class BackboneActivity extends AppCompatActivity {
     public static final String WCF_URL = BackboneApplication.getWcfUrl(); //"http://142.222.45.61/svc/";
     public static final String USER_MANAGEMENT_SVC = "UserManagement.svc/";
     public static final String USER_MANAGEMENT_SVC_GETTER = "GetUser";
-    public static final String PLACE_MANAGEMENT_SVC = "PlaceManagement.svc/";
-    public static final String PLACE_MANAGEMENT_SVC_GETTER = "GetUsersByHealthFacilityId?hf_id=";
-    public static final String URL_BUILDER_ERROR = "URL_BUILDER_ERROR";
-
     public static final String ACCOUNT_TYPE = "tiis.mobile.account";
-
-    public static final String ACTIVITY_LOGIN = "LOGIN";
-    public static final String ACTIVITY_MAIN = "MAIN";
-    public static final String ACTIVITY_SCAN = "SCAN";
     public static final String ACTIVITY_CHECK_IN = "CHECK_IN";
-    public static final String ACTIVITY_VIEW_CHILD = "VIEW_CHILD";
-    public static final String ACTIVITY_SEARCH_CHILD = "SEARCH_CHILD";
-    public static final String ACTIVITY_SEARCH_CHILD_RESULT = "SEARCH_CHILD_RESULT";
-    public static final String ACTIVITY_REGISTER_CHILD = "REGISTER_CHILD";
-    public static final String ACTIVITY_REGISTER_CHILD_SCAN = "REGISTER_CHILD_SCAN";
-    public static final String ACTIVITY_VACCINATION_QUEUE = "VACCINATION_QUEUE";
-    public static final String ACTIVITY_MONTHLY_PLAN = "MONTHLY_PLAN";
-    public static final String ACTIVITY_STOCK = "STOCK";
-    public static final String ACTIVITY_STOCK_ADJUSTMENT ="STOCK_ADJUSTMENT";
-
-
     public static final String FRAGMENT_HOME = "HOME";
-    public static final String FRAGMENT_REGISTER_CHILD = "REGISTER_CHILD";
-    public static final String FRAGMENT_SEARCH_CHILD = "SEARCH_CHILD";
-
     public static final String LANGUAGELOGIN = "SELECTEDLANGUAGELOGIN";
 
     public static Typeface Athletic, Fun_Raiser, Roboto_Condensed, Roboto_Black, Roboto_Light, Roboto_BoldCondensedItalic, Roboto_BoldCondensed, Rosario_Regular, Rosario_Bold, Rosario_Italic, Roboto_Regular, Roboto_Medium;
-
-
-    public static final String LOGGED_IN_USER_ID = "logged_in_user";
-
-    public static final String GET_HEALTH_FACILITY = "GET_HEALTH_FACILITY";
 
     BackboneApplication application = new BackboneApplication();
     private SharedPreferences sync_preferences;
@@ -268,7 +234,7 @@ public class BackboneActivity extends AppCompatActivity {
     }
 
     public void onClickHome(View v){
-        Intent i = new Intent(this, HomeActivity.class);
+        Intent i = new Intent(this, HomeActivityRevised.class);
         startActivity(i);
     }
 
@@ -301,53 +267,6 @@ public class BackboneActivity extends AppCompatActivity {
             toastMessage("Device is synchronizing. Please wait ...");
         } else {
             int id = v.getId();
-            BackboneApplication app = (BackboneApplication) getApplication();
-            Intent i;
-            switch (id) {
-                case R.id.home_btn_scan:
-                    app.setCurrentActivity(ACTIVITY_SCAN);
-                    i = new Intent(this, ScanHandlerActivity.class);
-                    i.putExtra("title", "Scan");
-                    startActivity(i);
-                    break;
-                case R.id.home_btn_check_in:
-                    app.setCurrentActivity(ACTIVITY_CHECK_IN);
-                    i = new Intent(this, ScanHandlerActivity.class);
-                    i.putExtra("origine", "check_in");
-                    startActivity(i);
-                    break;
-                case R.id.home_btn_register_child:
-                    app.setCurrentActivity(ACTIVITY_REGISTER_CHILD);
-                    startActivity(new Intent(this, RegisterChildActivity.class));
-                    break;
-                case R.id.register_child_btn_scan:
-                    app.setCurrentActivity(ACTIVITY_REGISTER_CHILD_SCAN);
-                    i = new Intent(this, ScanHandlerActivity.class);
-                    startActivity(i);
-                    break;
-                case R.id.home_btn_search_child:
-                    app.setCurrentActivity(ACTIVITY_SEARCH_CHILD);
-                    startActivity(new Intent(this, SearchChildActivity.class));
-                    break;
-                case R.id.home_btn_vaccination_queue:
-                    app.setCurrentActivity(ACTIVITY_VACCINATION_QUEUE);
-                    startActivity(new Intent(this, VaccinationQueueActivity.class));
-                    break;
-                case R.id.home_btn_monthly_plan:
-                    app.setCurrentActivity(ACTIVITY_MONTHLY_PLAN);
-                    startActivity(new Intent(this, MonthlyPlanActivity.class));
-                    break;
-                case R.id.home_btn_stock:
-                    app.setCurrentActivity(ACTIVITY_STOCK_ADJUSTMENT);
-                    startActivity(new Intent(this, StockMenuActivity.class));
-                    break;
-                case R.id.home_btn_immunized_children:
-                    Intent intent = new Intent(this, ReportsActivity.class);
-                    startActivity(intent);
-                    break;
-                default:
-                    break;
-            }
         }
 
     }

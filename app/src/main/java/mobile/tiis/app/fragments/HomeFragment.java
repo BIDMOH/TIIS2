@@ -231,19 +231,7 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
     public void onClick(View v) {
 
 
-        //respond to clicks
-        if (v.getId() == R.id.manual_barcode_input_button) {
-            IntentIntegrator scanIntegrator = new IntentIntegrator(HomeFragment.this.getActivity());
-            if (origine != null) {
-                if (origine.equalsIgnoreCase(BackboneActivity.ACTIVITY_CHECK_IN)) {
-                    BackboneApplication app = (BackboneApplication) HomeFragment.this.getActivity().getApplication();
-                    app.setCurrentActivity(BackboneActivity.ACTIVITY_CHECK_IN);
-                }
-            }
-            //TODO modified by coze
-//            scanIntegrator.setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            scanIntegrator.initiateScan();
-        }
+        //respond to click
 
         if (v.getId() == R.id.search_btn) {
             //log to see if it captures the user clicks

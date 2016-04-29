@@ -270,7 +270,7 @@ public class VaccinationQueueFragment extends android.support.v4.app.DialogFragm
     //send to camera scan
     public void onClick(View v) {
         //respond to clicks
-        if (v.getId() == R.id.scan_button) {
+        if (v.getId() == R.id.scan_camera_button) {
 //            IntentIntegrator scanIntegrator = new IntentIntegrator(this);
 //            if (origine != null) {
 //                if (origine.equalsIgnoreCase(ACTIVITY_CHECK_IN)) {

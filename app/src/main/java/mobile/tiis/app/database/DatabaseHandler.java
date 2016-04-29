@@ -62,7 +62,6 @@ import mobile.tiis.app.entity.Place;
 import mobile.tiis.app.entity.ScheduledVaccination;
 import mobile.tiis.app.entity.Status;
 import mobile.tiis.app.entity.Stock;
-import mobile.tiis.app.AefiActivity;
 import mobile.tiis.app.entity.User;
 import mobile.tiis.app.entity.VaccinationAppointment;
 import mobile.tiis.app.entity.VaccinationEvent;
@@ -2002,7 +2001,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     /**
      * Kjo eshte nje metode e cila na kthen te dhenat per last vaccination appointement per aefi
-     * qe te plotesojme tek {@link AefiActivity}
+     * qe te plotesojme tek {@link}
      *
      * @return
      */
@@ -2069,7 +2068,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     /**
      * Kjo eshte nje metode e cila na kthen te dhenat per vaccination appointement per aefi
-     * qe te plotesojme tek {@link AefiActivity}
+     * qe te plotesojme tek {@link}
      *
      * @return
      */
