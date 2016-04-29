@@ -298,7 +298,7 @@
 
                 <LinearLayout
                     android:id="@+id/data_view"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:paddingBottom="32dp"
                     android:gravity="center_horizontal"
                     android:layout_width="match_parent"
@@ -339,7 +339,7 @@
 
                         <TextView
                             android:layout_width="0dp"
-                            android:layout_weight="0.2"
+                            android:layout_weight="0.15"
                             android:gravity="center_horizontal"
                             android:layout_height="wrap_content"
                             android:id="@+id/child_names_title"
@@ -354,10 +354,10 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.1"
+                            android:layout_weight="0.25"
                             android:gravity="center_horizontal"
                             android:textStyle="bold"
-                            android:text="Child Id"
+                            android:text="Dosses Missed"
                             android:id="@+id/child_id_title"
                             />
 
@@ -380,16 +380,6 @@
                             android:layout_width="1dp"
                             android:layout_height="match_parent"
                             android:background="@color/black"/>
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="0.1"
-                            android:gravity="center_horizontal"
-                            android:id="@+id/child_dob_title"
-                            android:layout_height="wrap_content"
-                            android:textStyle="bold"
-                            android:text="Child DOB"/>
-
 
                         <View
                             android:layout_width="1dp"
@@ -446,21 +436,38 @@
                         android:layout_height="1dp"
                         android:background="@color/black"/>
 
-                    <TableLayout
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/defaulter_table"
-                        android:layout_below="@id/linear_title"
-                        android:background="@color/card_grid_tex">
+                        android:minHeight="200dp"
+                        android:layout_height="wrap_content">
 
+                        <TableLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/defaulter_table"
+                            android:background="@color/card_grid_tex">
 
-                    </TableLayout>
+                        </TableLayout>
 
-                    <ProgressBar
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:id="@+id/progres_bar"
-                        android:indeterminate="true"/>
+                        <ProgressBar
+                            android:layout_width="70dp"
+                            android:layout_height="70dp"
+                            android:id="@+id/progres_bar"
+                            android:layout_centerInParent="true"
+                            android:indeterminate="true"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/defaulters_empty_state_message"
+                            android:layout_centerInParent="true"
+                            android:text="Defaulters List is Empty"
+                            android:textSize="18sp"
+                            android:textColor="@color/card_grid_text"
+                            android:textStyle="bold"/>
+
+                    </RelativeLayout>
+
 
                 </LinearLayout>
 

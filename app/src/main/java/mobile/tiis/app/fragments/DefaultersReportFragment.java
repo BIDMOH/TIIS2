@@ -54,6 +54,8 @@ public class DefaultersReportFragment extends Fragment {
     final DatePickerDialog toDatePicker = new DatePickerDialog();
     private String toDateString="",fromDateString="";
 
+    TextView emptyState;
+
     private String hf_id, child_id, birthplacestr, villagestr, hfstr, statusstr, gender_val, birthdate_val;
 
     public static DefaultersReportFragment newInstance(int position) {
@@ -165,6 +167,9 @@ public class DefaultersReportFragment extends Fragment {
         progressBar     = (ProgressBar) v.findViewById(R.id.progres_bar);
         defaultersTable = (TableLayout) v.findViewById(R.id.defaulter_table);
 
+        emptyState = (TextView) v.findViewById(R.id.defaulters_empty_state_message);
+        emptyState.setVisibility(View.GONE);
+
         metDOBFrom              = (MaterialEditText) v.findViewById(R.id.met_dob_from);
         metDOBTo                = (MaterialEditText) v.findViewById(R.id.met_dob_value);
 
@@ -201,11 +206,17 @@ public class DefaultersReportFragment extends Fragment {
              */
             String SQLDefaultersList;
             SQLDefaultersList =
-                    "SELECT DISTINCT CHILD_ID "+
+                    "SELECT DISTINCT CHILD_ID, DOSE_ID, "+
+                            " ( SELECT GROUP_CONCAT(d.FULLNAME) " +
+                            " FROM vaccination_event v INNER JOIN dose d ON v.DOSE_ID = d.ID " +
+                            " WHERE datetime(substr(v.SCHEDULED_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
+                            " AND datetime(substr(v.SCHEDULED_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')  " +
+                            " AND v.CHILD_ID = vaccination_event.CHILD_ID "+
+                            " AND v.IS_ACTIVE='true' AND v.VACCINATION_STATUS='false') AS VACCINES " +
                             " FROM vaccination_event " +
                             " WHERE HEALTH_FACILITY_ID = '"+app.getLOGGED_IN_USER_HF_ID()+"' "+
-                            "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
-                            "AND datetime(substr(vaccination_event.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')" +
+                            " AND datetime(substr(vaccination_event.SCHEDULED_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch') " +
+                            " AND datetime(substr(vaccination_event.SCHEDULED_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch') " +
                             " AND vaccination_event.IS_ACTIVE='true' AND vaccination_event.VACCINATION_STATUS='false' "+
                             " GROUP BY CHILD_ID " ; //+
 //                            " ORDER BY SCHEDULED_DATE "+
@@ -218,7 +229,9 @@ public class DefaultersReportFragment extends Fragment {
                 if (cursor.moveToFirst()) {
                     do {
                         ViewRows row = new ViewRows();
-                        row.setChildId(cursor.getString(cursor.getColumnIndex("CHILD_ID")));
+                        row.setChildId(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationEventColumns.CHILD_ID)));
+                        row.setDoseId(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationEventColumns.DOSE_ID)));
+                        row.setVaccines(cursor.getString(cursor.getColumnIndex("VACCINES")));
                         mVar.add(row);
                     } while (cursor.moveToNext());
                 }
@@ -231,10 +244,16 @@ public class DefaultersReportFragment extends Fragment {
         protected void onPostExecute(Integer result) {
 
 //            adapter.updateData(mVar);
-            if (result!=0){
+            if (result > 0){
+                emptyState.setVisibility(View.GONE);
+                dataView    .setVisibility(View.VISIBLE);
                 defaultersTable.removeAllViews();
                 FillDefaultersTable(mVar);
                 progressBar.setVisibility(View.GONE);
+            }else{
+                emptyState  .setVisibility(View.VISIBLE);
+                progressBar .setVisibility(View.GONE);
+                defaultersTable.removeAllViews();
             }
 
         }
@@ -252,9 +271,8 @@ public class DefaultersReportFragment extends Fragment {
             View v  = View.inflate(DefaultersReportFragment.this.getActivity(), R.layout.defaulter_list_table_item, null);
 
             TextView childNames = (TextView) v.findViewById(R.id.child_names_value);
-            TextView childID    = (TextView) v.findViewById(R.id.child_id_value);
+            TextView dosesMissed    = (TextView) v.findViewById(R.id.child_id_value);
             TextView childGender = (TextView) v.findViewById(R.id.gender_value);
-            TextView childDOB = (TextView) v.findViewById(R.id.child_dob_value);
             TextView childMotherNames = (TextView) v.findViewById(R.id.mothers_names_value);
             TextView childMotherContacts = (TextView) v.findViewById(R.id.mothers_contacts_value);
             TextView childVillage = (TextView) v.findViewById(R.id.village_value);
@@ -269,8 +287,7 @@ public class DefaultersReportFragment extends Fragment {
                 cursor.moveToFirst();
                 Child currentChild = getChildFromCursror(cursor);
                 childNames.setText(currentChild.getFirstname1()+" "+currentChild.getLastname1());
-                childID.setText(currentChild.getBarcodeID());
-
+                dosesMissed.setText(row.getVaccines());
                 if (currentChild.getGender().equals("true")){
                     childGender.setText("Male");
                 }else if (currentChild.getGender().equals("false")){
@@ -279,12 +296,10 @@ public class DefaultersReportFragment extends Fragment {
 
                 SimpleDateFormat ft = new SimpleDateFormat("dd/MM/yyyy");
                 Date date = BackboneActivity.dateParser(currentChild.getBirthdate());
-                childDOB.setText(ft.format(date));
-
+//                childDOB.setText(ft.format(date));
                 childMotherNames.setText(currentChild.getMotherFirstname()+ " "+currentChild.getMotherLastname());
 
                 childMotherContacts.setText(currentChild.getPhone());
-
                 childVillage.setText(currentChild.getDomicile());
 
             }
@@ -375,7 +390,19 @@ public class DefaultersReportFragment extends Fragment {
         public ViewRows(){
         }
 
+        String doseId;
+
         String childId;
+
+        String vaccines;
+
+        public String getDoseId() {
+            return doseId;
+        }
+
+        public void setDoseId(String doseId) {
+            this.doseId = doseId;
+        }
 
         public String getChildId() {
             return childId;
@@ -383,6 +410,14 @@ public class DefaultersReportFragment extends Fragment {
 
         public void setChildId(String childId) {
             this.childId = childId;
+        }
+
+        public String getVaccines() {
+            return vaccines;
+        }
+
+        public void setVaccines(String vaccines) {
+            this.vaccines = vaccines;
         }
     }
 
