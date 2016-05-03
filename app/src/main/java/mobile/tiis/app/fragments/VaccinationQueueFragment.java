@@ -86,7 +86,10 @@ public class VaccinationQueueFragment extends android.support.v4.app.DialogFragm
     private Thread thread;
 
     ButteryProgressBar pbar;
+
     private Button vaccDoseQuantity;
+
+    public String selectedAgeDefinition = "";
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 
@@ -198,7 +201,7 @@ public class VaccinationQueueFragment extends android.support.v4.app.DialogFragm
 
                 View dialogLayout = View.inflate(getActivity(), R.layout.vaccination_quantity_custom_dialog, null);
                 ListView lvNameQuantity = (ListView)dialogLayout.findViewById(R.id.lv_result);
-                ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> list = this_database.getQuantityOfVaccinesNeededVaccinationQueue();
+                ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> list = this_database.getQuantityOfVaccinesNeededVaccinationQueue(selectedAgeDefinition);
                 Context ctx = getActivity().getApplicationContext();
                 try {
                     AdapterVaccineNameQuantity adapter = new AdapterVaccineNameQuantity(ctx, R.layout.item_vaccine_name_quantity, list);
@@ -221,8 +224,10 @@ public class VaccinationQueueFragment extends android.support.v4.app.DialogFragm
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 pbar.setVisibility(View.VISIBLE);
                 if(position > 0) {
+                    selectedAgeDefinition = ageDef.get(position - 1).getName();
                     var = compileVaccinationQueueTable(ageDef.get(position - 1).getId());
                 }else{
+                    selectedAgeDefinition = "";
                     var = compileVaccinationQueueTable("");
                 }
                 lvVaccQList.setAdapter(null);
@@ -436,7 +441,7 @@ public class VaccinationQueueFragment extends android.support.v4.app.DialogFragm
                             " AND (v.NONVACCINATION_REASON_ID=0  OR v.NONVACCINATION_REASON_ID in (Select ID from nonvaccination_reason where KEEP_CHILD_DUE = 'true')) " +
                             "AND ( (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) IS NULL \n" +
                             " OR (datetime(substr(v.SCHEDULED_DATE,7,10),'unixepoch') > datetime('now','-' || (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) || ' days' )) )" +
-                            ((!ageId.equals(""))?" AND a.ID = "+ ageId :"")+
+                            ((!ageId.equals(""))?" AND a.ID = '"+ ageId +"'":"") +
                             " GROUP BY v.APPOINTMENT_ID, v.SCHEDULED_DATE, a.NAME " +
                             " ORDER BY v.SCHEDULED_DATE";
 

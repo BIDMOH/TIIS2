@@ -1314,14 +1314,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      *
      * @return a list or null if no data
      */
-    public ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> getQuantityOfVaccinesNeededVaccinationQueue() {
+    public ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> getQuantityOfVaccinesNeededVaccinationQueue(String schedule) {
         ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> list = new ArrayList<>();
+        String _schedule = "";
+        _schedule = schedule;
+        String selectQuery = "";
+        if (_schedule.isEmpty() || _schedule.equals("") || _schedule == null){
+            selectQuery = "Select SCHEDULED_VACCINATION.NAME as VACCINE, COUNT(SCHEDULED_VACCINATION_ID) as QUANTITY"
+                    + " FROM monthly_plan inner join SCHEDULED_VACCINATION on monthly_plan.SCHEDULED_VACCINATION_ID = "
+                    + " SCHEDULED_VACCINATION.ID WHERE monthly_plan.CHILD_ID in (" + getAllChilcIdInVaccinationQueue() + ") AND "
+                    + " datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('now','+10 days')"
+                    + " GROUP BY SCHEDULED_VACCINATION_ID, VACCINE  ORDER BY SCHEDULED_VACCINATION_ID";
+        }else{
+            selectQuery = "Select SCHEDULED_VACCINATION.NAME as VACCINE, COUNT(SCHEDULED_VACCINATION_ID) as QUANTITY"
+                    + " FROM monthly_plan inner join SCHEDULED_VACCINATION on monthly_plan.SCHEDULED_VACCINATION_ID = "
+                    + " SCHEDULED_VACCINATION.ID WHERE monthly_plan.CHILD_ID in (" + getAllChilcIdInVaccinationQueue() + ") AND "
+                    + " monthly_plan.SCHEDULE = '"+ _schedule +"' AND "
+                    + " datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('now','+10 days')"
+                    + " GROUP BY SCHEDULED_VACCINATION_ID, VACCINE  ORDER BY SCHEDULED_VACCINATION_ID";
+        }
 
-        String selectQuery = "Select SCHEDULED_VACCINATION.NAME as VACCINE, COUNT(SCHEDULED_VACCINATION_ID) as QUANTITY"
-                + " FROM monthly_plan inner join SCHEDULED_VACCINATION on monthly_plan.SCHEDULED_VACCINATION_ID = "
-                + " SCHEDULED_VACCINATION.ID WHERE monthly_plan.CHILD_ID in (" + getAllChilcIdInVaccinationQueue() + ") AND "
-                + " datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('now','+10 days')"
-                + " GROUP BY SCHEDULED_VACCINATION_ID, VACCINE  ORDER BY SCHEDULED_VACCINATION_ID";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()) {
@@ -1343,14 +1355,27 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      *
      * @return a list or null if no data
      */
-    public ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> getQuantityOfVaccinesNeededMonthlyPlan(String hfid) {
+    public ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> getQuantityOfVaccinesNeededMonthlyPlan(String hfid, String schedule) {
         ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> list = new ArrayList<>();
+        String _schedule = "";
+        _schedule   = schedule;
+        String selectQuery = "";
 
-        String selectQuery = "Select SCHEDULED_VACCINATION.NAME as VACCINE, COUNT(SCHEDULED_VACCINATION_ID) as QUANTITY"
-                + " FROM monthly_plan inner join SCHEDULED_VACCINATION on monthly_plan.SCHEDULED_VACCINATION_ID = "
-                + " SCHEDULED_VACCINATION.ID WHERE HEALTH_FACILITY_ID = " + hfid + " AND "
-                + " datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('now','+30 days')"
-                + " GROUP BY SCHEDULED_VACCINATION_ID, VACCINE  ORDER BY SCHEDULED_VACCINATION_ID";
+        if (_schedule.isEmpty() || _schedule.equals("") || _schedule == null){
+            selectQuery = "Select SCHEDULED_VACCINATION.NAME as VACCINE, COUNT(SCHEDULED_VACCINATION_ID) as QUANTITY"
+                    + " FROM monthly_plan inner join SCHEDULED_VACCINATION on monthly_plan.SCHEDULED_VACCINATION_ID = "
+                    + " SCHEDULED_VACCINATION.ID WHERE HEALTH_FACILITY_ID = " + hfid + " AND "
+                    + " datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('now','+30 days')"
+                    + " GROUP BY SCHEDULED_VACCINATION_ID, VACCINE  ORDER BY SCHEDULED_VACCINATION_ID";
+        }else{
+            selectQuery = "Select SCHEDULED_VACCINATION.NAME as VACCINE, COUNT(SCHEDULED_VACCINATION_ID) as QUANTITY"
+                    + " FROM monthly_plan inner join SCHEDULED_VACCINATION on monthly_plan.SCHEDULED_VACCINATION_ID = "
+                    + " SCHEDULED_VACCINATION.ID WHERE HEALTH_FACILITY_ID = " + hfid + " AND "
+                    + " monthly_plan.SCHEDULE = '"+ _schedule +"' AND "
+                    + " datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('now','+30 days')"
+                    + " GROUP BY SCHEDULED_VACCINATION_ID, VACCINE  ORDER BY SCHEDULED_VACCINATION_ID";
+        }
+
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()) {

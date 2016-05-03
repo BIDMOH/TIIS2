@@ -110,7 +110,8 @@ public class HomeActivityRevised extends BackboneActivity {
 
             Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
             try {
-                 ((VaccinationQueueFragment) fragment).updateList();
+                // TODO: Auto Refresh Vaccination Queue list from here (uncoment)
+//                 ((VaccinationQueueFragment) fragment).updateList();
             }catch (Exception e){
                 e.printStackTrace();
             }

@@ -285,7 +285,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
 
                     View dialogLayout = View.inflate(MonthlyPlanFragment.this.getActivity(), R.layout.vaccination_quantity_custom_dialog, null);
                     ListView lvNameQuantity = (ListView) dialogLayout.findViewById(R.id.lv_result);
-                    ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> list = this_database.getQuantityOfVaccinesNeededMonthlyPlan(app.getLOGGED_IN_USER_HF_ID());
+                    ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> list = this_database.getQuantityOfVaccinesNeededMonthlyPlan(app.getLOGGED_IN_USER_HF_ID(), currentCategory);
                     Context ctx = getActivity().getApplicationContext();
                     AdapterVaccineNameQuantity adapter = new AdapterVaccineNameQuantity(ctx, R.layout.item_vaccine_name_quantity, list);
                     lvNameQuantity.setAdapter(adapter);

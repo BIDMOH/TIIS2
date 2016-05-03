@@ -110,8 +110,12 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
 
     CardView previousCard, forwardCard;
 
+    BackboneApplication app;
+
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_search_child, null);
+        app = (BackboneApplication) SearchChildFragment.this.getActivity().getApplication();
+        mydb = app.getDatabaseInstance();
         setUpView(root);
 
         previous        = (ImageView) root.findViewById(R.id.previous_10_contents);
@@ -170,9 +174,6 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
                 startSearchingOutsideFacility();
             }
         });
-
-        BackboneApplication app = (BackboneApplication) SearchChildFragment.this.getActivity().getApplication();
-        mydb = app.getDatabaseInstance();
 
         placeList = mydb.getAllPlaces();
         List<String> place_names = new ArrayList<String>();
@@ -374,6 +375,11 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
 
         searchOutsideFacilityButton = (Button) v.findViewById(R.id.outside_facility_search_btn);
 
+        if (!(app.getOnlineStatus())){
+            searchOutsideFacility.setVisibility(View.INVISIBLE);
+        }else{
+            searchOutsideFacility.setVisibility(View.VISIBLE);
+        }
     }
 
     public void emptyAllFields(){
