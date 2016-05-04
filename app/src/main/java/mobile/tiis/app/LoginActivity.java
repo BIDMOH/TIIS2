@@ -180,11 +180,11 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
         //Starting the repeating synchronisation procedure that happens every 5 minutes
         login_preferences = getSharedPreferences(LOGINPREFERENCE, Context.MODE_PRIVATE);
 
-        if (login_preferences.getBoolean("isLoggedIn", false)){
-            Intent intent = new Intent(LoginActivity.this, HomeActivityRevised.class);
-            startActivity(intent);
-            finish();
-        }
+//        if (login_preferences.getBoolean("isLoggedIn", false)){
+//            Intent intent = new Intent(LoginActivity.this, HomeActivityRevised.class);
+//            startActivity(intent);
+//            finish();
+//        }
 
         if(getIntent().hasExtra(BackboneActivity.LANGUAGELOGIN)){
             languagePosition = getIntent().getIntExtra(BackboneActivity.LANGUAGELOGIN,0);
