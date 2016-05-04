@@ -244,7 +244,7 @@ public class DropoutReportFragment extends Fragment {
     private void FillDroupoutTable(ArrayList<ViewRows> items) {
         ArrayList<ViewRows> VR = items;
         for (ViewRows row : VR) {
-            View v = View.inflate(DropoutReportFragment.this.getActivity(), R.layout.dropout_report_item, null);
+            View v = LayoutInflater.from(DropoutReportFragment.this.getActivity()).inflate(R.layout.dropout_report_item, null);
 
             TextView monthValue = (TextView) v.findViewById(R.id.month_value);
             TextView bcgMriNumber = (TextView) v.findViewById(R.id.bcg_mri_number_value);

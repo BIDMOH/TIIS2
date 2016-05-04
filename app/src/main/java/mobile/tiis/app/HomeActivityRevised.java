@@ -512,20 +512,23 @@ public class HomeActivityRevised extends BackboneActivity {
             if (!DatabaseHandler.dbPreinstalled) {
                 BackboneApplication application = (BackboneApplication) getApplication();
 
-                application.parsePlace();
-                application.parseBirthplace();
-                application.parseStatus();
-                application.parseWeight();
-                application.parseNonVaccinationReason();
-                application.parseAgeDefinitions();
-                application.parseItem();
-                application.parseScheduledVaccination();
-                application.parseDose();
-                application.parseHealthFacility();
-                application.parseItemLots();
-                application.parseStock();
-                application.parseStockAdjustmentReasons();
-
+                try{
+                    application.parsePlace();
+                    application.parseBirthplace();
+                    application.parseStatus();
+                    application.parseWeight();
+                    application.parseNonVaccinationReason();
+                    application.parseAgeDefinitions();
+                    application.parseItem();
+                    application.parseScheduledVaccination();
+                    application.parseDose();
+                    application.parseHealthFacility();
+                    application.parseItemLots();
+                    application.parseStock();
+                    application.parseStockAdjustmentReasons();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
 
                 String hfidFoundInVaccEvOnlyAndNotInHealthFac = application.getDatabaseInstance().getHFIDFoundInVaccEvAndNotInHealthFac();
                 if (hfidFoundInVaccEvOnlyAndNotInHealthFac != null) {
