@@ -21,15 +21,17 @@ public class ChildDetailsViewPager extends FragmentPagerAdapter {
     FragmentManager fragmentManager;
     FragmentTransaction tx;
     String mValue, Barcode;
+    String appointmentId;
     Context context;
 
-    public ChildDetailsViewPager(Context ctx, FragmentManager fm, String value, String barcode) {
+    public ChildDetailsViewPager(Context ctx, FragmentManager fm, String value, String barcode, String appointment_id) {
         super(fm);
         fragmentManager = fm;
         tx              = fragmentManager.beginTransaction();
         mValue          = value;
         context         = ctx;
         Barcode         = barcode;
+        appointmentId   = appointment_id;
     }
 
     @Override
@@ -58,7 +60,7 @@ public class ChildDetailsViewPager extends FragmentPagerAdapter {
         }
         else if (position == 2){
             tx.addToBackStack(TITLES[position]);
-            return ChildVaccinatePagerFragment.newInstance(mValue, Barcode);
+            return ChildVaccinatePagerFragment.newInstance(mValue, Barcode, appointmentId);
         }
         else if (position == 3){
             tx.addToBackStack(TITLES[position]);

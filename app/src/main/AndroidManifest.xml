@@ -87,15 +87,8 @@
             </intent-filter>
         </activity>
 
-
         <activity android:name="mobile.tiis.app.HomeActivityRevised"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize">
-        </activity>
-
-
-
-        <activity android:name="mobile.tiis.app.SearchChildResultActivity"
-            android:screenOrientation="user">
         </activity>
 
         //services
@@ -107,7 +100,6 @@
         <service
             android:name="mobile.tiis.app.postman.SynchronizationService2">
         </service>
-
 
         <service
             android:name="mobile.tiis.app.authentication.LoginAuthenticationService"

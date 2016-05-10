@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import java.util.regex.Pattern;
 
 import mobile.tiis.app.CustomViews.NestedListView;
 import mobile.tiis.app.R;
+import mobile.tiis.app.adapters.ChildAppointmentListAdapter;
 import mobile.tiis.app.base.BackboneApplication;
 import mobile.tiis.app.database.DatabaseHandler;
 import mobile.tiis.app.database.SQLHandler;
@@ -109,11 +111,12 @@ public class ChildVaccinatePagerFragment extends Fragment {
         return date;
     }
 
-    public static ChildVaccinatePagerFragment newInstance(String mValue, String barcode) {
+    public static ChildVaccinatePagerFragment newInstance(String mValue, String barcode, String appointmentId) {
         ChildVaccinatePagerFragment f = new ChildVaccinatePagerFragment();
         Bundle b                    = new Bundle();
         b                           .putString(VALUE, mValue);
         b                           .putString("Barcode", barcode);
+        b                           .putString("appointmentId", appointmentId);
         f                           .setArguments(b);
         return f;
     }
@@ -126,11 +129,14 @@ public class ChildVaccinatePagerFragment extends Fragment {
 
     FragmentStackManager fm;
 
+    String appointmentID = "";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         value     = getArguments().getString(VALUE);
-        childBarcode = getArguments().getString("Barcode");
+        childBarcode    = getArguments().getString("Barcode");
+        appointmentID   = getArguments().getString("appointmentId");
 
         app = (BackboneApplication) ChildVaccinatePagerFragment.this.getActivity().getApplication();
         dbh = app.getDatabaseInstance();
@@ -167,25 +173,40 @@ public class ChildVaccinatePagerFragment extends Fragment {
             }
         }
 
-        ChildAppointmentsListFragment appointmentsListFragment = new ChildAppointmentsListFragment();
-        Bundle bundle=new Bundle();
-        bundle.putString("child_id", currentChild.getId());
-        bundle.putString("barcode", currentChild.getBarcodeID());
-        bundle.putString("birthdate", currentChild.getBirthdate());
-        appointmentsListFragment.setArguments(bundle);
+        if (appointmentID != "" || !appointmentID.isEmpty() || !appointmentID.equals("")){
+            AdministerVaccineFragment administerVaccineFragment = new AdministerVaccineFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("appointment_id", appointmentID);
+            bundle.putString("birthdate", currentChild.getBirthdate());
+            bundle.putString("barcode", currentChild.getBarcodeID());
+            Log.d("appointmentID", "Appointment Id is : " + appointmentID);
+            administerVaccineFragment.setArguments(bundle);
+            app.setCurrentFragment(app.VACCINATE_CHILD_FRAGMENT);
+//                fm.addFragment(administerVaccineFragment, R.id.vacc_fragment_frame, true, FragmentTransaction.TRANSIT_FRAGMENT_FADE, false);
+
+            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.vacc_fragment_frame, administerVaccineFragment);
+            ft.addToBackStack("AdministerVaccineFragment");
+            ft.commit();
+        }else{
+            ChildAppointmentsListFragment appointmentsListFragment = new ChildAppointmentsListFragment();
+            Bundle bundle=new Bundle();
+            bundle.putString("child_id", currentChild.getId());
+            bundle.putString("barcode", currentChild.getBarcodeID());
+            bundle.putString("birthdate", currentChild.getBirthdate());
+            appointmentsListFragment.setArguments(bundle);
 //
 //        //add the Fragment to display a list of current child's appointments
 //        fm = new FragmentStackManager(this.getActivity());
 //        app.setCurrentFragment(app.APPOINTMENT_LIST_FRAGMENT);
 //        fm.addFragment(appointmentsListFragment, R.id.vacc_fragment_frame, true, FragmentTransaction.TRANSIT_FRAGMENT_FADE, false);
 
-        app.setCurrentFragment(app.APPOINTMENT_LIST_FRAGMENT);
-        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.vacc_fragment_frame, appointmentsListFragment);
-        ft.addToBackStack("fragmentVaccineList");
-        ft.commit();
-
-
+            app.setCurrentFragment(app.APPOINTMENT_LIST_FRAGMENT);
+            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.vacc_fragment_frame, appointmentsListFragment);
+            ft.addToBackStack("fragmentVaccineList");
+            ft.commit();
+        }
 
         Date todayD = new Date();
         SimpleDateFormat ftD = new SimpleDateFormat("dd-MMM-yyyy");

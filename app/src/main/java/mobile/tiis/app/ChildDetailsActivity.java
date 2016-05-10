@@ -58,6 +58,8 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
 
     public static String age = "";
 
+    public String appointmentId = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +75,8 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
             value = extras.getString(BackboneApplication.CHILD_ID);
             currentPagerPage    = extras.getInt("current");
             handlerBarcode      = extras.getString("barcode");
+            appointmentId       = extras.getString("appointmentId");
+
             Log.d("currentpage", currentPagerPage + "");
 
             if (value == null || value.equalsIgnoreCase("")) {
@@ -130,7 +134,7 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
             }
         }
 
-        adapter = new ChildDetailsViewPager(this, getSupportFragmentManager(), value, handlerBarcode);
+        adapter = new ChildDetailsViewPager(this, getSupportFragmentManager(), value, handlerBarcode, appointmentId);
         pager.setOffscreenPageLimit(1);
 
         pager.setAdapter(adapter);

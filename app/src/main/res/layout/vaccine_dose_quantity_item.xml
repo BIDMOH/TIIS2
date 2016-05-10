@@ -21,6 +21,7 @@
                 android:layout_height="match_parent"
                 android:id="@+id/dose"
                 android:text="Dozi"
+                android:textColor="@color/black"
                 android:textSize="18sp"
                 android:gravity="center_vertical"/>
 
@@ -58,6 +59,7 @@
             android:layout_height="match_parent"
             android:id="@+id/vaccine_date"
             android:layout_weight=".15"
+            android:textColor="@color/black"
             android:text="12-Jan-2014"
             android:textSize="18sp"
             android:gravity="center"/>
@@ -109,6 +111,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:divider="@null"
+
                 android:layout_centerInParent="true"/>
 
         </RelativeLayout>
