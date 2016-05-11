@@ -522,41 +522,42 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
             SQLiteDatabase db = mydb.getReadableDatabase();
 
             Cursor cursor1 = db.rawQuery(SQLCountTotalOutReach, null);
-            cursor1.moveToFirst();
-            viewRows.setTotalOutreach(cursor1.getInt(cursor1.getColumnIndex("IDS")));
+            if(cursor1.moveToFirst()) {
+                viewRows.setTotalOutreach(cursor1.getInt(cursor1.getColumnIndex("IDS")));
+            }
 
             Cursor cursor2 = db.rawQuery(SQLCountTotalVisits,null);
-            cursor2.moveToFirst();
-            viewRows.setTotal(cursor2.getInt(cursor2.getColumnIndex("IDS")));
+            if(cursor2.moveToFirst())
+                viewRows.setTotal(cursor2.getInt(cursor2.getColumnIndex("IDS")));
 
 
             Cursor cursor3 = db.rawQuery(SQLCountTotalFixed,null);
-            cursor3.moveToFirst();
-            viewRows.setTotalFixed(cursor3.getInt(cursor3.getColumnIndex("IDS")));
+            if(cursor3.moveToFirst())
+                viewRows.setTotalFixed(cursor3.getInt(cursor3.getColumnIndex("IDS")));
 
 
             Cursor cursor4 = db.rawQuery(SQLCountTotalWithin,null);
-            cursor4.moveToFirst();
-            viewRows.setTotalWithin(cursor4.getInt(cursor4.getColumnIndex("IDS")));
+            if(cursor4.moveToFirst())
+                viewRows.setTotalWithin(cursor4.getInt(cursor4.getColumnIndex("IDS")));
 
             Cursor cursor5 = db.rawQuery(SQLCountTotalOutside,null);
-            cursor5.moveToFirst();
-            viewRows.setTotalOutside(cursor5.getInt(cursor5.getColumnIndex("IDS")));
+            if(cursor5.moveToFirst())
+                viewRows.setTotalOutside(cursor5.getInt(cursor5.getColumnIndex("IDS")));
 
 
             Cursor cursor6 = db.rawQuery(SQLCountVaccinedOutReach,null);
-            cursor6.moveToFirst();
-            viewRows.setVaccineOutreach(cursor6.getInt(cursor6.getColumnIndex("IDS")));
+            if(cursor6.moveToFirst())
+                viewRows.setVaccineOutreach(cursor6.getInt(cursor6.getColumnIndex("IDS")));
 
 
             Cursor cursor7 = db.rawQuery(SQLCountVaccinedFixed,null);
-            cursor7.moveToFirst();
-            viewRows.setVaccineFixed(cursor7.getInt(cursor7.getColumnIndex("IDS")));
+            if(cursor7.moveToFirst())
+                viewRows.setVaccineFixed(cursor7.getInt(cursor7.getColumnIndex("IDS")));
 
 
             Cursor cursor9 = db.rawQuery(SQLCountVaccinedWithin,null);
-            cursor9.moveToFirst();
-            viewRows.setVaccineWithin(cursor9.getInt(cursor9.getColumnIndex("IDS")));
+            if(cursor9.moveToFirst())
+                viewRows.setVaccineWithin(cursor9.getInt(cursor9.getColumnIndex("IDS")));
 
             Cursor cursor10 = db.rawQuery(SQLCountVaccinedOutside,null);
             cursor10.moveToFirst();
@@ -564,101 +565,76 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
 
 
             Cursor cursor11 = db.rawQuery(SQLCountTotalNewVisits,null);
-            cursor11.moveToFirst();
-            viewRows.setNewVisitsTotal(cursor11.getInt(cursor11.getColumnIndex("IDS")));
+            if(cursor11.moveToFirst())
+                viewRows.setNewVisitsTotal(cursor11.getInt(cursor11.getColumnIndex("IDS")));
 
             Cursor cursor12 = db.rawQuery(SQLCountNewVisitsOutreach,null);
-            cursor12.moveToFirst();
-            viewRows.setNewVisitsOutreach(cursor12.getInt(cursor12.getColumnIndex("IDS")));
+            if(cursor12.moveToFirst())
+                viewRows.setNewVisitsOutreach(cursor12.getInt(cursor12.getColumnIndex("IDS")));
 
 
             Cursor cursor13 = db.rawQuery(SQLCountNewVisitsFixed,null);
-            cursor13.moveToFirst();
-            viewRows.setNewVisitsFixed(cursor13.getInt(cursor13.getColumnIndex("IDS")));
+            if(cursor13.moveToFirst())
+                viewRows.setNewVisitsFixed(cursor13.getInt(cursor13.getColumnIndex("IDS")));
 
             Cursor cursor14 = db.rawQuery(SQLCountNewVisitsWithin,null);
-            cursor14.moveToFirst();
-            viewRows.setNewVisitsWithin(cursor14.getInt(cursor14.getColumnIndex("IDS")));
+            if(cursor14.moveToFirst())
+                viewRows.setNewVisitsWithin(cursor14.getInt(cursor14.getColumnIndex("IDS")));
 
 
 
             Cursor cursor15 = db.rawQuery(SQLCountNewVisitsOutside,null);
-            cursor15.moveToFirst();
-            viewRows.setNewVisitsOutside(cursor15.getInt(cursor15.getColumnIndex("IDS")));
+            if(cursor15.moveToFirst())
+                viewRows.setNewVisitsOutside(cursor15.getInt(cursor15.getColumnIndex("IDS")));
 
 
 
             Cursor cursor16 = db.rawQuery(SQLCountUnderImmunizedTotal,null);
-            cursor16.moveToFirst();
-            viewRows.setUnderImmunizedTotal(cursor16.getInt(cursor16.getColumnIndex("IDS")));
+            if(cursor16.moveToFirst())
+                viewRows.setUnderImmunizedTotal(cursor16.getInt(cursor16.getColumnIndex("IDS")));
 
 
 
             Cursor cursor17 = db.rawQuery(SQLCountUnderImmunizedOutreach,null);
-            cursor17.moveToFirst();
-            viewRows.setUnderImmunizedOutreach(cursor17.getInt(cursor17.getColumnIndex("IDS")));
+            if(cursor17.moveToFirst())
+                viewRows.setUnderImmunizedOutreach(cursor17.getInt(cursor17.getColumnIndex("IDS")));
 
             Cursor cursor18 = db.rawQuery(SQLCountUnderImmunizedFixed,null);
-            cursor18.moveToFirst();
-            viewRows.setUnderImmunizedFixed(cursor18.getInt(cursor18.getColumnIndex("IDS")));
+            if(cursor18.moveToFirst())
+                viewRows.setUnderImmunizedFixed(cursor18.getInt(cursor18.getColumnIndex("IDS")));
 
 
             Cursor cursor19 = db.rawQuery(SQLCountUnderImmunizedWithin,null);
-            cursor19.moveToFirst();
-            viewRows.setUnderImmunizedWithin(cursor19.getInt(cursor19.getColumnIndex("IDS")));
+            if(cursor19.moveToFirst())
+                viewRows.setUnderImmunizedWithin(cursor19.getInt(cursor19.getColumnIndex("IDS")));
 
             Cursor cursor20 = db.rawQuery(SQLCountUnderImmunizedOutside,null);
-            cursor20.moveToFirst();
-            viewRows.setUnderImmunizedOutside(cursor20.getInt(cursor20.getColumnIndex("IDS")));
+            if(cursor20.moveToFirst())
+                viewRows.setUnderImmunizedOutside(cursor20.getInt(cursor20.getColumnIndex("IDS")));
 
 
 
             Cursor cursor21 = db.rawQuery(SQLCountFullyImmunized,null);
-            cursor21.moveToFirst();
-            viewRows.setFullyImmunizedTotal(cursor21.getInt(cursor21.getColumnIndex("IDS")));
+            if(cursor21.moveToFirst())
+                viewRows.setFullyImmunizedTotal(cursor21.getInt(cursor21.getColumnIndex("IDS")));
 
 
             Cursor cursor22 = db.rawQuery(SQLCountFullyImmunizedOutreach,null);
-            cursor22.moveToFirst();
-            viewRows.setFullyImmunizedOutreach(cursor22.getInt(cursor22.getColumnIndex("IDS")));
+            if(cursor22.moveToFirst())
+                viewRows.setFullyImmunizedOutreach(cursor22.getInt(cursor22.getColumnIndex("IDS")));
 
             Cursor cursor23 = db.rawQuery(SQLCountFullyImmunizedFixed,null);
-            cursor23.moveToFirst();
-            viewRows.setFullyImmunizedFixed(cursor23.getInt(cursor23.getColumnIndex("IDS")));
+            if(cursor23.moveToFirst())
+                viewRows.setFullyImmunizedFixed(cursor23.getInt(cursor23.getColumnIndex("IDS")));
 
 
             Cursor cursor24 = db.rawQuery(SQLCountFullyImmunizedWithin,null);
-            cursor24.moveToFirst();
-            viewRows.setFullyImmunizedWithin(cursor24.getInt(cursor24.getColumnIndex("IDS")));
+            if(cursor24.moveToFirst())
+                viewRows.setFullyImmunizedWithin(cursor24.getInt(cursor24.getColumnIndex("IDS")));
 
             Cursor cursor25 = db.rawQuery(SQLCountFullyImmunizedOutside,null);
-            cursor25.moveToFirst();
-            viewRows.setFullyImmunizedOutside(cursor25.getInt(cursor25.getColumnIndex("IDS")));
-
-
-//            SQLDefaultersList =
-//                    "SELECT DISTINCT APPOINTMENT_ID, CHILD_ID "+
-//                            " ,(SELECT GROUP_CONCAT(dose.FULLNAME) FROM vaccination_event INNER JOIN dose ON vaccination_event.DOSE_ID = dose.ID left join age_definitions on dose.TO_AGE_DEFINITON_ID = age_definitions.ID WHERE monthly_plan.APPOINTMENT_ID=vaccination_event.APPOINTMENT_ID AND datetime(substr(vaccination_event.SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('now','+30 days') AND vaccination_event.IS_ACTIVE='true' AND vaccination_event.VACCINATION_STATUS='false' AND (vaccination_event.NONVACCINATION_REASON_ID=0  OR vaccination_event.NONVACCINATION_REASON_ID in (Select ID from nonvaccination_reason where KEEP_CHILD_DUE = 'true')) AND (DAYS IS NULL or (datetime(substr(vaccination_event.SCHEDULED_DATE,7,10),'unixepoch') > datetime('now','-' || DAYS || ' days')) )) AS VACCINES " +
-//                            " , SCHEDULE, SCHEDULED_DATE "+
-//                            " FROM monthly_plan join dose on DOSE_ID = dose.ID" +
-//                            " WHERE HEALTH_FACILITY_ID = '"+app.getLOGGED_IN_USER_HF_ID()+"' AND SCHEDULE like '%"+ageName+"%' AND datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('now','+30 days') "+
-//                            "AND ( (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) IS NULL \n" +
-//                            " OR (datetime(substr(SCHEDULED_DATE,7,10),'unixepoch') > datetime('now','-' || (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) || ' days' )) )" +
-//                            " GROUP BY APPOINTMENT_ID, SCHEDULED_DATE, DOMICILE, NAME, SCHEDULE, CHILD_ID, SCHEDULE_ID "+
-//                            " ORDER BY SCHEDULED_DATE "+
-//                            " LIMIT "+startRow+", 10 ; ";
-//
-//            Log.e("SQLDefaultersList", SQLDefaultersList);
-//            cursor = mydb.getReadableDatabase().rawQuery(SQLDefaultersList, null);
-//            if (cursor != null) {
-//                if (cursor.moveToFirst()) {
-//                    do {
-//                        ViewRows row = new ViewRows();
-//                        mVar.add(row);
-//                    } while (cursor.moveToNext());
-//                }
-//                cursor.close();
-//            }
+            if(cursor25.moveToFirst())
+                viewRows.setFullyImmunizedOutside(cursor25.getInt(cursor25.getColumnIndex("IDS")));
 
             return viewRows;
         }
