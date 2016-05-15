@@ -4,24 +4,30 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -30,22 +36,26 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import mobile.tiis.app.CustomViews.NestedListView;
 import mobile.tiis.app.R;
 import mobile.tiis.app.SubClassed.BackHandledFragment;
+import mobile.tiis.app.adapters.SingleTextViewAdapter;
 import mobile.tiis.app.adapters.VaccineDoseListAdapter;
 import mobile.tiis.app.base.BackboneActivity;
 import mobile.tiis.app.base.BackboneApplication;
 import mobile.tiis.app.database.DatabaseHandler;
 import mobile.tiis.app.database.SQLHandler;
 import mobile.tiis.app.entity.AdministerVaccinesModel;
+import mobile.tiis.app.entity.NonVaccinationReason;
 
 /**
  * Created by issymac on 27/01/16.
  */
-public class AdministerVaccineFragment extends BackHandledFragment implements View.OnClickListener{
+public class AdministerVaccineFragment extends BackHandledFragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener{
 
     private String appointment_id, birthdate, barcode, childId;
     private BackboneApplication app;
@@ -56,21 +66,27 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
     public  static boolean correnctDateSelected  = true;
     private Thread thread;
     boolean starter_set = false;
-    long daysDiff;
-    int counter = 0,DateDiffDialog = 0;
-    ArrayList<String> dosekeeper;
-    ArrayList<AdministerVaccinesModel> arrayListAdminVacc;
-    Date newest_date;
-    NestedListView vaccineDosesList;
-    CheckBox    vitACheckbox, mabendazolCheckbox, cbOutreach;
-    TextView vitADate, mabendazolDate;
-    Button saveButton;
-    MaterialEditText etNotes;
-    FragmentStackManager fm;
+    private long daysDiff;
+    private int counter = 0,DateDiffDialog = 0;
+    private ArrayList<String> dosekeeper;
+    private ArrayList<AdministerVaccinesModel> arrayListAdminVacc;
+    private Date newest_date;
+    private ListView vaccineDosesList;
+    private TableLayout vaccinesListTableLayout;
+    private CheckBox    vitACheckbox, mabendazolCheckbox, cbOutreach;
+    private TextView vitADate, mabendazolDate;
+    private Button saveButton;
+    private MaterialEditText etNotes;
+    private FragmentStackManager fm;
     private ProgressDialog progressDialog;
     private LinearLayout llSup;
     private String age = "";
     private boolean savingInProgress = false;
+
+    Date new_date = new Date();
+    TextView tempHoldingTextView;
+    AdministerVaccinesModel tempHoldingVaccineModel;
+    View view;
 
     public static final int getMonthsDifference(Date date1, Date date2) {
         int m1 = date1.getYear() * 12 + date1.getMonth();
@@ -207,9 +223,10 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         }
 
 
-        setListViewHeightBasedOnChildren(vaccineDosesList);
-        VaccineDoseListAdapter adapterList = new VaccineDoseListAdapter(this.getActivity(),R.layout.item_listview_admin_vacc,arrayListAdminVacc,birthdate,1);
-        vaccineDosesList.setAdapter(adapterList);
+//        setListViewHeightBasedOnChildren(vaccineDosesList);
+        fillVaccineTableLayout(arrayListAdminVacc,birthdate,1);
+//        VaccineDoseListAdapter adapterList = new VaccineDoseListAdapter(this.getActivity(),R.layout.item_listview_admin_vacc,arrayListAdminVacc,birthdate,1);
+//        vaccineDosesList.setAdapter(adapterList);
 
         DateDiffDialog();
 
@@ -226,6 +243,305 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
         return root;
     }
+
+    public void fillVaccineTableLayout(ArrayList<AdministerVaccinesModel> arr, String birthdate, int num){
+        vaccinesListTableLayout.removeAllViews();
+        LayoutInflater li = (LayoutInflater) AdministerVaccineFragment.this.getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        app = (BackboneApplication) AdministerVaccineFragment.this.getActivity().getApplicationContext();
+        dbh = app.getDatabaseInstance();
+
+        for (final AdministerVaccinesModel item : arr){
+
+            View rowView = li.inflate(R.layout.vaccine_dose_quantity_item, null);
+
+            TextView tvDose                 = (TextView) rowView.findViewById(R.id.dose);
+            final TextView tvVaccineDate    = (TextView)rowView.findViewById(R.id.vaccine_date);
+            final Spinner spVaccLot               = (Spinner)rowView.findViewById(R.id.lot_spinner);
+            final Spinner spReason                = (Spinner)rowView.findViewById(R.id.non_vacc_reason_spinner);
+            CheckBox chDone                 = (CheckBox)rowView.findViewById(R.id.vaccine_administered_done_checkbox);
+            final View view                       = (View) rowView.findViewById(R.id.split_dose);
+
+            tvDose.setText(item.getDoseName());
+            tvVaccineDate.setText(item.getTime());
+
+            //TODO : Add the material design date picker instead of the current date picker
+            tvVaccineDate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    tempHoldingTextView = tvVaccineDate;
+                    tempHoldingVaccineModel = item;
+                    pickDate();
+//                setdates(viewHolder.tvVaccineDate, item);
+                    Log.d("Time after show done", item.getTime());
+                }
+            });
+
+            String [] tm = item.getScheduled_Date_field().split("\\(");
+            String [] tLong;
+            if(tm[1].contains("+")){
+                tLong =  tm[1].split("\\+");
+            }else if(tm[1].contains("-")){
+                tLong =  tm[1].split("-");
+            }else {
+                tLong = tm;
+            }
+
+            String timeLong = tLong[0];
+
+            Date scheduledDate = new Date(Long.parseLong(timeLong));
+
+            Calendar now = Calendar.getInstance();
+
+            if (new_date.before(scheduledDate)){
+                correnctDateSelected = false;
+            }else{
+                correnctDateSelected = true;
+            }
+
+//            setSpinnerVoccLot(item);
+//            setSpinnerReason(item);
+//            checkBoxDone(item);
+
+            chDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    item.setStatus(String.valueOf(b));
+                    //Toast.makeText(AdministerVaccinesActivity.this, "Value changed to " + b, Toast.LENGTH_SHORT).show();
+                    if (!b) {
+                        spReason.setVisibility(View.VISIBLE);
+                        spVaccLot.setSelection(0);
+                        view.setVisibility(View.VISIBLE);
+                    }
+                    if (b) {
+                        spReason.setVisibility(View.GONE);
+                        item.setNon_vac_reason("-1");
+                        view.setVisibility(View.GONE);
+                    }
+                }
+            });
+            chDone.setChecked(Boolean.parseBoolean(item.getStatus()));
+
+//#############################################################NON VACCINATION REASON SPINNER ::::::.....
+
+            //NonVaccinationReason Column Spinner
+            List<String> reasons = new ArrayList<String>();
+            reasons.add("----");
+            for (NonVaccinationReason nvElement : dbh.getAllNonvaccinationReasons()) {
+                reasons.add(nvElement.getName());
+            }
+
+
+            final List<NonVaccinationReason> non_vaccination_reason_list_with_additions = dbh.getAllNonvaccinationReasons();
+            NonVaccinationReason empty = new NonVaccinationReason();
+            empty.setName("----");
+            empty.setId("0");
+            empty.setKeepChildDue("false");
+            non_vaccination_reason_list_with_additions.add(empty);
+
+
+            final SingleTextViewAdapter statusAdapterNonVaccinationReason = new SingleTextViewAdapter(AdministerVaccineFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, reasons);
+            spReason.setAdapter(statusAdapterNonVaccinationReason);
+            //item.setNon_vac_reason_pos(0);
+            spReason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                    spReason.setSelection(position);
+                    item.setNon_vac_reason_pos(position);
+                    for(NonVaccinationReason a : non_vaccination_reason_list_with_additions)
+                    {
+                        if (statusAdapterNonVaccinationReason.getItem(position).equalsIgnoreCase(a.getName())){
+                            item.setNon_vac_reason(a.getId());
+                            item.setKeep_child_due(Boolean.parseBoolean(a.getKeepChildDue()));
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parentView) {
+                    //no changes
+                }
+
+            });
+            spReason.setSelection(item.getNon_vac_reason_pos());
+            if(item.getStatus().equals(String.valueOf(true)))spReason.setVisibility(View.GONE);
+            spReason.setMinimumWidth(220);
+
+
+//############################################################# VACCINE LOT SPINNER ::::::.....
+
+
+            SingleTextViewAdapter statusAdapter = new SingleTextViewAdapter(AdministerVaccineFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, item.getVaccine_lot_list());
+            spVaccLot.setAdapter(statusAdapter);
+            if (item.getVaccine_lot_list().size() > 2) {
+                spVaccLot.setSelection(2);
+                item.setVaccination_lot_pos(2);
+                //setting the id of vaccine lot
+                item.setVaccination_lot(item.getVaccine_lot_map().get(item.getVaccine_lot_list().get(2)).toString());
+                Log.d("RowCollId", item.getVaccination_lot());
+            } else {
+                spVaccLot.setSelection(1);
+                item.setVaccination_lot_pos(1);
+                item.setVaccination_lot(item.getVaccine_lot_map().get(item.getVaccine_lot_list().get(1)).toString());
+                Log.d("RowCollId", item.getVaccination_lot());
+            }
+
+            //rowCollector.setVaccination_lot_pos(1);
+//        vac_lot_pos = 1;
+            spVaccLot.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                    spVaccLot.setSelection(position);
+//                vac_lot_pos = position;
+                    item.setVaccination_lot_pos(position);
+                    item.setVaccination_lot(item.getVaccine_lot_map().get(item.getVaccine_lot_list().get(position)).toString());
+                    Log.d("RowCollId", item.getVaccination_lot());
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parentView) {
+                    //no changes
+                }
+
+            });
+
+
+            vaccinesListTableLayout.addView(rowView);
+
+        }
+
+    }
+
+
+    public void pickDate(){
+        Calendar now = Calendar.getInstance();
+        DatePickerDialog reaction_start_date_picker = DatePickerDialog.newInstance(
+                AdministerVaccineFragment.this,
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH)
+        );
+
+        Date bdate = BackboneActivity.dateParser(birthdate);
+
+
+        Log.d("coze", "my date is " + bdate.getTime());
+        Calendar toCalendar = Calendar.getInstance();
+        reaction_start_date_picker.setMaxDate(toCalendar);
+        Calendar dob=Calendar.getInstance();
+        dob.setTimeInMillis(bdate.getTime());
+        reaction_start_date_picker.setMinDate(dob);
+
+        reaction_start_date_picker.show(((Activity) AdministerVaccineFragment.this.getActivity()).getFragmentManager(), "DatePickerDialogue");
+
+
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        final SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy");
+        Date bdate = BackboneActivity.dateParser(birthdate);
+
+        Calendar cal = new GregorianCalendar();
+        cal.set(year, (monthOfYear), dayOfMonth);
+        Date new_date = cal.getTime();
+
+        try {
+            new_date = ft.parse(ft.format(new_date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+        //Obtaining time in milliseconds from the scheduled time in string
+        String [] tm = tempHoldingVaccineModel.getScheduled_Date_field().split("\\(");
+        String [] tLong;
+        if(tm[1].contains("+")){
+            tLong =  tm[1].split("\\+");
+        }else if(tm[1].contains("-")){
+            tLong =  tm[1].split("-");
+        }else {
+            tLong = tm;
+        }
+
+        String timeLong = tLong[0];
+
+        Date scheduledDate = new Date(Long.parseLong(timeLong));
+
+        setNew_date(new_date);
+
+        if (new_date.before(scheduledDate)){
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(AdministerVaccineFragment.this.getActivity());
+
+            // set title
+            alertDialogBuilder.setTitle("Warning");
+
+            // set dialog message
+            alertDialogBuilder
+                    .setMessage("The selected vaccination date is before due date. Are you sure you want to set this date?")
+                    .setCancelable(false)
+                    .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            setdates(tempHoldingTextView, tempHoldingVaccineModel, getNew_date());
+                        }
+                    })
+                    .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // if this button is clicked, just close
+                            // the dialog box and do nothing
+                            dialog.cancel();
+                        }
+                    });
+
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+
+            // show it
+            alertDialog.show();
+
+        }else{
+            setdates(tempHoldingTextView, tempHoldingVaccineModel, new_date);
+        }
+
+    }
+
+    public void setNew_date(Date date){
+        new_date = date;
+    }
+
+    public Date getNew_date(){
+        return new_date;
+    }
+
+    public Date setdates(final TextView a, final AdministerVaccinesModel coll, Date new_date){
+        final SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy");
+        if (getDaysDifference(new_date, coll.getTime2()) > 0) {
+            coll.setTime(ft.format(new_date));
+            a.setText(ft.format(new_date));
+            coll.setTime2(new_date);
+            int cc = 0;
+            if (coll.getStarter_row()) {
+                for (AdministerVaccinesModel others : arrayListAdminVacc) {
+                    others.setTime(ft.format(new_date));
+                    others.setTime2(new_date);
+                }
+            }
+        }else {
+            coll.setTime(ft.format(coll.getTime2()));
+            a.setText(ft.format(coll.getTime2()));
+            coll.setTime2(coll.getTime2());
+            if (coll.getStarter_row()) {
+                for (AdministerVaccinesModel others : arrayListAdminVacc) {
+                    others.setTime(ft.format(coll.getTime2()));
+                    others.setTime2(coll.getTime2());
+                }
+            }
+        }
+
+        return new_date;
+    }
+
+
 
     public void DateDiffDialog(){
         switch (DateDiffDialog) {
@@ -260,8 +576,9 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
     }
 
     public void setUpView(View v){
-        vaccineDosesList        = (NestedListView) v.findViewById(R.id.lv_dose_list);
-        vitACheckbox            = (CheckBox) v.findViewById(R.id.vit_a_check);
+        vaccineDosesList        = (ListView) v.findViewById(R.id.lv_dose_list);
+        vaccinesListTableLayout = (TableLayout) v.findViewById(R.id.vaccine_list_table);
+        vitACheckbox = (CheckBox) v.findViewById(R.id.vit_a_check);
         mabendazolCheckbox      = (CheckBox) v.findViewById(R.id.mabendazol_check);
         cbOutreach              = (CheckBox) v.findViewById(R.id.cb_outreach);
         cbOutreach.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -752,7 +1069,24 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     FragmentManager fm = AdministerVaccineFragment.this.getActivity().getSupportFragmentManager();
-                                    fm.popBackStack();
+                                    int backStackEntryCount = fm.getBackStackEntryCount();
+                                    if (backStackEntryCount > 0){
+                                        fm.popBackStack();
+                                    }
+                                    else{
+                                        ChildAppointmentsListFragment appointmentsListFragment = new ChildAppointmentsListFragment();
+                                        Bundle bundle=new Bundle();
+                                        bundle.putString("child_id", childId);
+                                        bundle.putString("barcode", barcode);
+                                        bundle.putString("birthdate", birthdate);
+                                        appointmentsListFragment.setArguments(bundle);
+
+                                        app.setCurrentFragment(app.APPOINTMENT_LIST_FRAGMENT);
+                                        FragmentTransaction ft = fm.beginTransaction();
+                                        ft.replace(R.id.vacc_fragment_frame, appointmentsListFragment);
+                                        ft.addToBackStack("fragmentVaccineList");
+                                        ft.commit();
+                                    }
                                 }
                             })
                     .setNegativeButton("Cancel",

@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -91,26 +92,29 @@ public class ChildSummaryPagerFragment extends Fragment {
 
     private Thread thread;
 
-    public String value;
+    private String value;
+
     private boolean editable = false;
 
-    public MaterialEditText metBarcodeValue, metSystemID, metFirstName, metNotesValue,metMiddleName, metLastName, metMothersFirstName, metMothersSurname, metPhoneNumber, metDOB;
+    private MaterialEditText metBarcodeValue, metSystemID, metFirstName, metNotesValue,metMiddleName, metLastName, metMothersFirstName, metMothersSurname, metPhoneNumber, metDOB;
 
-    VaccinationHistoryListAdapter adapter;
+    private VaccinationHistoryListAdapter adapter;
 
-    PlacesOfBirthAdapter spinnerAdapter;
+    private PlacesOfBirthAdapter spinnerAdapter;
 
-    ListView lvImmunizationHistory;
+    private ListView lvImmunizationHistory;
+
     private Cursor mCursor;
-    Button editButton, saveButton;
 
-    MaterialSpinner ms, pobSpinner, villageSpinner, healthFacilitySpinner, statusSpinner;
+    private Button editButton, saveButton;
 
-    DatabaseHandler mydb;
+    private MaterialSpinner ms, pobSpinner, villageSpinner, healthFacilitySpinner, statusSpinner;
 
-    BackboneApplication app;
+    private DatabaseHandler mydb;
 
-    List<String> place_names;
+    private BackboneApplication app;
+
+    private List<String> place_names;
 
     final DatePickerDialog doBDatePicker = new DatePickerDialog();
 
@@ -140,6 +144,8 @@ public class ChildSummaryPagerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup v;
         v = (ViewGroup) inflater.inflate(R.layout.fragment_child_summary, null);
+        app = (BackboneApplication) ChildSummaryPagerFragment.this.getActivity().getApplication();
+        mydb = app.getDatabaseInstance();
 
         setUpView(v);
 
@@ -160,6 +166,7 @@ public class ChildSummaryPagerFragment extends Fragment {
         metMothersSurname   = (MaterialEditText) header.findViewById(R.id.met_mother_surname_value);
         metPhoneNumber      = (MaterialEditText) header.findViewById(R.id.met_phone_value);
         metDOB              = (MaterialEditText) header.findViewById(R.id.met_dob_value);
+
         metDOB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -227,9 +234,6 @@ public class ChildSummaryPagerFragment extends Fragment {
             }
         });
 
-        app = (BackboneApplication) ChildSummaryPagerFragment.this.getActivity().getApplication();
-        mydb = app.getDatabaseInstance();
-
         mCursor = null;
         mCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",
                 new String[]{String.valueOf(value)});
@@ -275,6 +279,24 @@ public class ChildSummaryPagerFragment extends Fragment {
         loadViewAppointementsTable(false);
 
         return v;
+    }
+
+    private class fillUITask extends AsyncTask<Void, Void, Void>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+
     }
 
     public void enableUserInputs(boolean fieldStatus){

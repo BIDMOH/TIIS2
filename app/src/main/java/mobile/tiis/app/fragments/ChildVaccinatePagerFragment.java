@@ -121,22 +121,26 @@ public class ChildVaccinatePagerFragment extends Fragment {
         return f;
     }
 
-    NestedListView vaccineDosesListView;
+    private NestedListView vaccineDosesListView;
 
-    FrameLayout vaccinateFrame;
+    private FrameLayout vaccinateFrame;
 
-    ArrayList<AdministerVaccinesModel> arrayListAdminVacc;
+    private ArrayList<AdministerVaccinesModel> arrayListAdminVacc;
 
-    FragmentStackManager fm;
+    private FragmentStackManager fm;
 
-    String appointmentID = "";
+    private String appointmentID = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         value     = getArguments().getString(VALUE);
         childBarcode    = getArguments().getString("Barcode");
-        appointmentID   = getArguments().getString("appointmentId");
+
+        if (getArguments().getString("appointmentId") != null){
+            appointmentID   = getArguments().getString("appointmentId");
+        }
+
 
         app = (BackboneApplication) ChildVaccinatePagerFragment.this.getActivity().getApplication();
         dbh = app.getDatabaseInstance();
@@ -173,7 +177,7 @@ public class ChildVaccinatePagerFragment extends Fragment {
             }
         }
 
-        if (appointmentID != "" || !appointmentID.isEmpty() || !appointmentID.equals("")){
+        if (!appointmentID.isEmpty()){
             AdministerVaccineFragment administerVaccineFragment = new AdministerVaccineFragment();
             Bundle bundle = new Bundle();
             bundle.putString("appointment_id", appointmentID);
@@ -182,7 +186,8 @@ public class ChildVaccinatePagerFragment extends Fragment {
             Log.d("appointmentID", "Appointment Id is : " + appointmentID);
             administerVaccineFragment.setArguments(bundle);
             app.setCurrentFragment(app.VACCINATE_CHILD_FRAGMENT);
-//                fm.addFragment(administerVaccineFragment, R.id.vacc_fragment_frame, true, FragmentTransaction.TRANSIT_FRAGMENT_FADE, false);
+
+//            fm.addFragment(administerVaccineFragment, R.id.vacc_fragment_frame, true, FragmentTransaction.TRANSIT_FRAGMENT_FADE, false);
 
             FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.vacc_fragment_frame, administerVaccineFragment);

@@ -339,7 +339,6 @@ public class VaccineDoseListAdapter extends ArrayAdapter<AdministerVaccinesModel
         });
     }
 
-
     public void setSpinnerReason(final AdministerVaccinesModel item,final ViewHolder viewHolder){
 
         app = (BackboneApplication) ctx.getApplicationContext();
@@ -400,70 +399,6 @@ public class VaccineDoseListAdapter extends ArrayAdapter<AdministerVaccinesModel
         if(item.getStatus().equals(String.valueOf(true)))viewHolder.spReason.setVisibility(View.GONE);
         viewHolder.spReason.setMinimumWidth(220);
     }
-
-//    public Date show(final TextView a, final AdministerVaccinesModel coll) {
-//        final Dialog d = new Dialog(ctx);
-//        d.setTitle("Date Picker");
-//        d.setContentView(R.layout.birthdate_picker);
-//        Button btnSet = (Button) d.findViewById(R.id.button1);
-//        Button btnCancel = (Button) d.findViewById(R.id.button2);
-//        final DatePicker dp = (DatePicker) d.findViewById(R.id.datePicker);
-//        dp.setMaxDate(new Date().getTime());
-//        final SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy");
-//        try {
-//            Date date = ft.parse(dob_st);
-//            dp.setMinDate(date.getTime());
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//
-//        btnSet.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Calendar calendar = Calendar.getInstance();
-//                //setText(Integer.toString(dp.getDayOfMonth()) + "/" + Integer.toString(dp.getMonth() + 1) + "/" + Integer.toString(dp.getYear()));
-//                calendar.set(dp.getYear(), dp.getMonth(), dp.getDayOfMonth());
-//                new_date = calendar.getTime();
-//                //Date dNow = new Date();
-//                if (AdministerVaccines2.getDaysDifference(new_date, coll.getTime2()) > 0) {
-//                    coll.setTime(ft.format(new_date));
-//                    a.setText(ft.format(new_date));
-//                    coll.setTime2(new_date);
-//                    int cc = 0;
-//                    if (coll.getStarter_row()) {
-//                        for (AdministerVaccinesModel others : items) {
-//                            others.setTime(ft.format(new_date));
-//                            others.setTime2(new_date);
-//
-//                        }
-//                    }
-//                } else {
-//                    coll.setTime(ft.format(coll.getTime2()));
-//                    a.setText(ft.format(coll.getTime2()));
-//                    coll.setTime2(coll.getTime2());
-//                    if (coll.getStarter_row()) {
-//                        for (AdministerVaccinesModel others : items) {
-//                            others.setTime(ft.format(coll.getTime2()));
-//                            others.setTime2(coll.getTime2());
-//                        }
-//                    }
-//                }
-//                notifyDataSetChanged();
-//
-//                d.dismiss();
-//            }
-//        });
-//        btnCancel.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                d.dismiss(); // dismiss the dialog
-//            }
-//        });
-//
-//        d.show();
-//        return new_date;
-//    }
 
     public void checkBoxDone(final AdministerVaccinesModel item,final ViewHolder viewHolder){
 

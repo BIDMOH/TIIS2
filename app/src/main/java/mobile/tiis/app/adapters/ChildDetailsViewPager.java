@@ -5,6 +5,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
+import android.view.View;
 
 import mobile.tiis.app.fragments.ChildAefiPagerFragment;
 import mobile.tiis.app.fragments.ChildImmCardPagerFragment;
@@ -18,11 +20,11 @@ import mobile.tiis.app.fragments.ChildWeightPagerFragment;
 public class ChildDetailsViewPager extends FragmentPagerAdapter {
 
     private final String[] TITLES = { "Child Summary", "Weight", "Vaccinate Child" , "AEFI", "Immunization Card" };
-    FragmentManager fragmentManager;
-    FragmentTransaction tx;
-    String mValue, Barcode;
-    String appointmentId;
-    Context context;
+    private FragmentManager fragmentManager;
+    private FragmentTransaction tx;
+    private String mValue, Barcode;
+    private String appointmentId;
+    private Context context;
 
     public ChildDetailsViewPager(Context ctx, FragmentManager fm, String value, String barcode, String appointment_id) {
         super(fm);
@@ -32,6 +34,13 @@ public class ChildDetailsViewPager extends FragmentPagerAdapter {
         context         = ctx;
         Barcode         = barcode;
         appointmentId   = appointment_id;
+    }
+
+    @Override
+    public void destroyItem(View collection, int position, Object o) {
+        View view = (View)o;
+        ((ViewPager) collection).removeView(view);
+        view = null;
     }
 
     @Override

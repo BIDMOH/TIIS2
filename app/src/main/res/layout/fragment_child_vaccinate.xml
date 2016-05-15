@@ -100,14 +100,27 @@
 
                 </LinearLayout>
 
-                <mobile.tiis.app.CustomViews.NestedListView
+                <ListView
+                    android:visibility="gone"
                     android:background="@color/white"
                     android:id="@+id/lv_dose_list"
                     android:layout_width="match_parent"
                     android:layout_below="@id/linear1"
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
-                </mobile.tiis.app.CustomViews.NestedListView>
+                </ListView>
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/vaccine_list_table"
+                    android:layout_below="@id/linear1"
+                    android:background="@color/card_grid_tex">
+
+
+
+                </TableLayout>
+
 
 
             </RelativeLayout>
