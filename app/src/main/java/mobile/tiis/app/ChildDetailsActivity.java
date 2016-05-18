@@ -168,30 +168,9 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
             }else{
                 String name = currentChild.getFirstname1()+" "+currentChild.getFirstname2()+" "+currentChild.getLastname1();
                 toolbarTitle.setText(name);
-                new AsyncTask<Void, Void, Void>(){
-                    @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-                        childInfoLoader.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    protected Void doInBackground(Void... voids) {
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        return null;
-                    }
-
-                    @Override
-                    protected void onPostExecute(Void aVoid) {
-                        super.onPostExecute(aVoid);
-                        childInfoLoader.setVisibility(View.GONE);
-                        initializePagers();
-                    }
-                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                childInfoLoader.setVisibility(View.VISIBLE);
+                childInfoLoader.setVisibility(View.GONE);
+                initializePagers();
             }
 
         }

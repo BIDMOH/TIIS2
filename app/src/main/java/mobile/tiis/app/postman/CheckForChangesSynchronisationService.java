@@ -41,7 +41,6 @@ public class CheckForChangesSynchronisationService  extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         broadcaster = LocalBroadcastManager.getInstance(getApplicationContext());
-        Log.d("coze", "SynchronisationService2 started");
         BackboneApplication app = (BackboneApplication) getApplication();
         synchronized (app) {
             app.parseConfiguration();

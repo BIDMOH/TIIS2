@@ -61,13 +61,12 @@ public class RoutineAlarmReceiver extends WakefulBroadcastReceiver {
      * @param context
      */
     public static void setAlarmCheckForChangesInChild(Context context) {
-        Log.d("coze", "Starting a syncronization every few seconds for child information update .... ");
         if (alarmMgr == null)
             alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent childChanges = new Intent(context, RoutineAlarmReceiver.class);
         childChanges.putExtra("childChanges", true);
         checkForChangesInChildPI = PendingIntent.getBroadcast(context, 222, childChanges, PendingIntent.FLAG_UPDATE_CURRENT); //
-        alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + 20000, 10000, checkForChangesInChildPI);
+        alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + 60000, 60000, checkForChangesInChildPI);
     }
 
     /**

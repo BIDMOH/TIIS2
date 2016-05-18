@@ -56,11 +56,8 @@ public class ChildDetailsViewPager extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
 
-//        HomeActivityRevised activity = (HomeActivityRevised) context;
-
         if (position == 0){
             tx.addToBackStack("ChildSummaryFragment");
-//            activity.currentFragment = activity.CHILD_SUMMARY_FRAGMENT;
             return ChildSummaryPagerFragment.newInstance(position, mValue);
         }
         else if (position == 1){

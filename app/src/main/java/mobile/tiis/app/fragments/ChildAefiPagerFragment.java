@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -111,7 +112,6 @@ public class ChildAefiPagerFragment extends Fragment  implements DatePickerDialo
         v = (ViewGroup) inflater.inflate(R.layout.fragment_child_aefi, null);
         app = (BackboneApplication) ChildAefiPagerFragment.this.getActivity().getApplication();
         mydb = app.getDatabaseInstance();
-        Log.d("barcode", "Barcode passed is : "+barcode);
 
         initViews(v);
         setupVariables();
@@ -241,48 +241,76 @@ public class ChildAefiPagerFragment extends Fragment  implements DatePickerDialo
     }
 
     private void setupVariables(){
-        Cursor getChildIdCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.BARCODE_ID + "=?",
-                new String[]{String.valueOf(barcode)});
-        if (getChildIdCursor != null && getChildIdCursor.getCount() > 0) {
-            getChildIdCursor.moveToFirst();
-            childId = getChildIdCursor.getString(getChildIdCursor.getColumnIndex(SQLHandler.ChildColumns.ID));
-        } else {
-            //BackboneActivity.toastMessage(getString(R.string.empty_child_id));
-            //finish();
-            Toast.makeText(ChildAefiPagerFragment.this.getActivity(), "Child not found on AEFI", Toast.LENGTH_LONG).show();
-        }
+        new AsyncTask<Void,Void,Void>(){
+            @Override
+            protected Void doInBackground(Void... params) {
+                //delaying the loading of the fragment data inorder to smoothly open other viewpager fragments.
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Cursor getChildIdCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.BARCODE_ID + "=?",
+                        new String[]{String.valueOf(barcode)});
+                if (getChildIdCursor != null && getChildIdCursor.getCount() > 0) {
+                    getChildIdCursor.moveToFirst();
+                    childId = getChildIdCursor.getString(getChildIdCursor.getColumnIndex(SQLHandler.ChildColumns.ID));
+                } else {
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(ChildAefiPagerFragment.this.getActivity(), "Child not found on AEFI", Toast.LENGTH_LONG).show();
+                        }
+                    };
+                }
+                aefiItems = mydb.getAefiVaccinationAppointement(childId);
+                lastAppointementAefiList = mydb.getAefiLastVaccinationAppointement(childId);
+                return null;
+            }
 
-        aefiItems = mydb.getAefiVaccinationAppointement(childId);
-        if (aefiItems != null && aefiItems.size() > 0) {
-            bottomListEmptyState.setVisibility(View.GONE);
-            bottomListAdapter = new AefiBottomListAdapter(this.getActivity(), aefiItems);
-            bottomListView.setAdapter(bottomListAdapter);
-        }else{
-            bottomListEmptyState.setVisibility(View.VISIBLE);
-        }
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                if (aefiItems != null && aefiItems.size() > 0) {
+                    bottomListEmptyState.setVisibility(View.GONE);
+                    bottomListAdapter = new AefiBottomListAdapter(getActivity(), aefiItems);
+                    bottomListView.setAdapter(bottomListAdapter);
+                }else{
+                    bottomListEmptyState.setVisibility(View.VISIBLE);
+                }
 
-        lastAppointementAefiList = mydb.getAefiLastVaccinationAppointement(childId);
-        if (lastAppointementAefiList != null && lastAppointementAefiList.size() > 0) {
-            topListEmptyState.setVisibility(View.GONE);
-            lastAppointementAefi = lastAppointementAefiList.get(0);
+                if (lastAppointementAefiList != null && lastAppointementAefiList.size() > 0) {
+                    topListEmptyState.setVisibility(View.GONE);
+                    lastAppointementAefi = lastAppointementAefiList.get(0);
 
-            if (lastAppointementAefi != null) {
+                    if (lastAppointementAefi != null) {
 
-                topListAdapter = new AefiTopListAdapter(ChildAefiPagerFragment.this.getActivity(), lastAppointementAefiList);
-                topListView.setAdapter(topListAdapter);
+                        topListAdapter = new AefiTopListAdapter(ChildAefiPagerFragment.this.getActivity(), lastAppointementAefiList);
+                        topListView.setAdapter(topListAdapter);
 
-                chkHadAefi.setChecked(true);
-                if (lastAppointementAefi.getAefiDate() != null)
-                    btnAefiDate.setText(format.format(lastAppointementAefi.getAefiDate()));
-                else
-                    btnAefiDate.setText(format.format(new Date()));
-                edtNotesAefi.setText(lastAppointementAefi.getNotes());
+                        chkHadAefi.setChecked(true);
+                        if (lastAppointementAefi.getAefiDate() != null)
+                            btnAefiDate.setText(format.format(lastAppointementAefi.getAefiDate()));
+                        else
+                            btnAefiDate.setText(format.format(new Date()));
+                        edtNotesAefi.setText(lastAppointementAefi.getNotes());
+
+                    }
+                }else{
+                    topListEmptyState.setVisibility(View.VISIBLE);
+                }
+                aefiNewDate = new Date();
+
 
             }
-        }else{
-            topListEmptyState.setVisibility(View.VISIBLE);
-        }
-        aefiNewDate = new Date();
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+
+
+
+
+
+
 
     }
 
