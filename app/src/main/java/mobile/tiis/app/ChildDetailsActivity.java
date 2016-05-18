@@ -135,7 +135,7 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
         }
 
         adapter = new ChildDetailsViewPager(this, getSupportFragmentManager(), value, handlerBarcode, appointmentId);
-        pager.setOffscreenPageLimit(2);
+        pager.setOffscreenPageLimit(6);
 
 
         pager.setAdapter(adapter);
