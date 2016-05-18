@@ -88,7 +88,8 @@
         </activity>
 
         <activity android:name="mobile.tiis.app.HomeActivityRevised"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize">
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
 
         //services
@@ -131,12 +132,14 @@
         </service>
 
         <activity android:name="mobile.tiis.app.ChildDetailsActivity"
-            android:parentActivityName="mobile.tiis.app.HomeActivityRevised">
+            android:parentActivityName="mobile.tiis.app.HomeActivityRevised"
+            android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
 
         <activity android:name="mobile.tiis.app.StockActivityRevised"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:parentActivityName="mobile.tiis.app.HomeActivityRevised">
+            android:parentActivityName="mobile.tiis.app.HomeActivityRevised"
+            android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
 
         <activity android:name="mobile.tiis.app.ReportsActivityRevised"
@@ -146,7 +149,8 @@
         </activity>
 
         <activity android:name="mobile.tiis.app.AdministerVaccineOfflineRevisedActivity"
-            android:parentActivityName="mobile.tiis.app.HomeActivityRevised">
+            android:parentActivityName="mobile.tiis.app.HomeActivityRevised"
+            android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
 
     </application>

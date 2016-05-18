@@ -177,36 +177,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         arrayListAdminVacc = new ArrayList<AdministerVaccinesModel>();
         newest_date = new Date();
 
-        try {
-            Date dNow = new Date();
-            SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy");
-            String today = ft.format(dNow);
-            Date date1 = ft.parse(birthdate);
-            Date date2 = ft.parse(today);
-            int month = getMonthsDifference(date1, date2);
-            daysDiff = getDaysDifference(date1, date2);
-            if (month != 0) {
-                age= month+" months";
-            } else {
-                long diff = date2.getTime() - date1.getTime();
-                long difference = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-                Log.d("", "The diff" + difference);
-                age = difference +" days";
-            }
-            Log.d("day14", "child age is : "+age);
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-
-        dosekeeper = dbh.getDosesForAppointmentID(appointment_id);
-
-        if(age.equals("9 months") || age.equals("6 months") || age.equals("18 months")){
-            llSup.setVisibility(View.VISIBLE);
-        }
-
-
         for (String dose : dosekeeper) {
             final AdministerVaccinesModel adminVacc = dbh.getPartOneAdminVaccModel(starter_set, appointment_id, dose);
             starter_set = true;
@@ -225,7 +195,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
 //        setListViewHeightBasedOnChildren(vaccineDosesList);
         fillVaccineTableLayout(arrayListAdminVacc,birthdate,1);
-//        VaccineDoseListAdapter adapterList = new VaccineDoseListAdapter(this.getActivity(),R.layout.item_listview_admin_vacc,arrayListAdminVacc,birthdate,1);
+        VaccineDoseListAdapter adapterList = new VaccineDoseListAdapter(this.getActivity(),R.layout.item_listview_admin_vacc,arrayListAdminVacc,birthdate,1);
 //        vaccineDosesList.setAdapter(adapterList);
 
         DateDiffDialog();
@@ -242,6 +212,30 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         }
 
         return root;
+    }
+
+    public void setUpView(View v){
+        vaccineDosesList        = (ListView) v.findViewById(R.id.lv_dose_list);
+        vaccinesListTableLayout = (TableLayout) v.findViewById(R.id.vaccine_list_table);
+        vitACheckbox = (CheckBox) v.findViewById(R.id.vit_a_check);
+        mabendazolCheckbox      = (CheckBox) v.findViewById(R.id.mabendazol_check);
+        cbOutreach              = (CheckBox) v.findViewById(R.id.cb_outreach);
+        cbOutreach.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                outreachChecked=isChecked;
+            }
+        });
+
+        vitADate                = (TextView) v.findViewById(R.id.vit_a_date);
+        mabendazolDate          = (TextView) v.findViewById(R.id.mabendazol_date);
+        etNotes                 = (MaterialEditText) v.findViewById(R.id.notes);
+
+        llSup                   = (LinearLayout) v.findViewById(R.id.ll_sup);
+        llSup                   . setVisibility(View.GONE);
+
+        saveButton              = (Button) v.findViewById(R.id.addminister_vaccine_save_button);
+        saveButton              .setOnClickListener(this);
     }
 
     public void fillVaccineTableLayout(ArrayList<AdministerVaccinesModel> arr, String birthdate, int num){
@@ -271,7 +265,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                     tempHoldingTextView = tvVaccineDate;
                     tempHoldingVaccineModel = item;
                     pickDate();
-//                setdates(viewHolder.tvVaccineDate, item);
+//                setdates(tvVaccineDate, item);
                     Log.d("Time after show done", item.getTime());
                 }
             });
@@ -424,8 +418,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
         Date bdate = BackboneActivity.dateParser(birthdate);
 
-
-        Log.d("coze", "my date is " + bdate.getTime());
         Calendar toCalendar = Calendar.getInstance();
         reaction_start_date_picker.setMaxDate(toCalendar);
         Calendar dob=Calendar.getInstance();
@@ -433,7 +425,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         reaction_start_date_picker.setMinDate(dob);
 
         reaction_start_date_picker.show(((Activity) AdministerVaccineFragment.this.getActivity()).getFragmentManager(), "DatePickerDialogue");
-
 
     }
 
@@ -444,7 +435,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
         Calendar cal = new GregorianCalendar();
         cal.set(year, (monthOfYear), dayOfMonth);
-        Date new_date = cal.getTime();
+        new_date = cal.getTime();
 
         try {
             new_date = ft.parse(ft.format(new_date));
@@ -541,8 +532,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         return new_date;
     }
 
-
-
     public void DateDiffDialog(){
         switch (DateDiffDialog) {
             case 1:
@@ -575,30 +564,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
     }
 
-    public void setUpView(View v){
-        vaccineDosesList        = (ListView) v.findViewById(R.id.lv_dose_list);
-        vaccinesListTableLayout = (TableLayout) v.findViewById(R.id.vaccine_list_table);
-        vitACheckbox = (CheckBox) v.findViewById(R.id.vit_a_check);
-        mabendazolCheckbox      = (CheckBox) v.findViewById(R.id.mabendazol_check);
-        cbOutreach              = (CheckBox) v.findViewById(R.id.cb_outreach);
-        cbOutreach.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                outreachChecked=isChecked;
-            }
-        });
-
-        vitADate                = (TextView) v.findViewById(R.id.vit_a_date);
-        mabendazolDate          = (TextView) v.findViewById(R.id.mabendazol_date);
-        etNotes                 = (MaterialEditText) v.findViewById(R.id.notes);
-
-        llSup                   = (LinearLayout) v.findViewById(R.id.ll_sup);
-        llSup                   . setVisibility(View.GONE);
-
-        saveButton              = (Button) v.findViewById(R.id.addminister_vaccine_save_button);
-        saveButton              .setOnClickListener(this);
-    }
-
     private void getChildId() {
         Cursor getChildIdCursor = dbh.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.BARCODE_ID + "=?",
                 new String[]{String.valueOf(barcode)});
@@ -612,30 +577,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
             //TODO: Call the fragmentStackManager to replace the current fragment (if it was the activity its supposed to be finished)
 //            finish();
         }
-    }
-
-    /**** Method for Setting the Height of the ListView dynamically.
-     **** Hack to fix the issue of not showing all the items of the ListView
-     **** when placed inside a ScrollView  ****/
-    public static void setListViewHeightBasedOnChildren(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null)
-            return;
-
-        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
-        int totalHeight = 0;
-        View view = null;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            view = listAdapter.getView(i, view, listView);
-            if (i == 0)
-                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, LinearLayout.LayoutParams.WRAP_CONTENT));
-
-            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-            totalHeight += view.getMeasuredHeight();
-        }
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        listView.setLayoutParams(params);
     }
 
     @Override

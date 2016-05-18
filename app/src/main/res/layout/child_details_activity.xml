@@ -74,6 +74,14 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tabs_stock" />
 
+            <ProgressBar
+                android:visibility="gone"
+                android:layout_width="66dp"
+                android:layout_height="66dp"
+                android:id="@+id/child_info_loader"
+                android:indeterminate="true"
+                android:layout_centerInParent="true"/>
+
         </RelativeLayout>
 
 </LinearLayout>

@@ -3,11 +3,13 @@ package mobile.tiis.app.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +43,7 @@ import mobile.tiis.app.base.BackboneActivity;
 import mobile.tiis.app.base.BackboneApplication;
 import mobile.tiis.app.database.DatabaseHandler;
 import mobile.tiis.app.database.SQLHandler;
+import mobile.tiis.app.entity.AdministerVaccinesModel;
 import mobile.tiis.app.entity.Birthplace;
 import mobile.tiis.app.entity.Child;
 import mobile.tiis.app.entity.HealthFacility;
@@ -64,7 +68,7 @@ public class ChildSummaryPagerFragment extends Fragment {
 
     private long birthDatesDiff = 0;
 
-    private Child currentChild;
+    public Child currentChild;
 
     private String hf_id, child_id, birthplacestr, villagestr, hfstr, statusstr, gender_val, birthdate_val;
 
@@ -103,6 +107,8 @@ public class ChildSummaryPagerFragment extends Fragment {
     private PlacesOfBirthAdapter spinnerAdapter;
 
     private ListView lvImmunizationHistory;
+
+    private TableLayout summaryTableLayout;
 
     private Cursor mCursor;
 
@@ -166,6 +172,16 @@ public class ChildSummaryPagerFragment extends Fragment {
         metMothersSurname   = (MaterialEditText) header.findViewById(R.id.met_mother_surname_value);
         metPhoneNumber      = (MaterialEditText) header.findViewById(R.id.met_phone_value);
         metDOB              = (MaterialEditText) header.findViewById(R.id.met_dob_value);
+        metNotesValue       = (MaterialEditText) header.findViewById(R.id.met_notes_value);
+
+        ms                  = (MaterialSpinner) header.findViewById(R.id.spin_gender);
+        pobSpinner          = (MaterialSpinner) header.findViewById(R.id.spin_pob);
+        villageSpinner      = (MaterialSpinner) header.findViewById(R.id.spin_village);
+        healthFacilitySpinner=(MaterialSpinner) header.findViewById(R.id.spin_health_facility);
+        statusSpinner       = (MaterialSpinner) header.findViewById(R.id.spin_status);
+
+        editButton          = (Button) header.findViewById(R.id.edit_button);
+        saveButton          = (Button) header.findViewById(R.id.save_button);
 
         metDOB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -198,8 +214,7 @@ public class ChildSummaryPagerFragment extends Fragment {
                             }
 
 
-                            metDOB.setText((dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth) + "-" + ((monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : monthOfYear + 1) + "-"
-                                    + year);
+                            metDOB.setText((dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth) + "-" + ((monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : monthOfYear + 1) + "-" + year);
                             Calendar toCalendar = Calendar.getInstance();
                             toCalendar.set(year, monthOfYear, dayOfMonth);
                             bdate = toCalendar.getTime();
@@ -210,44 +225,40 @@ public class ChildSummaryPagerFragment extends Fragment {
             }
         });
 
-        metNotesValue       = (MaterialEditText) header.findViewById(R.id.met_notes_value);
-
-        ms                  = (MaterialSpinner) header.findViewById(R.id.spin_gender);
-        pobSpinner          = (MaterialSpinner) header.findViewById(R.id.spin_pob);
-        villageSpinner      = (MaterialSpinner) header.findViewById(R.id.spin_village);
-        healthFacilitySpinner=(MaterialSpinner) header.findViewById(R.id.spin_health_facility);
-        statusSpinner       = (MaterialSpinner) header.findViewById(R.id.spin_status);
-
-        editButton          = (Button) header.findViewById(R.id.edit_button);
-        saveButton          = (Button) header.findViewById(R.id.save_button);
-
-        lvImmunizationHistory.addHeaderView(header);
+        summaryTableLayout.addView(header);
         View appointmentTableHeader = inflater.inflate(R.layout.appointment_table_header, null);
-        View appointmentTableFooter = inflater.inflate(R.layout.appointment_table_footer, null);
-        lvImmunizationHistory.addHeaderView(appointmentTableHeader);
-        lvImmunizationHistory.addFooterView(appointmentTableFooter);
+        summaryTableLayout.addView(appointmentTableHeader);
+//        View appointmentTableHeader = inflater.inflate(R.layout.appointment_table_header, null);
+//        View appointmentTableFooter = inflater.inflate(R.layout.appointment_table_footer, null);
+//        lvImmunizationHistory.addHeaderView(appointmentTableHeader);
+//        lvImmunizationHistory.addFooterView(appointmentTableFooter);
 
-        lvImmunizationHistory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        new AsyncTask<Void, Void, Void>() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+            protected void onPreExecute() {
+                super.onPreExecute();
+                mCursor = null;
             }
-        });
 
-        mCursor = null;
-        mCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",
-                new String[]{String.valueOf(value)});
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                enableUserInputs(false);
+                fillUIElements();
+                new appointmentTableTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
 
-        if (mCursor.getCount() > 0) {
-            mCursor.moveToFirst();
-            currentChild = getChildFromCursror(mCursor);
-            Log.d("issy", "gotten a child");
-        }else{
-            Log.d("issy", "cursor empty");
-        }
+            @Override
+            protected Void doInBackground(Void... params) {
+                mCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",
+                        new String[]{String.valueOf(value)});
+                if (mCursor.getCount() > 0) {
+                    mCursor.moveToFirst();
+                    currentChild = getChildFromCursror(mCursor);
+                }
+                return null;
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-        enableUserInputs(false);
-        fillUIElements();
 
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -276,25 +287,118 @@ public class ChildSummaryPagerFragment extends Fragment {
             }
         });
 
-        loadViewAppointementsTable(false);
-
         return v;
     }
 
-    private class fillUITask extends AsyncTask<Void, Void, Void>{
+    class appointmentTableTask extends AsyncTask<Void, Void, Void> {
+
+        DatabaseHandler this_database;
+        SQLHandler handler;
+        String child_id = "";
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            this_database = app.getDatabaseInstance();
+            handler = new SQLHandler();
+            var = new ArrayList<ViewAppointmentRow>();
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected Void doInBackground(Void... params) {
+
+            mCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",
+                    new String[]{String.valueOf(value)});
+            if (mCursor.getCount() > 0) {
+                mCursor.moveToFirst();
+                currentChild = getChildFromCursror(mCursor);
+            }
+
+            if (currentChild.getId() != null && !currentChild.getId().isEmpty()) {
+                child_id = currentChild.getId();
+
+                Cursor cursor = null;
+                cursor = this_database.getReadableDatabase().rawQuery(handler.SQLVaccinations, new String[]{child_id, child_id});
+
+                if (cursor != null) {
+                    if (cursor.moveToFirst()) {
+                        do {
+                            ViewAppointmentRow row = new ViewAppointmentRow();
+                            row.setAppointment_id(cursor.getString(cursor.getColumnIndex("APPOINTMENT_ID")));
+                            row.setVaccine_dose(cursor.getString(cursor.getColumnIndex("VACCINES")));
+                            row.setSchedule(cursor.getString(cursor.getColumnIndex("SCHEDULE")));
+                            row.setScheduled_date(cursor.getString(cursor.getColumnIndex("SCHEDULED_DATE")));
+                            var.add(row);
+                        } while (cursor.moveToNext());
+                    }
+                }
+
+            }
+
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
+            fillAppointmentTableLayout();
+        }
+
+    }
+
+    private void fillAppointmentTableLayout(){
+        LayoutInflater inflator = (LayoutInflater) ChildSummaryPagerFragment.this.getActivity()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        for (ViewAppointmentRow va : var){
+            View convertView = inflator.inflate(R.layout.vaccination_history_item, null);
+
+            TextView antigen = (TextView) convertView.findViewById(R.id.antigen_value);
+            TextView week0 = (TextView) convertView.findViewById(R.id.week_o_value);
+            TextView week2 = (TextView) convertView.findViewById(R.id.week_2_value);
+            TextView month1 = (TextView) convertView.findViewById(R.id.month_1_value);
+            TextView week6 = (TextView) convertView.findViewById(R.id.week_6_value);
+            TextView week10 = (TextView) convertView.findViewById(R.id.week_10_value);
+            TextView week14 = (TextView) convertView.findViewById(R.id.week_14_value);
+            TextView month9 = (TextView) convertView.findViewById(R.id.month_9_value);
+            TextView month18= (TextView) convertView.findViewById(R.id.month_18_value);
+            TextView month21= (TextView) convertView.findViewById(R.id.month_21_value);
+
+            antigen.setText(va.getVaccine_dose());
+
+            Date scheduled_date = BackboneActivity.dateParser(va.getScheduled_date());
+            SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy");
+
+            switch (va.getSchedule()) {
+                case "At birth":
+                    week0.setText(ft.format(scheduled_date));
+                    break;
+                case "2 weeks":
+                    week2.setText(ft.format(scheduled_date));
+                    break;
+                case "1 Month":
+                    month1.setText(ft.format(scheduled_date));
+                    break;
+                case "6 weeks":
+                    week6.setText(ft.format(scheduled_date));
+                    break;
+                case "10 weeks":
+                    week10.setText(ft.format(scheduled_date));
+                    break;
+                case "14 weeks":
+                    week14.setText(ft.format(scheduled_date));
+                    break;
+                case "9 Months":
+                    month9.setText(ft.format(scheduled_date));
+                    break;
+                case "18 Months":
+                    month18.setText(ft.format(scheduled_date));
+                    break;
+                case "21 Months":
+                    month21.setText(ft.format(scheduled_date));
+                    break;
+            }
+
+            summaryTableLayout.addView(convertView);
+
         }
 
     }
@@ -335,11 +439,6 @@ public class ChildSummaryPagerFragment extends Fragment {
 
     }
 
-    private void loadVaccinationHistory(){
-         ArrayList<ImmunizationCardItem> immunizationCardList;
-         immunizationCardList = mydb.getImmunizationCard(childId);
-    }
-
     private void loadViewAppointementsTable(Boolean b){
         DatabaseHandler this_database = app.getDatabaseInstance();
         SQLHandler handler = new SQLHandler();
@@ -350,7 +449,6 @@ public class ChildSummaryPagerFragment extends Fragment {
 
         if (currentChild.getId() != null && !currentChild.getId().isEmpty()) {
             child_id = currentChild.getId();
-            Log.d("ViewAppointment:", "Child_Id: " + child_id);
 
             Cursor cursor = null;
             cursor = this_database.getReadableDatabase().rawQuery(handler.SQLVaccinations, new String[]{child_id, child_id});
@@ -376,7 +474,7 @@ public class ChildSummaryPagerFragment extends Fragment {
     }
 
     public void setUpView(View v){
-        lvImmunizationHistory = (ListView) v.findViewById(R.id.vaccination_history_list);
+        summaryTableLayout      = (TableLayout) v.findViewById(R.id.child_summary_table_layout);
     }
 
     private void fillUIElements(){
@@ -387,10 +485,6 @@ public class ChildSummaryPagerFragment extends Fragment {
             if (currentChild.getBarcodeID() == null || currentChild.getBarcodeID().isEmpty()) {
                 Toast.makeText(ChildSummaryPagerFragment.this.getActivity(), getString(R.string.empty_barcode), Toast.LENGTH_SHORT).show();
             }
-
-            // TODO : Commented because in previous version they used two different activity for viewing child details
-            // TODO: 29/02/16
-//            app.setAdministerVaccineHidden(false);
 
             localBarcode = currentChild.getBarcodeID();
 

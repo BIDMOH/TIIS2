@@ -52,6 +52,7 @@
                                 app:met_floatingLabelText="Barcode"
                                 app:met_floatingLabel="normal"
                                 android:inputType="number"
+                                android:textColor="@color/black"
                                 app:met_floatingLabelTextColor="@color/light_blue_500"/>
 
                             <View
@@ -85,6 +86,7 @@
                                 android:focusable="true"
                                 android:inputType="textCapWords|textPersonName"
                                 android:hint="First Name"
+                                android:textColor="@color/black"
                                 app:met_floatingLabelText="First Name"
                                 app:met_floatingLabel="normal"
                                 app:met_floatingLabelTextColor="@color/light_blue_500"/>
@@ -103,6 +105,7 @@
                                 android:inputType="textCapWords|textPersonName"
                                 android:id="@+id/reg_mname"
                                 android:focusable="true"
+                                android:textColor="@color/black"
                                 android:hint="Middle Name"
                                 app:met_floatingLabelText="Middle Name"
                                 app:met_floatingLabel="normal"
@@ -122,6 +125,7 @@
                                 android:layout_height="wrap_content"
                                 android:focusable="true"
                                 android:hint="surname"
+                                android:textColor="@color/black"
                                 android:inputType="textCapWords|textPersonName"
                                 android:id="@+id/reg_surname"
                                 app:met_floatingLabelText="Surname"
@@ -141,6 +145,7 @@
                                 android:inputType="textCapWords|textPersonName"
                                 android:hint="Mother's First Name"
                                 android:id="@+id/reg_mot_fname"
+                                android:textColor="@color/black"
                                 app:met_floatingLabelText="Mother's First Name"
                                 app:met_floatingLabel="normal"
                                 app:met_floatingLabelTextColor="@color/light_blue_500"/>
@@ -162,6 +167,7 @@
                                 android:focusable="true"
                                 android:inputType="textCapWords|textPersonName"
                                 android:hint="Mother's Surname"
+                                android:textColor="@color/black"
                                 android:id="@+id/reg_mot_sname"
                                 app:met_floatingLabelText="Mother's Surname"
                                 app:met_floatingLabel="normal"
@@ -178,6 +184,7 @@
                                 android:layout_height="wrap_content"
                                 android:focusable="true"
                                 android:hint="Phone Number"
+                                android:textColor="@color/black"
                                 android:inputType="phone"
                                 android:id="@+id/reg_phone"
                                 app:met_floatingLabelText="Phone Number"
@@ -198,6 +205,7 @@
                                 android:layout_height="wrap_content"
                                 android:focusable="true"
                                 android:hint="Date of birth"
+                                android:textColor="@color/black"
                                 android:inputType="date"
                                 android:id="@+id/reg_dob"
                                 app:met_iconRight="@drawable/ic_monthly_plan"
@@ -359,6 +367,7 @@
                                 android:layout_height="wrap_content"
                                 android:minLines="3"
                                 android:focusable="true"
+                                android:textColor="@color/black"
                                 android:hint="@string/comments"
                                 android:layout_marginRight="32dp"
                                 android:id="@+id/reg_notes"
