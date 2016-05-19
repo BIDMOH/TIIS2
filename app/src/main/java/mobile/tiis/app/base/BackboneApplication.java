@@ -1487,7 +1487,6 @@ public class BackboneApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "application created");
-        client.setTimeout(DEFAULT_TIMEOUT);
         client.setMaxRetriesAndTimeout(5,1000);
         client.setURLEncodingEnabled(false);
 

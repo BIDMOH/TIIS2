@@ -42,7 +42,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import mobile.tiis.app.CustomViews.NestedListView;
 import mobile.tiis.app.R;
 import mobile.tiis.app.SubClassed.BackHandledFragment;
 import mobile.tiis.app.adapters.SingleTextViewAdapter;
@@ -84,9 +83,9 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
     private LinearLayout llSup;
     private String age = "";
     private boolean savingInProgress = false;
+    private int pos;
 
     Date new_date = new Date();
-    TextView tempHoldingTextView;
     AdministerVaccinesModel tempHoldingVaccineModel;
     View view;
 
@@ -267,8 +266,10 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         app = (BackboneApplication) AdministerVaccineFragment.this.getActivity().getApplicationContext();
         dbh = app.getDatabaseInstance();
 
+        int x = 0;
         for (final AdministerVaccinesModel item : arr){
 
+            x++;
             View rowView = li.inflate(R.layout.vaccine_dose_quantity_item, null);
 
             TextView tvDose                 = (TextView) rowView.findViewById(R.id.dose);
@@ -280,14 +281,13 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
             tvDose.setText(item.getDoseName());
             tvVaccineDate.setText(item.getTime());
-
+            final int y=x;
             tvVaccineDate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    tempHoldingTextView = tvVaccineDate;
+                    pos = y;
                     tempHoldingVaccineModel = item;
                     pickDate();
-//                setdates(tvVaccineDate, item);
                 }
             });
 
@@ -492,7 +492,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                     .setCancelable(false)
                     .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            setdates(tempHoldingTextView, tempHoldingVaccineModel);
+                            setdates(pos, tempHoldingVaccineModel);
                         }
                     })
                     .setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -510,7 +510,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
             alertDialog.show();
 
         }else{
-            setdates(tempHoldingTextView, tempHoldingVaccineModel);
+            setdates(pos, tempHoldingVaccineModel);
         }
 
     }
@@ -523,11 +523,12 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         return new_date;
     }
 
-    public Date setdates(final TextView a, final AdministerVaccinesModel coll){
+    public Date setdates(final int pos, final AdministerVaccinesModel coll){
         final SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy");
+
         if (getDaysDifference(new_date, coll.getTime2()) > 0) {
             coll.setTime(ft.format(new_date));
-            a.setText(ft.format(new_date));
+            ((TextView)vaccinesListTableLayout.getChildAt(pos).findViewById(R.id.vaccine_date)).setText(ft.format(new_date));
             coll.setTime2(new_date);
             int cc = 0;
             if (coll.getStarter_row()) {
@@ -538,7 +539,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
             }
         }else {
             coll.setTime(ft.format(coll.getTime2()));
-            a.setText(ft.format(coll.getTime2()));
+            ((TextView)vaccinesListTableLayout.getChildAt(pos).findViewById(R.id.vaccine_date)).setText(ft.format(coll.getTime2()));
             coll.setTime2(coll.getTime2());
             if (coll.getStarter_row()) {
                 for (AdministerVaccinesModel others : arrayListAdminVacc) {
