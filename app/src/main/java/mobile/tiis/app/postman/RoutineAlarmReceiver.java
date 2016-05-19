@@ -50,7 +50,7 @@ public class RoutineAlarmReceiver extends WakefulBroadcastReceiver {
         Intent intent = new Intent(context, RoutineAlarmReceiver.class);
         intent.putExtra("setPostmanAlarm", true);
         alarmIntent = PendingIntent.getBroadcast(context, 111, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + 1000, 60000, alarmIntent);
+        alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + 30000, 60000, alarmIntent);
     }
 
     // BEGIN_INCLUDE(set_alarm)
@@ -66,7 +66,7 @@ public class RoutineAlarmReceiver extends WakefulBroadcastReceiver {
         Intent childChanges = new Intent(context, RoutineAlarmReceiver.class);
         childChanges.putExtra("childChanges", true);
         checkForChangesInChildPI = PendingIntent.getBroadcast(context, 222, childChanges, PendingIntent.FLAG_UPDATE_CURRENT); //
-        alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + 60000, 60000, checkForChangesInChildPI);
+        alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + 30000, 60000, checkForChangesInChildPI);
     }
 
     /**

@@ -268,8 +268,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
         int x = 0;
         for (final AdministerVaccinesModel item : arr){
-
-            x++;
             View rowView = li.inflate(R.layout.vaccine_dose_quantity_item, null);
 
             TextView tvDose                 = (TextView) rowView.findViewById(R.id.dose);
@@ -313,10 +311,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                 correnctDateSelected = true;
             }
 
-//            setSpinnerVoccLot(item);
-//            setSpinnerReason(item);
-//            checkBoxDone(item);
-
             chDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -336,7 +330,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
             });
             chDone.setChecked(Boolean.parseBoolean(item.getStatus()));
 
-//#############################################################NON VACCINATION REASON SPINNER ::::::.....
+//#############################################################NON VACCINATION REASON SPINNER#################################################
 
             //NonVaccinationReason Column Spinner
             List<String> reasons = new ArrayList<String>();
@@ -422,6 +416,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
 
             vaccinesListTableLayout.addView(rowView);
+            x++;
 
         }
 
@@ -531,7 +526,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
             ((TextView)vaccinesListTableLayout.getChildAt(pos).findViewById(R.id.vaccine_date)).setText(ft.format(new_date));
             coll.setTime2(new_date);
             int cc = 0;
-            if (coll.getStarter_row()) {
+            if (pos==0) {
                 for (AdministerVaccinesModel others : arrayListAdminVacc) {
                     others.setTime(ft.format(new_date));
                     others.setTime2(new_date);
@@ -541,7 +536,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
             coll.setTime(ft.format(coll.getTime2()));
             ((TextView)vaccinesListTableLayout.getChildAt(pos).findViewById(R.id.vaccine_date)).setText(ft.format(coll.getTime2()));
             coll.setTime2(coll.getTime2());
-            if (coll.getStarter_row()) {
+            if (pos==0) {
                 for (AdministerVaccinesModel others : arrayListAdminVacc) {
                     others.setTime(ft.format(coll.getTime2()));
                     others.setTime2(coll.getTime2());

@@ -214,7 +214,7 @@ public class HomeActivityRevised extends BackboneActivity {
 
             }
             RoutineAlarmReceiver.setAlarmCheckForChangesInChild(this);
-            RoutineAlarmReceiver.setPostmanAlarm(HomeActivityRevised.this);
+            RoutineAlarmReceiver.setPostmanAlarm(this);
             nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(MenuItem item) {

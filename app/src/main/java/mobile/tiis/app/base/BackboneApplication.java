@@ -1462,21 +1462,21 @@ public class BackboneApplication extends Application {
         webServiceUrl.append("?table=").append(table).append("&recordId=").append(barcode)
                 .append("&userId=").append(userId).append("&date=").append(dateNow).append("&activityId=").append(actionId);
         Log.d("", webServiceUrl.toString());
-
-        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
-        client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                registerAuditResult=false;
-                getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                registerAuditResult=true;
-
-            }
-        });
+//        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+//        client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                registerAuditResult=false;
+//                getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
+//            }
+//
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+//                registerAuditResult=true;
+//
+//            }
+//        });
+        getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
         return registerAuditResult;
     }
 
@@ -2371,33 +2371,34 @@ public class BackboneApplication extends Application {
         Log.e("Adm Vacc Server Upd URL", url);
         Log.d("day4", "Vaccination Update URL : " + url);
 
-        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
-        client.get(url, new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                updatingVaccineOnTheServerResult = -1;
-                getDatabaseInstance().addPost(url, 1);
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String result) {
-                try {
-                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
-                    JSONObject jobj = new JSONObject(result);
-                    int childID = jobj.getInt("id");
-                    if (childID == 1) {
-                        updatingVaccineOnTheServerResult = childID;
-                    } else {
-                        getDatabaseInstance().addPost(url, 1);
-                        updatingVaccineOnTheServerResult = -1;
-                    }
-
-                } catch (Exception e) {
-                    getDatabaseInstance().addPost(url, 1);
-                    updatingVaccineOnTheServerResult = -1;
-                }
-            }
-        });
+//        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+//        client.get(url, new TextHttpResponseHandler() {
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                updatingVaccineOnTheServerResult = -1;
+//                getDatabaseInstance().addPost(url, 1);
+//            }
+//
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, String result) {
+//                try {
+//                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
+//                    JSONObject jobj = new JSONObject(result);
+//                    int childID = jobj.getInt("id");
+//                    if (childID == 1) {
+//                        updatingVaccineOnTheServerResult = childID;
+//                    } else {
+//                        getDatabaseInstance().addPost(url, 1);
+//                        updatingVaccineOnTheServerResult = -1;
+//                    }
+//
+//                } catch (Exception e) {
+//                    getDatabaseInstance().addPost(url, 1);
+//                    updatingVaccineOnTheServerResult = -1;
+//                }
+//            }
+//        });
+        getDatabaseInstance().addPost(url, 1);
         return updatingVaccineOnTheServerResult;
     }
 
@@ -2493,36 +2494,38 @@ public class BackboneApplication extends Application {
 
         Log.e("day13", webServiceUrl + "");
 
-        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
-        client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                updatingVaccinationAppOutreachResult=-1;
-                throwable.printStackTrace();
-                if (webServiceUrl != null) {
-                    getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
-                }
-            }
+//        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+//        client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                updatingVaccinationAppOutreachResult=-1;
+//                throwable.printStackTrace();
+//                if (webServiceUrl != null) {
+//                    getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
+//                }
+//            }
+//
+//
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, String result) {
+//                try {
+//                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
+//                    JSONObject jobj = new JSONObject(result);
+//                    int idReturned = jobj.getInt("id");
+//                    // if any check is needed to be performed after communicating here you have the result parsed into this int
+//                    updatingVaccinationAppOutreachResult = idReturned;
+//
+//                }catch (JSONException e) {
+//                    e.printStackTrace();
+//                    updatingVaccinationAppOutreachResult = -1;
+//                } catch (NullPointerException e) {
+//                    e.printStackTrace();
+//                    updatingVaccinationAppOutreachResult = -1;
+//                }
+//            }
+//        });
 
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String result) {
-                try {
-                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
-                    JSONObject jobj = new JSONObject(result);
-                    int idReturned = jobj.getInt("id");
-                    // if any check is needed to be performed after communicating here you have the result parsed into this int
-                    updatingVaccinationAppOutreachResult = idReturned;
-
-                }catch (JSONException e) {
-                    e.printStackTrace();
-                    updatingVaccinationAppOutreachResult = -1;
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
-                    updatingVaccinationAppOutreachResult = -1;
-                }
-            }
-        });
+        getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
 
         return updatingVaccinationAppOutreachResult;
 
