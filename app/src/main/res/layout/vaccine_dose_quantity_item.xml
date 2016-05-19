@@ -59,6 +59,7 @@
             android:layout_height="match_parent"
             android:id="@+id/vaccine_date"
             android:layout_weight=".15"
+            android:clickable="true"
             android:textColor="@color/black"
             android:text="12-Jan-2014"
             android:textSize="18sp"

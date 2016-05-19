@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.astuetz.PagerSlidingTabStrip;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 
 import mobile.tiis.app.R;
 import mobile.tiis.app.SubClassed.BackHandledFragment;
@@ -89,7 +90,8 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
             appointmentId       = extras.getString("appointmentId");
             currentChild        = (Child)getIntent().getSerializableExtra("myChild");
 
-            if (currentChild == null){
+
+            if (true){
                 if (value == null || value.equalsIgnoreCase("")) {
                     if (extras.getString("barcode") != null) {
                         /**

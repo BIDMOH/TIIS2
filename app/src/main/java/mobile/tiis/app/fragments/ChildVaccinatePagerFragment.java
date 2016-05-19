@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 import mobile.tiis.app.CustomViews.NestedListView;
 import mobile.tiis.app.R;
 import mobile.tiis.app.adapters.ChildAppointmentListAdapter;
+import mobile.tiis.app.base.BackboneActivity;
 import mobile.tiis.app.base.BackboneApplication;
 import mobile.tiis.app.database.DatabaseHandler;
 import mobile.tiis.app.database.SQLHandler;
@@ -169,6 +170,9 @@ public class ChildVaccinatePagerFragment extends Fragment {
             Bundle bundle = new Bundle();
             bundle.putString("appointment_id", appointmentID);
             bundle.putString("birthdate", currentChild.getBirthdate());
+
+
+
             bundle.putString("barcode", currentChild.getBarcodeID());
             Log.d("appointmentID", "Appointment Id is : " + appointmentID);
             administerVaccineFragment.setArguments(bundle);
@@ -186,6 +190,10 @@ public class ChildVaccinatePagerFragment extends Fragment {
             bundle.putString("child_id", currentChild.getId());
             bundle.putString("barcode", currentChild.getBarcodeID());
             bundle.putString("birthdate", currentChild.getBirthdate());
+
+
+            SimpleDateFormat ft1 = new SimpleDateFormat("dd-MMM-yyyy");
+            Log.d("optisation", "Birth date is : "+ft1.format(BackboneActivity.dateParser(currentChild.getBirthdate())));
             appointmentsListFragment.setArguments(bundle);
 //
 //        //add the Fragment to display a list of current child's appointments
