@@ -60,13 +60,15 @@ public class ChildSummaryPagerFragment extends Fragment {
 
     private static final String ARG_POSITION = "position";
 
-    private static final String CHILD_OBJECT = "child";
+    private static final String VALUE = "value";
 
     private int position;
 
     private Date bdate;
 
     private long birthDatesDiff = 0;
+
+    public Child currentChild;
 
     private String hf_id, child_id, birthplacestr, villagestr, hfstr, statusstr, gender_val, birthdate_val;
 
@@ -94,6 +96,8 @@ public class ChildSummaryPagerFragment extends Fragment {
 
     private Thread thread;
 
+    private String value;
+
     private boolean editable = false;
 
     private MaterialEditText metBarcodeValue, metSystemID, metFirstName, metNotesValue,metMiddleName, metLastName, metMothersFirstName, metMothersSurname, metPhoneNumber, metDOB;
@@ -106,6 +110,8 @@ public class ChildSummaryPagerFragment extends Fragment {
 
     private TableLayout summaryTableLayout;
 
+    private Cursor mCursor;
+
     private Button editButton, saveButton;
 
     private MaterialSpinner ms, pobSpinner, villageSpinner, healthFacilitySpinner, statusSpinner;
@@ -116,8 +122,6 @@ public class ChildSummaryPagerFragment extends Fragment {
 
     private List<String> place_names;
 
-    private Child currentChild;
-
     final DatePickerDialog doBDatePicker = new DatePickerDialog();
 
     public static final long getDaysDifference(Date d1, Date d2) {
@@ -126,11 +130,11 @@ public class ChildSummaryPagerFragment extends Fragment {
         return difference;
     }
 
-    public static ChildSummaryPagerFragment newInstance(int position, Child currentChild) {
+    public static ChildSummaryPagerFragment newInstance(int position, String value) {
         ChildSummaryPagerFragment f = new ChildSummaryPagerFragment();
         Bundle b                    = new Bundle();
         b                           .putInt(ARG_POSITION, position);
-        b                           .putSerializable(CHILD_OBJECT, currentChild);
+        b                           .putString(VALUE, value);
         f                           .setArguments(b);
         return f;
     }
@@ -139,7 +143,7 @@ public class ChildSummaryPagerFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         position    = getArguments().getInt(ARG_POSITION);
-        currentChild     = (Child) getArguments().getSerializable(CHILD_OBJECT);
+        value     = getArguments().getString(VALUE);
     }
 
     @Override
@@ -224,13 +228,44 @@ public class ChildSummaryPagerFragment extends Fragment {
         summaryTableLayout.addView(header);
         View appointmentTableHeader = inflater.inflate(R.layout.appointment_table_header, null);
         summaryTableLayout.addView(appointmentTableHeader);
-//        View appointmentTableHeader = inflater.inflate(R.layout.appointment_table_header, null);
-//        View appointmentTableFooter = inflater.inflate(R.layout.appointment_table_footer, null);
-//        lvImmunizationHistory.addHeaderView(appointmentTableHeader);
-//        lvImmunizationHistory.addFooterView(appointmentTableFooter);
+        //        View appointmentTableHeader = inflater.inflate(R.layout.appointment_table_header, null);
+        //        View appointmentTableFooter = inflater.inflate(R.layout.appointment_table_footer, null);
+        //        lvImmunizationHistory.addHeaderView(appointmentTableHeader);
+        //        lvImmunizationHistory.addFooterView(appointmentTableFooter);
 
-        fillUIElements();
-        new appointmentTableTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                mCursor = null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                enableUserInputs(false);
+                fillUIElements();
+                new appointmentTableTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                mCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",
+                        new String[]{String.valueOf(value)});
+                if (mCursor.getCount() > 0) {
+                    mCursor.moveToFirst();
+                    currentChild = getChildFromCursror(mCursor);
+                }
+                placeList = mydb.getAllPlaces();
+
+                birthplaceList = mydb.getAllBirthplaces();
+
+                healthFacilityList = mydb.getAllHealthFacility();
+
+                statusList = mydb.getStatus();
+                return null;
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
 
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -279,8 +314,16 @@ public class ChildSummaryPagerFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... params) {
 
+            mCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",
+                    new String[]{String.valueOf(value)});
+            if (mCursor.getCount() > 0) {
+                mCursor.moveToFirst();
+                currentChild = getChildFromCursror(mCursor);
+            }
+
             if (currentChild.getId() != null && !currentChild.getId().isEmpty()) {
                 child_id = currentChild.getId();
+
                 Cursor cursor = null;
                 cursor = this_database.getReadableDatabase().rawQuery(handler.SQLVaccinations, new String[]{child_id, child_id});
 
@@ -298,6 +341,7 @@ public class ChildSummaryPagerFragment extends Fragment {
                 }
 
             }
+
 
             return null;
         }
@@ -443,7 +487,6 @@ public class ChildSummaryPagerFragment extends Fragment {
 
     private void fillUIElements(){
 
-        enableUserInputs(false);
         if (currentChild!=null){
 
             Log.d("issy", "child gotten "+currentChild.getFirstname1());
@@ -455,162 +498,140 @@ public class ChildSummaryPagerFragment extends Fragment {
 
             metBarcodeValue     .setText(currentChild.getBarcodeID());
             barcodeOrig         = currentChild.getBarcodeID();
-            tempIdOrig          = currentChild.getTempId();
+            tempIdOrig          = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.TEMP_ID));
 
-            childId = currentChild.getId();
+            childId = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.ID));
             metSystemID.setText(childId);
 
-            metFirstName.setText(currentChild.getFirstname1());
-            metNotesValue.setText(currentChild.getNotes());
-            metMiddleName.setText(currentChild.getFirstname2());
-            metLastName.setText(currentChild.getLastname1());
+            metFirstName.setText(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME1)));
+            metNotesValue.setText(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.NOTES)));
+            metMiddleName.setText(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME2)));
+            metLastName.setText(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.LASTNAME1)));
 
-            firstnameOrig =currentChild.getFirstname1();
-            firstname2Orig = currentChild.getFirstname2();
-            lastnameOrig = currentChild.getLastname1();
+            firstnameOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME1));
+            firstname2Orig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME2));
+            lastnameOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.LASTNAME1));
 
-            bdate = BackboneActivity.dateParser(currentChild.getBirthdate());
+            bdate = BackboneActivity.dateParser(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.BIRTHDATE)));
             SimpleDateFormat ft = new SimpleDateFormat("dd/MM/yyyy");
             metDOB.setText(ft.format(bdate));
             birthdateOrig = ft.format(bdate);
             birthdate_val = ft.format(bdate);
 
-            metMothersFirstName.setText(currentChild.getMotherFirstname());
-            metMothersSurname.setText(currentChild.getMotherLastname());
+            metMothersFirstName.setText(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_FIRSTNAME)));
+            metMothersSurname.setText(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_LASTNAME)));
 
-            motherFirOrig = currentChild.getMotherFirstname();
-            motherLastOrig = currentChild.getMotherLastname();
+            motherFirOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_FIRSTNAME));
+            motherLastOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_LASTNAME));
 
-            phoneOrig = currentChild.getPhone();
-            metPhoneNumber.setText(currentChild.getPhone());
+            phoneOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.PHONE));
+            metPhoneNumber.setText(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.PHONE)));
 
-            notesOrig = currentChild.getNotes();
+            notesOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.NOTES));
 
 
-            new AsyncTask<Void,Void,Void>(){
-                @Override
-                protected Void doInBackground(Void... params) {
-                    birthplaceList = mydb.getAllBirthplaces();
-                    placeList = mydb.getAllPlaces();
-                    healthFacilityList = mydb.getAllHealthFacility();
-                    statusList = mydb.getStatus();
+            if (Boolean.parseBoolean(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.GENDER)))) {
+                ms.setAdapter(spinnerAdapter);
+                ms.setSelection(1);
+                //                gender.setText("Male");
+            } else {
+                ms.setAdapter(spinnerAdapter);
+                ms.setSelection(2);
+                //                gender.setText("Female");
+            }
 
-                    return null;
+
+            for(int i = 0 ; i<placeList.size();i++){
+                if(placeList.get(i).getId().equals("-100")){
+                    notApplicablePos = i;
+                    break;
                 }
+            }
 
-                @Override
-                protected void onPostExecute(Void aVoid) {
-                    super.onPostExecute(aVoid);
-                    if (Boolean.parseBoolean(currentChild.getGender())) {
-                        ms.setAdapter(spinnerAdapter);
-                        ms.setSelection(1);
-//                      gender.setText("Male");
-                    } else {
-                        ms.setAdapter(spinnerAdapter);
-                        ms.setSelection(2);
-//                      gender.setText("Female");
-                    }
+            place_names = new ArrayList<String>();
+            for (Place element : placeList) {
+                place_names.add(element.getName());
+            }
+            place_names.add("--------");
 
+            List<String> birthplaceNames = new ArrayList<String>();
+            for (Birthplace element : birthplaceList) {
+                birthplaceNames.add(element.getName());
+            }
+            birthplaceNames.add("--------");
 
-                    for(int i = 0 ; i<placeList.size();i++){
-                        if(placeList.get(i).getId().equals("-100")){
-                            notApplicablePos = i;
-                            break;
-                        }
-                    }
+            SingleTextViewAdapter birthplaceAdapter = new SingleTextViewAdapter(ChildSummaryPagerFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, birthplaceNames);
+            pobSpinner.setAdapter(birthplaceAdapter);
+            pobSpinner.setEnabled(false);
 
-                    place_names = new ArrayList<String>();
-                    for (Place element : placeList) {
-                        place_names.add(element.getName());
-                    }
-                    place_names.add("--------");
+            int pos = birthplaceAdapter.getPosition(currentChild.getBirthplace());
+            if (pos != -1) {
+                pobSpinner.setSelection(pos+1);
+                birthplaceOrig = pos;
+            } else {
+                pobSpinner.setSelection(birthplaceAdapter.getCount() - 1);
+                birthplaceOrig = birthplaceAdapter.getCount() - 1;
+            }
 
-                    List<String> birthplaceNames = new ArrayList<String>();
-                    for (Birthplace element : birthplaceList) {
-                        birthplaceNames.add(element.getName());
-                    }
-                    birthplaceNames.add("--------");
+            SingleTextViewAdapter dataAdapter = new SingleTextViewAdapter(ChildSummaryPagerFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, place_names);
+            //@Teodor -> Modification -> E njejta liste si per Place of Birth dhe per Village
+            villageSpinner.setAdapter(dataAdapter);
+            villageSpinner.setEnabled(false);
+            pos = place_names.indexOf(currentChild.getDomicile())+1;
+            if (pos != -1) {
+                villageSpinner.setSelection(pos);
+                villageOrig = pos;
+            } else {
+                villageSpinner.setSelection(dataAdapter.getCount() - 1);
+                villageOrig = dataAdapter.getCount() - 1;
+            }
 
-                    SingleTextViewAdapter birthplaceAdapter = new SingleTextViewAdapter(ChildSummaryPagerFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, birthplaceNames);
-                    pobSpinner.setAdapter(birthplaceAdapter);
-                    pobSpinner.setEnabled(false);
+            List<String> facility_name = new ArrayList<String>();
+            for (HealthFacility element : healthFacilityList) {
+                facility_name.add(element.getName());
+            }
+            facility_name.add("------");
 
+            SingleTextViewAdapter healthAdapter = new SingleTextViewAdapter(ChildSummaryPagerFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, facility_name);
+            healthFacilitySpinner.setAdapter(healthAdapter);
+            healthFacilitySpinner.setEnabled(false);
 
-                    Log.d("optimization","birthplace = "+ currentChild.getBirthplace());
-                    int pos = birthplaceAdapter.getPosition(currentChild.getBirthplace());
-                    if (pos != -1) {
-                        pobSpinner.setSelection(pos+1);
-                        birthplaceOrig = pos;
-                    } else {
-                        pobSpinner.setSelection(birthplaceAdapter.getCount() - 1);
-                        birthplaceOrig = birthplaceAdapter.getCount() - 1;
-                    }
+            int index =facility_name.indexOf(currentChild.getHealthcenter());
+            if (index != -1) {
+                healthFacilitySpinner.setSelection(index+1);
+                healthFacOrig = index+1;
 
-                    SingleTextViewAdapter dataAdapter = new SingleTextViewAdapter(ChildSummaryPagerFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, place_names);
-                    //@Teodor -> Modification -> E njejta liste si per Place of Birth dhe per Village
-                    villageSpinner.setAdapter(dataAdapter);
-                    villageSpinner.setEnabled(false);
-                    pos = place_names.indexOf(currentChild.getDomicile())+1;
-                    if (pos != -1) {
-                        villageSpinner.setSelection(pos);
-                        villageOrig = pos;
-                    } else {
-                        villageSpinner.setSelection(dataAdapter.getCount() - 1);
-                        villageOrig = dataAdapter.getCount() - 1;
-                    }
+            } else {
+                healthFacilitySpinner.setSelection(healthAdapter.getCount()-1);
+                healthFacOrig = healthAdapter.getCount()-1;
+            }
 
 
-                    List<String> facility_name = new ArrayList<String>();
-                    for (HealthFacility element : healthFacilityList) {
-                        facility_name.add(element.getName());
-                    }
-                    facility_name.add("------");
+            List<String> status_name = new ArrayList<String>();
 
-                    SingleTextViewAdapter healthAdapter = new SingleTextViewAdapter(ChildSummaryPagerFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, facility_name);
-                    healthFacilitySpinner.setAdapter(healthAdapter);
-                    healthFacilitySpinner.setEnabled(false);
-
-                    int index =facility_name.indexOf(currentChild.getHealthcenter());
-                    if (index != -1) {
-                        healthFacilitySpinner.setSelection(index+1);
-                        healthFacOrig = index+1;
-
-                    } else {
-                        healthFacilitySpinner.setSelection(healthAdapter.getCount()-1);
-                        healthFacOrig = healthAdapter.getCount()-1;
-                    }
+            for (Status element : statusList) {
+                Log.d("Added status", element.getName());
+                status_name.add(element.getName());
+            }
+            status_name.add("");
 
 
-
-                    List<String> status_name = new ArrayList<String>();
-
-                    for (mobile.tiis.app.entity.Status element : statusList) {
-                        Log.d("Added status", element.getName());
-                        status_name.add(element.getName());
-                    }
-                    status_name.add("");
+            SingleTextViewAdapter statusAdapter = new SingleTextViewAdapter(ChildSummaryPagerFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, status_name);
+            statusSpinner.setAdapter(statusAdapter);
+            statusSpinner.setEnabled(false);
+            pos = statusAdapter.getPosition(currentChild.getStatus());
 
 
-                    SingleTextViewAdapter statusAdapter = new SingleTextViewAdapter(ChildSummaryPagerFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, status_name);
-                    statusSpinner.setAdapter(statusAdapter);
-                    statusSpinner.setEnabled(false);
-                    pos = statusAdapter.getPosition(currentChild.getStatus());
+            //TODO: Check at what time is the Status of A child inserted because in the
+            //TODO: current version it is not captured during registering the child
 
-
-                    //TODO: Check at what time is the Status of A child inserted because in the
-                    //TODO: current version it is not captured during registering the child
-
-                    if (pos != -1) {
-                        statusSpinner.setSelection(pos+1);
-                        statusOrig = pos;
-                    } else {
-                        statusSpinner.setSelection(statusAdapter.getCount() - 1);
-                        statusOrig = statusAdapter.getCount() - 1;
-                    }
-
-                }
-            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
+            if (pos != -1) {
+                statusSpinner.setSelection(pos+1);
+                statusOrig = pos;
+            } else {
+                statusSpinner.setSelection(statusAdapter.getCount() - 1);
+                statusOrig = statusAdapter.getCount() - 1;
+            }
 
         }
     }
@@ -628,7 +649,7 @@ public class ChildSummaryPagerFragment extends Fragment {
             }
 
         });
-//        birthplace.setEnabled(true);
+        //        birthplace.setEnabled(true);
 
         villageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -643,7 +664,7 @@ public class ChildSummaryPagerFragment extends Fragment {
             }
 
         });
-//        village.setEnabled(true);
+        //        village.setEnabled(true);
 
         healthFacilitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -657,7 +678,7 @@ public class ChildSummaryPagerFragment extends Fragment {
             }
 
         });
-//        healthFacility.setEnabled(true);
+        //        healthFacility.setEnabled(true);
 
         statusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -677,14 +698,14 @@ public class ChildSummaryPagerFragment extends Fragment {
             }
 
         });
-//        status.setEnabled(true);
+        //        status.setEnabled(true);
 
         //if the child have done vacinations in the past we can not anymore change birthday
 
-//        weight.setOnClickListener(this);
-//        aefi.setOnClickListener(this);
-//        immunization_card.setOnClickListener(this);
-//        save.setOnClickListener(this);
+        //        weight.setOnClickListener(this);
+        //        aefi.setOnClickListener(this);
+        //        immunization_card.setOnClickListener(this);
+        //        save.setOnClickListener(this);
     }
 
     public Child getChildFromCursror(Cursor cursor) {
@@ -916,20 +937,20 @@ public class ChildSummaryPagerFragment extends Fragment {
             contentValues.put(SQLHandler.ChildColumns.STATUS_ID, statusList.get(statusSpinner.getSelectedItemPosition()-1).getId());
         }
 
-//        if (male.isChecked() && !gender_val.equalsIgnoreCase("male")) {
-//            contentValues.put(SQLHandler.ChildColumns.GENDER, "true");
-//        } else if (female.isChecked() && !gender_val.equalsIgnoreCase("female")) {
-//            contentValues.put(SQLHandler.ChildColumns.GENDER, "false");
-//        }
+        //        if (male.isChecked() && !gender_val.equalsIgnoreCase("male")) {
+        //            contentValues.put(SQLHandler.ChildColumns.GENDER, "true");
+        //        } else if (female.isChecked() && !gender_val.equalsIgnoreCase("female")) {
+        //            contentValues.put(SQLHandler.ChildColumns.GENDER, "false");
+        //        }
 
         if (!metPhoneNumber.getText().toString().equalsIgnoreCase(currentChild.getPhone())) {
             currentChild.setPhone(metPhoneNumber.getText().toString());
             contentValues.put(SQLHandler.ChildColumns.PHONE, currentChild.getPhone());
         }
-//        if (!notes.getText().toString().equalsIgnoreCase(currentChild.getNotes())) {
-//            currentChild.setNotes(notes.getText().toString());
-//            contentValues.put(SQLHandler.ChildColumns.NOTES, currentChild.getNotes());
-//        }
+        //        if (!notes.getText().toString().equalsIgnoreCase(currentChild.getNotes())) {
+        //            currentChild.setNotes(notes.getText().toString());
+        //            contentValues.put(SQLHandler.ChildColumns.NOTES, currentChild.getNotes());
+        //        }
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ChildSummaryPagerFragment.this.getActivity())
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {

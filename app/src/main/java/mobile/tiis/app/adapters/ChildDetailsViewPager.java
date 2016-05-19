@@ -58,7 +58,7 @@ public class ChildDetailsViewPager extends FragmentPagerAdapter {
 
         if (position == 0){
             tx.addToBackStack("ChildSummaryFragment");
-            return ChildSummaryPagerFragment.newInstance(position, currentChild);
+            return ChildSummaryPagerFragment.newInstance(position, currentChild.getId());
         }
         else if (position == 1){
             tx.addToBackStack(TITLES[position]);
