@@ -479,8 +479,13 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         String timeLong = tLong[0];
 
         Date scheduledDate = new Date(Long.parseLong(timeLong));
+        Log.d("currentchilddates","new date is "+ft.format(new_date));
+        Log.d("currentchilddates", "Scheduled date is " + ft.format(scheduledDate));
 
-        if (new_date.before(scheduledDate)){
+        Date compareDateOne = getZeroTimeDate(new_date);
+        Date compareDateTwo = getZeroTimeDate(scheduledDate);
+
+        if (compareDateOne.before(compareDateTwo)){
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(AdministerVaccineFragment.this.getActivity());
 
             // set title
@@ -513,6 +518,21 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
             setdates(pos, tempHoldingVaccineModel);
         }
 
+    }
+
+    public static Date getZeroTimeDate(Date fecha) {
+        Date res = fecha;
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.setTime( fecha );
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        res = calendar.getTime();
+
+        return res;
     }
 
     public void setNew_date(Date date){
