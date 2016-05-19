@@ -403,23 +403,52 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
             DatabaseHandler mydb            = application.getDatabaseInstance();
 
             String SQLVaccinationQueue =
-                    "SELECT DISTINCT APPOINTMENT_ID, CHILD_ID " +
-                            " ,(SELECT GROUP_CONCAT(dose.FULLNAME) FROM vaccination_event INNER JOIN dose ON vaccination_event.DOSE_ID = dose.ID left join age_definitions on dose.TO_AGE_DEFINITON_ID = age_definitions.ID WHERE monthly_plan.APPOINTMENT_ID=vaccination_event.APPOINTMENT_ID AND datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('" +to_date+ "','unixepoch') AND datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') > datetime('" +from_date+ "','unixepoch')  AND vaccination_event.IS_ACTIVE='true' AND vaccination_event.VACCINATION_STATUS='false' AND (vaccination_event.NONVACCINATION_REASON_ID=0  OR vaccination_event.NONVACCINATION_REASON_ID in (Select ID from nonvaccination_reason where KEEP_CHILD_DUE = 'true')) AND (DAYS IS NULL or (datetime(substr(vaccination_event.SCHEDULED_DATE,7,10),'unixepoch') > datetime('now','-' || DAYS || ' days')) )) AS VACCINES " +
-                            " , SCHEDULE, SCHEDULED_DATE " +
-                            " FROM MONTHLY_PLAN join dose on DOSE_ID = dose.ID" +
-                            " WHERE HEALTH_FACILITY_ID = '" + app.getLOGGED_IN_USER_HF_ID() + "' AND SCHEDULE like '%" + ageName + "%' " +
-                            " AND datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') > datetime('" +from_date+ "','unixepoch') " +
-                            " AND datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('" +to_date+ "','unixepoch') " +
-                            " AND ( (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) IS NULL " +
-                            " OR (datetime(substr(SCHEDULED_DATE,7,10),'unixepoch') > datetime('now','-' || (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) || ' days' )) )" +
-                            " GROUP BY APPOINTMENT_ID, SCHEDULED_DATE, DOMICILE, NAME, SCHEDULE, CHILD_ID, SCHEDULE_ID " +
-                            " ORDER BY SCHEDULED_DATE "+
-                            " LIMIT " + startRow + ", 10; ";
+//                    "SELECT DISTINCT APPOINTMENT_ID, CHILD_ID " +
+//                            " ,(SELECT GROUP_CONCAT(dose.FULLNAME) FROM vaccination_event INNER JOIN dose ON vaccination_event.DOSE_ID = dose.ID left join age_definitions on dose.TO_AGE_DEFINITON_ID = age_definitions.ID WHERE monthly_plan.APPOINTMENT_ID=vaccination_event.APPOINTMENT_ID AND datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('" +to_date+ "','unixepoch') AND datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') > datetime('" +from_date+ "','unixepoch')  AND vaccination_event.IS_ACTIVE='true' AND vaccination_event.VACCINATION_STATUS='false' AND (vaccination_event.NONVACCINATION_REASON_ID=0  OR vaccination_event.NONVACCINATION_REASON_ID in (Select ID from nonvaccination_reason where KEEP_CHILD_DUE = 'true')) AND (DAYS IS NULL or (datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('" +to_date+ "','unixepoch') AND datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') > datetime('" +t+ "','unixepoch')) )) AS VACCINES " +
+//                            " , SCHEDULE, SCHEDULED_DATE " +
+//                            " FROM MONTHLY_PLAN join dose on DOSE_ID = dose.ID" +
+//                            " WHERE HEALTH_FACILITY_ID = '" + app.getLOGGED_IN_USER_HF_ID() + "' AND SCHEDULE like '%" + ageName + "%' " +
+//                            " AND datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') > datetime('" +from_date+ "','unixepoch') " +
+//                            " AND datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('" +to_date+ "','unixepoch') " +
+//                            " AND ( (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) IS NULL " +
+//                            " OR (datetime(substr(SCHEDULED_DATE,7,10),'unixepoch') > datetime('now','-' || (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) || ' days' )) )" +
+//                            " GROUP BY APPOINTMENT_ID, SCHEDULED_DATE, DOMICILE, NAME, SCHEDULE, CHILD_ID, SCHEDULE_ID " +
+//                            " ORDER BY SCHEDULED_DATE "+
+//                            " LIMIT " + startRow + ", 10; ";
+            "SELECT  " +
+                    "DISTINCT " +
+                    "APPOINTMENT_ID, CHILD_ID ,SCHEDULE, SCHEDULED_DATE ," +
+                    "   (SELECT GROUP_CONCAT(dose.FULLNAME) " +
+                    "       FROM vaccination_event" +
+                    "           INNER JOIN dose ON vaccination_event.DOSE_ID = dose.ID " +
+                    "           left join age_definitions on dose.TO_AGE_DEFINITON_ID = age_definitions.ID " +
+                    "    WHERE  " +
+                    "    monthly_plan.APPOINTMENT_ID=vaccination_event.APPOINTMENT_ID AND " +
+                    "    datetime(substr(vaccination_event.SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('"+to_date+"','unixepoch') AND  " +
+                    "    datetime(substr(vaccination_event.SCHEDULED_DATE,7,10), 'unixepoch') > datetime('"+from_date+"','unixepoch')  AND  " +
+                    "    vaccination_event.IS_ACTIVE='true' AND  " +
+                    "    vaccination_event.VACCINATION_STATUS='false' AND  " +
+                    "    (vaccination_event.NONVACCINATION_REASON_ID=0  OR vaccination_event.NONVACCINATION_REASON_ID in (Select ID from nonvaccination_reason where KEEP_CHILD_DUE = 'true')) AND  " +
+                    "    (DAYS IS NULL or (datetime(substr(vaccination_event.SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('"+to_date+"','unixepoch') AND  " +
+                    "    datetime(substr(vaccination_event.SCHEDULED_DATE,7,10), 'unixepoch') > datetime('"+from_date+"','unixepoch')) )) AS VACCINES " +
+                    "FROM MONTHLY_PLAN  " +
+                    "join dose on DOSE_ID = dose.ID  " +
+                    "WHERE  " +
+                    "    HEALTH_FACILITY_ID = '" + app.getLOGGED_IN_USER_HF_ID() + "' AND  " +
+                    "    SCHEDULE like '%%'  AND  " +
+                    "    datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') > datetime('"+from_date+"','unixepoch')   AND  " +
+                    "    datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('"+to_date+"','unixepoch')  AND  " +
+                    "    ( (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) IS NULL  OR (datetime(substr(SCHEDULED_DATE,7,10),'unixepoch') > datetime('now','-' || (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) || ' days' )) )  " +
+                    "     " +
+                    "    GROUP BY APPOINTMENT_ID, SCHEDULED_DATE, DOMICILE, NAME, SCHEDULE, CHILD_ID, SCHEDULE_ID   " +
+                    "    ORDER BY SCHEDULED_DATE   LIMIT " + startRow + ", 10; " +
+                    "   ";
 
-            Log.e("SQLVaccinationQueue", SQLVaccinationQueue);
+
+
+            Log.e("optimization", SQLVaccinationQueue);
             long tStart = System.currentTimeMillis();
             cursor = mydb.getReadableDatabase().rawQuery(SQLVaccinationQueue, null);
-            Log.e("MON_TIMING_LOG", "Querying time  = elapsed total time (milliseconds): " + (System.currentTimeMillis() - tStart));
 
             if (startRow.equals("0")){
                 blockPrevious = true;
@@ -433,21 +462,23 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
                 blockNext = false;
             }
 
-            Log.d("SQLVaccinationQueue", "Done with getting the Monthly plan data");
+            Log.e("optimization", "Querying time  = elapsed total time (milliseconds): " + (System.currentTimeMillis() - tStart));
+
+            Log.d("optimization", "Done with getting the Monthly plan data");
             if (cursor != null) {
                 tStart = System.currentTimeMillis();
-                Log.d("SQLVaccinationQueue", "cursor not null SIZE IS : "+cursor.getCount());
-                Log.e("MON_TIMING_LOG", "Getting total size time  = elapsed total time (milliseconds): " + (System.currentTimeMillis() - tStart));
+                Log.d("optimization", "cursor not null SIZE IS : "+cursor.getCount());
+                Log.e("optimization", "Getting total size time  = elapsed total time (milliseconds): " + (System.currentTimeMillis() - tStart));
 
 
                 tStart = System.currentTimeMillis();
                 if (cursor.moveToFirst()) {
-                    Log.d("SQLVaccinationQueue", "Moved to first item in the cursor");
-                    Log.e("MON_TIMING_LOG", "moving cursor to first time  = elapsed total time (milliseconds): " + (System.currentTimeMillis() - tStart));
+                    Log.d("optimization", "Moved to first item in the cursor");
+                    Log.e("optimization", "moving cursor to first time  = elapsed total time (milliseconds): " + (System.currentTimeMillis() - tStart));
 
                     tStart = System.currentTimeMillis();
                     do {
-                        Log.d("SQLVaccinationQueue", "the loop here");
+                        Log.d("optimization", "the loop here");
                         ViewAppointmentRow row = new ViewAppointmentRow();
                         row.setAppointment_id(cursor.getString(cursor.getColumnIndex("APPOINTMENT_ID")));
                         row.setVaccine_dose(cursor.getString(cursor.getColumnIndex("VACCINES")));
@@ -456,7 +487,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
                         row.setChild_id(cursor.getString(cursor.getColumnIndex("CHILD_ID")));
                         mVar.add(row);
                     } while (cursor.moveToNext());
-                    Log.e("MON_TIMING_LOG", "Looping to get data  = elapsed total time (milliseconds): " + (System.currentTimeMillis() - tStart));
+                    Log.e("optimization", "Looping to get data  = elapsed total time (milliseconds): " + (System.currentTimeMillis() - tStart));
 
 
                 }

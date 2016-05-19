@@ -44,11 +44,9 @@ public class ChildVaccinatePagerFragment extends Fragment {
 
     private ArrayList<ViewAppointmentRow> var;
 
-    private String value;
-
     private static boolean barcodeIsEmpty = false;
 
-    private static final String VALUE = "value";
+    private static final String CHILD_OBJECT = "child";
 
     private ArrayList<RowCollector> rowCollectorContainer;
 
@@ -60,7 +58,6 @@ public class ChildVaccinatePagerFragment extends Fragment {
 
     final String VACC__ITEM_ID_LOG = "Vaccination Item Id";
 
-    private String childBarcode;
 
     private RelativeLayout noBarcode;
 
@@ -111,11 +108,10 @@ public class ChildVaccinatePagerFragment extends Fragment {
         return date;
     }
 
-    public static ChildVaccinatePagerFragment newInstance(String mValue, String barcode, String appointmentId) {
+    public static ChildVaccinatePagerFragment newInstance(Child currentChild, String appointmentId) {
         ChildVaccinatePagerFragment f = new ChildVaccinatePagerFragment();
         Bundle b                    = new Bundle();
-        b                           .putString(VALUE, mValue);
-        b                           .putString("Barcode", barcode);
+        b                           .putSerializable(CHILD_OBJECT, currentChild);
         b                           .putString("appointmentId", appointmentId);
         f                           .setArguments(b);
         return f;
@@ -134,8 +130,7 @@ public class ChildVaccinatePagerFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        value     = getArguments().getString(VALUE);
-        childBarcode    = getArguments().getString("Barcode");
+        currentChild     = (Child) getArguments().getSerializable(CHILD_OBJECT);
 
         if (getArguments().getString("appointmentId") != null){
             appointmentID   = getArguments().getString("appointmentId");
@@ -145,7 +140,7 @@ public class ChildVaccinatePagerFragment extends Fragment {
         app = (BackboneApplication) ChildVaccinatePagerFragment.this.getActivity().getApplication();
         dbh = app.getDatabaseInstance();
 
-        if (childBarcode.isEmpty() || childBarcode == null || childBarcode.equals("")){
+        if (currentChild.getBarcodeID().isEmpty() || currentChild.getBarcodeID() == null || currentChild.getBarcodeID().equals("")){
             barcodeIsEmpty = true;
         }
 
@@ -157,7 +152,7 @@ public class ChildVaccinatePagerFragment extends Fragment {
         v = (ViewGroup) inflater.inflate(R.layout.child_faccinate_pager_fragment, null);
         setUpView(v);
 
-        if (childBarcode.isEmpty() || childBarcode.equals("")){
+        if (currentChild.getBarcodeID().isEmpty() || currentChild.getBarcodeID().equals("")){
             noBarcode.setVisibility(View.VISIBLE);
             frameLayout.setVisibility(View.GONE);
         }else{
@@ -165,16 +160,8 @@ public class ChildVaccinatePagerFragment extends Fragment {
             frameLayout.setVisibility(View.VISIBLE);
         }
 
-        Cursor cursor = null;
-        cursor = dbh.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",
-                new String[]{String.valueOf(value)});
-
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
-            currentChild = getChildFromCursror(cursor);
-            if (currentChild.getBarcodeID() == null || currentChild.getBarcodeID().isEmpty()) {
-                Toast.makeText(ChildVaccinatePagerFragment.this.getActivity(), getString(R.string.empty_barcode), Toast.LENGTH_SHORT).show();
-            }
+        if (currentChild.getBarcodeID() == null || currentChild.getBarcodeID().isEmpty()) {
+            Toast.makeText(ChildVaccinatePagerFragment.this.getActivity(), getString(R.string.empty_barcode), Toast.LENGTH_SHORT).show();
         }
 
         if (!appointmentID.isEmpty()){

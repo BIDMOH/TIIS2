@@ -1,6 +1,7 @@
 package mobile.tiis.app.fragments;
 
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import java.util.ArrayList;
 
@@ -18,6 +21,7 @@ import mobile.tiis.app.base.BackboneActivity;
 import mobile.tiis.app.base.BackboneApplication;
 import mobile.tiis.app.database.DatabaseHandler;
 import mobile.tiis.app.database.SQLHandler;
+import mobile.tiis.app.entity.Child;
 import mobile.tiis.app.entity.ImmunizationCardItem;
 
 /**
@@ -27,13 +31,13 @@ public class ChildImmCardPagerFragment extends Fragment {
 
     private BackboneApplication app;
 
+    private static final String CHILD_OBJECT = "child";
+
     private DatabaseHandler mydb;
 
     private NestedListView immCardList;
 
-    private static final String VALUE = "barcode";
-
-    private String barcode = "";
+    private Child currentChild;
 
     private String childId;
 
@@ -45,10 +49,10 @@ public class ChildImmCardPagerFragment extends Fragment {
 
     RelativeLayout immListEmptyState;
 
-    public static ChildImmCardPagerFragment newInstance(String handlerBarcode) {
+    public static ChildImmCardPagerFragment newInstance(Child currentChild) {
         ChildImmCardPagerFragment f = new ChildImmCardPagerFragment();
         Bundle b                    = new Bundle();
-        b                           .putString(VALUE, handlerBarcode);
+        b                           .putSerializable(CHILD_OBJECT, currentChild);
         f                           .setArguments(b);
         return f;
     }
@@ -56,7 +60,8 @@ public class ChildImmCardPagerFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        barcode = getArguments().getString(VALUE);
+
+        currentChild     = (Child) getArguments().getSerializable(CHILD_OBJECT);
     }
 
     @Override
@@ -101,23 +106,32 @@ public class ChildImmCardPagerFragment extends Fragment {
     }
 
     private void renderViews(){
-        if(barcode != null){
-            Cursor getChildIdCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.BARCODE_ID + "=?",
-                    new String[]{String.valueOf(barcode)});
-            if (getChildIdCursor != null && getChildIdCursor.getCount() > 0) {
-                getChildIdCursor.moveToFirst();
-                childId = getChildIdCursor.getString(getChildIdCursor.getColumnIndex(SQLHandler.ChildColumns.ID));
+        if (currentChild != null) {
+            childId = currentChild.getId();
+        }
+
+        new AsyncTask<Void,Void,Void>(){
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                immunizationCardList = mydb.getImmunizationCard(childId);
+                return null;
             }
 
-            immunizationCardList = mydb.getImmunizationCard(childId);
-            if (immunizationCardList.size() > 0){
-                immListEmptyState.setVisibility(View.GONE);
-                adapter = new ImmunizationCardAdapter(this.getActivity(), immunizationCardList);
-                immCardList.setAdapter(adapter);
-            }else{
-                immListEmptyState.setVisibility(View.VISIBLE);
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                if (immunizationCardList.size() > 0){
+                    immListEmptyState.setVisibility(View.GONE);
+                    adapter = new ImmunizationCardAdapter(getActivity(), immunizationCardList);
+                    immCardList.setAdapter(adapter);
+                }else{
+                    immListEmptyState.setVisibility(View.VISIBLE);
+                }
             }
-        }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+
     }
 
     private void initListeners(){

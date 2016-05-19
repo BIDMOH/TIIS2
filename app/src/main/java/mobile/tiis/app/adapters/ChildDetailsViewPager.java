@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
+import mobile.tiis.app.entity.Child;
 import mobile.tiis.app.fragments.ChildAefiPagerFragment;
 import mobile.tiis.app.fragments.ChildImmCardPagerFragment;
 import mobile.tiis.app.fragments.ChildSummaryPagerFragment;
@@ -22,18 +23,17 @@ public class ChildDetailsViewPager extends FragmentPagerAdapter {
     private final String[] TITLES = { "Child Summary", "Weight", "Vaccinate Child" , "AEFI", "Immunization Card" };
     private FragmentManager fragmentManager;
     private FragmentTransaction tx;
-    private String mValue, Barcode;
-    private String appointmentId;
     private Context context;
+    private Child currentChild;
+    private String appointmentId;
 
-    public ChildDetailsViewPager(Context ctx, FragmentManager fm, String value, String barcode, String appointment_id) {
+    public ChildDetailsViewPager(Context ctx, FragmentManager fm, Child currentChild, String appointmentId) {
         super(fm);
         fragmentManager = fm;
         tx              = fragmentManager.beginTransaction();
-        mValue          = value;
         context         = ctx;
-        Barcode         = barcode;
-        appointmentId   = appointment_id;
+        this.currentChild    = currentChild;
+        this.appointmentId = appointmentId;
     }
 
     @Override
@@ -58,23 +58,23 @@ public class ChildDetailsViewPager extends FragmentPagerAdapter {
 
         if (position == 0){
             tx.addToBackStack("ChildSummaryFragment");
-            return ChildSummaryPagerFragment.newInstance(position, mValue);
+            return ChildSummaryPagerFragment.newInstance(position, currentChild);
         }
         else if (position == 1){
             tx.addToBackStack(TITLES[position]);
-            return ChildWeightPagerFragment.newInstance(mValue);
+            return ChildWeightPagerFragment.newInstance(currentChild);
         }
         else if (position == 2){
             tx.addToBackStack(TITLES[position]);
-            return ChildVaccinatePagerFragment.newInstance(mValue, Barcode, appointmentId);
+            return ChildVaccinatePagerFragment.newInstance(currentChild, appointmentId);
         }
         else if (position == 3){
             tx.addToBackStack(TITLES[position]);
-            return ChildAefiPagerFragment.newInstance(Barcode);
+            return ChildAefiPagerFragment.newInstance(currentChild);
         }
         else{
             tx.addToBackStack(TITLES[position]);
-            return ChildImmCardPagerFragment.newInstance(Barcode);
+            return ChildImmCardPagerFragment.newInstance(currentChild);
         }
     }
 

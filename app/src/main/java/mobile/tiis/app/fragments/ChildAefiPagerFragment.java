@@ -42,6 +42,7 @@ import mobile.tiis.app.base.BackboneApplication;
 import mobile.tiis.app.database.DatabaseHandler;
 import mobile.tiis.app.database.SQLHandler;
 import mobile.tiis.app.entity.AefiListItem;
+import mobile.tiis.app.entity.Child;
 
 /**
  * Created by issymac on 26/01/16.
@@ -51,8 +52,6 @@ public class ChildAefiPagerFragment extends Fragment  implements DatePickerDialo
     private DatabaseHandler mydb;
 
     private String childId;
-
-    private String barcode;
 
     private ArrayList<AefiListItem> aefiItems;
 
@@ -72,7 +71,9 @@ public class ChildAefiPagerFragment extends Fragment  implements DatePickerDialo
 
     NestedListView topListView, bottomListView;
 
-    final static String VALUE = "barcode";
+    private Child currentChild;
+
+    private static final String CHILD_OBJECT = "child";
 
     AefiBottomListAdapter bottomListAdapter;
 
@@ -92,10 +93,10 @@ public class ChildAefiPagerFragment extends Fragment  implements DatePickerDialo
         return difference;
     }
 
-    public static ChildAefiPagerFragment newInstance(String barcodeHandler) {
+    public static ChildAefiPagerFragment newInstance(Child currentChild) {
         ChildAefiPagerFragment f = new ChildAefiPagerFragment();
         Bundle b                    = new Bundle();
-        b                           .putString(VALUE, barcodeHandler);
+        b                           .putSerializable(CHILD_OBJECT, currentChild);
         f                           .setArguments(b);
         return f;
     }
@@ -103,7 +104,8 @@ public class ChildAefiPagerFragment extends Fragment  implements DatePickerDialo
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        barcode     = getArguments().getString(VALUE);
+
+        currentChild     = (Child) getArguments().getSerializable(CHILD_OBJECT);
     }
 
     @Override
@@ -250,11 +252,9 @@ public class ChildAefiPagerFragment extends Fragment  implements DatePickerDialo
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                Cursor getChildIdCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.BARCODE_ID + "=?",
-                        new String[]{String.valueOf(barcode)});
-                if (getChildIdCursor != null && getChildIdCursor.getCount() > 0) {
-                    getChildIdCursor.moveToFirst();
-                    childId = getChildIdCursor.getString(getChildIdCursor.getColumnIndex(SQLHandler.ChildColumns.ID));
+
+                if (currentChild != null) {
+                    childId = currentChild.getId();
                 } else {
                     new Runnable() {
                         @Override

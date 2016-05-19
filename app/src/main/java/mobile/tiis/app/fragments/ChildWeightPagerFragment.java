@@ -39,7 +39,7 @@ import mobile.tiis.app.helpers.Utils;
  */
 public class ChildWeightPagerFragment extends Fragment {
 
-    private static final String VALUE = "value";
+    private static final String CHILD_OBJECT = "child";
 
     private String hf_id, child_id, birthplacestr, villagestr, hfstr, statusstr, gender_val, birthdate_val;
 
@@ -49,7 +49,6 @@ public class ChildWeightPagerFragment extends Fragment {
 
     private boolean isWeightSetForChild = false;
 
-    String mValue;
 
     DatabaseHandler mydb;
 
@@ -65,10 +64,10 @@ public class ChildWeightPagerFragment extends Fragment {
 
     Button saveButton;
 
-    public static ChildWeightPagerFragment newInstance(String value) {
+    public static ChildWeightPagerFragment newInstance(Child currentChild) {
         ChildWeightPagerFragment f  = new ChildWeightPagerFragment();
         Bundle b                    = new Bundle();
-        b                           .putString(VALUE, value);
+        b                           .putSerializable(CHILD_OBJECT, currentChild);
         f                           .setArguments(b);
         return f;
     }
@@ -76,7 +75,8 @@ public class ChildWeightPagerFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mValue      = getArguments().getString(VALUE);
+
+        currentChild     = (Child) getArguments().getSerializable(CHILD_OBJECT);
     }
 
     @Override
@@ -91,67 +91,55 @@ public class ChildWeightPagerFragment extends Fragment {
 
         Date dNow = new Date();
         SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy");
+        if (currentChild.getBarcodeID() == null || currentChild.getBarcodeID().isEmpty()) {
+            Toast.makeText(ChildWeightPagerFragment.this.getActivity(), getString(R.string.empty_barcode), Toast.LENGTH_SHORT).show();
+        }
 
-        Cursor cursor = null;
-        cursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",
-                new String[]{String.valueOf(mValue)});
-
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
-
-            currentChild = getChildFromCursror(cursor);
-            if (currentChild.getBarcodeID() == null || currentChild.getBarcodeID().isEmpty()) {
-                Toast.makeText(ChildWeightPagerFragment.this.getActivity(), getString(R.string.empty_barcode), Toast.LENGTH_SHORT).show();
-            }
-
-            if (currentChild.getGender() != null) {
-                if (currentChild.getGender().equalsIgnoreCase("true")) {
-                    mfgender = "M";
-                } else {
-                    mfgender = "F";
-                }
-            }
-
-            if (currentChild.getBirthdate() != null && !currentChild.getBirthdate().isEmpty()) {
-//                birthdate.setText(ft.format(BackboneActivity.dateParser(currentChild.getBirthdate())));
-                birthday = ft.format(BackboneActivity.dateParser(currentChild.getBirthdate()));
-            }
-
-            metDOB.setText(ft.format(dNow));
-            today = ft.format(dNow);
-
-            Cursor childWeightCursor = null;
-            childWeightCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child_weight WHERE CHILD_BARCODE=? " +
-                    " AND datetime(DATE, 'unixepoch') <= datetime('now')", new String[]{currentChild.getBarcodeID()});
-
-            if (childWeightCursor.getCount() > 0) {
-                isWeightSetForChild = true;
-                childWeightCursor.moveToFirst();
-                String weight = childWeightCursor.getString(childWeightCursor.getColumnIndex(SQLHandler.ChildWeightColumns.WEIGHT));;
-                prevWeightValue.setText(weight);
-                metWeightValue.setText(weight.split("\\.")[0]);
-                metWeightDecimalValue.setText(weight.split("\\.")[1]);
+        if (currentChild.getGender() != null) {
+            if (currentChild.getGender().equalsIgnoreCase("true")) {
+                mfgender = "M";
             } else {
-                if (app.getAdministerVaccineHidden()) {
+                mfgender = "F";
+            }
+        }
+
+        if (currentChild.getBirthdate() != null && !currentChild.getBirthdate().isEmpty()) {
+            birthday = ft.format(BackboneActivity.dateParser(currentChild.getBirthdate()));
+        }
+
+        metDOB.setText(ft.format(dNow));
+        today = ft.format(dNow);
+
+        Cursor childWeightCursor = null;
+        childWeightCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child_weight WHERE CHILD_BARCODE=? " +
+                " AND datetime(DATE, 'unixepoch') <= datetime('now')", new String[]{currentChild.getBarcodeID()});
+
+        if (childWeightCursor.getCount() > 0) {
+            isWeightSetForChild = true;
+            childWeightCursor.moveToFirst();
+            String weight = childWeightCursor.getString(childWeightCursor.getColumnIndex(SQLHandler.ChildWeightColumns.WEIGHT));;
+            prevWeightValue.setText(weight);
+            metWeightValue.setText(weight.split("\\.")[0]);
+            metWeightDecimalValue.setText(weight.split("\\.")[1]);
+        } else {
+            if (app.getAdministerVaccineHidden()) {
 //                    modify.setVisibility(View.GONE);
 //                    supplements.setVisibility(View.GONE);
-                }
-
             }
 
-            dateAndWeight = mydb.getPreviousDateAndWeight(currentChild.getBarcodeID());
-            if(dateAndWeight!=null){
-                SimpleDateFormat myFormat = new SimpleDateFormat("dd-MMM-yyyy");
-                Date date = new Date(Long.parseLong(dateAndWeight.get("Date"))*1000);
-                String previousDate = myFormat.format(date);
-                prevWeightDate.setText(previousDate);
-                prevWeightValue.setText(dateAndWeight.get("Weight"));
-            }
-            else{
+        }
 
-                lnPreviousDateAndWeight.setVisibility(View.GONE);
-            }
+        dateAndWeight = mydb.getPreviousDateAndWeight(currentChild.getBarcodeID());
+        if(dateAndWeight!=null){
+            SimpleDateFormat myFormat = new SimpleDateFormat("dd-MMM-yyyy");
+            Date date = new Date(Long.parseLong(dateAndWeight.get("Date"))*1000);
+            String previousDate = myFormat.format(date);
+            prevWeightDate.setText(previousDate);
+            prevWeightValue.setText(dateAndWeight.get("Weight"));
+        }
+        else{
 
+            lnPreviousDateAndWeight.setVisibility(View.GONE);
         }
 
         saveButton.setOnClickListener(new View.OnClickListener() {
