@@ -169,7 +169,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
                             editTextUsedToRequestFocus.requestFocus();
 
                             if (!fromDateString.equals("")) {
-                                new filterList().execute(currentCategory, "0", fromDateString, toDateString);
+                                new filterList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentCategory, "0", fromDateString, toDateString);
                             } else {
                                 final Snackbar snackbar = Snackbar.make(root, "Please select a start date to view the chart", Snackbar.LENGTH_LONG);
                                 snackbar.setAction("OK", new View.OnClickListener() {
@@ -205,7 +205,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
                             editTextUsedToRequestFocus.requestFocus();
 
                             if (!toDateString.equals("")) {
-                                new filterList().execute(currentCategory, "0", fromDateString, toDateString);
+                                new filterList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentCategory, "0", fromDateString, toDateString);
                             } else {
                                 final Snackbar snackbar = Snackbar.make(root, "Please select an end date to view the report", Snackbar.LENGTH_LONG);
                                 snackbar.setAction("OK", new View.OnClickListener() {
@@ -251,15 +251,15 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
                     Log.d("day13", "spinner selected");
                     selectedAgeDefinition = ageDef.get(position - 1).getName();
                     currentCategory = selectedAgeDefinition;
-                    populatePageIndicatorContainer(getNumPages(selectedAgeDefinition));
+//                    populatePageIndicatorContainer(getNumPages(selectedAgeDefinition));
 //                    compileVaccinationQueueTable(selectedAgeDefinition, selectedPage);
-                    new filterList().execute(currentCategory, "0", fromDateString, toDateString);
+                    new filterList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentCategory, "0", fromDateString, toDateString);
                 } else {
                     selectedAgeDefinition = "";
                     currentCategory = selectedAgeDefinition;
-                    populatePageIndicatorContainer(getNumPages(selectedAgeDefinition));
+//                    populatePageIndicatorContainer(getNumPages(selectedAgeDefinition));
 //                    compileVaccinationQueueTable(selectedAgeDefinition, selectedPage);
-                    new filterList().execute(currentCategory, "0", fromDateString, toDateString);
+//                    new filterList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentCategory, "0", fromDateString, toDateString);
                 }
 
             }
@@ -301,7 +301,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
             }
         });
 
-        new filterList().execute(currentCategory, "0");
+        new filterList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentCategory, "0");
 
         return root;
     }
@@ -404,7 +404,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
 
             String SQLVaccinationQueue =
                     "SELECT DISTINCT APPOINTMENT_ID, CHILD_ID " +
-                            " ,(SELECT GROUP_CONCAT(dose.FULLNAME) FROM vaccination_event INNER JOIN dose ON vaccination_event.DOSE_ID = dose.ID left join age_definitions on dose.TO_AGE_DEFINITON_ID = age_definitions.ID WHERE monthly_plan.APPOINTMENT_ID=vaccination_event.APPOINTMENT_ID AND datetime(substr(vaccination_event.SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('now','+30 days') AND vaccination_event.IS_ACTIVE='true' AND vaccination_event.VACCINATION_STATUS='false' AND (vaccination_event.NONVACCINATION_REASON_ID=0  OR vaccination_event.NONVACCINATION_REASON_ID in (Select ID from nonvaccination_reason where KEEP_CHILD_DUE = 'true')) AND (DAYS IS NULL or (datetime(substr(vaccination_event.SCHEDULED_DATE,7,10),'unixepoch') > datetime('now','-' || DAYS || ' days')) )) AS VACCINES " +
+                            " ,(SELECT GROUP_CONCAT(dose.FULLNAME) FROM vaccination_event INNER JOIN dose ON vaccination_event.DOSE_ID = dose.ID left join age_definitions on dose.TO_AGE_DEFINITON_ID = age_definitions.ID WHERE monthly_plan.APPOINTMENT_ID=vaccination_event.APPOINTMENT_ID AND datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('" +to_date+ "','unixepoch') AND datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') > datetime('" +from_date+ "','unixepoch')  AND vaccination_event.IS_ACTIVE='true' AND vaccination_event.VACCINATION_STATUS='false' AND (vaccination_event.NONVACCINATION_REASON_ID=0  OR vaccination_event.NONVACCINATION_REASON_ID in (Select ID from nonvaccination_reason where KEEP_CHILD_DUE = 'true')) AND (DAYS IS NULL or (datetime(substr(vaccination_event.SCHEDULED_DATE,7,10),'unixepoch') > datetime('now','-' || DAYS || ' days')) )) AS VACCINES " +
                             " , SCHEDULE, SCHEDULED_DATE " +
                             " FROM MONTHLY_PLAN join dose on DOSE_ID = dose.ID" +
                             " WHERE HEALTH_FACILITY_ID = '" + app.getLOGGED_IN_USER_HF_ID() + "' AND SCHEDULE like '%" + ageName + "%' " +

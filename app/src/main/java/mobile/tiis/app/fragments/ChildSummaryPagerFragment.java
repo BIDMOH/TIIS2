@@ -249,12 +249,14 @@ public class ChildSummaryPagerFragment extends Fragment {
 
             @Override
             protected Void doInBackground(Void... params) {
+                long tStart = System.currentTimeMillis();
                 mCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",
                         new String[]{String.valueOf(value)});
                 if (mCursor.getCount() > 0) {
                     mCursor.moveToFirst();
                     currentChild = getChildFromCursror(mCursor);
                 }
+                Log.e("optimization", "Child summary Querying time  = elapsed total time (milliseconds): " + (System.currentTimeMillis() - tStart));
                 return null;
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
