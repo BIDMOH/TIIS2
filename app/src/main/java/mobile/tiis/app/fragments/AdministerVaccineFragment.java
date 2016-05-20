@@ -302,12 +302,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
             Calendar now = Calendar.getInstance();
 
-            if (new_date.before(scheduledDate)){
-                correnctDateSelected = false;
-            }else{
-                correnctDateSelected = true;
-            }
-
             chDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -478,6 +472,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         Date compareDateTwo = getZeroTimeDate(scheduledDate);
 
         if (compareDateOne.before(compareDateTwo)){
+            correnctDateSelected = false;
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(AdministerVaccineFragment.this.getActivity());
 
             // set title
@@ -507,6 +502,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
             alertDialog.show();
 
         }else{
+            correnctDateSelected = true;
             setdates(pos, tempHoldingVaccineModel);
         }
 
