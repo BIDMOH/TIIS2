@@ -158,7 +158,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
             }
 
             Log.d("day14", "Age is : "+age);
-
             if(age.equals("9 months") || age.equals("6 months") || age.equals("18 months")){
                 llSup.setVisibility(View.VISIBLE);
             }
@@ -184,9 +183,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         for (String dose : dosekeeper) {
             final AdministerVaccinesModel adminVacc = dbh.getPartOneAdminVaccModel(starter_set, appointment_id, dose);
             starter_set = true;
-
             dbh.getPartTwoAdminVacc(adminVacc, daysDiff, DateDiffDialog);
-
             SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy");
             adminVacc.setTime(ft.format(newest_date));
             adminVacc.setTime2(newest_date);
@@ -201,7 +198,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 //        fillVaccineTableLayout(arrayListAdminVacc,birthdate,1);
         fillVaccineTableLayout(arrayListAdminVacc);
         VaccineDoseListAdapter adapterList = new VaccineDoseListAdapter(this.getActivity(),R.layout.item_listview_admin_vacc,arrayListAdminVacc,birthdate,1);
-//        vaccineDosesList.setAdapter(adapterList);
+//      vaccineDosesList.setAdapter(adapterList);
 
         _hRedraw=new Handler(){
             @Override

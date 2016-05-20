@@ -21,6 +21,7 @@ package mobile.tiis.app.postman;
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Base64;
+import android.util.Log;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -52,6 +53,7 @@ public class SynchronisationService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
+        Log.d(TAG,"synchronizing postman data");
         BackboneApplication app = (BackboneApplication) getApplication();
         synchronized (app) {
             DatabaseHandler db = app.getDatabaseInstance();

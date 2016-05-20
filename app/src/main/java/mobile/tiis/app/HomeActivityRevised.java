@@ -207,7 +207,7 @@ public class HomeActivityRevised extends BackboneActivity {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
                     new updateSynchronisation().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, 0);
                 else
-                    new updateSynchronisation().execute(0);
+                    new updateSynchronisation().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,0);
 
                 //Starting the repeating synchronisation procedure that happens every 10 minutes
                 // and pulls changes done to children or children added
@@ -591,7 +591,7 @@ public class HomeActivityRevised extends BackboneActivity {
         @Override
         protected Boolean doInBackground(Integer... params) {
             BackboneApplication application = (BackboneApplication) getApplication();
-//            application.continuousModificationParser();
+//          application.continuousModificationParser();
             application.intervalGetChildrenByHealthFacilitySinceLastLogin();
 
             if(application.getLOGGED_IN_USER_ID()!=null && !application.getLOGGED_IN_USER_ID().equals("")){
@@ -617,11 +617,7 @@ public class HomeActivityRevised extends BackboneActivity {
         @Override
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
-
             Log.e("SYNC FINISHED", "Database synchronization finished.");
-            Toast toast = Toast.makeText(getApplicationContext(), "updateSynchronisation finished.", Toast.LENGTH_LONG);
-            toast.show();
-
         }
     }
 
