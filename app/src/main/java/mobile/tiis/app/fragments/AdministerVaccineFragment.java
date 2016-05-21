@@ -24,6 +24,7 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -88,6 +89,8 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
     Date new_date = new Date();
     AdministerVaccinesModel tempHoldingVaccineModel;
     View view;
+
+    private ProgressBar progressBar;
 
     private Handler _hRedraw;
     protected static final int REFRESH = 0;
@@ -176,27 +179,62 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         vitADate.setText(ftD.format(todayD));
         mabendazolDate.setText(ftD.format(todayD));
 
-        dosekeeper = dbh.getDosesForAppointmentID(appointment_id);
-        arrayListAdminVacc = new ArrayList<AdministerVaccinesModel>();
-        newest_date = new Date();
+        new AsyncTask<Void, Void, Void>(){
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                progressBar.setVisibility(View.VISIBLE);
+            }
 
-        for (String dose : dosekeeper) {
-            final AdministerVaccinesModel adminVacc = dbh.getPartOneAdminVaccModel(starter_set, appointment_id, dose);
-            starter_set = true;
-            dbh.getPartTwoAdminVacc(adminVacc, daysDiff, DateDiffDialog);
-            SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy");
-            adminVacc.setTime(ft.format(newest_date));
-            adminVacc.setTime2(newest_date);
-            //rowObjects.setInput(ft.format(newest_date));
-            //rowObjects.setDate(vaccination_date_col);
+            @Override
+            protected Void doInBackground(Void... voids) {
+                dosekeeper = dbh.getDosesForAppointmentID(appointment_id);
+                arrayListAdminVacc = new ArrayList<AdministerVaccinesModel>();
+                newest_date = new Date();
 
-            arrayListAdminVacc.add(adminVacc);
-        }
+                for (String dose : dosekeeper) {
+                    final AdministerVaccinesModel adminVacc = dbh.getPartOneAdminVaccModel(starter_set, appointment_id, dose);
+                    starter_set = true;
+                    dbh.getPartTwoAdminVacc(adminVacc, daysDiff, DateDiffDialog);
+                    SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy");
+                    adminVacc.setTime(ft.format(newest_date));
+                    adminVacc.setTime2(newest_date);
+                    //rowObjects.setInput(ft.format(newest_date));
+                    //rowObjects.setDate(vaccination_date_col);
+
+                    arrayListAdminVacc.add(adminVacc);
+                }
+
+                getChildId();
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                fillVaccineTableLayout(arrayListAdminVacc);
+
+                //after receiving the result of getchild() method
+                if (dbh.isChildSupplementedVitAToday(childId)) {
+                    vitACheckbox.setChecked(true);
+                    vitACheckbox.setEnabled(false);
+                }
+                if (dbh.isChildSupplementedMebendezolrToday(childId)) {
+                    mabendazolCheckbox.setChecked(true);
+                    mabendazolCheckbox.setEnabled(false);
+                }
+
+                progressBar.setVisibility(View.GONE);
+
+                super.onPostExecute(aVoid);
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+
 
 
 //        setListViewHeightBasedOnChildren(vaccineDosesList);
 //        fillVaccineTableLayout(arrayListAdminVacc,birthdate,1);
-        fillVaccineTableLayout(arrayListAdminVacc);
         VaccineDoseListAdapter adapterList = new VaccineDoseListAdapter(this.getActivity(),R.layout.item_listview_admin_vacc,arrayListAdminVacc,birthdate,1);
 //      vaccineDosesList.setAdapter(adapterList);
 
@@ -213,17 +251,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         };
 
         DateDiffDialog();
-
-        getChildId();
-
-        if (dbh.isChildSupplementedVitAToday(childId)) {
-            vitACheckbox.setChecked(true);
-            vitACheckbox.setEnabled(false);
-        }
-        if (dbh.isChildSupplementedMebendezolrToday(childId)) {
-            mabendazolCheckbox.setChecked(true);
-            mabendazolCheckbox.setEnabled(false);
-        }
 
         return root;
     }
@@ -250,6 +277,9 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
         saveButton              = (Button) v.findViewById(R.id.addminister_vaccine_save_button);
         saveButton              .setOnClickListener(this);
+
+        progressBar             = (ProgressBar) v.findViewById(R.id.progress_bar);
+        progressBar             .setVisibility(View.GONE);
     }
 
     public void redrawEverything(){

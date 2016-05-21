@@ -1,421 +1,432 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white">
+    android:layout_height="wrap_content">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:background="@color/white">
 
-        <android.support.v7.widget.CardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="32dp"
-            android:elevation="4dp">
+            android:orientation="vertical"
+            android:background="@color/white">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="32dp"
+                android:elevation="4dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:id="@+id/linear1"
+                        android:orientation="horizontal"
+                        android:background="@color/cardview_light_background">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:id="@+id/dose_title"
+                            android:layout_weight=".3"
+                            android:text="Dozi"
+                            android:textSize="18sp"
+                            android:gravity="center_vertical"
+                            android:paddingLeft="32dp"/>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/card_separator"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:id="@+id/lot_title"
+                            android:layout_weight=".15"
+                            android:text="Bachi ya Vaccine"
+                            android:textSize="18sp"
+                            android:gravity="center"/>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/card_separator"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:id="@+id/vaccine_date_title"
+                            android:layout_weight=".15"
+                            android:text="Tarehe ya Chanjo"
+                            android:textSize="18sp"
+                            android:gravity="center"/>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/card_separator"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:id="@+id/done_checkbox_title"
+                            android:layout_weight=".10"
+                            android:text="Maliza"
+                            android:textSize="18sp"
+                            android:gravity="center"/>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/card_separator"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:id="@+id/vaccine_date"
+                            android:layout_weight=".30"
+                            android:text="Chagua Sababu Kama Haikufanyika"
+                            android:textSize="18sp"
+                            android:gravity="center"/>
+
+                    </LinearLayout>
+
+                    <ListView
+                        android:visibility="gone"
+                        android:background="@color/white"
+                        android:id="@+id/lv_dose_list"
+                        android:layout_width="match_parent"
+                        android:layout_below="@id/linear1"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+                    </ListView>
+
+                    <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/vaccine_list_table"
+                        android:layout_below="@id/linear1"
+                        android:background="@color/card_grid_tex">
+
+                    </TableLayout>
+
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="32dp"
+                android:paddingBottom="32dp"
+                android:elevation="4dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Outreach Details"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:background="@color/cardview_light_background"
+                        android:paddingTop="16dp"
+                        android:paddingBottom="16dp"
+                        android:textColor="@color/black"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="32dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="70dp"
+                        android:background="@color/white"
+                        android:orientation="horizontal">
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:layout_width="0dp"
+                            android:layout_weight=".75"
+                            android:id="@+id/notes"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="32dp"
+                            android:layout_marginRight="8dp"
+                            app:met_floatingLabel="normal"
+                            app:met_floatingLabelText="Maelezo"
+                            android:hint="Notes"/>
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_weight=".25"
+                            android:layout_height="match_parent">
+                            <TextView
+                                android:layout_marginTop="4dp"
+                                android:id="@+id/check_title"
+                                android:layout_width="wrap_content"
+                                android:textColor="@color/black"
+                                android:textStyle="bold"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:text="Outreach"/>
+
+                            <CheckBox
+                                android:layout_below="@id/check_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:id="@+id/cb_outreach"/>
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="32dp"
+                android:paddingBottom="32dp"
+                android:elevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@color/white">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:orientation="horizontal"
+                        android:id="@+id/ll_sup"
+                        android:background="@color/yellow_500">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:id="@+id/tv_sup"
+                            android:layout_weight=".5"
+                            android:text="@string/give_suppl_child"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:gravity="center_vertical"
+                            android:paddingLeft="32dp"/>
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:orientation="horizontal"
+                        android:background="@color/cardview_light_background">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:id="@+id/suplements_title"
+                            android:layout_weight=".5"
+                            android:text="Vimelea"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:gravity="center_vertical"
+                            android:paddingLeft="32dp"/>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/card_separator"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:id="@+id/date_title"
+                            android:layout_weight=".25"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:text="Bachi ya Vaccine"
+                            android:textSize="18sp"
+                            android:gravity="center"/>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/card_separator"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:id="@+id/given_title"
+                            android:layout_weight=".25"
+                            android:text="Given"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:gravity="center"/>
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:id="@+id/vitamin_a"
+                            android:layout_weight=".5"
+                            android:text="Vitamin A"
+                            android:textSize="18sp"
+                            android:gravity="center_vertical"
+                            android:paddingLeft="32dp"/>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/card_separator"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:id="@+id/vit_a_date"
+                            android:layout_weight=".25"
+                            android:text=""
+                            android:textSize="18sp"
+                            android:gravity="center"/>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/card_separator"/>
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_weight=".25"
+                            android:layout_height="match_parent">
+
+                            <CheckBox
+                                android:layout_centerInParent="true"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/vit_a_check"
+                                android:textSize="18sp"/>
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:id="@+id/mabendazol"
+                            android:layout_weight=".5"
+                            android:text="Mabendazol"
+                            android:textSize="18sp"
+                            android:gravity="center_vertical"
+                            android:paddingLeft="32dp"/>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/card_separator"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:id="@+id/mabendazol_date"
+                            android:layout_weight=".25"
+                            android:text=""
+                            android:textSize="18sp"
+                            android:gravity="center"/>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/card_separator"/>
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_weight=".25"
+                            android:layout_height="match_parent">
+
+                            <CheckBox
+                                android:layout_centerInParent="true"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/mabendazol_check"
+                                android:textSize="18sp"/>
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white">
+                android:layout_marginBottom="32dp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:id="@+id/linear1"
-                    android:orientation="horizontal"
-                    android:background="@color/cardview_light_background">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/dose_title"
-                        android:layout_weight=".3"
-                        android:text="Dozi"
-                        android:textSize="18sp"
-                        android:gravity="center_vertical"
-                        android:paddingLeft="32dp"/>
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_separator"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/lot_title"
-                        android:layout_weight=".15"
-                        android:text="Bachi ya Vaccine"
-                        android:textSize="18sp"
-                        android:gravity="center"/>
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_separator"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/vaccine_date_title"
-                        android:layout_weight=".15"
-                        android:text="Tarehe ya Chanjo"
-                        android:textSize="18sp"
-                        android:gravity="center"/>
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_separator"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/done_checkbox_title"
-                        android:layout_weight=".10"
-                        android:text="Maliza"
-                        android:textSize="18sp"
-                        android:gravity="center"/>
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_separator"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/vaccine_date"
-                        android:layout_weight=".30"
-                        android:text="Chagua Sababu Kama Haikufanyika"
-                        android:textSize="18sp"
-                        android:gravity="center"/>
-
-                </LinearLayout>
-
-                <ListView
-                    android:visibility="gone"
-                    android:background="@color/white"
-                    android:id="@+id/lv_dose_list"
-                    android:layout_width="match_parent"
-                    android:layout_below="@id/linear1"
+                <android.support.v7.widget.CardView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
-                </ListView>
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="32dp"
+                    android:elevation="8dp"
+                    android:background="@color/light_blue_600">
 
-                <TableLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/vaccine_list_table"
-                    android:layout_below="@id/linear1"
-                    android:background="@color/card_grid_tex">
+                    <Button
+                        android:layout_width="200dp"
+                        android:layout_height="50dp"
+                        android:text="Save"
+                        android:id="@+id/addminister_vaccine_save_button"
+                        android:background="@color/light_blue_600"
+                        android:textColor="@color/white"/>
 
-
-
-                </TableLayout>
-
-
+                </android.support.v7.widget.CardView>
 
             </RelativeLayout>
 
-        </android.support.v7.widget.CardView>
+        </LinearLayout>
 
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="32dp"
-            android:paddingBottom="32dp"
-            android:elevation="4dp">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Outreach Details"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:background="@color/cardview_light_background"
-                    android:paddingTop="16dp"
-                    android:paddingBottom="16dp"
-                    android:textColor="@color/black"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="32dp"/>
+    </ScrollView>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="70dp"
-                    android:background="@color/white"
-                    android:orientation="horizontal">
-
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:layout_width="0dp"
-                        android:layout_weight=".75"
-                        android:id="@+id/notes"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="32dp"
-                        android:layout_marginRight="8dp"
-                        app:met_floatingLabel="normal"
-                        app:met_floatingLabelText="Maelezo"
-                        android:hint="Notes"/>
-
-                    <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_weight=".25"
-                        android:layout_height="match_parent">
-                        <TextView
-                            android:layout_marginTop="4dp"
-                            android:id="@+id/check_title"
-                            android:layout_width="wrap_content"
-                            android:textColor="@color/black"
-                            android:textStyle="bold"
-                            android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
-                            android:text="Outreach"/>
-
-                        <CheckBox
-                            android:layout_below="@id/check_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
-                            android:id="@+id/cb_outreach"/>
-
-                    </RelativeLayout>
-
-                </LinearLayout>
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="32dp"
-            android:paddingBottom="32dp"
-            android:elevation="4dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@color/white">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:orientation="horizontal"
-                    android:id="@+id/ll_sup"
-                    android:background="@color/yellow_500">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/tv_sup"
-                        android:layout_weight=".5"
-                        android:text="@string/give_suppl_child"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
-                        android:gravity="center_vertical"
-                        android:paddingLeft="32dp"/>
-
-                </LinearLayout>
+    <ProgressBar
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerInParent="true"
+        android:indeterminate="true"
+        android:id="@+id/progress_bar"/>
 
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:orientation="horizontal"
-                    android:background="@color/cardview_light_background">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/suplements_title"
-                        android:layout_weight=".5"
-                        android:text="Vimelea"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
-                        android:gravity="center_vertical"
-                        android:paddingLeft="32dp"/>
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_separator"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/date_title"
-                        android:layout_weight=".25"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
-                        android:text="Bachi ya Vaccine"
-                        android:textSize="18sp"
-                        android:gravity="center"/>
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_separator"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/given_title"
-                        android:layout_weight=".25"
-                        android:text="Given"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
-                        android:textSize="18sp"
-                        android:gravity="center"/>
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/vitamin_a"
-                        android:layout_weight=".5"
-                        android:text="Vitamin A"
-                        android:textSize="18sp"
-                        android:gravity="center_vertical"
-                        android:paddingLeft="32dp"/>
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_separator"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/vit_a_date"
-                        android:layout_weight=".25"
-                        android:text=""
-                        android:textSize="18sp"
-                        android:gravity="center"/>
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_separator"/>
-
-                    <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_weight=".25"
-                        android:layout_height="match_parent">
-
-                        <CheckBox
-                            android:layout_centerInParent="true"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/vit_a_check"
-                            android:textSize="18sp"/>
-
-                    </RelativeLayout>
-
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/mabendazol"
-                        android:layout_weight=".5"
-                        android:text="Mabendazol"
-                        android:textSize="18sp"
-                        android:gravity="center_vertical"
-                        android:paddingLeft="32dp"/>
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_separator"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/mabendazol_date"
-                        android:layout_weight=".25"
-                        android:text=""
-                        android:textSize="18sp"
-                        android:gravity="center"/>
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_separator"/>
-
-                    <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_weight=".25"
-                        android:layout_height="match_parent">
-
-                        <CheckBox
-                            android:layout_centerInParent="true"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/mabendazol_check"
-                            android:textSize="18sp"/>
-
-                    </RelativeLayout>
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </android.support.v7.widget.CardView>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp">
-
-            <android.support.v7.widget.CardView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="32dp"
-                android:elevation="8dp"
-                android:background="@color/light_blue_600">
-
-                <Button
-                    android:layout_width="200dp"
-                    android:layout_height="50dp"
-                    android:text="Save"
-                    android:id="@+id/addminister_vaccine_save_button"
-                    android:background="@color/light_blue_600"
-                    android:textColor="@color/white"/>
-
-            </android.support.v7.widget.CardView>
-
-        </RelativeLayout>
-
-    </LinearLayout>
-
-</ScrollView>
+</RelativeLayout>
