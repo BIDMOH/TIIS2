@@ -90,9 +90,10 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
     AdministerVaccinesModel tempHoldingVaccineModel;
     View view;
 
+    private Handler _hRedraw;
+
     private ProgressBar progressBar;
 
-    private Handler _hRedraw;
     protected static final int REFRESH = 0;
 
     public static final int getMonthsDifference(Date date1, Date date2) {
