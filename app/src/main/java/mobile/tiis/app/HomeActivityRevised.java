@@ -329,7 +329,7 @@ public class HomeActivityRevised extends BackboneActivity {
                 public void onDrawerOpened(View drawerView) {
                     drawerToggle.syncState();
                     getSupportActionBar().setTitle("Select Option");
-//                ((FragmentInterface)fragment).hideMenuActions();
+//                  ((FragmentInterface)fragment).hideMenuActions();
                     invalidateOptionsMenu();
                 }
             };
@@ -337,7 +337,6 @@ public class HomeActivityRevised extends BackboneActivity {
             if (!isDrawerLocked) {
                 drawerLayout.setDrawerListener(drawerToggle);
             }
-
         }
 
         try {
