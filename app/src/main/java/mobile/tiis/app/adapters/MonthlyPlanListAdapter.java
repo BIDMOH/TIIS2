@@ -67,8 +67,6 @@ public class MonthlyPlanListAdapter extends BaseAdapter {
 
         TextView name       = (TextView) convertView.findViewById(R.id.vacc_txt_child_names);
         name.setTypeface(BackboneActivity.Rosario_Regular);
-        TextView vaccine    = (TextView) convertView.findViewById(R.id.vaccine);
-        vaccine.setTypeface(BackboneActivity.Rosario_Regular);
         TextView age        = (TextView) convertView.findViewById(R.id.age);
         age.setTypeface(BackboneActivity.Rosario_Regular);
         TextView date       = (TextView) convertView.findViewById(R.id.date);
@@ -86,7 +84,6 @@ public class MonthlyPlanListAdapter extends BaseAdapter {
             naming.close();
         }
 
-        vaccine.setText(objects.get(position).getVaccine_dose());
         age.setText(objects.get(position).getSchedule());
 
         Date scheduled_date = BackboneActivity.dateParser(objects.get(position).getScheduled_date());

@@ -42,7 +42,6 @@ import mobile.tiis.app.ChildDetailsActivity;
 import mobile.tiis.app.CustomViews.NestedListView;
 import mobile.tiis.app.R;
 import mobile.tiis.app.adapters.AdapterVaccineNameQuantity;
-import mobile.tiis.app.adapters.MonthlyPlanListAdapter;
 import mobile.tiis.app.adapters.SingleTextViewAdapter;
 import mobile.tiis.app.base.BackboneActivity;
 import mobile.tiis.app.base.BackboneApplication;
@@ -62,7 +61,6 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
 
     private TableLayout monthlyPlanTable;
 
-    private MonthlyPlanListAdapter adapter;
 
     private MaterialSpinner agesSpinner;
 
@@ -403,46 +401,32 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
             DatabaseHandler mydb            = application.getDatabaseInstance();
 
             String SQLVaccinationQueue =
-//                    "SELECT DISTINCT APPOINTMENT_ID, CHILD_ID " +
-//                            " ,(SELECT GROUP_CONCAT(dose.FULLNAME) FROM vaccination_event INNER JOIN dose ON vaccination_event.DOSE_ID = dose.ID left join age_definitions on dose.TO_AGE_DEFINITON_ID = age_definitions.ID WHERE monthly_plan.APPOINTMENT_ID=vaccination_event.APPOINTMENT_ID AND datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('" +to_date+ "','unixepoch') AND datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') > datetime('" +from_date+ "','unixepoch')  AND vaccination_event.IS_ACTIVE='true' AND vaccination_event.VACCINATION_STATUS='false' AND (vaccination_event.NONVACCINATION_REASON_ID=0  OR vaccination_event.NONVACCINATION_REASON_ID in (Select ID from nonvaccination_reason where KEEP_CHILD_DUE = 'true')) AND (DAYS IS NULL or (datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('" +to_date+ "','unixepoch') AND datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') > datetime('" +t+ "','unixepoch')) )) AS VACCINES " +
-//                            " , SCHEDULE, SCHEDULED_DATE " +
-//                            " FROM MONTHLY_PLAN join dose on DOSE_ID = dose.ID" +
-//                            " WHERE HEALTH_FACILITY_ID = '" + app.getLOGGED_IN_USER_HF_ID() + "' AND SCHEDULE like '%" + ageName + "%' " +
-//                            " AND datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') > datetime('" +from_date+ "','unixepoch') " +
-//                            " AND datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('" +to_date+ "','unixepoch') " +
-//                            " AND ( (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) IS NULL " +
-//                            " OR (datetime(substr(SCHEDULED_DATE,7,10),'unixepoch') > datetime('now','-' || (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) || ' days' )) )" +
-//                            " GROUP BY APPOINTMENT_ID, SCHEDULED_DATE, DOMICILE, NAME, SCHEDULE, CHILD_ID, SCHEDULE_ID " +
-//                            " ORDER BY SCHEDULED_DATE "+
-//                            " LIMIT " + startRow + ", 10; ";
-            "SELECT  " +
-                    "DISTINCT " +
-                    "APPOINTMENT_ID, CHILD_ID ,SCHEDULE, SCHEDULED_DATE ," +
-                    "   (SELECT GROUP_CONCAT(dose.FULLNAME) " +
-                    "       FROM vaccination_event" +
-                    "           INNER JOIN dose ON vaccination_event.DOSE_ID = dose.ID " +
-                    "           left join age_definitions on dose.TO_AGE_DEFINITON_ID = age_definitions.ID " +
-                    "    WHERE  " +
-                    "    monthly_plan.APPOINTMENT_ID=vaccination_event.APPOINTMENT_ID AND " +
-                    "    datetime(substr(vaccination_event.SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('"+to_date+"','unixepoch') AND  " +
-                    "    datetime(substr(vaccination_event.SCHEDULED_DATE,7,10), 'unixepoch') > datetime('"+from_date+"','unixepoch')  AND  " +
-                    "    vaccination_event.IS_ACTIVE='true' AND  " +
-                    "    vaccination_event.VACCINATION_STATUS='false' AND  " +
-                    "    (vaccination_event.NONVACCINATION_REASON_ID=0  OR vaccination_event.NONVACCINATION_REASON_ID in (Select ID from nonvaccination_reason where KEEP_CHILD_DUE = 'true')) AND  " +
-                    "    (DAYS IS NULL or (datetime(substr(vaccination_event.SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('"+to_date+"','unixepoch') AND  " +
-                    "    datetime(substr(vaccination_event.SCHEDULED_DATE,7,10), 'unixepoch') > datetime('"+from_date+"','unixepoch')) )) AS VACCINES " +
-                    "FROM MONTHLY_PLAN  " +
-                    "join dose on DOSE_ID = dose.ID  " +
-                    "WHERE  " +
-                    "    HEALTH_FACILITY_ID = '" + app.getLOGGED_IN_USER_HF_ID() + "' AND  " +
-                    "    SCHEDULE like '%%'  AND  " +
-                    "    datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') > datetime('"+from_date+"','unixepoch')   AND  " +
-                    "    datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('"+to_date+"','unixepoch')  AND  " +
-                    "    ( (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) IS NULL  OR (datetime(substr(SCHEDULED_DATE,7,10),'unixepoch') > datetime('now','-' || (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) || ' days' )) )  " +
-                    "     " +
-                    "    GROUP BY APPOINTMENT_ID, SCHEDULED_DATE, DOMICILE, NAME, SCHEDULE, CHILD_ID, SCHEDULE_ID   " +
-                    "    ORDER BY SCHEDULED_DATE   LIMIT " + startRow + ", 10; " +
-                    "   ";
+                    "SELECT DISTINCT APPOINTMENT_ID, CHILD_ID " +
+                            " , SCHEDULE, SCHEDULED_DATE " +
+                            " FROM MONTHLY_PLAN join dose on DOSE_ID = dose.ID" +
+                            " WHERE HEALTH_FACILITY_ID = '" + app.getLOGGED_IN_USER_HF_ID() + "' AND SCHEDULE like '%" + ageName + "%' " +
+                            " AND (substr(SCHEDULED_DATE,7,10)) > ('" +from_date+ "') " +
+                            " AND (substr(SCHEDULED_DATE,7,10)) <= ('" +to_date+ "') " +
+                            " AND ( (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) IS NULL " +
+                            " OR (datetime(substr(SCHEDULED_DATE,7,10),'unixepoch') > datetime('now','-' || (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) || ' days' )) )" +
+                            " GROUP BY APPOINTMENT_ID, SCHEDULED_DATE, DOMICILE, NAME, SCHEDULE, CHILD_ID, SCHEDULE_ID " +
+                            " ORDER BY SCHEDULED_DATE "+
+                            " LIMIT " + startRow + ", 10; ";
+//            "SELECT  " +
+//                    "DISTINCT " +
+//                    "APPOINTMENT_ID, CHILD_ID ,SCHEDULE, SCHEDULED_DATE " +
+//                    "FROM MONTHLY_PLAN  " +
+//                    "join dose on DOSE_ID = dose.ID  " +
+//                    "WHERE  " +
+//                    "    HEALTH_FACILITY_ID = '" + app.getLOGGED_IN_USER_HF_ID() + "' AND  " +
+//                    "    SCHEDULE like '%%'  AND  " +
+//                    "    (substr(SCHEDULED_DATE,7,10)) > ('"+from_date+"')   AND  " +
+//                    "    (substr(SCHEDULED_DATE,7,10)) <= ('"+to_date+"')  AND  " +
+//                    "    ( (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) IS NULL  OR (datetime(substr(SCHEDULED_DATE,7,10),'unixepoch') > datetime('now','-' || (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) || ' days' )) )  " +
+//                    "     " +
+//                    "    GROUP BY APPOINTMENT_ID, SCHEDULED_DATE, DOMICILE, NAME, SCHEDULE, CHILD_ID, SCHEDULE_ID   " +
+//                    "    ORDER BY SCHEDULED_DATE   LIMIT " + startRow + ", 10; " +
+//                    "   ";
 
 
 
@@ -481,7 +465,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
                         Log.d("optimization", "the loop here");
                         ViewAppointmentRow row = new ViewAppointmentRow();
                         row.setAppointment_id(cursor.getString(cursor.getColumnIndex("APPOINTMENT_ID")));
-                        row.setVaccine_dose(cursor.getString(cursor.getColumnIndex("VACCINES")));
+                        row.setVaccine_dose(cursor.getString(cursor.getColumnIndex("SCHEDULE")));
                         row.setSchedule(cursor.getString(cursor.getColumnIndex("SCHEDULE")));
                         row.setScheduled_date(cursor.getString(cursor.getColumnIndex("SCHEDULED_DATE")));
                         row.setChild_id(cursor.getString(cursor.getColumnIndex("CHILD_ID")));
@@ -527,12 +511,10 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
         monthlyPlanTable.removeAllViews();
         for (final ViewAppointmentRow a : nVar) {
 
-            View convertView = View.inflate(MonthlyPlanFragment.this.getActivity(), R.layout.vacination_queue_list_item, null);
+            View convertView = View.inflate(MonthlyPlanFragment.this.getActivity(), R.layout.monthly_plan_list_item, null);
 
             TextView name = (TextView) convertView.findViewById(R.id.vacc_txt_child_names);
             name.setTypeface(BackboneActivity.Rosario_Regular);
-            TextView vaccine = (TextView) convertView.findViewById(R.id.vaccine);
-            vaccine.setTypeface(BackboneActivity.Rosario_Regular);
             TextView age = (TextView) convertView.findViewById(R.id.age);
             age.setTypeface(BackboneActivity.Rosario_Regular);
             TextView date = (TextView) convertView.findViewById(R.id.date);
@@ -555,7 +537,6 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
                 naming.close();
             }
 
-            vaccine.setText(a.getVaccine_dose());
             age.setText(a.getSchedule());
 
             Date scheduled_date = BackboneActivity.dateParser(a.getScheduled_date());
