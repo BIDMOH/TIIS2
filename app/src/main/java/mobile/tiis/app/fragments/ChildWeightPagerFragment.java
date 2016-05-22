@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -64,6 +65,8 @@ public class ChildWeightPagerFragment extends Fragment {
 
     Button saveButton;
 
+    Cursor childWeightCursor = null;
+
     public static ChildWeightPagerFragment newInstance(Child currentChild) {
         ChildWeightPagerFragment f  = new ChildWeightPagerFragment();
         Bundle b                    = new Bundle();
@@ -110,37 +113,58 @@ public class ChildWeightPagerFragment extends Fragment {
         metDOB.setText(ft.format(dNow));
         today = ft.format(dNow);
 
-        Cursor childWeightCursor = null;
-        childWeightCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child_weight WHERE CHILD_BARCODE=? " +
-                " AND datetime(DATE, 'unixepoch') <= datetime('now')", new String[]{currentChild.getBarcodeID()});
-
-        if (childWeightCursor.getCount() > 0) {
-            isWeightSetForChild = true;
-            childWeightCursor.moveToFirst();
-            String weight = childWeightCursor.getString(childWeightCursor.getColumnIndex(SQLHandler.ChildWeightColumns.WEIGHT));;
-            prevWeightValue.setText(weight);
-            metWeightValue.setText(weight.split("\\.")[0]);
-            metWeightDecimalValue.setText(weight.split("\\.")[1]);
-        } else {
-            if (app.getAdministerVaccineHidden()) {
-//                    modify.setVisibility(View.GONE);
-//                    supplements.setVisibility(View.GONE);
+        new AsyncTask<Void, Void, Void>(){
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
             }
 
-        }
+            @Override
+            protected Void doInBackground(Void... voids) {
 
-        dateAndWeight = mydb.getPreviousDateAndWeight(currentChild.getBarcodeID());
-        if(dateAndWeight!=null){
-            SimpleDateFormat myFormat = new SimpleDateFormat("dd-MMM-yyyy");
-            Date date = new Date(Long.parseLong(dateAndWeight.get("Date"))*1000);
-            String previousDate = myFormat.format(date);
-            prevWeightDate.setText(previousDate);
-            prevWeightValue.setText(dateAndWeight.get("Weight"));
-        }
-        else{
+                childWeightCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child_weight WHERE CHILD_BARCODE=? " +
+                        " AND datetime(DATE, 'unixepoch') <= datetime('now')", new String[]{currentChild.getBarcodeID()});
 
-            lnPreviousDateAndWeight.setVisibility(View.GONE);
-        }
+                dateAndWeight = mydb.getPreviousDateAndWeight(currentChild.getBarcodeID());
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                if (childWeightCursor.getCount() > 0) {
+                    isWeightSetForChild = true;
+                    childWeightCursor.moveToFirst();
+                    String weight = childWeightCursor.getString(childWeightCursor.getColumnIndex(SQLHandler.ChildWeightColumns.WEIGHT));;
+                    prevWeightValue.setText(weight);
+                    metWeightValue.setText(weight.split("\\.")[0]);
+                    metWeightDecimalValue.setText(weight.split("\\.")[1]);
+                } else {
+                    if (app.getAdministerVaccineHidden()) {
+//                    modify.setVisibility(View.GONE);
+//                    supplements.setVisibility(View.GONE);
+                    }
+
+                }
+
+
+                if(dateAndWeight!=null){
+                    SimpleDateFormat myFormat = new SimpleDateFormat("dd-MMM-yyyy");
+                    Date date = new Date(Long.parseLong(dateAndWeight.get("Date"))*1000);
+                    String previousDate = myFormat.format(date);
+                    prevWeightDate.setText(previousDate);
+                    prevWeightValue.setText(dateAndWeight.get("Weight"));
+                }
+                else{
+
+                    lnPreviousDateAndWeight.setVisibility(View.GONE);
+                }
+
+
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
