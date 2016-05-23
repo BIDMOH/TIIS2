@@ -166,12 +166,23 @@ public class ChildVaccinatePagerFragment extends Fragment {
         }
 
         if (!appointmentID.isEmpty()){
+
+            ChildAppointmentsListFragment appointmentsListFragment = new ChildAppointmentsListFragment();
+            Bundle mBundle=new Bundle();
+            mBundle.putString("child_id", currentChild.getId());
+            mBundle.putString("barcode", currentChild.getBarcodeID());
+            mBundle.putString("birthdate", currentChild.getBirthdate());
+            appointmentsListFragment.setArguments(mBundle);
+
+            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.vacc_fragment_frame, appointmentsListFragment);
+            ft.addToBackStack("fragmentVaccineList");
+            ft.commit();
+
             AdministerVaccineFragment administerVaccineFragment = new AdministerVaccineFragment();
             Bundle bundle = new Bundle();
             bundle.putString("appointment_id", appointmentID);
             bundle.putString("birthdate", currentChild.getBirthdate());
-
-
 
             bundle.putString("barcode", currentChild.getBarcodeID());
             Log.d("appointmentID", "Appointment Id is : " + appointmentID);
@@ -180,10 +191,10 @@ public class ChildVaccinatePagerFragment extends Fragment {
 
 //            fm.addFragment(administerVaccineFragment, R.id.vacc_fragment_frame, true, FragmentTransaction.TRANSIT_FRAGMENT_FADE, false);
 
-            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.vacc_fragment_frame, administerVaccineFragment);
-            ft.addToBackStack("AdministerVaccineFragment");
-            ft.commit();
+            FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.vacc_fragment_frame, administerVaccineFragment);
+            fragmentTransaction.addToBackStack("AdministerVaccineFragment");
+            fragmentTransaction.commit();
         }else{
             ChildAppointmentsListFragment appointmentsListFragment = new ChildAppointmentsListFragment();
             Bundle bundle=new Bundle();
