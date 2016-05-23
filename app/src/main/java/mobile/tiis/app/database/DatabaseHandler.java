@@ -241,10 +241,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * @return
      */
     public long addChildWeight(ContentValues cv) {
-
-        // RETRIEVE WRITEABLE DATABASE AND INSERT
+        long result;
         SQLiteDatabase sd = getWritableDatabase();
-        long result = sd.insert(Tables.CHILD_WEIGHT, null, cv);
+        sd.beginTransaction();
+        try{
+            result = sd.insert(Tables.CHILD_WEIGHT, null, cv);
+            sd.setTransactionSuccessful();
+        }catch(Exception e){
+            sd.endTransaction();
+            throw e;
+        }
+        //end the transaction on no error
+        sd.endTransaction();
         return result;
     }
 
@@ -292,16 +300,42 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public long addStock(ContentValues cv) {
 
+        long result;
         SQLiteDatabase sd = getWritableDatabase();
-        long result = sd.insert(Tables.HEALTH_FACILITY_BALANCE, null, cv);
+        sd.beginTransaction();
+        try{
+            result = sd.insert(Tables.HEALTH_FACILITY_BALANCE, null, cv);
+            sd.setTransactionSuccessful();
+        }catch(Exception e){
+            result=-1;
+            sd.endTransaction();
+            throw e;
+        }
+        sd.endTransaction();
         return result;
     }
 
     public long updateStock(ContentValues cv, String id) {
 
         SQLiteDatabase sd = getWritableDatabase();
-        long result = sd.update(Tables.HEALTH_FACILITY_BALANCE, cv, SQLHandler.HealthFacilityBalanceColumns.LOT_ID + "=?",
-                new String[]{id});
+        long result ;
+        sd.beginTransaction();
+        try{
+            result = sd.update(Tables.HEALTH_FACILITY_BALANCE, cv, SQLHandler.HealthFacilityBalanceColumns.LOT_ID + "=?",
+                    new String[]{id});
+            sd.setTransactionSuccessful();
+            //do not any more database operations between
+            //setTransactionSuccessful and endTransaction
+        }catch(Exception e){
+            //end the transaction on error too when doing exception handling
+            result=-1;
+            sd.endTransaction();
+            throw e;
+        }
+        //end the transaction on no error
+        sd.endTransaction();
+
+
         return result;
     }
 
@@ -321,7 +355,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public long addChild(ContentValues cv) {
         SQLiteDatabase db = getWritableDatabase();
-        long result = db.insert(Tables.CHILD, null, cv);
+
+        long result;
+
+        db.beginTransaction();
+        try{
+            result = db.insert(Tables.CHILD, null, cv);
+            db.setTransactionSuccessful();
+        }catch(Exception e){
+            result=-1;
+            db.endTransaction();
+            throw e;
+        }
+        db.endTransaction();
         return result;
     }
     public long addBulkChild(ContentValues cv) {
@@ -395,9 +441,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public long addUser(ContentValues cv) {
 
-        SQLiteDatabase db = getWritableDatabase();
-        long result = db.insert(Tables.USER, null, cv);
-        return result;
+        SQLiteDatabase sd = getWritableDatabase();
+        long result =-1;
+        sd.beginTransaction();
+        try {
+            result = sd.insert(Tables.USER, null, cv);
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+
     }
 
     public long addWeightList(ContentValues cv) {
@@ -428,9 +485,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public long addItemLot(ContentValues cv) {
-        SQLiteDatabase db = getWritableDatabase();
-        long result = db.insert(Tables.ITEM_LOT, null, cv);
-        return result;
+        SQLiteDatabase sd = getWritableDatabase();
+        long result =-1;
+        sd.beginTransaction();
+        try {
+            result = sd.insert(Tables.ITEM_LOT, null, cv);
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
     }
     public long addUpdateItemLot(ContentValues cv, String itemLotId) {
         // RETRIEVE WRITEABLE DATABASE AND INSERT or UPDATE
@@ -489,10 +556,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public long addVaccinationEvent(ContentValues cv) {
-
-        SQLiteDatabase db = getWritableDatabase();
-        long result = db.insert(Tables.VACCINATION_EVENT, null, cv);
-        return result;
+        SQLiteDatabase sd = getWritableDatabase();
+        long result =-1;
+        sd.beginTransaction();
+        try {
+            result = sd.insert(Tables.VACCINATION_EVENT, null, cv);
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
     }
 
     public long addAgeDefinitions(ContentValues cv) {
@@ -602,9 +678,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public long addHealthFacility(ContentValues cv) {
-        SQLiteDatabase db = getWritableDatabase();
-        long result = db.insert(Tables.HEALTH_FACILITY, null, cv);
-        return result;
+        SQLiteDatabase sd = getWritableDatabase();
+        long result =-1;
+        sd.beginTransaction();
+        try {
+            result = sd.insert(Tables.HEALTH_FACILITY, null, cv);
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+
     }
 
 
@@ -1514,18 +1601,48 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public void updateWeight(ContentValues cv, String barcode) {
-        SQLiteDatabase db = getWritableDatabase();
-        db.update(Tables.CHILD_WEIGHT, cv, "CHILD_BARCODE=?", new String[]{barcode});
+        SQLiteDatabase sd = getWritableDatabase();
+        sd.beginTransaction();
+        try {
+            sd.update(Tables.CHILD_WEIGHT, cv, "CHILD_BARCODE=?", new String[]{barcode});
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            throw e;
+        } finally {
+            sd.endTransaction();
+        }
+
     }
 
     public void updateStockBalance(ContentValues cv, String lot_id) {
-        SQLiteDatabase db = getWritableDatabase();
-        db.update(Tables.HEALTH_FACILITY_BALANCE, cv, "lot_id=?", new String[]{lot_id});
+        SQLiteDatabase sd = getWritableDatabase();
+        sd.beginTransaction();
+        try {
+            sd.update(Tables.HEALTH_FACILITY_BALANCE, cv, "lot_id=?", new String[]{lot_id});
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            throw e;
+        } finally {
+            sd.endTransaction();
+        }
+
     }
 
     public void updateAdministerVaccineDoneStatus(ContentValues cv, String status, String dose) {
-        SQLiteDatabase db = getWritableDatabase();
-        db.update(Tables.VACCINATION_EVENT, cv, "APPOINTMENT_ID=? AND DOSE_ID=?", new String[]{status, dose});
+        SQLiteDatabase sd = getWritableDatabase();
+        sd.beginTransaction();
+        try {
+            sd.update(Tables.VACCINATION_EVENT, cv, "APPOINTMENT_ID=? AND DOSE_ID=?", new String[]{status, dose});
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            throw e;
+        } finally {
+            sd.endTransaction();
+        }
+
     }
 
     public boolean removeChild(String childId) {
@@ -1557,11 +1674,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 //    }
 
     public long addVaccinationAppointment(ContentValues cv) {
+        long result=-1;
 
-        // RETRIEVE WRITEABLE DATABASE AND INSERT
         SQLiteDatabase sd = getWritableDatabase();
-        long result = sd.insert(Tables.VACCINATION_APPOINTMENT, null, cv);
-        return result;
+        sd.beginTransaction();
+        try {
+            result = sd.insert(Tables.VACCINATION_APPOINTMENT, null, cv);
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result=-1;
+            throw e;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+
     }
 
     public boolean removeVaccinationAppointment(int vaccinationAppointmentId) {
@@ -1926,29 +2054,44 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * @return - the id of the new inserted element
      */
     public long inserTodaySupplements(String childId, boolean vitA, boolean mebendezolr, String modificationUserId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        db.delete(Tables.CHILD_SUPPLEMENTS,
-                SQLHandler.ChildSupplementsColumns.CHILD_ID + " = '" +
-                        childId + "' AND " + SQLHandler.ChildSupplementsColumns.DATE + " = date('now', 'start of day')", null);
 
-        ContentValues contentValues = new ContentValues();
-        if (vitA)
-            contentValues.put(SQLHandler.ChildSupplementsColumns.VitA, "true");
-        if (mebendezolr)
-            contentValues.put(SQLHandler.ChildSupplementsColumns.MEBENDEZOLR, "true");
+        long result=-1;
 
-        if (contentValues.size() > 0) {
-            String uuid =UUID.randomUUID().toString();
-            uuid = uuid.replace('\'','a');
-            uuid = uuid.replace('\"','a');
-            contentValues.put(SQLHandler.ChildSupplementsColumns.ID,uuid );
-            contentValues.put(SQLHandler.ChildSupplementsColumns.CHILD_ID, childId);
-            contentValues.put(SQLHandler.ChildSupplementsColumns.MODIFIED_BY, modificationUserId);
-            long insert = db.insert(Tables.CHILD_SUPPLEMENTS, null, contentValues);
-            return insert;
-        } else {
-            return -1;
+        SQLiteDatabase sd = getWritableDatabase();
+        sd.beginTransaction();
+        try {
+            sd.delete(Tables.CHILD_SUPPLEMENTS,
+                    SQLHandler.ChildSupplementsColumns.CHILD_ID + " = '" +
+                            childId + "' AND " + SQLHandler.ChildSupplementsColumns.DATE + " = date('now', 'start of day')", null);
+
+            ContentValues contentValues = new ContentValues();
+            if (vitA)
+                contentValues.put(SQLHandler.ChildSupplementsColumns.VitA, "true");
+            if (mebendezolr)
+                contentValues.put(SQLHandler.ChildSupplementsColumns.MEBENDEZOLR, "true");
+
+            if (contentValues.size() > 0) {
+                String uuid =UUID.randomUUID().toString();
+                uuid = uuid.replace('\'','a');
+                uuid = uuid.replace('\"','a');
+                contentValues.put(SQLHandler.ChildSupplementsColumns.ID,uuid );
+                contentValues.put(SQLHandler.ChildSupplementsColumns.CHILD_ID, childId);
+                contentValues.put(SQLHandler.ChildSupplementsColumns.MODIFIED_BY, modificationUserId);
+                result = sd.insert(Tables.CHILD_SUPPLEMENTS, null, contentValues);
+            } else {
+                result= -1;
+            }
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result=-1;
+            throw e;
+        } finally {
+            sd.endTransaction();
+            return result;
         }
+
+
     }
 
     /**
@@ -1962,15 +2105,34 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(SQLHandler.ChildSupplementsColumns.ID, newChildSupplementsId);
         SQLiteDatabase db = this.getReadableDatabase();
-        int rowsAffected = db.update(Tables.CHILD_SUPPLEMENTS, contentValues, BaseColumns._ID + "=?",
-                new String[]{
-                        rowId + ""
-                });
-        if (rowsAffected > 0) {
-            return true;
-        } else {
-            return false;
+
+
+
+        boolean result=false;
+
+        SQLiteDatabase sd = getWritableDatabase();
+        sd.beginTransaction();
+        try {
+
+            int rowsAffected = db.update(Tables.CHILD_SUPPLEMENTS, contentValues, BaseColumns._ID + "=?",
+                    new String[]{
+                            rowId + ""
+                    });
+            if (rowsAffected > 0) {
+                result =  true;
+            } else {
+                result =  false;
+            }
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result=false;
+            throw e;
+        } finally {
+            sd.endTransaction();
         }
+
+
     }
 
 
