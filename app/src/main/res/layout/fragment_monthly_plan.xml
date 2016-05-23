@@ -333,12 +333,32 @@
                 android:id="@+id/lv_monthly_plan"
                 android:scrollbars="none"/>
 
-            <ProgressBar
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+            <android.support.v7.widget.CardView
+                android:layout_width="wrap_content"
                 android:layout_centerInParent="true"
-                android:indeterminate="true"
-                android:id="@+id/loading_bar"/>
+                android:id="@+id/loading_bar"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_margin="16dp"
+                    android:layout_width="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content">
+                    <ProgressBar
+                        android:layout_gravity="center_horizontal"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:indeterminate="true"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:textStyle="bold|italic"
+                        android:textColor="@color/blue_400"
+                        android:text="Please wait, this might take a while"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+
 
         </RelativeLayout>
 

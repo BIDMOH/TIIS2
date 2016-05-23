@@ -81,7 +81,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
     public ImageButton previous, next;
     public RelativeLayout prevLayout, nextLayout;
 
-    public ProgressBar loadingBar;
+    public View loadingBar;
     public ImageView previousTenItems, nextTenItems;
     public String childBarcode = "";
 
@@ -309,7 +309,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
         monthlyPlanTable = (TableLayout) v.findViewById(R.id.monthly_plan_table);
         agesSpinner = (MaterialSpinner) v.findViewById(R.id.age_spinner);
         vaccineQuantityButton = (Button) v.findViewById(R.id.vac_qnt_btn);
-        loadingBar = (ProgressBar) v.findViewById(R.id.loading_bar);
+        loadingBar = v.findViewById(R.id.loading_bar);
         loadingBar.setVisibility(View.GONE);
 
         previousTenItems = (ImageView) v.findViewById(R.id.previous_10_contents);
@@ -370,6 +370,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
         @Override
         protected void onPreExecute() {
             loadingBar.setVisibility(View.VISIBLE);
+            lvMonthlyPlanList.setVisibility(View.GONE);
         }
 
         @Override
@@ -486,6 +487,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
             var = mVar;
             displayMonthlyPlanList(mVar);
             loadingBar.setVisibility(View.GONE);
+            lvMonthlyPlanList.setVisibility(View.VISIBLE);
             if (blockPrevious) {
                 previousCard.setVisibility(View.INVISIBLE);
             }
