@@ -2130,6 +2130,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             throw e;
         } finally {
             sd.endTransaction();
+            return result;
         }
 
 
@@ -2843,11 +2844,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public boolean removeChildFromChildTable(String childId) {
         SQLiteDatabase sd = getWritableDatabase();
         String[] whereArgs = new String[]{childId};
+        int result = -1;
+        sd.beginTransaction();
+        try {
+            result = sd.delete(Tables.CHILD, GIISContract.ChildColumns.ID
+                    + "= ? ", whereArgs);
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result > 0;
+        }
 
-        int result = sd.delete(Tables.CHILD, GIISContract.ChildColumns.ID
-                + "= ? ", whereArgs);
 
-        return (result > 0);
     }
 
     // ******** End method for regjister *******
