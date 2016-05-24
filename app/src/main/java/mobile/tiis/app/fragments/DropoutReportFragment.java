@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,6 +51,8 @@ public class DropoutReportFragment extends Fragment {
 
     private String hf_id, child_id, birthplacestr, villagestr, hfstr, statusstr, gender_val, birthdate_val;
 
+    private LayoutInflater inflator;
+
     public static DropoutReportFragment newInstance(int position) {
         DropoutReportFragment f = new DropoutReportFragment();
         Bundle b = new Bundle();
@@ -67,7 +70,7 @@ public class DropoutReportFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+        inflator = inflater;
         View rowview;
         rowview = inflater.inflate(R.layout.fragment_dropout_report, null);
         prepareUIElements(rowview);
@@ -230,7 +233,7 @@ public class DropoutReportFragment extends Fragment {
 //            adapter.updateData(mVar);
             if (result!=0){
                 dropoutTable.removeAllViews();
-                FillDroupoutTable(mVar);
+                FillDroupoutTable(mVar, inflator);
                 progressBar.setVisibility(View.GONE);
             }
 
@@ -241,10 +244,11 @@ public class DropoutReportFragment extends Fragment {
 
     }
 
-    private void FillDroupoutTable(ArrayList<ViewRows> items) {
+    private void FillDroupoutTable(ArrayList<ViewRows> items, LayoutInflater inflater) {
         ArrayList<ViewRows> VR = items;
         for (ViewRows row : VR) {
-            View v = LayoutInflater.from(DropoutReportFragment.this.getActivity()).inflate(R.layout.dropout_report_item, null);
+
+            View v = inflater.inflate(R.layout.dropout_report_item, null);
 
             TextView monthValue = (TextView) v.findViewById(R.id.month_value);
             TextView bcgMriNumber = (TextView) v.findViewById(R.id.bcg_mri_number_value);
