@@ -93,7 +93,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
     private Handler _hRedraw;
 
     private ProgressBar progressBar;
-
+    private View scrollLayout;
     protected static final int REFRESH = 0;
 
     public static final int getMonthsDifference(Date date1, Date date2) {
@@ -226,6 +226,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                 }
 
                 progressBar.setVisibility(View.GONE);
+                scrollLayout.setVisibility(View.VISIBLE);
 
                 super.onPostExecute(aVoid);
             }
@@ -272,6 +273,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         saveButton              .setOnClickListener(this);
 
         progressBar             = (ProgressBar) v.findViewById(R.id.progress_bar);
+        scrollLayout             = v.findViewById(R.id.vaccinate_layout);
         progressBar             .setVisibility(View.GONE);
     }
 
