@@ -113,7 +113,7 @@ public class ChildAefiPagerFragment extends Fragment  implements DatePickerDialo
         ViewGroup v;
         v = (ViewGroup) inflater.inflate(R.layout.fragment_child_aefi, null);
         app = (BackboneApplication) ChildAefiPagerFragment.this.getActivity().getApplication();
-        mydb = app.getDatabaseInstance();
+        mydb = new DatabaseHandler(getActivity());
 
         initViews(v);
         setupVariables();
@@ -247,11 +247,7 @@ public class ChildAefiPagerFragment extends Fragment  implements DatePickerDialo
             @Override
             protected Void doInBackground(Void... params) {
                 //delaying the loading of the fragment data inorder to smoothly open other viewpager fragments.
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+
 
                 if (currentChild != null) {
                     childId = currentChild.getId();

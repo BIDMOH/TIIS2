@@ -23,20 +23,16 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
-
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 import fr.ganfra.materialspinner.MaterialSpinner;
 import mobile.tiis.app.ChildDetailsActivity;
 import mobile.tiis.app.CustomViews.NestedListView;
@@ -100,26 +96,27 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
     private LinearLayout llPagesContainer;
     private String selectedAgeDefinition = "";
 
+    private LayoutInflater inflater;
+
     private CardView previousCard, nextCard;
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_monthly_plan, null);
         setUpView(root);
+
+        this.inflater = inflater;
 
         app = (BackboneApplication) this.getActivity().getApplication();
         this_database = app.getDatabaseInstance();
         ageDef = getAllAgeDeffinitions();
 
         var = new ArrayList<>();
-
         llPagesContainer = (LinearLayout)root. findViewById(R.id.ll_pages_container);
-
         listviewFooter = inflater.inflate(R.layout.loading_list_footer, null);
         previous = (ImageButton) listviewFooter.findViewById(R.id.previous_10_contents);
         next = (ImageButton) listviewFooter.findViewById(R.id.next_10_contents);
         prevLayout = (RelativeLayout) listviewFooter.findViewById(R.id.prev_rl);
         nextLayout = (RelativeLayout) listviewFooter.findViewById(R.id.next_rl);
-
 
         editTextUsedToRequestFocus = (EditText) root.findViewById(R.id.edit_text_used_to_request_focus2);
         editTextUsedToRequestFocus.requestFocus();
@@ -281,7 +278,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
                                 }
                             });
 
-                    View dialogLayout = View.inflate(MonthlyPlanFragment.this.getActivity(), R.layout.vaccination_quantity_custom_dialog, null);
+                    View dialogLayout = inflater.inflate(R.layout.vaccination_quantity_custom_dialog, null);
                     ListView lvNameQuantity = (ListView) dialogLayout.findViewById(R.id.lv_result);
                     ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> list = this_database.getQuantityOfVaccinesNeededMonthlyPlan(app.getLOGGED_IN_USER_HF_ID(), currentCategory);
                     Context ctx = getActivity().getApplicationContext();
@@ -513,8 +510,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
         monthlyPlanTable.removeAllViews();
         for (final ViewAppointmentRow a : nVar) {
 
-            View convertView = View.inflate(MonthlyPlanFragment.this.getActivity(), R.layout.monthly_plan_list_item, null);
-
+            View convertView = inflater.inflate(R.layout.monthly_plan_list_item, null);
             TextView name = (TextView) convertView.findViewById(R.id.vacc_txt_child_names);
             name.setTypeface(BackboneActivity.Rosario_Regular);
             TextView age = (TextView) convertView.findViewById(R.id.age);
