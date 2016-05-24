@@ -10,9 +10,11 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -152,6 +154,24 @@ public class VaccinationQueueFragment extends android.support.v4.app.DialogFragm
                 keyBuilder.setView(View.inflate(VaccinationQueueFragment.this.getActivity(), R.layout.vaccination_quantity_custom_dialog, null));
                 AlertDialog dialog = keyBuilder.create();
                 dialog.show();
+            }
+        });
+
+        txtChildBarcode.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                VaccinationQueueFragment.this.getActivity().getWindow().setSoftInputMode(
+                        WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+                );
+//                  example_confirm();//match this behavior to your 'Send' (or Confirm) button
+                if((txtChildBarcode.getText().toString().length() == 0)){
+
+                }else{
+                    String contents = txtChildBarcode.getText().toString();
+                    pbar.setVisibility(View.VISIBLE);
+                    checkinChild(contents);
+                }
+            return true;
             }
         });
 

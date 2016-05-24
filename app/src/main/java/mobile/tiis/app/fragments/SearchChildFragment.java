@@ -1,5 +1,6 @@
 package mobile.tiis.app.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -8,9 +9,13 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -227,16 +232,16 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 currentChildPosition = i;
                 if (serverdata) {
-                    if (!(i == -1)){
+                    if (!(i == -1)) {
                         childidToParse = childrensrv.get(i).getId();
                         ChildSynchronization task = new ChildSynchronization();
                         task.execute(childidToParse);
                     }
-                }else{
+                } else {
                     if (!(i == -1)) {
                         Intent childDetailsActivity = new Intent(SearchChildFragment.this.getActivity(), ChildDetailsActivity.class);
                         childDetailsActivity.putExtra("barcode", adapter.getBarcode(i));
-                        childDetailsActivity.putExtra("myChild", (Child)adapter.getItem(i));
+                        childDetailsActivity.putExtra("myChild", (Child) adapter.getItem(i));
                         childDetailsActivity.putExtra(BackboneApplication.CHILD_ID, adapter.getChildid(i));
                         startActivity(childDetailsActivity);
                     }
@@ -248,6 +253,25 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
 
         metFName.setOnFocusChangeListener(new GenericTextWatcher(metFName));
         metBarcode.setOnFocusChangeListener(new GenericTextWatcher(metBarcode));
+        metBarcode.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_NULL
+                        && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+                    SearchChildFragment.this.getActivity().getWindow().setSoftInputMode(
+                            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+                    );
+//                  example_confirm();//match this behavior to your 'Send' (or Confirm) button
+                    if(metBarcode.getText().toString().equals(currentText) || (metBarcode.getText().toString().length() == 0)){
+
+                    }else{
+                        currentText  =  metBarcode.getText().toString();
+                        new getChildren().execute("0");
+                    }
+                }
+                return true;
+            }
+        });
         metMName.setOnFocusChangeListener(new GenericTextWatcher(metMName));
         metSurname.setOnFocusChangeListener(new GenericTextWatcher(metSurname));
         metMotFname.setOnFocusChangeListener(new GenericTextWatcher(metMotFname));
