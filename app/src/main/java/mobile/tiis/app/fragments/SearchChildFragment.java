@@ -117,7 +117,7 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
 
     BackboneApplication app;
 
-    public View onCreateView(LayoutInflater inflater, final ViewGroup container,Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_search_child, null);
         app = (BackboneApplication) SearchChildFragment.this.getActivity().getApplication();
         mydb = app.getDatabaseInstance();
@@ -176,7 +176,7 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
         searchOutsideFacilityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startSearchingOutsideFacility();
+                startSearchingOutsideFacility(inflater);
             }
         });
 
@@ -416,11 +416,10 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
 
     }
 
-    public void startSearchingOutsideFacility(){
+    public void startSearchingOutsideFacility(LayoutInflater inflator){
 
         //Create dialogue to prompt syncronization
-        LayoutInflater li = LayoutInflater.from(SearchChildFragment.this.getActivity());
-        View promptsView = li.inflate(R.layout.custom_alert_dialogue, null);
+        View promptsView = inflator.inflate(R.layout.custom_alert_dialogue, null);
         alertDialogBuilder = new AlertDialog.Builder(SearchChildFragment.this.getActivity());
         alertDialogBuilder.setView(promptsView);
         TextView message = (TextView) promptsView.findViewById(R.id.dialogMessage);

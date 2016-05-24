@@ -407,6 +407,7 @@ public class VaccinationQueueFragment extends android.support.v4.app.DialogFragm
                             lvVaccQList.setAdapter(null);
                             adapter = new VaccinationQueueListAdapter(VaccinationQueueFragment.this.getActivity(), var);
                             lvVaccQList.setAdapter(adapter);
+                            adapter.updateReceiptsList(var);
                             pbar.setVisibility(View.GONE);
                             txtChildBarcode.setText("");
                         }
