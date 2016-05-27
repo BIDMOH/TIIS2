@@ -274,52 +274,58 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
         vaccineQuantityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    AlertDialog.Builder keyBuilder = new AlertDialog.Builder(MonthlyPlanFragment.this.getActivity());
-                    keyBuilder
-                            .setCancelable(true)
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
 
-                    View dialogLayout = inflater.inflate(R.layout.vaccination_quantity_custom_dialog, null);
-                    lvNameQuantity = (ListView) dialogLayout.findViewById(R.id.lv_result);
-                    progressBarLayout  = (RelativeLayout) dialogLayout.findViewById(R.id.progress_bar_layout);
-                    listAndTitleWrapper = (LinearLayout) dialogLayout.findViewById(R.id.list_and_title_wrapper);
-                    ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> list;
+                if (var.size() > 0 ){
 
-                    new AsyncTask<Void, Void, ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity>>(){
-                        @Override
-                        protected void onPreExecute() {
-                            super.onPreExecute();
-                            listAndTitleWrapper.setVisibility(View.GONE);
-                            progressBarLayout.setVisibility(View.VISIBLE);
-                        }
+                    try {
+                        AlertDialog.Builder keyBuilder = new AlertDialog.Builder(MonthlyPlanFragment.this.getActivity());
+                        keyBuilder
+                                .setCancelable(true)
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
 
-                        @Override
-                        protected ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> doInBackground(Void... voids) {
-                            ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> list = this_database.getQuantityOfVaccinesNeededMonthlyPlan(app.getLOGGED_IN_USER_HF_ID(), currentCategory, fromDateString, toDateString);
-                            return list;
-                        }
+                        final View dialogLayout = inflater.inflate(R.layout.vaccination_quantity_custom_dialog, null);
+                        lvNameQuantity = (ListView) dialogLayout.findViewById(R.id.lv_result);
+                        progressBarLayout  = (RelativeLayout) dialogLayout.findViewById(R.id.progress_bar_layout);
+                        listAndTitleWrapper = (LinearLayout) dialogLayout.findViewById(R.id.list_and_title_wrapper);
+                        ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> list;
 
-                        @Override
-                        protected void onPostExecute(ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> mList) {
-                            Context ctx = getActivity().getApplicationContext();
-                            AdapterVaccineNameQuantity adapter = new AdapterVaccineNameQuantity(ctx, R.layout.item_vaccine_name_quantity, mList);
-                            lvNameQuantity.setAdapter(adapter);
-                            progressBarLayout.setVisibility(View.GONE);
-                            listAndTitleWrapper.setVisibility(View.VISIBLE);
-                        }
-                    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        new AsyncTask<Void, Void, ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity>>(){
+                            @Override
+                            protected void onPreExecute() {
+                                super.onPreExecute();
 
-                    keyBuilder.setView(dialogLayout);
-                    AlertDialog dialog = keyBuilder.create();
-                    dialog.show();
+                                listAndTitleWrapper.setVisibility(View.GONE);
+                                progressBarLayout.setVisibility(View.VISIBLE);
+                            }
 
-                } catch (Exception e) {
-                    e.printStackTrace();
+                            @Override
+                            protected ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> doInBackground(Void... voids) {
+                                ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> list = this_database.getQuantityOfVaccinesNeededMonthlyPlan(app.getLOGGED_IN_USER_HF_ID(), currentCategory, fromDateString, toDateString);
+                                return list;
+                            }
+
+                            @Override
+                            protected void onPostExecute(ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> mList) {
+                                Context ctx = getActivity().getApplicationContext();
+                                AdapterVaccineNameQuantity adapter = new AdapterVaccineNameQuantity(ctx, R.layout.item_vaccine_name_quantity, mList);
+                                lvNameQuantity.setAdapter(adapter);
+                                progressBarLayout.setVisibility(View.GONE);
+                                listAndTitleWrapper.setVisibility(View.VISIBLE);
+                            }
+                        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+                        keyBuilder.setView(dialogLayout);
+                        AlertDialog dialog = keyBuilder.create();
+                        dialog.show();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                 }
             }
         });
