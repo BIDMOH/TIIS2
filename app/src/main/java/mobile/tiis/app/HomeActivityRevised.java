@@ -188,7 +188,7 @@ public class HomeActivityRevised extends BackboneActivity {
         sync_needed = true;
         boolean secondSyncNeeded = false, firstLoginOfDaySyncNeeded = false;
         sync_needed = sync_preferences.getBoolean("synchronization_needed", true);
-        secondSyncNeeded = false;
+        secondSyncNeeded = true;
         firstLoginOfDaySyncNeeded = sync_preferences.getBoolean("firstLoginOfDaySyncNeeded", false);
         if (app.getLOGGED_IN_FIRSTNAME() == null && app.getLOGGED_IN_LASTNAME() == null && app.getUsername() == null) {
             Log.d("CHECHINGLOGOUT", "No user creds found in the application upon starting the activiry");

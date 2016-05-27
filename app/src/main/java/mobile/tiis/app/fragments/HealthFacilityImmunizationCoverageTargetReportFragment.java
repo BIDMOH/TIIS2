@@ -58,7 +58,7 @@ public class HealthFacilityImmunizationCoverageTargetReportFragment extends Frag
     private LayoutInflater inflater;
     private LinearLayout chart_list;
     private EditText populationValue;
-    private int populationV;
+    private double populationV;
 
     public static HealthFacilityImmunizationCoverageTargetReportFragment newInstance(int position) {
         HealthFacilityImmunizationCoverageTargetReportFragment f = new HealthFacilityImmunizationCoverageTargetReportFragment();
@@ -137,7 +137,7 @@ public class HealthFacilityImmunizationCoverageTargetReportFragment extends Frag
 
                         if (!fromDateString.equals("") && !populationValue.getText().toString().equals("")) {
                             try {
-                                populationV = Integer.parseInt(populationValue.getText().toString());
+                                populationV = Double.parseDouble(populationValue.getText().toString());
                                 chart_view.setVisibility(View.VISIBLE);
                                 new FilterList().execute(app.getLOGGED_IN_USER_HF_ID(), fromDateString, toDateString, cummulativeDateString);
                             }catch (Exception e){
@@ -192,7 +192,7 @@ public class HealthFacilityImmunizationCoverageTargetReportFragment extends Frag
 
                         if(!toDateString.equals("") && !populationValue.getText().toString().equals("")){
                             chart_view.setVisibility(View.VISIBLE);
-                            populationV = Integer.parseInt(populationValue.getText().toString());
+                            populationV = Double.parseDouble(populationValue.getText().toString());
                             new FilterList().execute(app.getLOGGED_IN_USER_HF_ID(),fromDateString,toDateString,cummulativeDateString);
                         }else if(toDateString.equals("")){
                             final Snackbar snackbar=Snackbar.make(rowview,"Please select an end date to view the report",Snackbar.LENGTH_LONG);
@@ -444,7 +444,7 @@ public class HealthFacilityImmunizationCoverageTargetReportFragment extends Frag
 
                     ((TextView)doseData.findViewById(R.id.total)).setText(totalData);
 
-                    int coveragePercentage=0;
+                    double coveragePercentage=0;
                     try {
                         coveragePercentage= ((totalCatchment+outsideTotal)*100)/populationV;
                     }catch (Exception e){
@@ -460,7 +460,7 @@ public class HealthFacilityImmunizationCoverageTargetReportFragment extends Frag
 
 
 
-                    int cummCoveragePercentage=0;
+                    double cummCoveragePercentage=0;
                     try {
                         int z = viewRow.getCummulativeTotal();
                         cummCoveragePercentage= (z*100)/(populationV*12);
