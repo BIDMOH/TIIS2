@@ -1478,7 +1478,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     + " monthly_plan.SCHEDULE = '"+ _schedule +"' AND "
                     + " (substr(SCHEDULED_DATE,7,10)) > ('" +from_date+ "') "
                     + " AND (substr(SCHEDULED_DATE,7,10)) <= ('" +to_date+ "') "
-                    + " datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('now','+30 days')"
                     + " GROUP BY SCHEDULED_VACCINATION_ID, VACCINE  ORDER BY SCHEDULED_VACCINATION_ID";
         }
 

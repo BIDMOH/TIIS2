@@ -101,6 +101,11 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
 
     private CardView previousCard, nextCard;
 
+    //Dose Quantity VAriables
+    private ListView lvNameQuantity;
+    private RelativeLayout progressBarLayout;
+    private LinearLayout listAndTitleWrapper;
+
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_monthly_plan, null);
         setUpView(root);
@@ -280,14 +285,16 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
                             });
 
                     View dialogLayout = inflater.inflate(R.layout.vaccination_quantity_custom_dialog, null);
-                    final ListView lvNameQuantity = (ListView) dialogLayout.findViewById(R.id.lv_result);
-                    final RelativeLayout progressBarLayout  = (RelativeLayout) dialogLayout.findViewById(R.id.progress_bar_layout);
+                    lvNameQuantity = (ListView) dialogLayout.findViewById(R.id.lv_result);
+                    progressBarLayout  = (RelativeLayout) dialogLayout.findViewById(R.id.progress_bar_layout);
+                    listAndTitleWrapper = (LinearLayout) dialogLayout.findViewById(R.id.list_and_title_wrapper);
                     ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> list;
 
                     new AsyncTask<Void, Void, ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity>>(){
                         @Override
                         protected void onPreExecute() {
                             super.onPreExecute();
+                            listAndTitleWrapper.setVisibility(View.GONE);
                             progressBarLayout.setVisibility(View.VISIBLE);
                         }
 
@@ -303,8 +310,9 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
                             AdapterVaccineNameQuantity adapter = new AdapterVaccineNameQuantity(ctx, R.layout.item_vaccine_name_quantity, mList);
                             lvNameQuantity.setAdapter(adapter);
                             progressBarLayout.setVisibility(View.GONE);
+                            listAndTitleWrapper.setVisibility(View.VISIBLE);
                         }
-                    };
+                    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
                     keyBuilder.setView(dialogLayout);
                     AlertDialog dialog = keyBuilder.create();
