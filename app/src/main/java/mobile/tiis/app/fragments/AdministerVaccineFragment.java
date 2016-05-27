@@ -686,7 +686,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
                                                         ad2.dismiss();
                                                         Log.d("day6", "poping a fragment");
-                                                        FragmentManager manager = getActivity().getSupportFragmentManager();
+                                                        FragmentManager manager = getFragmentManager();
                                                         manager.popBackStack("AdministerVaccineFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
                                                     }
@@ -802,7 +802,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                                     public void onClick(DialogInterface dialog, int which) {
                                         ad2.dismiss();
                                         Log.d("day6", "poping a fragment");
-                                        FragmentManager manager = getActivity().getSupportFragmentManager();
+                                        FragmentManager manager = getFragmentManager();
                                         manager.popBackStack("AdministerVaccineFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE);
                                     }
                                 });
@@ -1067,7 +1067,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                     .setPositiveButton("YES",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    FragmentManager fm = AdministerVaccineFragment.this.getActivity().getSupportFragmentManager();
+                                    FragmentManager fm = getFragmentManager();
                                     int backStackEntryCount = fm.getBackStackEntryCount();
                                     if (backStackEntryCount > 0){
                                         fm.popBackStack();

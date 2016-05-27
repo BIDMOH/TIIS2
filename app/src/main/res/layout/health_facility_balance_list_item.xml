@@ -54,6 +54,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/hf_balance_adjustment_value"
             android:layout_weight="0.20"
+            android:inputType="number"
             android:gravity="center_horizontal"/>
 
     </LinearLayout>
