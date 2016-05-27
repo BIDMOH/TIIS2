@@ -62,12 +62,37 @@
                 android:text="Doses"/>
 
         </LinearLayout>
+
+
         <ListView
             android:layout_width="match_parent"
             android:id="@+id/lv_result"
             android:layout_height="wrap_content"/>
 
-
     </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:id="@+id/progress_bar_layout">
+
+        <ProgressBar
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/progres_bar"
+            android:layout_centerInParent="true"
+            android:indeterminate="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/message"
+            android:layout_marginTop="16dp"
+            android:layout_below="@id/progres_bar"
+            android:text="Loading.."
+            android:layout_centerHorizontal="true"/>
+
+    </RelativeLayout>
 
 </RelativeLayout>

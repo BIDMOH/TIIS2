@@ -23,6 +23,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -279,17 +280,36 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
                             });
 
                     View dialogLayout = inflater.inflate(R.layout.vaccination_quantity_custom_dialog, null);
-                    ListView lvNameQuantity = (ListView) dialogLayout.findViewById(R.id.lv_result);
-                    ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> list = this_database.getQuantityOfVaccinesNeededMonthlyPlan(app.getLOGGED_IN_USER_HF_ID(), currentCategory);
-                    Context ctx = getActivity().getApplicationContext();
-                    AdapterVaccineNameQuantity adapter = new AdapterVaccineNameQuantity(ctx, R.layout.item_vaccine_name_quantity, list);
-                    lvNameQuantity.setAdapter(adapter);
+                    final ListView lvNameQuantity = (ListView) dialogLayout.findViewById(R.id.lv_result);
+                    final RelativeLayout progressBarLayout  = (RelativeLayout) dialogLayout.findViewById(R.id.progress_bar_layout);
+                    ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> list;
+
+                    new AsyncTask<Void, Void, ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity>>(){
+                        @Override
+                        protected void onPreExecute() {
+                            super.onPreExecute();
+                            progressBarLayout.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        protected ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> doInBackground(Void... voids) {
+                            ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> list = this_database.getQuantityOfVaccinesNeededMonthlyPlan(app.getLOGGED_IN_USER_HF_ID(), currentCategory, fromDateString, toDateString);
+                            return list;
+                        }
+
+                        @Override
+                        protected void onPostExecute(ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> mList) {
+                            Context ctx = getActivity().getApplicationContext();
+                            AdapterVaccineNameQuantity adapter = new AdapterVaccineNameQuantity(ctx, R.layout.item_vaccine_name_quantity, mList);
+                            lvNameQuantity.setAdapter(adapter);
+                            progressBarLayout.setVisibility(View.GONE);
+                        }
+                    };
 
                     keyBuilder.setView(dialogLayout);
-
-
                     AlertDialog dialog = keyBuilder.create();
                     dialog.show();
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

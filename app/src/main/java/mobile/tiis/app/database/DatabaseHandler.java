@@ -1442,23 +1442,42 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      *
      * @return a list or null if no data
      */
-    public ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> getQuantityOfVaccinesNeededMonthlyPlan(String hfid, String schedule) {
+    public ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> getQuantityOfVaccinesNeededMonthlyPlan(String hfid, String schedule, String fromDate, String toDate) {
         ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> list = new ArrayList<>();
         String _schedule = "";
         _schedule   = schedule;
         String selectQuery = "";
 
+        long t = Calendar.getInstance().getTimeInMillis()/1000;
+        long t1 = (t + (30 * 24 * 60 * 60));
+        long t2 = (t - (30 * 24 * 60 * 60));
+        String to_date =  t1+ "";
+        String from_date = t2+ "";
+
+        try {
+            if (!fromDate.equals("") && !toDate.equals("")) {
+                from_date = fromDate;
+                Log.d("day13", "from picker : "+from_date);
+                to_date = toDate;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         if (_schedule.isEmpty() || _schedule.equals("") || _schedule == null){
             selectQuery = "Select SCHEDULED_VACCINATION.NAME as VACCINE, COUNT(SCHEDULED_VACCINATION_ID) as QUANTITY"
                     + " FROM monthly_plan inner join SCHEDULED_VACCINATION on monthly_plan.SCHEDULED_VACCINATION_ID = "
                     + " SCHEDULED_VACCINATION.ID WHERE HEALTH_FACILITY_ID = " + hfid + " AND "
-                    + " datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('now','+30 days')"
+                    + " (substr(SCHEDULED_DATE,7,10)) > ('" +from_date+ "') "
+                    + " AND (substr(SCHEDULED_DATE,7,10)) <= ('" +to_date+ "') "
                     + " GROUP BY SCHEDULED_VACCINATION_ID, VACCINE  ORDER BY SCHEDULED_VACCINATION_ID";
         }else{
             selectQuery = "Select SCHEDULED_VACCINATION.NAME as VACCINE, COUNT(SCHEDULED_VACCINATION_ID) as QUANTITY"
                     + " FROM monthly_plan inner join SCHEDULED_VACCINATION on monthly_plan.SCHEDULED_VACCINATION_ID = "
                     + " SCHEDULED_VACCINATION.ID WHERE HEALTH_FACILITY_ID = " + hfid + " AND "
                     + " monthly_plan.SCHEDULE = '"+ _schedule +"' AND "
+                    + " (substr(SCHEDULED_DATE,7,10)) > ('" +from_date+ "') "
+                    + " AND (substr(SCHEDULED_DATE,7,10)) <= ('" +to_date+ "') "
                     + " datetime(substr(SCHEDULED_DATE,7,10), 'unixepoch') <= datetime('now','+30 days')"
                     + " GROUP BY SCHEDULED_VACCINATION_ID, VACCINE  ORDER BY SCHEDULED_VACCINATION_ID";
         }
