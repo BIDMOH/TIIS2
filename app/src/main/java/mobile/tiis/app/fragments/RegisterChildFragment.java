@@ -640,7 +640,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                 BackboneApplication backbone = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
 
                 final boolean found = backbone.checkChildInServer(threadLastname, threadBDateString, threadGender);
-                RegisterChildFragment.this.getActivity().runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
 

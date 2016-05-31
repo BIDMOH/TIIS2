@@ -66,7 +66,7 @@ public class RoutineAlarmReceiver extends WakefulBroadcastReceiver {
         Intent childChanges = new Intent(context, RoutineAlarmReceiver.class);
         childChanges.putExtra("childChanges", true);
         checkForChangesInChildPI = PendingIntent.getBroadcast(context, 222, childChanges, PendingIntent.FLAG_UPDATE_CURRENT); //
-        alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + (60000*5), 60000*5, checkForChangesInChildPI);
+        alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + 5000, 5000, checkForChangesInChildPI);
     }
 
     /**

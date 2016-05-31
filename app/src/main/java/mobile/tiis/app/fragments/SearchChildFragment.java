@@ -232,13 +232,13 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 currentChildPosition = i;
                 if (serverdata) {
-                    if (!(i == -1)) {
+                    if (i!=-1) {
                         childidToParse = childrensrv.get(i).getId();
                         ChildSynchronization task = new ChildSynchronization();
                         task.execute(childidToParse);
                     }
                 } else {
-                    if (!(i == -1)) {
+                    if (i!=-1) {
                         Intent childDetailsActivity = new Intent(SearchChildFragment.this.getActivity(), ChildDetailsActivity.class);
                         childDetailsActivity.putExtra("barcode", adapter.getBarcode(i));
                         childDetailsActivity.putExtra("myChild", (Child) adapter.getItem(i));
@@ -812,14 +812,16 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
 //            myHandler.sendEmptyMessage(result);
             //parseChildByBarcode = result;
 
-            Intent childDetailsActivity = new Intent(SearchChildFragment.this.getActivity(), ChildDetailsActivity.class);
-            childDetailsActivity.putExtra("barcode", adapter.getBarcode(currentChildPosition));
-            childDetailsActivity.putExtra(BackboneApplication.CHILD_ID, adapter.getChildid(currentChildPosition));
-            Log.e("coze", "child id is 1  : " + adapter.getChildId(currentChildPosition));
-            Log.e("coze", "OR child id is 2  : " + adapter.getChildid(currentChildPosition));
-            Log.e("coze", "BARCODE IS  : " + adapter.getBarcode(currentChildPosition));
-            startActivity(childDetailsActivity);
-            currentChildPosition = -1;
+            if(currentChildPosition!=-1) {
+                Intent childDetailsActivity = new Intent(SearchChildFragment.this.getActivity(), ChildDetailsActivity.class);
+                childDetailsActivity.putExtra("barcode", adapter.getBarcode(currentChildPosition));
+                childDetailsActivity.putExtra(BackboneApplication.CHILD_ID, adapter.getChildid(currentChildPosition));
+                Log.e("coze", "child id is 1  : " + adapter.getChildId(currentChildPosition));
+                Log.e("coze", "OR child id is 2  : " + adapter.getChildid(currentChildPosition));
+                Log.e("coze", "BARCODE IS  : " + adapter.getBarcode(currentChildPosition));
+                startActivity(childDetailsActivity);
+                currentChildPosition = -1;
+            }
 
         }
     }

@@ -261,13 +261,13 @@ public class DropoutReportFragment extends Fragment {
             bcgMriNumber.setText(row.getBcgNumber()+ "");
             bcgMriPercent.setText(row.getBcgPercent()+ "");
             if (row.getBcgPercent() > 10 || row.getBcgPercent() < 0){
-                bcgMriPercent.setBackgroundColor(DropoutReportFragment.this.getActivity().getResources().getColor(R.color.red_400));
+                bcgMriPercent.setBackgroundColor(getResources().getColor(R.color.red_400));
             }
 
             pentaNumber.setText(row.getPentaNumber() + "");
             pentaPercent.setText(row.getPentaPercent()+"");
             if (row.getPentaPercent() > 10 || row.getPentaPercent() < 0){
-                pentaPercent.setBackgroundColor(DropoutReportFragment.this.getActivity().getResources().getColor(R.color.red_400));
+                pentaPercent.setBackgroundColor(getResources().getColor(R.color.red_400));
             }
 
             dropoutTable.addView(v);
