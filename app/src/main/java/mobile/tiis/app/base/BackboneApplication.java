@@ -2429,47 +2429,51 @@ public class BackboneApplication extends Application {
             webServiceUrl = new StringBuilder(postmanModel.getUrl());
         }
 
+        getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
+        childId = -1;
         Log.e("service weight", webServiceUrl + "");
-        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
-        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                throwable.printStackTrace();
-                Log.e("coze", "adding a post to send data when the connection is available");
-                getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
-                childId = -1;
-            }
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String result) {
-                try {
-                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
-                    JSONObject jobj = new JSONObject(result);
-                    childId = jobj.getInt("id");
-                    if (childId != -1) {
-
-                        Log.e("coze","data stored successfully");
-                        ContentValues contentValues = new ContentValues();
-                        contentValues.put(SQLHandler.ChildColumns.ID, childId);
-                        DatabaseHandler mydb = getDatabaseInstance();
-
-                        mydb.updateChildTableWithChildID(contentValues, threadTempId);
-                        mydb.updateVaccinationAppointementChildId(threadTempId, childId + "");
-                        mydb.updateVaccinationEventChildId(threadTempId, childId + "");
-
-                    } else {
-                        Log.e("coze","data stored failed");
-                        Log.e("coze","adding a post to send data when the connection is available");
-                        getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
-                    }
-
-
-                } catch (Exception e) {
-                    getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
-                    childId = -1;
-                }
-            }
-        });
+        //TODO this should be fully tested if it has no impact on the application.
+//        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+//        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                throwable.printStackTrace();
+//                Log.e("coze", "adding a post to send data when the connection is available");
+//                getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
+//                childId = -1;
+//            }
+//
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, String result) {
+//                try {
+//                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
+//                    JSONObject jobj = new JSONObject(result);
+//                    childId = jobj.getInt("id");
+//                    if (childId != -1) {
+//
+//                        Log.e("coze","data stored successfully");
+//                        ContentValues contentValues = new ContentValues();
+//                        contentValues.put(SQLHandler.ChildColumns.ID, childId);
+//                        DatabaseHandler mydb = getDatabaseInstance();
+//
+//                        mydb.updateChildTableWithChildID(contentValues, threadTempId);
+//                        mydb.updateVaccinationAppointementChildId(threadTempId, childId + "");
+//                        mydb.updateVaccinationEventChildId(threadTempId, childId + "");
+//
+//                    } else {
+//                        Log.e("coze","data stored failed");
+//                        Log.e("coze","adding a post to send data when the connection is available");
+//                        getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
+//                    }
+//
+//
+//                } catch (Exception e) {
+//                    getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
+//                    childId = -1;
+//                }
+//            }
+//        });
         return childId;
     }
 
