@@ -16,7 +16,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 21
         versionCode 127
-        versionName "2.2.7"
+        versionName "2.2.8"
 
     }
     buildTypes {
