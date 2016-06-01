@@ -46,6 +46,7 @@ import mobile.tiis.app.fragments.VaccinationQueueFragment;
 import mobile.tiis.app.helpers.Utils;
 import mobile.tiis.app.postman.CheckForChangesSynchronisationService;
 import mobile.tiis.app.postman.RoutineAlarmReceiver;
+import mobile.tiis.app.postman.SynchronisationService;
 
 /**
  *  Created by issymac on 10/12/15.
@@ -599,7 +600,7 @@ public class HomeActivityRevised extends BackboneActivity {
                     application.getGetChildByIdList();
                 }
 
-                Log.e("getting places","getting places that are not found in the table but are in the childrens records");
+                Log.e("getting places", "getting places that are not found in the table but are in the childrens records");
                 String placesFoundInChildOnlyAndNotInPlace = application.getDatabaseInstance().getDomicilesFoundInChildAndNotInPlace();
                 if(placesFoundInChildOnlyAndNotInPlace != null){
                     application.parsePlacesThatAreInChildAndNotInPlaces(placesFoundInChildOnlyAndNotInPlace);
@@ -611,6 +612,11 @@ public class HomeActivityRevised extends BackboneActivity {
                 }
 
                 application.parseStock();
+
+                //Starting the service to upload all postman data
+                Intent i = new Intent(HomeActivityRevised.this, SynchronisationService.class);
+                startService(i);
+
             }
 
             return true;
