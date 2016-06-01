@@ -593,7 +593,7 @@ public class HomeActivityRevised extends BackboneActivity {
             synchronized (application){
                 application.continuousModificationParser();
                 application.getVaccinationQueueByDateAndUser();
-//              application.intervalGetChildrenByHealthFacilitySinceLastLogin();
+                application.intervalGetChildrenByHealthFacilitySinceLastLogin();
 
                 if(application.getLOGGED_IN_USER_ID()!=null && !application.getLOGGED_IN_USER_ID().equals("")){
                     application.getGetChildByIdList();
