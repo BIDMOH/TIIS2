@@ -437,10 +437,10 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
                             " , SCHEDULE, SCHEDULED_DATE " +
                             " FROM MONTHLY_PLAN join dose on DOSE_ID = dose.ID" +
                             " WHERE HEALTH_FACILITY_ID = '" + app.getLOGGED_IN_USER_HF_ID() + "' AND SCHEDULE like '%" + ageName + "%' " +
-                            " AND (substr(SCHEDULED_DATE,7,10)) > ('" +from_date+ "') " +
+                            " AND (substr(SCHEDULED_DATE,7,10)) >= ('" +from_date+ "') " +
                             " AND (substr(SCHEDULED_DATE,7,10)) <= ('" +to_date+ "') " +
                             " AND ( (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) IS NULL " +
-                            " OR (datetime(substr(SCHEDULED_DATE,7,10),'unixepoch') > datetime('now','-' || (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) || ' days' )) )" +
+                            " OR (datetime(substr(SCHEDULED_DATE,7,10),'unixepoch') >= datetime('now','-' || (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) || ' days' )) )" +
                             " GROUP BY APPOINTMENT_ID, SCHEDULED_DATE, DOMICILE, NAME, SCHEDULE, CHILD_ID, SCHEDULE_ID " +
                             " ORDER BY SCHEDULED_DATE "+
                             " LIMIT " + startRow + ", 10; ";
