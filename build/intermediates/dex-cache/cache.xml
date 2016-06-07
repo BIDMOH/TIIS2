@@ -1,2 +1,201 @@
 <?xml version="1.0" encoding="utf-8"?>
-<items version="2" />
+<items version="2" >
+
+    <item
+        jar="/Users/user/Workspace/TIIS2/app/libs/httpclient-4.2.3.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="6a91a27c5c07e9da44eeddbc4206e349735b26f4">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/httpclient-4.2.3_448632baa5dbf56466c3a5c828dec89d4a592cde.jar" />
+    </item>
+    <item
+        jar="/Users/user/Workspace/TIIS2/app/build/intermediates/exploded-aar/com.astuetz/pagerslidingtabstrip/1.0.1/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="7912610ed96381c25c36d986eba422731b9641b6">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/com.astuetz-pagerslidingtabstrip-1.0.1_03f78953edd4a2edfc8dc9bc665304bb9ae6f285.jar" />
+    </item>
+    <item
+        jar="/Users/user/Workspace/TIIS2/app/libs/jackson-databind-2.7.1-1.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="381bac8a9251eea3b6a1e12c77d54dd946ad449d">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/jackson-databind-2.7.1-1_48036fb1609570e697e74b095bf57cc9fc0f5734.jar" />
+    </item>
+    <item
+        jar="/Users/user/Workspace/TIIS2/app/build/intermediates/exploded-aar/com.github.ganfra/material-spinner/1.1.1/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="d0df3bf618b078d102a4234ceff33c44026e64b9">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/com.github.ganfra-material-spinner-1.1.1_816d6a342fa5062127a1e9958cf32a0ce836d174.jar" />
+    </item>
+    <item
+        jar="/Users/user/Workspace/TIIS2/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="6cbc7773921fcfedbe55657578f0cbfe614778dc">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/com.android.support-support-v4-23.1.1_2c55a0adabc1789af30f978e73699acd95371228.jar" />
+    </item>
+    <item
+        jar="/Users/user/Workspace/TIIS2/app/build/intermediates/exploded-aar/com.hannesdorfmann.smoothprogressbar/library/1.0.0/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="b0c4e77822421eb57e484df72ebb208b62df93e8">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/com.hannesdorfmann.smoothprogressbar-library-1.0.0_c9bacba8b05f8c9872311569fcc58d19ec45d611.jar" />
+    </item>
+    <item
+        jar="/Users/user/.gradle/caches/modules-2/files-2.1/com.nineoldandroids/library/2.4.0/e9b63380f3a242dbdbf103a2355ad7e43bad17cb/library-2.4.0.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="e9b63380f3a242dbdbf103a2355ad7e43bad17cb">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/library-2.4.0_9625871c7679f09f1ff3a3f89cc2ecc2f7cf7f0e.jar" />
+    </item>
+    <item
+        jar="/Users/user/Workspace/TIIS2/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.1.1/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="09c5e804bc67fc0580360043dff067df574a60d4">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/com.android.support-recyclerview-v7-23.1.1_0b51eec123c1e4170b38abd1f919d8287d15f255.jar" />
+    </item>
+    <item
+        jar="/Users/user/Workspace/TIIS2/app/build/intermediates/exploded-aar/com.android.support/design/23.1.1/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="379471b2bd17d9737c050345c08e8c7d16589784">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/com.android.support-design-23.1.1_da5bc49c58dfc7017e4a8c62233039119688cd2c.jar" />
+    </item>
+    <item
+        jar="/Users/user/Workspace/TIIS2/app/build/intermediates/exploded-aar/com.android.support/palette-v7/23.1.1/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="a978650837318cf056bf3383ff02fe7a3b891f20">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/com.android.support-palette-v7-23.1.1_43f68dd79e91b627ad6ebaf531b29777e1844091.jar" />
+    </item>
+    <item
+        jar="/Users/user/Workspace/TIIS2/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="760024edcb06b4d75f4c34dc2331fbda0599791e">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/instant-run_a2919abc32ccbc33504ea17a3ff253d7465789aa.jar" />
+    </item>
+    <item
+        jar="/Users/user/Workspace/TIIS2/app/libs/org.apache.commons.io.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="b90b6ac57cf27a2858eaa490d02ba7945d18ca7b">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/org.apache.commons.io_b2be11d142ac3442dc758f8b3ddcdaf84efbcdff.jar" />
+    </item>
+    <item
+        jar="/Users/user/.gradle/caches/modules-2/files-2.1/com.github.PhilJay/MPAndroidChart/v2.2.3/f474798fde03291398b1a016118b9809a79550b7/MPAndroidChart-v2.2.3.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="f474798fde03291398b1a016118b9809a79550b7">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/MPAndroidChart-v2.2.3_70a6d26c29e14b3bcc31b72ca01cb9c446b0ac49.jar" />
+    </item>
+    <item
+        jar="/Users/user/Workspace/TIIS2/app/libs/apache-httpcomponents-httpcore.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="33fc26c02f8043ab0ede19eadc8c9885386b255c">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/apache-httpcomponents-httpcore_eeab4e844dbf8253c803f5ba81d6b9249e8a86e9.jar" />
+    </item>
+    <item
+        jar="/Users/user/Workspace/TIIS2/app/libs/jackson-core-2.7.1.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="4127b62db028f981e81caa248953c0899d720f98">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/jackson-core-2.7.1_4e42667f48335a894593593e19434d9efc00c739.jar" />
+    </item>
+    <item
+        jar="/Users/user/Workspace/TIIS2/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.1/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="5c5699834e9722f1c288fea2de82725d078ba127">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/com.android.support-appcompat-v7-23.1.1_3caa78b2bfbd961bfa32d174b03cbfd833be4fca.jar" />
+    </item>
+    <item
+        jar="/Users/user/Workspace/TIIS2/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="a23792c01e115658a06f200f9f331c23fe8ff877">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/instant-run-bootstrap_da3858bbfb86afbd7f95e14cee9544b8001074dd.jar" />
+    </item>
+    <item
+        jar="/Users/user/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/23.1.1/support-annotations-23.1.1.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="8d680ba5a623724d1fb0e81c36a790f023a6cede">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/support-annotations-23.1.1_a1f869bbeb733ec77f07f56b8333e811d21d804b.jar" />
+    </item>
+    <item
+        jar="/Users/user/Workspace/TIIS2/app/build/intermediates/exploded-aar/com.wdullaer/materialdatetimepicker/2.3.0/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="a95fd025efad7b05be3d29737bec37652e0fdb9e">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/com.wdullaer-materialdatetimepicker-2.3.0_b609b9cf2d605b7a176b61273a4ba3c599f7d051.jar" />
+    </item>
+    <item
+        jar="/Users/user/.gradle/caches/modules-2/files-2.1/io.realm/realm-android/0.87.5/ab4e1fead1380252dad0e95658e53ea0c113e89c/realm-android-0.87.5.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="ab4e1fead1380252dad0e95658e53ea0c113e89c">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/realm-android-0.87.5_4f6c50de00e95914b53daf0c2908b94be0f67cd0.jar" />
+    </item>
+    <item
+        jar="/Users/user/.gradle/caches/modules-2/files-2.1/com.loopj.android/android-async-http/1.4.9/386a4339ffe52d5d63e80f9bed8d2b1d1a418249/android-async-http-1.4.9.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="386a4339ffe52d5d63e80f9bed8d2b1d1a418249">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/android-async-http-1.4.9_a71cf96cc9112258bcb9907cd267d0056002323f.jar" />
+    </item>
+    <item
+        jar="/Users/user/Workspace/TIIS2/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars/libs/internal_impl-23.1.1.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="a4de9c81ae239414e1ed0f86441b02abaf29bca9">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/internal_impl-23.1.1_a6994a79140b73ec8c0b3c8683c741f7761c5066.jar" />
+    </item>
+    <item
+        jar="/Users/user/Workspace/TIIS2/app/build/intermediates/exploded-aar/com.rengwuxian.materialedittext/library/2.1.4/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="288913b440a3c61c30aa171095453a605432277a">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/com.rengwuxian.materialedittext-library-2.1.4_cf5be3d9ba1f64032363e12f671556e3d1619b64.jar" />
+    </item>
+    <item
+        jar="/Users/user/Workspace/TIIS2/app/build/intermediates/exploded-aar/com.android.support/cardview-v7/23.1.1/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="5e412e954a24c5310a459c09870e4e2081aceb03">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/com.android.support-cardview-v7-23.1.1_dd029d34c7e4fac23d5836a9697080935d158cb6.jar" />
+    </item>
+    <item
+        jar="/Users/user/Workspace/TIIS2/app/libs/jackson-annotations-2.7.0.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="19f42c154ffc689f40a77613bc32caeb17d744e3">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/jackson-annotations-2.7.0_32aa2eae2e86ab20e88195c7b9e199bdec0e2fba.jar" />
+    </item>
+    <item
+        jar="/Users/user/.gradle/caches/modules-2/files-2.1/com.google.zxing/core/3.2.0/e019d15a13a9786f881141d2df6654b8510bce8b/core-3.2.0.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="e019d15a13a9786f881141d2df6654b8510bce8b">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/core-3.2.0_3b86c05a6922d237b546b9401a9cae84500f6f51.jar" />
+    </item>
+    <item
+        jar="/Users/user/.gradle/caches/modules-2/files-2.1/cz.msebera.android/httpclient/4.3.6/526a9f794eab830eae4f23a62c572878b3f491ab/httpclient-4.3.6.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="526a9f794eab830eae4f23a62c572878b3f491ab">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/httpclient-4.3.6_fa2dd99a79cd34a3abfa665bb891aafc35e1ecdb.jar" />
+    </item>
+    <item
+        jar="/Users/user/Workspace/TIIS2/app/build/intermediates/exploded-aar/com.journeyapps/zxing-android-embedded/3.0.2/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.1"
+        sha1="744a4b394a9a7db8a4c4680836d8544802a9cd64">
+        <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/com.journeyapps-zxing-android-embedded-3.0.2_01f3737dfa0c9635848e536a22cd8ce369e930d6.jar" />
+    </item>
+
+</items>

@@ -89,7 +89,17 @@ public class SynchronisationService extends IntentService {
                             codeNeg99 = jobj.getInt("id");
                         }catch(Exception e){}
 
-                        if(codeNeg99 != -99 && codeNeg99 != -1)db.deletePostFromPostman(p.getPostId());
+                        if(codeNeg99 != -99 && codeNeg99 != -1) {
+                            boolean res = false;
+                            do {
+                                try {
+                                    Thread.sleep(10000);
+                                    res = db.deletePostFromPostman(p.getPostId());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }while(!res);
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                         continue;

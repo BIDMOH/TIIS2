@@ -1481,7 +1481,7 @@ public class BackboneApplication extends Application {
     }
 
     private static SyncHttpClient client = new SyncHttpClient();
-    final int DEFAULT_TIMEOUT = 6000000;
+    final int DEFAULT_TIMEOUT = 60000;
 
     @Override
     public void onCreate() {
@@ -1521,11 +1521,6 @@ public class BackboneApplication extends Application {
         client.setMaxConnections(20);
 
 
-        AsyncHttpClient.allowRetryExceptionClass(IOException.class);
-        AsyncHttpClient.allowRetryExceptionClass(IllegalArgumentException.class);
-        AsyncHttpClient.allowRetryExceptionClass(ConnectTimeoutException.class);
-        AsyncHttpClient.blockRetryExceptionClass(UnknownHostException.class);
-        AsyncHttpClient.blockRetryExceptionClass(ConnectionPoolTimeoutException.class);
         client.setMaxConnections(20);
 
 

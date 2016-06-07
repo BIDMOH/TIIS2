@@ -22,6 +22,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteDatabaseLockedException;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.provider.BaseColumns;
@@ -1518,7 +1520,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public void updateAdministerVaccineSchedule(ContentValues cv, String vacc_event_id) {
         SQLiteDatabase db = getWritableDatabase();
-        db.update(Tables.VACCINATION_EVENT, cv, "ID=?", new String[]{vacc_event_id});
+
+        db.beginTransaction();
+        try {
+            db.update(Tables.VACCINATION_EVENT, cv, "ID=?", new String[]{vacc_event_id});
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            e.printStackTrace();
+        } finally {
+            db.endTransaction();
+        }
     }
 
 //    public long updateAdministerVaccineSchedule(ContentValues cv, String vacc_event_id) {
@@ -1650,16 +1662,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public void updateAdministerVaccineDoneStatus(ContentValues cv, String status, String dose) {
         SQLiteDatabase sd = getWritableDatabase();
-        sd.beginTransaction();
-        try {
-            sd.update(Tables.VACCINATION_EVENT, cv, "APPOINTMENT_ID=? AND DOSE_ID=?", new String[]{status, dose});
-            sd.setTransactionSuccessful();
-        } catch (Exception e) {
-            //Error in between database transaction
-            throw e;
-        } finally {
-            sd.endTransaction();
-        }
+        Boolean result = false;
+
+        do {
+            try {
+                Thread.sleep(1000);
+                sd.beginTransaction();
+                try {
+                    sd.update(Tables.VACCINATION_EVENT, cv, "APPOINTMENT_ID=? AND DOSE_ID=?", new String[]{status, dose});
+                    sd.setTransactionSuccessful();
+                } catch (Exception e) {
+                    //Error in between database transaction
+                    throw e;
+                } finally {
+                    sd.endTransaction();
+                    result = true;
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }while (!result);
 
     }
 
