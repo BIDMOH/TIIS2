@@ -917,7 +917,7 @@ public class ChildSummaryPagerFragment extends Fragment {
             contentValues.put(SQLHandler.ChildColumns.BIRTHPLACE, birthplaceList.get(pobSpinner.getSelectedItemPosition()-1).getName());
             contentValues.put(SQLHandler.ChildColumns.BIRTHPLACE_ID, birthplaceList.get(pobSpinner.getSelectedItemPosition()-1).getId());
         }
-        Log.d("coze","vilage name = "+placeList.get(villageSpinner.getSelectedItemPosition()-1).getName());
+//        Log.d("coze","vilage name = "+placeList.get(villageSpinner.getSelectedItemPosition()-1).getName());
         if (!placeList.get(villageSpinner.getSelectedItemPosition()-1).getName().equalsIgnoreCase(currentChild.getDomicile())) {
             currentChild.setDomicileId(placeList.get(villageSpinner.getSelectedItemPosition()-1).getId());
             currentChild.setDomicile(placeList.get(villageSpinner.getSelectedItemPosition()-1).getName());
