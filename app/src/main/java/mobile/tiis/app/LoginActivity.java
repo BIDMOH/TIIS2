@@ -180,12 +180,6 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
         //Starting the repeating synchronisation procedure that happens every 5 minutes
         login_preferences = getSharedPreferences(LOGINPREFERENCE, Context.MODE_PRIVATE);
 
-//        if (login_preferences.getBoolean("isLoggedIn", false)){
-//            Intent intent = new Intent(LoginActivity.this, HomeActivityRevised.class);
-//            startActivity(intent);
-//            finish();
-//        }
-
         if(getIntent().hasExtra(BackboneActivity.LANGUAGELOGIN)){
             languagePosition = getIntent().getIntExtra(BackboneActivity.LANGUAGELOGIN,0);
             Log.d(TAGG, "Language Position before select = "+languagePosition+"");
@@ -320,24 +314,6 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
                         Intent intent = new Intent(LoginActivity.this, HomeActivityRevised.class);
                         BackboneApplication app = (BackboneApplication) getApplication();
 
-//                        String hfid="";
-//                        String userid = "";
-//                        login_preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-//                        if (login_preferences.contains(username))
-//                        {
-//                            hfid = login_preferences.getString(username, hfid);
-//                            app.setLoggedInUserHealthFacilityId(hfid);
-//                            Log.d("Retrieved hfid", hfid);
-//                        }
-//
-//                        if (login_preferences.contains(username + "1"))
-//                        {
-//                            userid = login_preferences.getString(username + "1", userid);
-//                            app.setLoggedInUserHealthFacilityId(userid);
-//                            Log.d("Retrieved userid", userid);
-//                        }
-
-
                         app.setUsername(username);
                         app.initializeOffline(username, password);
                         startActivity(intent);
@@ -463,11 +439,6 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
                                 response.onResult(res);
                             }
                         }
-//                        login_preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-//                        SharedPreferences.Editor login_editor = login_preferences.edit();
-//                        login_editor.putString(app.getLOGGED_IN_USERNAME(), app.getLOGGED_IN_USER_HF_ID());
-//                        login_editor.putString(app.getLOGGED_IN_USERNAME() + "1", app.getLOGGED_IN_USER_ID());
-//                        login_editor.commit();
 
                         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                         SharedPreferences.Editor editor = prefs.edit();
