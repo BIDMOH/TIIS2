@@ -108,12 +108,12 @@ public class BackboneApplication extends Application {
     /**
      * Testing WCF
      */
-//    public static final String WCF_URL = "https://ec2-54-187-21-117.us-west-2.compute.amazonaws.com/SVC/";
+    public static final String WCF_URL = "https://ec2-54-187-21-117.us-west-2.compute.amazonaws.com/SVC/";
 
     /**
      * Live WCF
      */
-    public static final String WCF_URL = "https://ec2-52-11-215-89.us-west-2.compute.amazonaws.com/SVC/";
+//    public static final String WCF_URL = "https://ec2-52-11-215-89.us-west-2.compute.amazonaws.com/SVC/";
 
     public static final String USER_MANAGEMENT_SVC = "UserManagement.svc/";
     public static final String PLACE_MANAGEMENT_SVC = "PlaceManagement.svc/";
@@ -679,7 +679,6 @@ public class BackboneApplication extends Application {
         UsePoolThreadResponseHandler2 poolThreadResponseHandler= new UsePoolThreadResponseHandler2();
         client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
         client.get(webServiceUrl.toString(), poolThreadResponseHandler);
-
     }
 
     public boolean addChildVaccinationEventVaccinationAppointment(ChildCollector2 childCollector) {
@@ -697,28 +696,28 @@ public class BackboneApplication extends Application {
 
             if (children != null) {
                 String sql0 = "INSERT OR REPLACE INTO " + SQLHandler.Tables.CHILD + " ( "+
-                        SQLHandler.SyncColumns.UPDATED+", "+
-                        SQLHandler.ChildColumns.ID+","+
-                        SQLHandler.ChildColumns.BARCODE_ID+","+
-                        SQLHandler.ChildColumns.FIRSTNAME1+","+
-                        SQLHandler.ChildColumns.FIRSTNAME2+","+
-                        SQLHandler.ChildColumns.LASTNAME1+","+
-                        SQLHandler.ChildColumns.BIRTHDATE+","+
-                        SQLHandler.ChildColumns.GENDER+","+
-                        SQLHandler.ChildColumns.TEMP_ID+","+
-                        SQLHandler.ChildColumns.HEALTH_FACILITY+","+
-                        SQLHandler.ChildColumns.DOMICILE+","+
-                        SQLHandler.ChildColumns.DOMICILE_ID+","+
-                        SQLHandler.ChildColumns.HEALTH_FACILITY_ID+","+
-                        SQLHandler.ChildColumns.STATUS_ID+","+
-                        SQLHandler.ChildColumns.BIRTHPLACE_ID+","+
-                        SQLHandler.ChildColumns.NOTES+","+
-                        SQLHandler.ChildColumns.STATUS+","+
-                        SQLHandler.ChildColumns.MOTHER_FIRSTNAME+","+
-                        SQLHandler.ChildColumns.MOTHER_LASTNAME+","+
-                        SQLHandler.ChildColumns.PHONE+","+
-                        SQLHandler.ChildColumns.MODIFIED_ON+
-                        " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
+                    SQLHandler.SyncColumns.UPDATED+", "+
+                    SQLHandler.ChildColumns.ID+","+
+                    SQLHandler.ChildColumns.BARCODE_ID+","+
+                    SQLHandler.ChildColumns.FIRSTNAME1+","+
+                    SQLHandler.ChildColumns.FIRSTNAME2+","+
+                    SQLHandler.ChildColumns.LASTNAME1+","+
+                    SQLHandler.ChildColumns.BIRTHDATE+","+
+                    SQLHandler.ChildColumns.GENDER+","+
+                    SQLHandler.ChildColumns.TEMP_ID+","+
+                    SQLHandler.ChildColumns.HEALTH_FACILITY+","+
+                    SQLHandler.ChildColumns.DOMICILE+","+
+                    SQLHandler.ChildColumns.DOMICILE_ID+","+
+                    SQLHandler.ChildColumns.HEALTH_FACILITY_ID+","+
+                    SQLHandler.ChildColumns.STATUS_ID+","+
+                    SQLHandler.ChildColumns.BIRTHPLACE_ID+","+
+                    SQLHandler.ChildColumns.NOTES+","+
+                    SQLHandler.ChildColumns.STATUS+","+
+                    SQLHandler.ChildColumns.MOTHER_FIRSTNAME+","+
+                    SQLHandler.ChildColumns.MOTHER_LASTNAME+","+
+                    SQLHandler.ChildColumns.PHONE+","+
+                    SQLHandler.ChildColumns.MODIFIED_ON+
+                    " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
 
                 SQLiteStatement stmt0 = db1.compileStatement(sql0);
                 for (Child child : children) {
@@ -751,21 +750,21 @@ public class BackboneApplication extends Application {
 
             if (vaccinationEvents != null) {
                 String sql = "INSERT OR REPLACE INTO " + SQLHandler.Tables.VACCINATION_EVENT + " ( "+
-                        SQLHandler.SyncColumns.UPDATED+", "+
-                        SQLHandler.VaccinationEventColumns.APPOINTMENT_ID+","+
-                        SQLHandler.VaccinationEventColumns.CHILD_ID+","+
-                        SQLHandler.VaccinationEventColumns.DOSE_ID+","+
-                        SQLHandler.VaccinationEventColumns.HEALTH_FACILITY_ID+","+
-                        SQLHandler.VaccinationEventColumns.ID+","+
-                        SQLHandler.VaccinationEventColumns.IS_ACTIVE+","+
-                        SQLHandler.VaccinationEventColumns.MODIFIED_BY+","+
-                        SQLHandler.VaccinationEventColumns.MODIFIED_ON+","+
-                        SQLHandler.VaccinationEventColumns.NONVACCINATION_REASON_ID+","+
-                        SQLHandler.VaccinationEventColumns.SCHEDULED_DATE+","+
-                        SQLHandler.VaccinationEventColumns.VACCINATION_DATE+","+
-                        SQLHandler.VaccinationEventColumns.VACCINATION_STATUS+","+
-                        SQLHandler.VaccinationEventColumns.VACCINE_LOT_ID+
-                        " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    SQLHandler.SyncColumns.UPDATED+", "+
+                    SQLHandler.VaccinationEventColumns.APPOINTMENT_ID+","+
+                    SQLHandler.VaccinationEventColumns.CHILD_ID+","+
+                    SQLHandler.VaccinationEventColumns.DOSE_ID+","+
+                    SQLHandler.VaccinationEventColumns.HEALTH_FACILITY_ID+","+
+                    SQLHandler.VaccinationEventColumns.ID+","+
+                    SQLHandler.VaccinationEventColumns.IS_ACTIVE+","+
+                    SQLHandler.VaccinationEventColumns.MODIFIED_BY+","+
+                    SQLHandler.VaccinationEventColumns.MODIFIED_ON+","+
+                    SQLHandler.VaccinationEventColumns.NONVACCINATION_REASON_ID+","+
+                    SQLHandler.VaccinationEventColumns.SCHEDULED_DATE+","+
+                    SQLHandler.VaccinationEventColumns.VACCINATION_DATE+","+
+                    SQLHandler.VaccinationEventColumns.VACCINATION_STATUS+","+
+                    SQLHandler.VaccinationEventColumns.VACCINE_LOT_ID+
+                    " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
                 SQLiteStatement stmt = db1.compileStatement(sql);
 
@@ -792,17 +791,17 @@ public class BackboneApplication extends Application {
 
             if (vaccinationAppointments != null) {
                 String sql1 = "INSERT OR REPLACE INTO " + SQLHandler.Tables.VACCINATION_APPOINTMENT + " ( "+
-                        SQLHandler.SyncColumns.UPDATED+", "+
-                        SQLHandler.VaccinationAppointmentColumns.CHILD_ID+","+
-                        SQLHandler.VaccinationAppointmentColumns.ID+","+
-                        SQLHandler.VaccinationAppointmentColumns.IS_ACTIVE+","+
-                        SQLHandler.VaccinationAppointmentColumns.MODIFIED_BY+","+
-                        SQLHandler.VaccinationAppointmentColumns.MODIFIED_ON+","+
-                        SQLHandler.VaccinationAppointmentColumns.NOTES+","+
-                        SQLHandler.VaccinationAppointmentColumns.OUTREACH+","+
-                        SQLHandler.VaccinationAppointmentColumns.SCHEDULED_DATE+","+
-                        SQLHandler.VaccinationAppointmentColumns.SCHEDULED_FACILITY_ID+
-                        " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
+                    SQLHandler.SyncColumns.UPDATED+", "+
+                    SQLHandler.VaccinationAppointmentColumns.CHILD_ID+","+
+                    SQLHandler.VaccinationAppointmentColumns.ID+","+
+                    SQLHandler.VaccinationAppointmentColumns.IS_ACTIVE+","+
+                    SQLHandler.VaccinationAppointmentColumns.MODIFIED_BY+","+
+                    SQLHandler.VaccinationAppointmentColumns.MODIFIED_ON+","+
+                    SQLHandler.VaccinationAppointmentColumns.NOTES+","+
+                    SQLHandler.VaccinationAppointmentColumns.OUTREACH+","+
+                    SQLHandler.VaccinationAppointmentColumns.SCHEDULED_DATE+","+
+                    SQLHandler.VaccinationAppointmentColumns.SCHEDULED_FACILITY_ID+
+                    " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
 
                 SQLiteStatement stmt1 = db1.compileStatement(sql1);
                 for (VaccinationAppointment vaccinationAppointment : vaccinationAppointments) {

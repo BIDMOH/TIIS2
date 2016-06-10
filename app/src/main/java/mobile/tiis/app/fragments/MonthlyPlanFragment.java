@@ -418,7 +418,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
 
             try {
                 if (!params[2].equals("") && !params[3].equals("")) {
-                    from_date = params[2];
+                    from_date = (Long.parseLong(params[2])-(24*60*60))+"";
                     Log.d("day13", "from picker : "+from_date);
                     to_date = params[3];
                 }
