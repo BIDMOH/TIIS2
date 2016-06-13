@@ -167,13 +167,7 @@ public class HomeActivityRevised extends BackboneActivity {
             toolbarTitle.setText(lastFragmentTitle);
             tx.commit();
         } else {
-//            Log.d("Saving", "Saved back to activity");
-//            //Maintain the current fragment
-//            String currentFragment = starter.getString("currentFragment");
-//            FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-//            tx.replace(R.id.content_frame, Fragment.instantiate(HomeActivityRevised.this, currentFragment));
-//            tx.addToBackStack(currentFragment);
-//            tx.commit();
+
         }
 
         if (toolbar != null) {
