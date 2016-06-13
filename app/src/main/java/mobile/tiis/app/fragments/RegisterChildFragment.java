@@ -2,6 +2,7 @@ package mobile.tiis.app.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -71,6 +72,9 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
     protected MaterialEditText etbarcode, etFirstName, etSurname, etMotherFirstName, etMotherSurname, etPhone, etNotes,etFirstname2;
 
     String barcode, firstanme, surname, motherFirstname, motherLastname, gender_val, gen, genderChildWithoutApp,firstname2;
+
+
+    private ProgressDialog progressDialog;
 
     public static final long getDaysDifference(Date d1, Date d2) {
         long diff = d2.getTime() - d1.getTime();
@@ -188,6 +192,14 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         scanButton = (Button) v.findViewById(R.id.reg_scan_btn);
         submitButton = (Button) v.findViewById(R.id.reg_submit_btn);
 
+        progressDialog = new ProgressDialog(getActivity());
+
+        progressDialog.setMessage("Saving the child. \nPlease wait ...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
+
+
+
 //        btnScan = (Button) findViewById(R.id.register_child_btn_scan);
 //        btnScan.setOnClickListener(this);
 //        btnSave = (Button) findViewById(R.id.save_button);
@@ -248,6 +260,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                         createDialogAlertIsInChild().show();
                         isSavingData =false;
                     } else {
+                        progressDialog.show();
                         askServerIfthereIsSimilarChild(etSurname.getText().toString(), bdate, gen);
                         Log.e("CheckInSever", "CheckInSever");
                     }
@@ -643,7 +656,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
+                        progressDialog.dismiss();
                         if (found) {
                             createDialogAlertIsInChild().show();
                         } else {

@@ -95,7 +95,7 @@
                             android:layout_width="350dp"
                             android:layout_height="wrap_content"
                             android:id="@+id/met_fname_value"
-                            android:inputType="textPersonName"
+                            android:inputType="textCapWords|textPersonName"
                             android:textColor="@color/black"
                             android:focusable="true"
                             android:hint="First Name"

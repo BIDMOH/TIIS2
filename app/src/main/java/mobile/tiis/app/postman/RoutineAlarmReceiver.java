@@ -50,7 +50,7 @@ public class RoutineAlarmReceiver extends WakefulBroadcastReceiver {
         Intent intent = new Intent(context, RoutineAlarmReceiver.class);
         intent.putExtra("setPostmanAlarm", true);
         alarmIntent = PendingIntent.getBroadcast(context, 111, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + 5000, 60000, alarmIntent);
+        alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + 30000, 120000, alarmIntent);
     }
 
     // BEGIN_INCLUDE(set_alarm)
