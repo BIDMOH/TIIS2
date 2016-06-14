@@ -118,7 +118,15 @@ public class ImmunizationChartFragment extends Fragment implements OnChartValueS
         mChart.setDrawGridBackground(false);
         mChart.setDescriptionTextSize(16f);
 
-        MyMarkerView mv = new MyMarkerView(ImmunizationChartFragment.this.getActivity(), R.layout.custom_marker_view);
+        MyMarkerView mv = null;
+
+        try {
+             mv = new MyMarkerView(ImmunizationChartFragment.this.getActivity(), R.layout.custom_marker_view);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
         mChart.setMarkerView(mv);
 
         Legend l = mChart.getLegend();

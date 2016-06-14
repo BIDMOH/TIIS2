@@ -258,6 +258,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
                 } else {
                     selectedAgeDefinition = "";
                     currentCategory = selectedAgeDefinition;
+                    new filterList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentCategory, "0", fromDateString, toDateString);
 //                    populatePageIndicatorContainer(getNumPages(selectedAgeDefinition));
 //                    compileVaccinationQueueTable(selectedAgeDefinition, selectedPage);
 //                    new filterList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentCategory, "0", fromDateString, toDateString);

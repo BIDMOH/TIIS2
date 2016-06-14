@@ -86,6 +86,7 @@
     <string name="vaccinate">Chanjo</string>
     <string name="date">Tarehe</string>
     <string name="back">Rudi</string>
+
     <string name="child">Mtoto</string>
     <string name="vaccine_dose">Dozi za chanjo</string>
     <string name="schedule">Umri</string>
@@ -196,6 +197,7 @@
     <string name="txt_non_vaccination_reason">Sababu ya kutochanja</string>
     <string name="given">Iliyotolewa</string>
     <string name="outreach">Nje ya kituo</string>
+    <string name="outreach_details">Sababu za nje ya kituo</string>
     <string name="language">Lugha</string>
     <string name="health_facility_balance">Zilizobaki</string>
     <string name="item">Bidhaa</string>

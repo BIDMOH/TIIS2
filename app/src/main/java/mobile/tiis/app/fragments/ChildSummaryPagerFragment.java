@@ -124,6 +124,8 @@ public class ChildSummaryPagerFragment extends Fragment {
 
     final DatePickerDialog doBDatePicker = new DatePickerDialog();
 
+    LayoutInflater inflator;
+
     public static final long getDaysDifference(Date d1, Date d2) {
         long diff = d2.getTime() - d1.getTime();
         long difference = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
@@ -149,6 +151,7 @@ public class ChildSummaryPagerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup v;
+        inflator = inflater;
         v = (ViewGroup) inflater.inflate(R.layout.fragment_child_summary, null);
         app = (BackboneApplication) ChildSummaryPagerFragment.this.getActivity().getApplication();
         mydb = app.getDatabaseInstance();
@@ -354,8 +357,9 @@ public class ChildSummaryPagerFragment extends Fragment {
     }
 
     private void fillAppointmentTableLayout(){
-        LayoutInflater inflator = (LayoutInflater) ChildSummaryPagerFragment.this.getActivity()
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        //Use the Froagment's inflater (stored in "inflator" instance)
+//        LayoutInflater inflator = (LayoutInflater) ChildSummaryPagerFragment.this.getActivity()
+//                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         for (ViewAppointmentRow va : var){
             View convertView = inflator.inflate(R.layout.vaccination_history_item, null);
 

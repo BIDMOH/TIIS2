@@ -273,6 +273,39 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
             //continue with device online
             if(Utils.isOnline(LoginActivity.this))
             {
+
+               //Checking if the user had once logged in
+                //check if user is already registered with AccountManager
+                AccountManager accountManager = AccountManager.get(LoginActivity.this);
+                Account[] accounts = accountManager.getAccountsByType(ACCOUNT_TYPE);
+                boolean loggedIn = false;
+
+                //go through all accounts found in Account Manager
+                for(Account account : accounts)
+                {
+                    //if there is a match set login as true and go to Home Activity
+                    if(account.name.equalsIgnoreCase(username) && accountManager.getPassword(account).equals(password))
+                    {
+                        //Activity mobile.tiis.app.LoginActivity has leaked window error was showing
+                        //this piece of code handles it, nonetheless in prod time the error  would not show
+                        if(progressDialog!=null && progressDialog.isShowing()){
+                            progressDialog.dismiss();
+                        }
+
+                        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+                        editor.putBoolean("secondSyncNeeded", true);
+                        editor.commit();
+
+                        Intent intent = new Intent(LoginActivity.this, HomeActivityRevised.class);
+                        BackboneApplication app = (BackboneApplication) getApplication();
+
+                        app.setUsername(username);
+                        app.initializeOffline(username, password);
+                        startActivity(intent);
+                        loggedIn = true;
+                    }
+                }
+
                 //build webservice url
                 StringBuilder webServiceLoginURL = createWebServiceLoginURL(username, password);
 

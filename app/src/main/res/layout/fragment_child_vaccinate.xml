@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/white">
 
     <ScrollView
         android:visibility="invisible"
@@ -43,7 +44,7 @@
                             android:layout_height="match_parent"
                             android:id="@+id/dose_title"
                             android:layout_weight=".3"
-                            android:text="Dozi"
+                            android:text="@string/dose"
                             android:textSize="18sp"
                             android:gravity="center_vertical"
                             android:paddingLeft="32dp"/>
@@ -58,7 +59,7 @@
                             android:layout_height="match_parent"
                             android:id="@+id/lot_title"
                             android:layout_weight=".15"
-                            android:text="Bachi ya Vaccine"
+                            android:text="@string/vaccine_lot"
                             android:textSize="18sp"
                             android:gravity="center"/>
 
@@ -72,7 +73,7 @@
                             android:layout_height="match_parent"
                             android:id="@+id/vaccine_date_title"
                             android:layout_weight=".15"
-                            android:text="Tarehe ya Chanjo"
+                            android:text="@string/txt_vaccination_date"
                             android:textSize="18sp"
                             android:gravity="center"/>
 
@@ -86,7 +87,7 @@
                             android:layout_height="match_parent"
                             android:id="@+id/done_checkbox_title"
                             android:layout_weight=".10"
-                            android:text="Maliza"
+                            android:text="@string/txt_done"
                             android:textSize="18sp"
                             android:gravity="center"/>
 
@@ -100,7 +101,7 @@
                             android:layout_height="match_parent"
                             android:id="@+id/vaccine_date"
                             android:layout_weight=".30"
-                            android:text="Chagua Sababu Kama Haikufanyika"
+                            android:text="@string/reason"
                             android:textSize="18sp"
                             android:gravity="center"/>
 
@@ -144,7 +145,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Outreach Details"
+                        android:text="@string/outreach_details"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:background="@color/cardview_light_background"
@@ -184,7 +185,7 @@
                                 android:textStyle="bold"
                                 android:layout_height="wrap_content"
                                 android:layout_centerHorizontal="true"
-                                android:text="Outreach"/>
+                                android:text="@string/outreach"/>
 
                             <CheckBox
                                 android:layout_below="@id/check_title"
@@ -247,7 +248,7 @@
                             android:layout_height="match_parent"
                             android:id="@+id/suplements_title"
                             android:layout_weight=".5"
-                            android:text="Vimelea"
+                            android:text="@string/supplements"
                             android:textSize="18sp"
                             android:textStyle="bold"
                             android:textColor="@color/black"
@@ -266,7 +267,7 @@
                             android:layout_weight=".25"
                             android:textStyle="bold"
                             android:textColor="@color/black"
-                            android:text="Bachi ya Vaccine"
+                            android:text="@string/date"
                             android:textSize="18sp"
                             android:gravity="center"/>
 
@@ -280,7 +281,7 @@
                             android:layout_height="match_parent"
                             android:id="@+id/given_title"
                             android:layout_weight=".25"
-                            android:text="Given"
+                            android:text="@string/given"
                             android:textStyle="bold"
                             android:textColor="@color/black"
                             android:textSize="18sp"

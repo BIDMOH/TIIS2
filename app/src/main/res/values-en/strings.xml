@@ -327,6 +327,7 @@
     <string name="weight_updated">Weight for child was UPDATED successfully.</string>
     <string name="changes_saved">Your changes have been saved!</string>
     <string name="outreach">Outreach</string>
+    <string name="outreach_details">Outreach Details</string>
     <string name="given">Given</string>
     <string name="language">Language</string>
     <string name="health_facility_balance">Health Facility Balance</string>
