@@ -297,27 +297,32 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
                         editor.commit();
 
                         Intent intent = new Intent(LoginActivity.this, HomeActivityRevised.class);
+
                         BackboneApplication app = (BackboneApplication) getApplication();
 
-                        app.setUsername(username);
                         app.initializeOffline(username, password);
+
+                        app.setUsername(username);
+                        Log.d("supportLog", "call the loggin first time before the account was found");
                         startActivity(intent);
                         loggedIn = true;
                     }
                 }
 
-                //build webservice url
-                StringBuilder webServiceLoginURL = createWebServiceLoginURL(username, password);
+                if (!loggedIn){
 
-                //call web service to pull user info and send to account manager
-                try{
-                       startWebService(webServiceLoginURL ,username, password);
-                }catch (NullPointerException e){
-                       startWebService(webServiceLoginURL ,username, password);
+                    //build webservice url
+                    StringBuilder webServiceLoginURL = createWebServiceLoginURL(username, password);
+
+                    //call web service to pull user info and send to account manager
+                    try{
+                        startWebService(webServiceLoginURL ,username, password);
+                    }catch (NullPointerException e){
+                        startWebService(webServiceLoginURL ,username, password);
+                    }
                 }
 
             }
-
             //continue with device offline
             else
             {
@@ -492,8 +497,10 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
 
                         Intent intent;
                         if(prefs.getBoolean("synchronization_needed", true)){
+                            Log.d("supportLog", "call the loggin second time before the account was found");
                             intent = new Intent(LoginActivity.this, HomeActivityRevised.class);
                         }else{
+                            Log.d("supportLog", "call the loggin second time before the account was found");
                             intent = new Intent(LoginActivity.this, HomeActivityRevised.class);
                             evaluateIfFirstLogin(app.getLOGGED_IN_USER_ID());
                         }
