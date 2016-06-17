@@ -109,7 +109,7 @@ public class GCMService extends GCMBaseIntentService {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             noti= new Notification.Builder(context)
                     .setContentTitle(context.getResources().getString(R.string.app_name))
-                    .setContentText("TIIS test notificatio")
+                    .setContentText("TIIS test notification")
                     .setSmallIcon(R.drawable.launcher_icon)
                     .setColor(context.getResources().getColor(R.color.green_500))
                     .setContentIntent(pIntent)
@@ -122,7 +122,7 @@ public class GCMService extends GCMBaseIntentService {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 noti= new Notification.Builder(context)
                         .setContentTitle(context.getResources().getString(R.string.app_name))
-                        .setContentText("Ahsante. Taarifa zako zimepokelewa.")
+                        .setContentText("TIIS test notification.")
                         .setSmallIcon(R.drawable.launcher_icon)
                         .setContentIntent(pIntent)
                         .setAutoCancel(true)
