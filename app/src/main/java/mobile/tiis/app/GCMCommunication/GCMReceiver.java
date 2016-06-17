@@ -8,6 +8,6 @@ public class GCMReceiver extends GCMBroadcastReceiver {
 
 	@Override
 	protected String getGCMIntentServiceClassName(Context context) {
-		return "cive.HakikiDawaADR.ServerCommunication.GCMService";
+		return "mobile.tiis.app.GCMCommunication.GCMService";
 	}
 }

@@ -30,10 +30,9 @@ public final class ServerUtilities {
      */
 
     public static void register(final Context context, final String regId) {
-        Log.d(TAG, "sending (regId = " + regId + ") to the hakikidawa server");
+        Log.d(TAG, "sending (regId = " + regId + ") to the TIIS server");
         String serverUrl = CommonUtilities.SERVER_REGISTER_GCM;
         Map<String, String> params = new HashMap<String, String>();
-        params.put("mobile", CommonUtilities.MOBILE_AUTHENTICATOR);
         params.put("gcm_id", regId);
 
         long backoff = BACKOFF_MILLI_SECONDS + random.nextInt(1000);

@@ -6,13 +6,12 @@ import android.content.Intent;
 public final class CommonUtilities {
 	
 	// give your server registration url here
-    public  static final String SERVER_URL = "http://tfda.go.tz/adr";
-
-    public  static final String SERVER_REGISTER_GCM = "http://tfda.go.tz/adr/mobile/register_gcm";
+    public  static final String SERVER_URL = "";
+    public  static final String SERVER_REGISTER_GCM = "";
 
     // Google project id
     // FOR LIVE SERVER
-    public static final String SENDER_ID = "812246581145";
+    public static final String SENDER_ID = "967487253557";
 
     /**
      * Tag used on log messages.
