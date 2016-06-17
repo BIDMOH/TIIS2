@@ -57,7 +57,8 @@ public class GCMService extends GCMBaseIntentService {
 	protected void onMessage(Context context, Intent intent) {
         Log.d(TAG, "message received");
 
-        createNotification(context,"message received");
+        String message = intent.getStringExtra("message");
+        createNotification(context,message);
 	}
 
 	@Override
