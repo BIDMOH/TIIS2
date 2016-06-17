@@ -45,6 +45,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import java.io.IOException;
 
 import mobile.tiis.app.GCMCommunication.CommonUtilities;
+import mobile.tiis.app.GCMCommunication.ServerUtilities;
 import mobile.tiis.app.GCMCommunication.WakeLocker;
 import mobile.tiis.app.R;
 import mobile.tiis.app.adapters.DrawerListItemsAdapter;
@@ -115,6 +116,7 @@ public class HomeActivityRevised extends BackboneActivity {
     public static final String LOGINPREFERENCE = "loginPrefs" ;
     public static String regId;
     private GoogleCloudMessaging gcm;
+    private AsyncTask<Void, Void, Void> mRegisterTask;
 
     public AlertDialog.Builder alertDialogBuilder;
 

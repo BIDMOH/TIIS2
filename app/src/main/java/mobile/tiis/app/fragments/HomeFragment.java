@@ -30,8 +30,6 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.LargeValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.ArrayList;
@@ -245,10 +243,6 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
 
         if(v.getId() == R.id.scan_camera_button){
             Log.d("BAKTRAK", "Scan instantiated");
-            IntentIntegrator scanIntegrator = IntentIntegrator.forSupportFragment(this);
-            //TODO modified by coze
-//            scanIntegrator.setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            scanIntegrator.initiateScan();
         }
 
     }
@@ -687,93 +681,6 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
 
     public Context getContext(){
         return HomeFragment.this.getActivity();
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        Log.e("onActivityResult", "onActivityResult");
-        //retrieve scan result
-        IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-        if (scanningResult != null) {
-            //we have a result
-            String scanContent = scanningResult.getContents();
-            if (scanContent != null) {
-                BackboneApplication app = (BackboneApplication) HomeFragment.this.getActivity().getApplication();
-                switch (app.getCurrentFragment()) {
-                    case BackboneActivity.FRAGMENT_HOME:
-
-                        Intent childDetailsActivity = new Intent(getContext(), ChildDetailsActivity.class);
-                        childDetailsActivity.putExtra("barcode", scanContent);
-
-//                        Intent scan = new Intent(HomeFragment.this.getActivity(), ScanResultActivity.class);
-//                        scan.putExtra("barcode", scanContent);
-
-                        DatabaseHandler mydb = app.getDatabaseInstance();
-                        Cursor cursor = null;
-                        cursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE BARCODE_ID=?", new String[]{scanContent});
-                        //Child found locally
-                        if (cursor.getCount() > 0 && cursor != null) {
-
-
-                            cursor.moveToFirst();
-                            String village_id = cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.DOMICILE_ID));
-
-                            if(village_id!=null)
-                            { cursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM place WHERE ID=?", new String[]{village_id});
-                                if (!(cursor.getCount() > 0)) {
-                                    pullPlaceFromServer task = new pullPlaceFromServer();
-                                    task.execute(village_id);
-                                }
-                            }
-
-
-                            startActivity(childDetailsActivity);
-                        } else {
-                            if (Utils.isOnline(HomeFragment.this.getActivity())) {
-                                add = new ProgressDialog(HomeFragment.this.getActivity());
-                                add.setTitle(getString(R.string.searching_online));
-                                add.setMessage(getString(R.string.barcode_not_found_locally));
-                                add.setCanceledOnTouchOutside(false);
-                                add.setCancelable(false);
-
-                                myHandler.sendEmptyMessage(10);
-                                //Parse child from server.
-                                ChildSynchronization task = new ChildSynchronization(this);
-                                task.execute(scanContent);
-                            } else {
-//                                final AlertDialog ad = new AlertDialog.Builder(this).create();
-//                                ad.setTitle("Not Found");
-//                                ad.setMessage("The inserted barcode does not belong to any child on the local database.\nPlease try scanning while" +
-//                                        " device is online.");
-//                                ad.setButton("OK", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
-//                                        ad.dismiss();
-//                                    }
-//                                });
-//                                ad.show();
-//                                startActivity(scan);
-                                Toast.makeText(getContext(), "Barcode not Found, Connect to Internet", Toast.LENGTH_LONG).show();
-                                txtBarcode.setErrorColor(Color.RED);
-                                txtBarcode.setError("Barcode not Found");
-                                txtBarcode.requestFocus();
-
-                            }
-                        }
-                        break;
-//                    case ACTIVITY_CHECK_IN:
-//                        onBarcodeInput(scanContent);
-//                        break;
-//                    case ACTIVITY_REGISTER_CHILD_SCAN:
-//                        Intent register_child_scan = new Intent(getApplicationContext(), RegisterChildActivity.class);
-//                        register_child_scan.putExtra("result", scanContent);
-//                        startActivity(register_child_scan);
-//                        break;
-                }
-            }
-            //TODO check the Zxing library,check this link for solution of this bug: https://github.com/journeyapps/zxing-android-embedded/issues/42
-        }
-
-
     }
 
 }

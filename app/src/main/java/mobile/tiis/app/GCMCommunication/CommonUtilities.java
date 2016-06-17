@@ -6,8 +6,8 @@ import android.content.Intent;
 public final class CommonUtilities {
 	
 	// give your server registration url here
-    public  static final String SERVER_URL = "";
-    public  static final String SERVER_REGISTER_GCM = "";
+    public  static final String SERVER_URL = "https://ec2-54-187-21-117.us-west-2.compute.amazonaws.com/SVC/r";
+    public  static final String SERVER_REGISTER_GCM = "https://ec2-54-187-21-117.us-west-2.compute.amazonaws.com/SVC/";
 
     // Google project id
     // FOR LIVE SERVER

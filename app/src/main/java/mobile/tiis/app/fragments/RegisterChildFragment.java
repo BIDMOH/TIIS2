@@ -16,8 +16,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
@@ -219,18 +217,8 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
             if (barcode != null) {
                 if (!barcode.equalsIgnoreCase("")) {
                     showDialogGoingScanWhenHasBarcode();
-                } else {
-                    IntentIntegrator scanIntegrator = IntentIntegrator.forSupportFragment(this);
-                    //TODO modified by coze
-//                    scanIntegrator.setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                    scanIntegrator.initiateScan();
                 }
 
-            } else {
-                IntentIntegrator scanIntegrator = IntentIntegrator.forSupportFragment(this);
-//                TODO modified by coze
-//                scanIntegrator.setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                scanIntegrator.initiateScan();
             }
         }
 
@@ -313,10 +301,6 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         ((AlertDialog) dialog).dismiss();
-                        IntentIntegrator scanIntegrator = new IntentIntegrator(RegisterChildFragment.this.getActivity());
-                        //TODO modified by coze
-//                        scanIntegrator.setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                        scanIntegrator.initiateScan();
                     }
                 });
         alertDialogBuilder.show();
@@ -472,18 +456,6 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         return true;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (scanningResult != null) {
-            //we have a result
-            String scanContent = scanningResult.getContents();
-            if (scanContent != null) {
-                etbarcode.setText(scanContent);
-            }
-        }
-    }
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
