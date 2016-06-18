@@ -680,6 +680,7 @@ public class HomeActivityRevised extends BackboneActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        registerReceiver(mHandleMessageReceiver, new IntentFilter(CommonUtilities.DISPLAY_MESSAGE_ACTION));
         registerReceiver(status_receiver,
                 new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
@@ -688,6 +689,8 @@ public class HomeActivityRevised extends BackboneActivity {
     protected void onPause(){
         super.onPause();
         unregisterReceiver(status_receiver);
+
+        unregisterReceiver(mHandleMessageReceiver);
     }
 
     @Override
