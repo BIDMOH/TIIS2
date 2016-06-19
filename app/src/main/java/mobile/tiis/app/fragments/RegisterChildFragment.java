@@ -423,16 +423,16 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
             etbarcode.setError(getString(R.string.barcode_ten_numbers_constraint));
             return false;
         }
-        if (etFirstName.getText().toString().isEmpty()) {
-            etFirstName.setErrorColor(Color.RED);
-            etFirstName.setError(getString(R.string.empty_firstname));
-            return false;
-        }
-        if (etSurname.getText().toString().isEmpty()) {
-            etSurname.setError(getString(R.string.empty_surname));
-            etSurname.setErrorColor(Color.RED);
-            return false;
-        }
+//        if (etFirstName.getText().toString().isEmpty()) {
+//            etFirstName.setErrorColor(Color.RED);
+//            etFirstName.setError(getString(R.string.empty_firstname));
+//            return false;
+//        }
+//        if (etSurname.getText().toString().isEmpty()) {
+//            etSurname.setError(getString(R.string.empty_surname));
+//            etSurname.setErrorColor(Color.RED);
+//            return false;
+//        }
         if (etMotherFirstName.getText().toString().isEmpty() || etMotherSurname.getText().toString().isEmpty()) {
             etMotherFirstName.setError(getString(R.string.empty_mother_names));
             etMotherFirstName.setErrorColor(Color.RED);

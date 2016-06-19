@@ -810,7 +810,7 @@ public class ChildSummaryPagerFragment extends Fragment {
             return false;
         }
         // we have as the last element the one that is empty element. We can not select it.
-        if (pobSpinner.getSelectedItemPosition() == birthplaceList.size()) {
+        if (pobSpinner.getSelectedItemPosition() == birthplaceList.size()+1) {
             alertDialogBuilder.setMessage(getString(R.string.empty_birthplace));
             alertDialogBuilder.show();
             return false;
