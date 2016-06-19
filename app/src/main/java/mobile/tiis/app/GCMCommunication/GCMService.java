@@ -66,7 +66,7 @@ public class GCMService extends GCMBaseIntentService {
         }
 
 
-        createNotification(context,childId);
+//        createNotification(context,childId);
 	}
 
 	@Override
