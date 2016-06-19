@@ -565,7 +565,6 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                 }catch(Exception exception){
                     exception.printStackTrace();
                 }
-
             }else{
 //                progBar.setVisibility(View.GONE);
             }

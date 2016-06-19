@@ -698,9 +698,9 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                                             @Override
                                             protected Void doInBackground(Void... params) {
                                                 if (SavedState) {
+                                                    BackboneApplication application = (BackboneApplication) AdministerVaccineFragment.this.getActivity().getApplication();
                                                     for (AdministerVaccinesModel a : arrayListAdminVacc) {
                                                         try {
-                                                            BackboneApplication application = (BackboneApplication) AdministerVaccineFragment.this.getActivity().getApplication();
                                                             DatabaseHandler db = application.getDatabaseInstance();
                                                             Log.d("day4", "before uploading to server");
                                                             int status = application.updateVaccinationEventOnServer(a.getUpdateURL());
@@ -748,6 +748,8 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
 
                                                     }
+
+                                                    application.broadcastChildUpdates(childId);
                                                 }
                                                 return null;
                                             }
@@ -812,9 +814,9 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                             @Override
                             protected Void doInBackground(Void... params) {
                                 if (SavedState) {
+                                    BackboneApplication application = (BackboneApplication) AdministerVaccineFragment.this.getActivity().getApplication();
                                     for (AdministerVaccinesModel a : arrayListAdminVacc) {
                                         try {
-                                            BackboneApplication application = (BackboneApplication) AdministerVaccineFragment.this.getActivity().getApplication();
                                             DatabaseHandler db = application.getDatabaseInstance();
                                             Log.d("day4", "before uploading to server");
                                             int status = application.updateVaccinationEventOnServer(a.getUpdateURL());
@@ -859,6 +861,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
 
                                     }
+                                    application.broadcastChildUpdates(childId);
                                 }
                                 return null;
                             }

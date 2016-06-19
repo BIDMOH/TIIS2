@@ -206,14 +206,15 @@ public class BackboneActivity extends AppCompatActivity {
      * @return StringBuilder webServiceLoginURL
      */
 
-    public StringBuilder createWebServiceLoginURL(String username, String password) {
+    public StringBuilder createWebServiceLoginURL(String username, String password, String gcmId ) {
 
         StringBuilder webServiceLoginURL = null;
         try {
             webServiceLoginURL = new StringBuilder(WCF_URL).append(USER_MANAGEMENT_SVC)
                     .append(USER_MANAGEMENT_SVC_GETTER)
                     .append("?username=").append(URLEncoder.encode(username, "utf-8"))
-                    .append("&password=").append(URLEncoder.encode(password, "utf-8"));
+                    .append("&password=").append(URLEncoder.encode(password, "utf-8"))
+                    .append("&gcmID=").append(URLEncoder.encode(gcmId, "utf-8"));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

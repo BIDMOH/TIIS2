@@ -22,12 +22,19 @@ import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -44,6 +51,10 @@ import android.widget.Toast;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.google.android.gcm.GCMRegistrar;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.MySSLSocketFactory;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -68,6 +79,9 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
+import mobile.tiis.app.GCMCommunication.CommonUtilities;
+import mobile.tiis.app.GCMCommunication.ServerUtilities;
+import mobile.tiis.app.GCMCommunication.WakeLocker;
 import mobile.tiis.app.R;
 import mobile.tiis.app.adapters.SingleTextViewAdapter;
 import mobile.tiis.app.base.BackboneActivity;
@@ -87,6 +101,9 @@ import mobile.tiis.app.util.Constants;
  * @author Melisa Aruci
  */
 public class LoginActivity extends BackboneActivity implements View.OnClickListener {
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    public static final String PROPERTY_REG_ID = "tiis_registration_id";
+    private static final String PROPERTY_APP_VERSION = "appVersion";
 
     public static final String TAG ="LoginActivity";
     public static final String TAGG ="selectedLang";
@@ -117,6 +134,178 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
 
     private static AsyncHttpClient client = new AsyncHttpClient();
     final int DEFAULT_TIMEOUT = 6000000;
+    public static String regId;
+    private GoogleCloudMessaging gcm;
+    private AsyncTask<Void, Void, Void> mRegisterTask;
+
+
+
+
+
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Log.i(TAG, "This device is not supported.");
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
+
+    /**
+     * Gets the current registration ID for application on GCM service.
+     * <p/>
+     * If result is empty, the app needs to register.
+     *
+     * @return registration ID, or empty string if there is no existing
+     * registration ID.
+     */
+    private String getRegistrationId(Context context) {
+        final SharedPreferences prefs = getGCMPreferences(context);
+        String registrationId = prefs.getString(PROPERTY_REG_ID, "");
+        if (registrationId.isEmpty()) {
+            Log.i(TAG, "Registration not found.");
+            return "";
+        }
+        // Check if app was updated; if so, it must clear the registration ID
+        // since the existing regID is not guaranteed to work with the new
+        // app version.
+        int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
+        int currentVersion = getAppVersion(context);
+        if (registeredVersion != currentVersion) {
+            Log.i(TAG, "App version changed.");
+            return "";
+        }
+        return registrationId;
+    }
+
+    /**
+     * @return Application's version code from the {@code PackageManager}.
+     */
+    public static int getAppVersion(Context context) {
+        try {
+            PackageInfo packageInfo = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            // should never happen
+            throw new RuntimeException("Could not get package name: " + e);
+        }
+    }
+    /**
+     * @return Application's {@code SharedPreferences}.
+     */
+    private SharedPreferences getGCMPreferences(Context context) {
+        return getSharedPreferences(HomeActivityRevised.class.getSimpleName(),
+                Context.MODE_PRIVATE);
+    }
+
+    private void registerInBackground() {
+        new AsyncTask<Void, Void, String>() {
+
+            @Override
+            protected String doInBackground(Void... params) {
+                String msg = "";
+                try {
+                    if (gcm == null) {
+                        gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
+                    }
+
+                    regId = gcm.register(CommonUtilities.SENDER_ID);
+                    msg = "Device registered,sender ID= " + CommonUtilities.SENDER_ID + "| registration ID=" + regId;
+
+                    // You should send the registration ID to your server over HTTP,
+                    // so it can use GCM/HTTP or CCS to send messages to your app.
+                    // The request to your server should be authenticated if your app
+                    // is using accounts.
+                    sendRegistrationIdToBackend();
+
+                    // Persist the regID - no need to register again.
+                    storeRegistrationId(getApplicationContext(), regId);
+
+                } catch (IOException ex) {
+                    msg = "Error :" + ex.getMessage();
+                    registerInBackground();
+                }
+                return msg;
+            }
+
+            @Override
+            protected void onPostExecute(String msg) {
+                Log.d(TAG, msg.toString());
+            }
+
+
+        }.execute(null, null, null);
+    }
+
+    private void sendRegistrationIdToBackend() {
+        final Context context = this;
+        mRegisterTask = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                /**
+                 * Register on our server
+                 * On server creates a new user
+                 */
+                ServerUtilities.register(context, regId);
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void result) {
+                mRegisterTask = null;
+                Log.d(TAG, "The app has been registered on ADR Hakiki dawa Server");
+            }
+        };
+        mRegisterTask.execute();
+    }
+
+    /**
+     * Stores the registration ID and app versionCode in the application's
+     * {@code SharedPreferences}.
+     *
+     * @param context application's context.
+     * @param regId   registration ID
+     */
+    private void storeRegistrationId(Context context, String regId) {
+        final SharedPreferences prefs = getGCMPreferences(context);
+        int appVersion = getAppVersion(context);
+        Log.d(TAG, "Saving regId on app version " + appVersion);
+        Log.d(TAG, "Saving reg ID  " + regId);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(PROPERTY_REG_ID, regId);
+        editor.putInt(PROPERTY_APP_VERSION, appVersion);
+        editor.commit();
+    }
+
+    /**
+     * function to check if there is an internet connectivity
+     */
+    public boolean isInternetAvailable() {
+        ConnectivityManager cm = (ConnectivityManager) this.getSystemService(
+                Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifiNetwork = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if (wifiNetwork != null && wifiNetwork.isConnected()) {
+            return true;
+        }
+        NetworkInfo mobileNetwork = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        if (mobileNetwork != null && mobileNetwork.isConnected()) {
+            return true;
+        }
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork != null && activeNetwork.isConnected()) {
+            return true;
+        }
+        return false;
+    }
+
 
     @Override
     protected void onCreate(Bundle starter) {
@@ -155,6 +344,22 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
         client.setTimeout(DEFAULT_TIMEOUT);
         client.setMaxConnections(20);
 
+        if (checkPlayServices()) {
+            gcm = GoogleCloudMessaging.getInstance(this);
+            GCMRegistrar.checkDevice(this);
+            GCMRegistrar.checkManifest(this);
+            if (isInternetAvailable()) {
+                /**
+                 * registering the app to Google Cloud Messaging
+                 */
+                regId = getRegistrationId(getApplicationContext());
+                if (regId.equals("")) {
+                    registerInBackground();
+                }
+            }
+        } else {
+            Log.i(TAG, "No valid Google Play Services APK found.");
+        }
 
 
         //DatabaseHandler.getDBFile(this);
@@ -312,7 +517,7 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
                 if (!loggedIn){
 
                     //build webservice url
-                    StringBuilder webServiceLoginURL = createWebServiceLoginURL(username, password);
+                    StringBuilder webServiceLoginURL = createWebServiceLoginURL(username, password,regId);
 
                     //call web service to pull user info and send to account manager
                     try{

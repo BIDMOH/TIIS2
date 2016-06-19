@@ -1,6 +1,7 @@
 package mobile.tiis.app.GCMCommunication;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -22,6 +23,7 @@ import java.util.Random;
 
 import mobile.tiis.app.HomeActivityRevised;
 import mobile.tiis.app.R;
+import mobile.tiis.app.base.BackboneApplication;
 
 public class GCMService extends GCMBaseIntentService {
     private String tone;
@@ -57,8 +59,14 @@ public class GCMService extends GCMBaseIntentService {
 	protected void onMessage(Context context, Intent intent) {
         Log.d(TAG, "message received");
 
-        String message = intent.getStringExtra("message");
-        createNotification(context,message);
+        BackboneApplication application = (BackboneApplication) getApplication();
+        String childId = intent.getStringExtra("message");
+        synchronized (application) {
+            application.parseChildById(childId);
+        }
+
+
+        createNotification(context,childId);
 	}
 
 	@Override

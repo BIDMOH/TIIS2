@@ -2362,7 +2362,7 @@ public class BackboneApplication extends Application {
 
     private int updatingVaccineOnTheServerResult = -1;
     public int updateVaccinationEventOnServer(final String url) {
-        Log.e("Adm Vacc Server Upd URL", url);
+        Log.e("Updating vaccin", url);
         Log.d("day4", "Vaccination Update URL : " + url);
 
 //        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
@@ -2395,6 +2395,19 @@ public class BackboneApplication extends Application {
         getDatabaseInstance().addPost(url, 1);
         return updatingVaccineOnTheServerResult;
     }
+
+
+    public void broadcastChildUpdates(String childId) {
+        final StringBuilder webServiceUrl;
+        Log.d(TAG,"broadcasting child updates for childID = "+childId);
+
+        webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC);
+        webServiceUrl.append("BroadcastChildUpdates?childId=").append(childId);
+
+        getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
+        Log.e("service broadcast", webServiceUrl + "");
+    }
+
 
     /**
      * @return child ID
