@@ -224,7 +224,7 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
                     // so it can use GCM/HTTP or CCS to send messages to your app.
                     // The request to your server should be authenticated if your app
                     // is using accounts.
-                    sendRegistrationIdToBackend();
+//                    sendRegistrationIdToBackend();
 
                     // Persist the regID - no need to register again.
                     storeRegistrationId(getApplicationContext(), regId);

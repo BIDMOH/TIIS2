@@ -52,6 +52,7 @@ public class BackboneActivity extends AppCompatActivity {
     public static final String WCF_URL = BackboneApplication.getWcfUrl(); //"http://142.222.45.61/svc/";
     public static final String USER_MANAGEMENT_SVC = "UserManagement.svc/";
     public static final String USER_MANAGEMENT_SVC_GETTER = "GetUser";
+    public static final String USER_MANAGEMENT_WITH_GCM_SVC_GETTER = "GetUserWithGcm";
     public static final String ACCOUNT_TYPE = "tiis.mobile.account";
     public static final String ACTIVITY_CHECK_IN = "CHECK_IN";
     public static final String FRAGMENT_HOME = "HOME";
@@ -211,7 +212,7 @@ public class BackboneActivity extends AppCompatActivity {
         StringBuilder webServiceLoginURL = null;
         try {
             webServiceLoginURL = new StringBuilder(WCF_URL).append(USER_MANAGEMENT_SVC)
-                    .append(USER_MANAGEMENT_SVC_GETTER)
+                    .append(USER_MANAGEMENT_WITH_GCM_SVC_GETTER)
                     .append("?username=").append(URLEncoder.encode(username, "utf-8"))
                     .append("&password=").append(URLEncoder.encode(password, "utf-8"))
                     .append("&gcmID=").append(URLEncoder.encode(gcmId, "utf-8"));
