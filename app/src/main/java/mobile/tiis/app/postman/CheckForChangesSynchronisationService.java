@@ -60,7 +60,6 @@ public class CheckForChangesSynchronisationService  extends IntentService {
             }
             app.parseStock();
 
-            sendResult("data_received");
         }
 
         this.stopSelf();

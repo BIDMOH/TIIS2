@@ -15,6 +15,7 @@ import android.database.Cursor;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import com.google.android.gcm.GCMBaseIntentService;
 
@@ -27,8 +28,12 @@ import mobile.tiis.app.base.BackboneApplication;
 
 public class GCMService extends GCMBaseIntentService {
     private String tone;
+    private LocalBroadcastManager broadcaster;
+    static final public String SynchronisationService_RESULT = "mobile,giis.app.CheckForChangesSynchronisationService.REQUEST_PROCESSED";
+    static final public String SynchronisationService_MESSAGE = "mobile,giis.app.CheckForChangesSynchronisationService..MSG";
 
-	private static final String TAG = "GCMService";
+
+    private static final String TAG = "GCMService";
 	public GCMService() {
         super(CommonUtilities.SENDER_ID);
         this.tone="";
@@ -66,8 +71,22 @@ public class GCMService extends GCMBaseIntentService {
         }
 
 
-//        createNotification(context,childId);
+        createNotification(context,childId);
+        sendResult(childId);
+
+
 	}
+
+    public void sendResult(String message) {
+        try {
+            Intent intent = new Intent(SynchronisationService_RESULT);
+            if (message != null)
+                intent.putExtra(SynchronisationService_MESSAGE, message);
+            broadcaster.sendBroadcast(intent);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
 	@Override
 	protected void onDeletedMessages(Context context, int total) {
