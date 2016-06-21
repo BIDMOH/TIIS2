@@ -475,12 +475,14 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
                 dateFrom = fmt.parse(metDOBFrom.getText().toString());
             } catch (ParseException e) {
                 e.printStackTrace();
+                dateFrom = null;
             }
 
             try {
                 dateTo = fmt.parse(metDOBTo.getText().toString());
             } catch (ParseException e) {
                 e.printStackTrace();
+                dateTo=null;
             }
 
             try {

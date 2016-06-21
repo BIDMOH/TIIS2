@@ -792,7 +792,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                         alertDialog.show();
 
                     } else {
-                        administerVaccineSaveButtonClicked();
                         progressDialog = new ProgressDialog(getActivity());
 
                         progressDialog.setMessage("Saving data. \nPlease wait ...");
@@ -845,6 +844,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
                             @Override
                             protected Boolean doInBackground(Void... params) {
+                                administerVaccineSaveButtonClicked();
                                 if (SavedState) {
                                     BackboneApplication application = (BackboneApplication) AdministerVaccineFragment.this.getActivity().getApplication();
 

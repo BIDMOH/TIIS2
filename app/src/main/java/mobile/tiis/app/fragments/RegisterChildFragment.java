@@ -225,11 +225,13 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         if(v.getId() == R.id.reg_submit_btn){
             if(!isSavingData) {
                 isSavingData = true;
+                progressDialog.show();
                 BackboneApplication app = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
                 DatabaseHandler mydb = app.getDatabaseInstance();
 
                 if (checkDataIntegrityBeforeSave()) {
                     if (mydb.isBarcodeInChildTable(etbarcode.getText().toString())) {
+                        progressDialog.dismiss();
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(RegisterChildFragment.this.getActivity())
                                 .setTitle(getString(R.string.same_barcode))
                                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -245,15 +247,18 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 //                  progBar.setVisibility(View.VISIBLE);
                     //kontrrollojme nese kemi ne db kete child me keto te dhena,nese true nxjerim dialog,nese false bejme regjistrimin
                     if (mydb.isChildinDb(etSurname.getText().toString(), bdate.getTime(), gender_val)) {
+                        progressDialog.dismiss();
                         createDialogAlertIsInChild().show();
                         isSavingData =false;
                     } else {
-                        progressDialog.show();
+                        if(!progressDialog.isShowing())
+                            progressDialog.show();
                         askServerIfthereIsSimilarChild(etSurname.getText().toString(), bdate, gen);
                         Log.e("CheckInSever", "CheckInSever");
                     }
 
                 }else{
+                    progressDialog.dismiss();
                     isSavingData =false;
                 }
             }
