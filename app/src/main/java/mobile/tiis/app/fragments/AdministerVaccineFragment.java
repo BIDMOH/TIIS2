@@ -767,6 +767,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                                                         application.broadcastChildUpdates(Integer.parseInt(childId));
                                                         return true;
                                                     }catch (NumberFormatException e){
+                                                        getChildId();
                                                         return false;
                                                     }
                                                 }
@@ -900,6 +901,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                                         application.broadcastChildUpdates(Integer.parseInt(childId));
                                         return true;
                                     }catch (NumberFormatException e){
+                                        getChildId();
                                         return false;
                                     }
                                 }
