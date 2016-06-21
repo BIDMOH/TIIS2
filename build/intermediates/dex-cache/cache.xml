@@ -82,7 +82,7 @@
         jar="/Users/user/Workspace/TIIS2/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
         jumboMode="true"
         revision="23.0.1"
-        sha1="9c292aef7b8da4ee935f9fd97de12bba05623714">
+        sha1="468bf7e4145a92cae2c24e9236c6347be6665b1d">
         <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/instant-run_a2919abc32ccbc33504ea17a3ff253d7465789aa.jar" />
     </item>
     <item
@@ -124,7 +124,7 @@
         jar="/Users/user/Workspace/TIIS2/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
         jumboMode="true"
         revision="23.0.1"
-        sha1="dcede6e5b53f9d7588f1c891b4f01d4d782b311e">
+        sha1="e300b3d8d44fac332bd79094b522735e1f1b5e1c">
         <dex dex="/Users/user/Workspace/TIIS2/app/build/intermediates/pre-dexed/debug/instant-run-bootstrap_da3858bbfb86afbd7f95e14cee9544b8001074dd.jar" />
     </item>
     <item

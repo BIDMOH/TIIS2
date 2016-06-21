@@ -132,20 +132,13 @@ public class HomeActivityRevised extends BackboneActivity {
              * Releasing wake lock
              */
             WakeLocker.release();
-        }
-    };
 
-
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String s = intent.getStringExtra(CheckForChangesSynchronisationService.SynchronisationService_MESSAGE);
-            Log.d("day5","broadcast service received an intent");
+            Log.d(TAG,"broadcast service received an intent");
 
             Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
             try {
                 // TODO: Auto Refresh Vaccination Queue list from here (uncoment)
-                 ((VaccinationQueueFragment) fragment).updateList();
+                ((VaccinationQueueFragment) fragment).updateList();
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -156,7 +149,6 @@ public class HomeActivityRevised extends BackboneActivity {
             }catch (Exception e){
                 e.printStackTrace();
             }
-
         }
     };
 
@@ -901,21 +893,6 @@ public class HomeActivityRevised extends BackboneActivity {
             Log.i("BAKSTAK", "popping backstack");
             fm.popBackStack();
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        LocalBroadcastManager.getInstance(this).registerReceiver((receiver),
-                new IntentFilter(CheckForChangesSynchronisationService.SynchronisationService_RESULT)
-        );
-    }
-
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
     }
 
 }

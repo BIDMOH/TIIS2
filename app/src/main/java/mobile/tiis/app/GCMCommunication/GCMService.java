@@ -28,7 +28,6 @@ import mobile.tiis.app.base.BackboneApplication;
 
 public class GCMService extends GCMBaseIntentService {
     private String tone;
-    private LocalBroadcastManager broadcaster;
     static final public String SynchronisationService_RESULT = "mobile,giis.app.CheckForChangesSynchronisationService.REQUEST_PROCESSED";
     static final public String SynchronisationService_MESSAGE = "mobile,giis.app.CheckForChangesSynchronisationService..MSG";
 
@@ -67,24 +66,21 @@ public class GCMService extends GCMBaseIntentService {
         BackboneApplication application = (BackboneApplication) getApplication();
         String childId = intent.getStringExtra("message");
         synchronized (application) {
-            application.parseChildById(childId);
+            application.parseGCMChildById(childId);
         }
 
-
-        broadcaster = LocalBroadcastManager.getInstance(getApplicationContext());
-
 //        createNotification(context,childId);
-        sendResult(childId);
+        sendResult(childId,context);
 
 
 	}
 
-    public void sendResult(String message) {
+    public void sendResult(String message,Context context) {
         try {
-            Intent intent = new Intent(SynchronisationService_RESULT);
+            Intent intent = new Intent(CommonUtilities.DISPLAY_MESSAGE_ACTION);
             if (message != null)
                 intent.putExtra(SynchronisationService_MESSAGE, message);
-            broadcaster.sendBroadcast(intent);
+            context.sendBroadcast(intent);
         }catch (Exception e){
             e.printStackTrace();
         }

@@ -1518,6 +1518,25 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
 
+    public long updateChildWithBarcode(ContentValues cv, String barcodeId) {
+        SQLiteDatabase sd = getWritableDatabase();
+        long result = -1;
+        sd.beginTransaction();
+        try {
+            result = sd.update(SQLHandler.Tables.CHILD, cv, SQLHandler.ChildColumns.BARCODE_ID + "=?",
+                    new String[]{
+                            barcodeId
+                    });
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+    }
+
     public void updateAdministerVaccineSchedule(ContentValues cv, String vacc_event_id) {
         SQLiteDatabase db = getWritableDatabase();
 
@@ -2013,6 +2032,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public boolean isChildIDInChildTable(String ID) {
         String selectQuery = "SELECT ID FROM child" +
                 " WHERE ID = '" + ID + "'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            cursor.close();
+            return true;
+        } else {
+            cursor.close();
+            return false;
+        }
+    }
+
+    public boolean isChildBarcodeIDInChildTable(String ID) {
+        String selectQuery = "SELECT BARCODE_ID FROM child" +
+                " WHERE BARCODE_ID = '" + ID + "'";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
