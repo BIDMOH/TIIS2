@@ -353,6 +353,7 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
                  * registering the app to Google Cloud Messaging
                  */
                 regId = getRegistrationId(getApplicationContext());
+                Log.d(TAG,"regID = "+regId);
                 if (regId.equals("")) {
                     registerInBackground();
                 }

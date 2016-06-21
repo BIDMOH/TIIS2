@@ -60,7 +60,6 @@ import mobile.tiis.app.entity.NonVaccinationReason;
 public class AdministerVaccineFragment extends BackHandledFragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener{
 
     private String appointment_id, birthdate, barcode, childId;
-    private static String appId;
     private BackboneApplication app;
     private DatabaseHandler dbh;
     private Boolean SavedState = false;
@@ -142,8 +141,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         SimpleDateFormat ft1 = new SimpleDateFormat("dd-MMM-yyyy");
         Log.d("EBENSEARCH", "Birth date is : "+ft1.format(BackboneActivity.dateParser(birthdate)));
 
-        appId = appointment_id;
-        Log.d("day100","appointment Id = "+appId);
 
         try {
             Date dNow = new Date();
@@ -632,6 +629,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         if (getChildIdCursor != null && getChildIdCursor.getCount() > 0) {
             getChildIdCursor.moveToFirst();
             childId = getChildIdCursor.getString(getChildIdCursor.getColumnIndex(SQLHandler.ChildColumns.ID));
+            Log.d("day100","child Id = "+childId);
             getChildIdCursor.close();
         } else {
 //          toastMessage(getString(R.string.empty_child_id));
@@ -693,7 +691,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                                                     });
                                                     ad22.show();
                                                 }else {
-                                                    savingInProgress = false;
                                                     final AlertDialog ad2 = new AlertDialog.Builder((Activity) getActivity()).create();
                                                     ad2.setTitle("Saved");
                                                     ad2.setMessage(getString(R.string.changes_saved));
@@ -708,16 +705,17 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                                                     });
                                                     ad2.show();
                                                 }
+                                                savingInProgress = false;
                                             }
+
 
                                             @Override
                                             protected Boolean doInBackground(Void... params) {
-                                                if (SavedState) {
-                                                    BackboneApplication application = (BackboneApplication) AdministerVaccineFragment.this.getActivity().getApplication();
-
-                                                    try {
-                                                        int x = Integer.parseInt(childId);
-
+                                                BackboneApplication application = (BackboneApplication) AdministerVaccineFragment.this.getActivity().getApplication();
+                                                try {
+                                                    int x = Integer.parseInt(childId);
+                                                    administerVaccineSaveButtonClicked();
+                                                    if (SavedState) {
                                                         for (AdministerVaccinesModel a : arrayListAdminVacc) {
                                                             try {
                                                                 DatabaseHandler db = application.getDatabaseInstance();
@@ -766,13 +764,14 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
                                                         application.broadcastChildUpdates(Integer.parseInt(childId));
                                                         return true;
-                                                    }catch (NumberFormatException e){
-                                                        getChildId();
-                                                        return false;
                                                     }
+                                                    return true;
+                                                }catch (NumberFormatException e){
+                                                    getChildId();
+                                                    return false;
                                                 }
-                                                return false;
                                             }
+
                                         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
                                     }
@@ -826,7 +825,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                                     });
                                     ad22.show();
                                 }else {
-                                    savingInProgress = false;
                                     final AlertDialog ad2 = new AlertDialog.Builder((Activity) getActivity()).create();
                                     ad2.setTitle("Saved");
                                     ad2.setMessage(getString(R.string.changes_saved));
@@ -841,17 +839,16 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                                     });
                                     ad2.show();
                                 }
+                                savingInProgress = false;
                             }
 
                             @Override
                             protected Boolean doInBackground(Void... params) {
-                                administerVaccineSaveButtonClicked();
-                                if (SavedState) {
-                                    BackboneApplication application = (BackboneApplication) AdministerVaccineFragment.this.getActivity().getApplication();
-
-                                    try {
-                                        int x = Integer.parseInt(childId);
-
+                                BackboneApplication application = (BackboneApplication) AdministerVaccineFragment.this.getActivity().getApplication();
+                                try {
+                                    int x = Integer.parseInt(childId);
+                                    administerVaccineSaveButtonClicked();
+                                    if (SavedState) {
                                         for (AdministerVaccinesModel a : arrayListAdminVacc) {
                                             try {
                                                 DatabaseHandler db = application.getDatabaseInstance();
@@ -900,13 +897,14 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
                                         application.broadcastChildUpdates(Integer.parseInt(childId));
                                         return true;
-                                    }catch (NumberFormatException e){
-                                        getChildId();
-                                        return false;
                                     }
+                                    return true;
+                                }catch (NumberFormatException e){
+                                    getChildId();
+                                    return false;
                                 }
-                                return false;
                             }
+
                         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
                     }

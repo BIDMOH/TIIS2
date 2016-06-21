@@ -555,10 +555,7 @@ public class HomeActivityRevised extends BackboneActivity {
                 application.parseStockAdjustmentReasons();
 
 
-                String hfidFoundInVaccEvOnlyAndNotInHealthFac = application.getDatabaseInstance().getHFIDFoundInVaccEvAndNotInHealthFac();
-                if (hfidFoundInVaccEvOnlyAndNotInHealthFac != null) {
-                    application.parseHealthFacilityThatAreInVaccEventButNotInHealthFac(hfidFoundInVaccEvOnlyAndNotInHealthFac);
-                }
+
 
                 try {
 //                    application.intervalGetChildrenByHealthFacilitySinceLastLogin(); // old service
@@ -568,6 +565,11 @@ public class HomeActivityRevised extends BackboneActivity {
                     e.printStackTrace();
                 }
 
+
+                String hfidFoundInVaccEvOnlyAndNotInHealthFac = application.getDatabaseInstance().getHFIDFoundInVaccEvAndNotInHealthFac();
+                if (hfidFoundInVaccEvOnlyAndNotInHealthFac != null) {
+                    application.parseHealthFacilityThatAreInVaccEventButNotInHealthFac(hfidFoundInVaccEvOnlyAndNotInHealthFac);
+                }
 
                 String placesFoundInChildOnlyAndNotInPlace = application.getDatabaseInstance().getDomicilesFoundInChildAndNotInPlace();
                 if(placesFoundInChildOnlyAndNotInPlace != null){
