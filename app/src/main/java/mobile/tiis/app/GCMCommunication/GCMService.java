@@ -71,6 +71,8 @@ public class GCMService extends GCMBaseIntentService {
         }
 
 
+        broadcaster = LocalBroadcastManager.getInstance(getApplicationContext());
+
 //        createNotification(context,childId);
         sendResult(childId);
 
