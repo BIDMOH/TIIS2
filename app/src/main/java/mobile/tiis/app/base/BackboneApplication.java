@@ -2469,6 +2469,17 @@ public class BackboneApplication extends Application {
         Log.e("service broadcast", webServiceUrl + "");
     }
 
+    public void broadcastChildUpdatesWithBarcodeId(String barcodeId) {
+        final StringBuilder webServiceUrl;
+        Log.d(TAG,"broadcasting child updates for childTempID = "+barcodeId);
+
+        webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC);
+        webServiceUrl.append("BroadcastChildUpdatesWithBarcodeId?barcodeId=").append(barcodeId);
+
+        getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
+        Log.e("service broadcast", webServiceUrl + "");
+    }
+
 
     /**
      * @return child ID
