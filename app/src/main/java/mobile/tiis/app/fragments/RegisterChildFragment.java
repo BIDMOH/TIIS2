@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -402,6 +403,9 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
     private boolean checkDataIntegrityBeforeSave() {
 
+        Log.d("registrar", placeOfBirthSpinner.getSelectedItemPosition()+"");
+        Log.d("registrar", placeOfDomicileSpinner.getSelectedItemPosition()+"");
+
         if (etbarcode.getText().toString().isEmpty() || etbarcode.getText().equals("")) {
             etbarcode.setErrorColor(Color.RED);
             etbarcode.setError(getString(R.string.empty_barcode));
@@ -433,15 +437,22 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
             return false;
         }
         // we have as the last element the one that is empty element. We can not select it.
+        Log.d("registrar", placeOfBirthSpinner.getSelectedItemPosition()+"");
+        Log.d("registrar", placeOfDomicileSpinner.getSelectedItemPosition()+"");
+
         if (placeOfBirthSpinner.getSelectedItemPosition() == 0) {
-            placeOfBirthSpinner.setError(getString(R.string.empty_birthplace));
-            placeOfBirthSpinner.setErrorColor(Color.RED);
+            TextView errorText = (TextView)placeOfBirthSpinner.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText(getString(R.string.empty_birthplace));//changes the selected item text to this
             return false;
         }
         // we have as the last element the one that is empty element. We can not select it.
         if (placeOfDomicileSpinner.getSelectedItemPosition() == 0) {
-            placeOfDomicileSpinner.setError(getString(R.string.empty_village));
-            placeOfDomicileSpinner.setErrorColor(Color.RED);
+            TextView errorText = (TextView)placeOfDomicileSpinner.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText(getString(R.string.empty_village));//changes the selected item text to this
             return false;
         }
 //        If not applicable is selected in the Birthplace or Domicile spinners and Notes is empty , than we need the user to fill the notes field
