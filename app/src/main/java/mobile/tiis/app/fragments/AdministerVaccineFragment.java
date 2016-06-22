@@ -1,5 +1,6 @@
 package mobile.tiis.app.fragments;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -13,6 +14,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -123,9 +127,19 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         return Math.abs(difference);
     }
 
+    private AppCompatActivity parent;
+
+    private android.support.v7.app.ActionBar actionBar;
+
+    Toolbar toolbar;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_child_vaccinate, null);
         setUpView(root);
+
+        parent = (AppCompatActivity) getActivity();
+        actionBar = parent.getSupportActionBar();
+        View v = (View) container;
 
         app = (BackboneApplication) this.getActivity().getApplication();
         dbh = app.getDatabaseInstance();

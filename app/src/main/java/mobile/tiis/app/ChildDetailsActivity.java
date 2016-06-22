@@ -2,6 +2,7 @@ package mobile.tiis.app;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
@@ -9,10 +10,14 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -32,6 +37,7 @@ import mobile.tiis.app.base.BackboneApplication;
 import mobile.tiis.app.database.DatabaseHandler;
 import mobile.tiis.app.database.SQLHandler;
 import mobile.tiis.app.entity.Child;
+import mobile.tiis.app.fragments.ChildAppointmentsListFragment;
 import mobile.tiis.app.helpers.Utils;
 
 /**
@@ -71,6 +77,10 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
 
     private ProgressBar childInfoLoader;
 
+    public boolean navigationClickEventFlag = true;
+
+    public BackboneApplication app;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +88,7 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
         setUpView();
         currentChild = null;
 
-        final BackboneApplication app = (BackboneApplication) getApplication();
+        app = (BackboneApplication) getApplication();
         final Bundle extras = getIntent().getExtras();
         mydb = app.getDatabaseInstance();
 
@@ -280,6 +290,55 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
         parsedChild.setStatus(statusstr);
         return parsedChild;
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        app = (BackboneApplication)this.getApplication();
+        if (id == android.R.id.home) {
+            if (app.saveNeeded){
+                LayoutInflater li = LayoutInflater.from(this);
+                View promptsView = li.inflate(R.layout.custom_alert_dialogue, null);
+
+                android.support.v7.app.AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(this);
+                alertDialogBuilder.setView(promptsView);
+
+                TextView message = (TextView) promptsView.findViewById(R.id.dialogMessage);
+                message.setText("Are you sure you want to Leave Without Saving?");
+
+                alertDialogBuilder
+                        .setCancelable(false)
+                        .setPositiveButton("YES",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        onBackPressed();
+                                        app.saveNeeded = false;
+                                        navigationClickEventFlag = false;
+                                    }
+                                })
+                        .setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        navigationClickEventFlag = true;
+                                        dialog.cancel();
+                                    }
+                                });
+
+                // create alert dialog
+                android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
+
+                // show it
+                alertDialog.show();
+            }
+            else{
+                 navigationClickEventFlag = false;
+            }
+
+            Log.d("cek", "home selected");
+        }
+
+        return navigationClickEventFlag;
     }
 
 
