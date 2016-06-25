@@ -213,7 +213,7 @@
                                 android:layout_weight="0.8"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/the_title_value"
-                                android:text="Immunization Coverage Report (Shceduled)"
+                                android:text="Immunization Coverage Report (Scheduled)"
                                 android:paddingTop="4dp"
                                 android:paddingBottom="4dp"/>
 

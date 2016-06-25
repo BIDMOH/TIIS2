@@ -69,7 +69,7 @@ public class GCMService extends GCMBaseIntentService {
             application.parseGCMChildById(childId);
         }
 
-//        createNotification(context,childId);
+        createNotification(context,"updates received");
         sendResult(childId,context);
 
 
@@ -134,7 +134,7 @@ public class GCMService extends GCMBaseIntentService {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             noti= new Notification.Builder(context)
                     .setContentTitle(context.getResources().getString(R.string.app_name))
-                    .setContentText("TIIS test notification")
+                    .setContentText(message)
                     .setSmallIcon(R.drawable.launcher_icon)
                     .setColor(context.getResources().getColor(R.color.green_500))
                     .setContentIntent(pIntent)
@@ -147,7 +147,7 @@ public class GCMService extends GCMBaseIntentService {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 noti= new Notification.Builder(context)
                         .setContentTitle(context.getResources().getString(R.string.app_name))
-                        .setContentText("TIIS test notification.")
+                        .setContentText(message)
                         .setSmallIcon(R.drawable.launcher_icon)
                         .setContentIntent(pIntent)
                         .setAutoCancel(true)

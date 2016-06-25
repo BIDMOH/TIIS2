@@ -451,7 +451,7 @@ public class HealthFacilityImmunizationCoverageTargetReportFragment extends Frag
                         e.printStackTrace();
                     }
 
-                    String coverage = coveragePercentage+"%";
+                    String coverage = String.format("%.2f", coveragePercentage)+"%";
 
                     ((TextView) doseData.findViewById(R.id.coverage)).setText(coverage);
 
@@ -468,7 +468,7 @@ public class HealthFacilityImmunizationCoverageTargetReportFragment extends Frag
                         e.printStackTrace();
                     }
 
-                    String cummCoverage = cummCoveragePercentage+"%";
+                    String cummCoverage = String.format("%.2f", cummCoveragePercentage)+"%";
 
                     ((TextView) doseData.findViewById(R.id.cumm_coverage)).setText(cummCoverage);
 

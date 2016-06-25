@@ -1,6 +1,10 @@
 package mobile.tiis.app;
 
+import android.accounts.Account;
+import android.accounts.AccountAuthenticatorResponse;
+import android.accounts.AccountManager;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,6 +19,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -27,6 +32,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,12 +43,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import com.google.android.gcm.GCMRegistrar;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import mobile.tiis.app.GCMCommunication.CommonUtilities;
 import mobile.tiis.app.GCMCommunication.ServerUtilities;
@@ -52,6 +67,7 @@ import mobile.tiis.app.adapters.DrawerListItemsAdapter;
 import mobile.tiis.app.base.BackboneActivity;
 import mobile.tiis.app.base.BackboneApplication;
 import mobile.tiis.app.database.DatabaseHandler;
+import mobile.tiis.app.database.SQLHandler;
 import mobile.tiis.app.fragments.FragmentStackManager;
 import mobile.tiis.app.fragments.VaccinationQueueFragment;
 import mobile.tiis.app.helpers.Utils;
@@ -64,6 +80,8 @@ import mobile.tiis.app.postman.SynchronisationService;
  */
 public class HomeActivityRevised extends BackboneActivity {
 
+    public static final String PROPERTY_REG_ID = "tiis_registration_id";
+    private static final String PROPERTY_APP_VERSION = "appVersion";
     IntentFilter filter = new IntentFilter();
     private static final String TAG = "HomeActivityRevised";
     private DrawerLayout drawerLayout;
@@ -115,6 +133,8 @@ public class HomeActivityRevised extends BackboneActivity {
 
     public AlertDialog.Builder alertDialogBuilder;
 
+    protected Handler handler;
+
 
     /**
      * Callback method for Receiving push messages on the main ui
@@ -165,12 +185,24 @@ public class HomeActivityRevised extends BackboneActivity {
         Log.d(TAG, "starting my service");
 
 
+
+
+
         registerReceiver(mHandleMessageReceiver, new IntentFilter(CommonUtilities.DISPLAY_MESSAGE_ACTION));
 
         final BackboneApplication app = (BackboneApplication) getApplication();
         if (app.getLOGGED_IN_FIRSTNAME() != null && app.getLOGGED_IN_LASTNAME() != null && app.getUsername() != null){
             TextView welcomeText = (TextView) nv.getHeaderView(0).findViewById(R.id.welcome_username);
             welcomeText.setText(app.getLOGGED_IN_FIRSTNAME() + " " + app.getLOGGED_IN_LASTNAME() + " " + "(" + app.getUsername() + ")");
+
+
+            StringBuilder webServiceLoginURL = createWebServiceLoginURL(app.getLOGGED_IN_USERNAME(), app.getLOGGED_IN_USER_PASS(),getRegistrationId(getApplicationContext()));
+            try{
+                startWebService(webServiceLoginURL ,app.getLOGGED_IN_USERNAME(),app. getLOGGED_IN_USER_PASS());
+            }catch (NullPointerException e){
+                e.printStackTrace();
+            }
+
         }else{
             forceLogout();
         }
@@ -897,4 +929,103 @@ public class HomeActivityRevised extends BackboneActivity {
         }
     }
 
+
+    private void startWebService(final CharSequence loginURL , final String username, final String password){
+        handler = new Handler();
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+                try
+                {
+                    BackboneApplication app = (BackboneApplication)getApplication();
+                    int balanceCounter = 0;
+                    DefaultHttpClient httpClient = new DefaultHttpClient();
+                    HttpGet httpGet = new HttpGet(loginURL.toString());
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+loginURL.toString());
+                    httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((username + ":" + password).getBytes(), Base64.NO_WRAP));
+                    HttpResponse httpResponse = httpClient.execute(httpGet);
+                    InputStream inputStream = httpResponse.getEntity().getContent();
+                    Log.d(TAG, loginURL.toString());
+
+
+                    ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
+                    bais.reset();
+                    JsonFactory factory = new JsonFactory();
+                    JsonParser jsonParser = factory.createJsonParser(bais);
+                    com.fasterxml.jackson.core.JsonToken token = jsonParser.nextToken();
+
+
+                    if (token != JsonToken.START_OBJECT) {
+                        handler.post(new Runnable() {
+                            public void run() {
+
+
+                                LayoutInflater li = LayoutInflater.from(HomeActivityRevised.this);
+                                View promptsView = li.inflate(R.layout.custom_alert_dialogue, null);
+                                ((TextView)promptsView.findViewById(R.id.dialogMessage)).setText("Account credentials have been modified, please login again with the correct credentials");
+
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(HomeActivityRevised.this);
+                                alertDialogBuilder.setView(promptsView);
+
+                                TextView message = (TextView) promptsView.findViewById(R.id.dialogMessage);
+                                message.setText("Username or password has been update. Please login again");
+
+                                alertDialogBuilder
+                                        .setCancelable(false)
+                                        .setPositiveButton("OK",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int id) {
+                                                        // get user input and set it to result
+                                                        // edit text
+                                                        Intent intent = new Intent(HomeActivityRevised.this, LoginActivity.class);
+                                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                        startActivity(intent);
+                                                        login_preferences.edit().putBoolean("isLoggedIn", false).apply();
+                                                    }
+                                                });
+
+                                // create alert dialog
+                                AlertDialog alertDialog = alertDialogBuilder.create();
+
+                                // show it
+                                alertDialog.show();
+                            }
+                        });
+
+                    }
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+
+    }
+    /**
+     * Gets the current registration ID for application on GCM service.
+     * <p/>
+     * If result is empty, the app needs to register.
+     *
+     * @return registration ID, or empty string if there is no existing
+     * registration ID.
+     */
+    private String getRegistrationId(Context context) {
+        final SharedPreferences prefs = getGCMPreferences(context);
+        String registrationId = prefs.getString(PROPERTY_REG_ID, "");
+        if (registrationId.isEmpty()) {
+            Log.i(TAG, "Registration not found.");
+            return "";
+        }
+        return registrationId;
+    }
+
+    /**
+     * @return Application's {@code SharedPreferences}.
+     */
+    private SharedPreferences getGCMPreferences(Context context) {
+        return getSharedPreferences(HomeActivityRevised.class.getSimpleName(),
+                Context.MODE_PRIVATE);
+    }
 }
