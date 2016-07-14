@@ -298,7 +298,7 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
                 ((TextView) convertView.findViewById(R.id.date)).setText(ft2.format(scheduled_date));
             }else if(a.OPV1!=null){
                 Date date = BackboneActivity.dateParser(a.OPV1);
-                ((TextView) convertView.findViewById(R.id.date)).setText(ft.format(date));
+                ((TextView) convertView.findViewById(R.id.date)).setText(ft2.format(date));
             }
 
             if(a.birthdate!=null) {
