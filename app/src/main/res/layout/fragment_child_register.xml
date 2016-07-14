@@ -320,7 +320,7 @@
                         android:orientation="vertical"
                         android:layout_height="wrap_content">
 
-                    <LinearLayout
+                        <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="100sp"
                         android:id="@+id/title_of_report"
@@ -1352,7 +1352,7 @@
                             android:id="@+id/separator2"
                             android:background="@color/card_grid_tex"/>
 
-                    <LinearLayout
+                        <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="100sp"
                         android:id="@+id/sub_title_of_report"
