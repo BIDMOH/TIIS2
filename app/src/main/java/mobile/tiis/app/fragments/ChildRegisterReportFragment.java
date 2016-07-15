@@ -1,13 +1,14 @@
 package mobile.tiis.app.fragments;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -21,14 +22,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import mobile.tiis.app.ChildDetailsActivity;
-import mobile.tiis.app.CustomViews.NestedListView;
 import mobile.tiis.app.R;
-import mobile.tiis.app.adapters.ChildRegisterReportListAdapter;
+import mobile.tiis.app.adapters.ChildRegisterReportRecyclerAdapter;
 import mobile.tiis.app.base.BackboneActivity;
 import mobile.tiis.app.base.BackboneApplication;
 import mobile.tiis.app.database.DatabaseHandler;
-import mobile.tiis.app.util.ViewAppointmentRow;
 import mobile.tiis.app.util.ViewChildRegisterInfoRow;
 
 /**
@@ -44,14 +42,13 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
     private DatabaseHandler this_database;
     private ArrayList<ViewChildRegisterInfoRow> var;
     private LayoutInflater inflater;
-    private NestedListView childRegisterListView;
-    private ChildRegisterReportListAdapter adapter;
+    private RecyclerView childRegisterListView;
+    private ChildRegisterReportRecyclerAdapter adapter;
     private ProgressBar progressBar;
 
     public static ChildRegisterReportFragment newInstance(int position) {
         ChildRegisterReportFragment f = new ChildRegisterReportFragment();
         Bundle b = new Bundle();
-//        b.putInt(ARG_POSITION, position);
         f.setArguments(b);
         return f;
     }
@@ -69,13 +66,11 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
     }
 
     public void setUpView(View v){
-        progressBar             = (ProgressBar) v.findViewById(R.id.pbar);
-        progressBar             .setVisibility(View.VISIBLE);
+//        progressBar             = (ProgressBar) v.findViewById(R.id.pbar);
+//        progressBar             .setVisibility(View.VISIBLE);
         childRegisterTable      = (TableLayout) v.findViewById(R.id.child_register_table);
-        childRegisterListView   = (NestedListView) v.findViewById(R.id.child_register_nested_listview);
+        childRegisterListView   = (RecyclerView) v.findViewById(R.id.child_register_nested_listview);
         childRegisterListView   .setVisibility(View.GONE);
-
-        setListViewHeightBasedOnChildren(childRegisterListView);
     }
 
 
@@ -109,7 +104,7 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
 
         @Override
         protected void onPreExecute() {
-            progressBar.setVisibility(View.VISIBLE);
+//            progressBar.setVisibility(View.VISIBLE);
 //            lvMonthlyPlanList.setVisibility(View.GONE);
         }
 
@@ -304,6 +299,7 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
 
                 }
                 cursor.close();
+                adapter = new ChildRegisterReportRecyclerAdapter(mVar);
             }
 
             return 1;
@@ -311,13 +307,13 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
 
         @Override
         protected void onPostExecute(Integer result) {
-            progressBar             .setVisibility(View.GONE);
             childRegisterListView   .setVisibility(View.VISIBLE);
             var                     = mVar;
-            adapter                 = new ChildRegisterReportListAdapter(ChildRegisterReportFragment.this.getActivity(), mVar);
-            childRegisterListView   .setAdapter(adapter);
 
-//            displayChildRegisteryList(mVar);
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+            childRegisterListView.setLayoutManager(mLayoutManager);
+            childRegisterListView.setItemAnimator(new DefaultItemAnimator());
+            childRegisterListView.setAdapter(adapter);
         }
 
         @Override
@@ -443,9 +439,5 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
 
             childRegisterTable.addView(convertView);
         }
-
-
     }
-
-
 }
