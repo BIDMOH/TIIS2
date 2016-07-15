@@ -2700,7 +2700,15 @@
                     </LinearLayout>
 
 
+                    <mobile.tiis.app.CustomViews.NestedListView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/child_register_nested_listview">
+
+                    </mobile.tiis.app.CustomViews.NestedListView>
+
                     <TableLayout
+                        android:visibility="gone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/child_register_table">

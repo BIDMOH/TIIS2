@@ -9,6 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -18,7 +22,9 @@ import java.util.Calendar;
 import java.util.Date;
 
 import mobile.tiis.app.ChildDetailsActivity;
+import mobile.tiis.app.CustomViews.NestedListView;
 import mobile.tiis.app.R;
+import mobile.tiis.app.adapters.ChildRegisterReportListAdapter;
 import mobile.tiis.app.base.BackboneActivity;
 import mobile.tiis.app.base.BackboneApplication;
 import mobile.tiis.app.database.DatabaseHandler;
@@ -38,6 +44,9 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
     private DatabaseHandler this_database;
     private ArrayList<ViewChildRegisterInfoRow> var;
     private LayoutInflater inflater;
+    private NestedListView childRegisterListView;
+    private ChildRegisterReportListAdapter adapter;
+    private ProgressBar progressBar;
 
     public static ChildRegisterReportFragment newInstance(int position) {
         ChildRegisterReportFragment f = new ChildRegisterReportFragment();
@@ -60,9 +69,39 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
     }
 
     public void setUpView(View v){
+        progressBar             = (ProgressBar) v.findViewById(R.id.pbar);
+        progressBar             .setVisibility(View.VISIBLE);
         childRegisterTable      = (TableLayout) v.findViewById(R.id.child_register_table);
+        childRegisterListView   = (NestedListView) v.findViewById(R.id.child_register_nested_listview);
+        childRegisterListView   .setVisibility(View.GONE);
+
+        setListViewHeightBasedOnChildren(childRegisterListView);
     }
 
+
+    /**** Method for Setting the Height of the ListView dynamically.
+     **** Hack to fix the issue of not showing all the items of the ListView
+     **** when placed inside a ScrollView  ****/
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null)
+            return;
+
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
+        int totalHeight = 0;
+        View view = null;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            view = listAdapter.getView(i, view, listView);
+            if (i == 0)
+                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, LinearLayout.LayoutParams.WRAP_CONTENT));
+
+            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += view.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+    }
 
     public  class filterList extends AsyncTask<String, Void, Integer> {
 
@@ -70,7 +109,7 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
 
         @Override
         protected void onPreExecute() {
-//            loadingBar.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
 //            lvMonthlyPlanList.setVisibility(View.GONE);
         }
 
@@ -272,8 +311,13 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
 
         @Override
         protected void onPostExecute(Integer result) {
-            var = mVar;
-            displayChildRegisteryList(mVar);
+            progressBar             .setVisibility(View.GONE);
+            childRegisterListView   .setVisibility(View.VISIBLE);
+            var                     = mVar;
+            adapter                 = new ChildRegisterReportListAdapter(ChildRegisterReportFragment.this.getActivity(), mVar);
+            childRegisterListView   .setAdapter(adapter);
+
+//            displayChildRegisteryList(mVar);
         }
 
         @Override
@@ -288,10 +332,10 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
         for (final ViewChildRegisterInfoRow a : nVar) {
 
             View convertView = inflater.inflate(R.layout.child_register_table_item, null);
+
             ((TextView)convertView.findViewById(R.id.sn)).setText(a.sn+"");
             SimpleDateFormat ft = new SimpleDateFormat("dd-MM");
             SimpleDateFormat ft2 = new SimpleDateFormat("dd-MM-yyyy");
-
 
             if(a.OPV0!=null) {
                 Date scheduled_date = BackboneActivity.dateParser(a.OPV0);
