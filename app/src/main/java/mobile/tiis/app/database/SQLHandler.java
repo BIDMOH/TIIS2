@@ -932,5 +932,6 @@ public class SQLHandler {
 
     public interface Views {
         String MONTHLY_PLAN = "monthly_plan";
+        String CHILD_REGISTRY = "child_registry";
     }
 }
