@@ -3,11 +3,14 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/white">
+
     <RelativeLayout
         android:paddingLeft="16dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -57,7 +60,7 @@
                     android:visibility="visible"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"
+                    android:background="@color/black"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"/>
 
@@ -81,7 +84,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"
+                    android:background="@color/black"
                     android:layout_marginTop="32dp"
                     android:layout_marginBottom="32dp"/>
             </LinearLayout>
@@ -115,9 +118,10 @@
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="100sp"
+                android:layout_height="120sp"
                 android:id="@+id/title_of_report"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:background="@color/card_light_text">
 
                 <RelativeLayout
                     android:visibility="visible"
@@ -135,7 +139,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:visibility="visible"
@@ -153,7 +157,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:visibility="visible"
@@ -182,7 +186,7 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:background="@color/card_light_text"/>
+                            android:background="@color/black"/>
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -206,7 +210,7 @@
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/card_light_text"/>
+                                android:background="@color/black"/>
 
                             <RelativeLayout
                                 android:layout_width="0dp"
@@ -231,7 +235,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
 
                 <RelativeLayout
@@ -251,7 +255,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:visibility="visible"
@@ -271,7 +275,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:visibility="visible"
@@ -291,7 +295,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:visibility="visible"
@@ -311,7 +315,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:layout_width="50dp"
@@ -329,7 +333,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:visibility="visible"
@@ -359,7 +363,7 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:background="@color/card_light_text"/>
+                            android:background="@color/black"/>
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -385,7 +389,7 @@
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/card_light_text"/>
+                                android:background="@color/black"/>
 
                             <LinearLayout
                                 android:layout_width="0dp"
@@ -417,7 +421,7 @@
                                     <View
                                         android:layout_width="match_parent"
                                         android:layout_height="1dp"
-                                        android:background="@color/card_light_text"/>
+                                        android:background="@color/black"/>
 
 
                                     <RelativeLayout
@@ -440,7 +444,7 @@
                                 <View
                                     android:layout_width="1dp"
                                     android:layout_height="match_parent"
-                                    android:background="@color/card_light_text"/>
+                                    android:background="@color/black"/>
 
                                 <LinearLayout
                                     android:layout_width="0dp"
@@ -466,7 +470,7 @@
                                     <View
                                         android:layout_width="match_parent"
                                         android:layout_height="1dp"
-                                        android:background="@color/card_light_text"/>
+                                        android:background="@color/black"/>
 
 
                                     <RelativeLayout
@@ -497,7 +501,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:layout_width="60dp"
@@ -516,7 +520,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:layout_width="60dp"
@@ -535,7 +539,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
 
                 <RelativeLayout
@@ -544,19 +548,96 @@
                     android:layout_height="match_parent"
                     android:padding="4dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:gravity="center"
-                        android:text="PENTA"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:gravity="center"
+                                android:text="Penta"/>
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/black"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <RelativeLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:text="1"/>
+
+                            </RelativeLayout>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/black"/>
+
+                            <RelativeLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:text="2"/>
+
+                            </RelativeLayout>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/black"/>
+
+                            <RelativeLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:text="3"/>
+
+                            </RelativeLayout>
+
+
+                        </LinearLayout>
+
+                    </LinearLayout>
 
                 </RelativeLayout>
 
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:visibility="visible"
@@ -564,19 +645,96 @@
                     android:layout_height="match_parent"
                     android:padding="4dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:gravity="center"
-                        android:text="Tarehe Ya Chanjo ya Polio"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:gravity="center"
+                                android:text="Tarehe Ya Chanjo ya Polio"/>
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/black"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <RelativeLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:text="1"/>
+
+                            </RelativeLayout>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/black"/>
+
+                            <RelativeLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:text="2"/>
+
+                            </RelativeLayout>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/black"/>
+
+                            <RelativeLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:text="3"/>
+
+                            </RelativeLayout>
+
+
+                        </LinearLayout>
+
+                    </LinearLayout>
 
                 </RelativeLayout>
 
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:visibility="visible"
@@ -584,19 +742,96 @@
                     android:layout_height="match_parent"
                     android:padding="4dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:gravity="center"
-                        android:text="Tarehe ya Chanjo PCV13"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:gravity="center"
+                                android:text="Tarehe Ya Chanjo ya PCV13"/>
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/black"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <RelativeLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:text="1"/>
+
+                            </RelativeLayout>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/black"/>
+
+                            <RelativeLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:text="2"/>
+
+                            </RelativeLayout>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/black"/>
+
+                            <RelativeLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:text="3"/>
+
+                            </RelativeLayout>
+
+
+                        </LinearLayout>
+
+                    </LinearLayout>
 
                 </RelativeLayout>
 
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:visibility="visible"
@@ -604,19 +839,77 @@
                     android:layout_height="match_parent"
                     android:padding="4dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:gravity="center"
-                        android:text="Tarehe ya Chanjo ya Rota"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:gravity="center"
+                                android:text="Tarehe Ya Chanjo ya Rota"/>
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/black"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <RelativeLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:text="1"/>
+
+                            </RelativeLayout>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/black"/>
+
+                            <RelativeLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:text="2"/>
+
+                            </RelativeLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
 
                 </RelativeLayout>
 
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:visibility="visible"
@@ -624,19 +917,77 @@
                     android:layout_height="match_parent"
                     android:padding="4dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:gravity="center"
-                        android:text="Tarehe ya Chanjo ya Surua/Rubella"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:gravity="center"
+                                android:text="Tarehe Ya Chanjo ya Surua/Rubella"/>
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/black"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <RelativeLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:text="1"/>
+
+                            </RelativeLayout>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/black"/>
+
+                            <RelativeLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:text="2"/>
+
+                            </RelativeLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
 
                 </RelativeLayout>
 
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:visibility="visible"
@@ -666,7 +1017,7 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:background="@color/card_light_text"/>
+                            android:background="@color/black"/>
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -691,7 +1042,7 @@
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/card_light_text"/>
+                                android:background="@color/black"/>
 
 
                             <RelativeLayout
@@ -711,7 +1062,7 @@
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/card_light_text"/>
+                                android:background="@color/black"/>
 
 
                             <RelativeLayout
@@ -737,7 +1088,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:visibility="visible"
@@ -767,7 +1118,7 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:background="@color/card_light_text"/>
+                            android:background="@color/black"/>
 
 
                         <LinearLayout
@@ -793,7 +1144,7 @@
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/card_light_text"/>
+                                android:background="@color/black"/>
 
 
                             <RelativeLayout
@@ -813,7 +1164,7 @@
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/card_light_text"/>
+                                android:background="@color/black"/>
 
 
                             <RelativeLayout
@@ -833,7 +1184,7 @@
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/card_light_text"/>
+                                android:background="@color/black"/>
 
 
                             <RelativeLayout
@@ -860,7 +1211,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:layout_width="200dp"
@@ -889,7 +1240,7 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:background="@color/card_light_text"/>
+                            android:background="@color/black"/>
 
 
                         <LinearLayout
@@ -922,7 +1273,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:layout_width="80dp"
@@ -951,7 +1302,7 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:background="@color/card_light_text"/>
+                            android:background="@color/black"/>
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -983,7 +1334,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:layout_width="200dp"
@@ -1012,7 +1363,7 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:background="@color/card_light_text"/>
+                            android:background="@color/black"/>
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -1037,7 +1388,7 @@
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/card_light_text"/>
+                                android:background="@color/black"/>
 
 
                             <RelativeLayout
@@ -1065,7 +1416,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
 
                 <RelativeLayout
@@ -1079,19 +1430,96 @@
                         android:layout_height="match_parent"
                         android:orientation="vertical">
 
-                        <RelativeLayout
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="0.4">
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:gravity="center"
-                                android:text="Rufaa"/>
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="0.4">
 
-                        </RelativeLayout>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:gravity="center"
+                                    android:text="Rufaa"/>
+
+                            </RelativeLayout>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:background="@color/black"/>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="0.6"
+                                android:orientation="horizontal">
+
+                                <RelativeLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerInParent="true"
+                                        android:text="Kituo alichotoka mtoto"
+                                        android:gravity="center"/>
+
+                                </RelativeLayout>
+
+                                <View
+                                    android:layout_width="1dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/black"/>
+
+
+                                <RelativeLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerInParent="true"
+                                        android:text="Kituo alichopokelewa"
+                                        android:gravity="center"/>
+
+                                </RelativeLayout>
+
+                                <View
+                                    android:layout_width="1dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/black"/>
+
+
+
+                                <RelativeLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerInParent="true"
+                                        android:text="Sababu ya Rufaa"
+                                        android:gravity="center"/>
+
+                                </RelativeLayout>
+
+
+
+                            </LinearLayout>
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
@@ -1100,7 +1528,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:layout_width="200dp"
@@ -1122,7 +1550,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
                                 android:gravity="center"
-                                android:text="Maelezo Mengineyo / Maoni"/>
+                                android:text="Maelezo Mengineyo / Maoni (Mfano: Hakuna Taarifa, Amehama au Amefariki)"/>
 
                         </RelativeLayout>
 
@@ -1134,7 +1562,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
             </LinearLayout>
 
@@ -1146,6 +1574,7 @@
                 android:background="@color/card_grid_tex"/>
 
             <LinearLayout
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="100sp"
                 android:id="@+id/sub_title_of_report"
@@ -1167,7 +1596,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:visibility="visible"
@@ -1185,7 +1614,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:visibility="visible"
@@ -1200,7 +1629,7 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:background="@color/card_light_text"/>
+                            android:background="@color/black"/>
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -1224,7 +1653,7 @@
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/card_light_text"/>
+                                android:background="@color/black"/>
 
                             <RelativeLayout
                                 android:layout_width="0dp"
@@ -1249,7 +1678,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
 
                 <RelativeLayout
@@ -1269,7 +1698,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:visibility="visible"
@@ -1289,7 +1718,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:visibility="visible"
@@ -1309,7 +1738,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:visibility="visible"
@@ -1329,7 +1758,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:layout_width="50dp"
@@ -1347,7 +1776,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:visibility="visible"
@@ -1384,7 +1813,7 @@
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/card_light_text"/>
+                                android:background="@color/black"/>
 
                             <LinearLayout
                                 android:layout_width="0dp"
@@ -1418,7 +1847,7 @@
                                 <View
                                     android:layout_width="1dp"
                                     android:layout_height="match_parent"
-                                    android:background="@color/card_light_text"/>
+                                    android:background="@color/black"/>
 
                                 <LinearLayout
                                     android:layout_width="0dp"
@@ -1454,7 +1883,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:layout_width="60dp"
@@ -1473,7 +1902,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:layout_width="60dp"
@@ -1492,7 +1921,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
 
                 <LinearLayout
@@ -1518,7 +1947,7 @@
                     <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/card_light_text"/>
+                        android:background="@color/black"/>
 
 
                     <RelativeLayout
@@ -1538,7 +1967,7 @@
                     <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/card_light_text"/>
+                        android:background="@color/black"/>
 
                     <RelativeLayout
                         android:layout_width="0dp"
@@ -1560,7 +1989,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <LinearLayout
                     android:visibility="visible"
@@ -1585,7 +2014,7 @@
                     <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/card_light_text"/>
+                        android:background="@color/black"/>
 
 
                     <RelativeLayout
@@ -1605,7 +2034,7 @@
                     <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/card_light_text"/>
+                        android:background="@color/black"/>
 
                     <RelativeLayout
                         android:layout_width="0dp"
@@ -1627,7 +2056,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
 
                 <LinearLayout
@@ -1653,7 +2082,7 @@
                     <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/card_light_text"/>
+                        android:background="@color/black"/>
 
 
                     <RelativeLayout
@@ -1673,7 +2102,7 @@
                     <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/card_light_text"/>
+                        android:background="@color/black"/>
 
                     <RelativeLayout
                         android:layout_width="0dp"
@@ -1696,7 +2125,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <LinearLayout
                     android:visibility="visible"
@@ -1721,7 +2150,7 @@
                     <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/card_light_text"/>
+                        android:background="@color/black"/>
 
 
                     <RelativeLayout
@@ -1743,7 +2172,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <LinearLayout
                     android:visibility="visible"
@@ -1768,7 +2197,7 @@
                     <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/card_light_text"/>
+                        android:background="@color/black"/>
 
 
                     <RelativeLayout
@@ -1790,7 +2219,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:visibility="visible"
@@ -1826,7 +2255,7 @@
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/card_light_text"/>
+                                android:background="@color/black"/>
 
                             <RelativeLayout
                                 android:layout_width="0dp"
@@ -1845,7 +2274,7 @@
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/card_light_text"/>
+                                android:background="@color/black"/>
 
 
                             <RelativeLayout
@@ -1871,7 +2300,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:visibility="visible"
@@ -1913,7 +2342,7 @@
                                 <View
                                     android:layout_width="1dp"
                                     android:layout_height="match_parent"
-                                    android:background="@color/card_light_text"/>
+                                    android:background="@color/black"/>
 
                                 <RelativeLayout
                                     android:layout_width="0dp"
@@ -1932,7 +2361,7 @@
                                 <View
                                     android:layout_width="1dp"
                                     android:layout_height="match_parent"
-                                    android:background="@color/card_light_text"/>
+                                    android:background="@color/black"/>
 
                                 <RelativeLayout
                                     android:layout_width="0dp"
@@ -1953,7 +2382,7 @@
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/card_light_text"/>
+                                android:background="@color/black"/>
 
 
                             <LinearLayout
@@ -1979,7 +2408,7 @@
                                 <View
                                     android:layout_width="1dp"
                                     android:layout_height="match_parent"
-                                    android:background="@color/card_light_text"/>
+                                    android:background="@color/black"/>
 
                                 <RelativeLayout
                                     android:layout_width="0dp"
@@ -1998,7 +2427,7 @@
                                 <View
                                     android:layout_width="1dp"
                                     android:layout_height="match_parent"
-                                    android:background="@color/card_light_text"/>
+                                    android:background="@color/black"/>
 
                                 <RelativeLayout
                                     android:layout_width="0dp"
@@ -2019,7 +2448,7 @@
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/card_light_text"/>
+                                android:background="@color/black"/>
 
 
                             <LinearLayout
@@ -2045,7 +2474,7 @@
                                 <View
                                     android:layout_width="1dp"
                                     android:layout_height="match_parent"
-                                    android:background="@color/card_light_text"/>
+                                    android:background="@color/black"/>
 
                                 <RelativeLayout
                                     android:layout_width="0dp"
@@ -2064,7 +2493,7 @@
                                 <View
                                     android:layout_width="1dp"
                                     android:layout_height="match_parent"
-                                    android:background="@color/card_light_text"/>
+                                    android:background="@color/black"/>
 
                                 <RelativeLayout
                                     android:layout_width="0dp"
@@ -2085,7 +2514,7 @@
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/card_light_text"/>
+                                android:background="@color/black"/>
 
                             <LinearLayout
                                 android:orientation="horizontal"
@@ -2110,7 +2539,7 @@
                                 <View
                                     android:layout_width="1dp"
                                     android:layout_height="match_parent"
-                                    android:background="@color/card_light_text"/>
+                                    android:background="@color/black"/>
 
                                 <RelativeLayout
                                     android:layout_width="0dp"
@@ -2129,7 +2558,7 @@
                                 <View
                                     android:layout_width="1dp"
                                     android:layout_height="match_parent"
-                                    android:background="@color/card_light_text"/>
+                                    android:background="@color/black"/>
 
                                 <RelativeLayout
                                     android:layout_width="0dp"
@@ -2156,7 +2585,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:layout_width="200dp"
@@ -2191,7 +2620,7 @@
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/card_light_text"/>
+                                android:background="@color/black"/>
 
                             <RelativeLayout
                                 android:layout_width="0dp"
@@ -2210,7 +2639,7 @@
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/card_light_text"/>
+                                android:background="@color/black"/>
 
                             <RelativeLayout
                                 android:layout_width="0dp"
@@ -2229,7 +2658,7 @@
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/card_light_text"/>
+                                android:background="@color/black"/>
 
                             <RelativeLayout
                                 android:layout_width="0dp"
@@ -2255,7 +2684,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:layout_width="80dp"
@@ -2297,7 +2726,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:layout_width="200dp"
@@ -2332,7 +2761,7 @@
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/card_light_text"/>
+                                android:background="@color/black"/>
 
 
                             <RelativeLayout
@@ -2360,7 +2789,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
 
                 <RelativeLayout
@@ -2397,7 +2826,7 @@
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/card_light_text"/>
+                                android:background="@color/black"/>
 
 
                             <RelativeLayout
@@ -2417,7 +2846,7 @@
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/card_light_text"/>
+                                android:background="@color/black"/>
 
 
 
@@ -2446,7 +2875,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
                 <RelativeLayout
                     android:layout_width="200dp"
@@ -2488,7 +2917,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/card_light_text"/>
+                    android:background="@color/black"/>
 
             </LinearLayout>
 

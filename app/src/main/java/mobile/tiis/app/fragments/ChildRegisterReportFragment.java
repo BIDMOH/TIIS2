@@ -60,7 +60,6 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
         this.inflater = inflater;
         setUpView(root);
 
-
         new filterList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         return root;
     }

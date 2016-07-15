@@ -19,6 +19,8 @@ import android.widget.TextView;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -453,12 +455,18 @@ public class HealthFacilityImmunizationCoverageTargetReportFragment extends Frag
 
                     String coverage = String.format("%.2f", coveragePercentage)+"%";
 
-                    ((TextView) doseData.findViewById(R.id.coverage)).setText(coverage);
+                    TextView coverageText = (TextView) doseData.findViewById(R.id.coverage);
+                    coverageText.setText(coverage);
 
-
-
-
-
+                    if (coveragePercentage > 90){
+                        coverageText.setBackgroundColor(getResources().getColor(R.color.green_500));
+                    }
+                    if (coveragePercentage <= 90){
+                        coverageText.setBackgroundColor(getResources().getColor(R.color.yellow_500));
+                    }
+                    if (coveragePercentage < 80){
+                        coverageText.setBackgroundColor(getResources().getColor(R.color.red_500));
+                    }
 
                     double cummCoveragePercentage=0;
                     try {

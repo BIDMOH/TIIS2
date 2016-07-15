@@ -396,13 +396,13 @@ public class HealthFacilityImmunizationCoverageScheduledReportFragment extends F
                     TextView coverageText = (TextView) doseData.findViewById(R.id.coverage);
                     coverageText.setText(coverage);
 
-                    if (coveragePercentage < 100){
+                    if (coveragePercentage > 90){
                         coverageText.setBackgroundColor(getResources().getColor(R.color.green_500));
                     }
-                    else if (coveragePercentage < 90){
+                    if (coveragePercentage <= 90){
                         coverageText.setBackgroundColor(getResources().getColor(R.color.yellow_500));
                     }
-                    else if (coveragePercentage < 80){
+                    if (coveragePercentage < 80){
                         coverageText.setBackgroundColor(getResources().getColor(R.color.red_500));
                     }
 
