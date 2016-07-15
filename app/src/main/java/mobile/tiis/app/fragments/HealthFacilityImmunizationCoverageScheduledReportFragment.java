@@ -390,9 +390,21 @@ public class HealthFacilityImmunizationCoverageScheduledReportFragment extends F
                         e.printStackTrace();
                     }
 
+
                     String coverage = coveragePercentage+"%";
 
-                    ((TextView) doseData.findViewById(R.id.coverage)).setText(coverage);
+                    TextView coverageText = (TextView) doseData.findViewById(R.id.coverage);
+                    coverageText.setText(coverage);
+
+                    if (coveragePercentage < 100){
+                        coverageText.setBackgroundColor(getResources().getColor(R.color.green_500));
+                    }
+                    else if (coveragePercentage < 90){
+                        coverageText.setBackgroundColor(getResources().getColor(R.color.yellow_500));
+                    }
+                    else if (coveragePercentage < 80){
+                        coverageText.setBackgroundColor(getResources().getColor(R.color.red_500));
+                    }
 
                     if(j==(size1-1)){
                         Log.d("coze","adding a divider");
