@@ -172,6 +172,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.execSQL(SQLHandler.SQLChildSupplements);
             db.execSQL(SQLHandler.SQLItemLot);
             db.execSQL(SQLHandler.SQLHealthFacilityBalance);
+
         }
     }
 
@@ -420,6 +421,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         long result = db.insert(Tables.STATUS, null, cv);
         return result;
     }
+
+
     public long addUpdateStatus(ContentValues cv, String statusId) {
         // RETRIEVE WRITEABLE DATABASE AND INSERT or UPDATE
         SQLiteDatabase sd = getWritableDatabase();
@@ -2914,7 +2917,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * @param childId
      * @return
      */
-
     public boolean removeChildFromChildTable(String childId) {
         SQLiteDatabase sd = getWritableDatabase();
         String[] whereArgs = new String[]{childId};

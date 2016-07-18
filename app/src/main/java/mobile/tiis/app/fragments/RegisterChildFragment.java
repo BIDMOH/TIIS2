@@ -48,7 +48,7 @@ import mobile.tiis.app.entity.Place;
  */
 public class RegisterChildFragment extends android.support.v4.app.Fragment implements DatePickerDialog.OnDateSetListener, View.OnClickListener, View.OnTouchListener {
 
-    public List<String> placesOfBirthsList, gender, placesOfDomicileList;
+    public List<String> motherVVU, gender, motherTT2;
 
     private Date bdate;
 
@@ -56,9 +56,9 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
     List<Birthplace> birthplaceList;
 
-    PlacesOfBirthAdapter pobAdapter, genderAdapter, podAdapter;
+    PlacesOfBirthAdapter vvuAdapter, genderAdapter, tt2Adapter;
 
-    public MaterialSpinner placeOfBirthSpinner, genderSpinner, placeOfDomicileSpinner;
+    public MaterialSpinner placeOfBirthSpinner, genderSpinner, placeOfDomicileSpinner, motherVVUStatusSpinner, motherTT2StatusSpinner;
 
     public MaterialEditText dateOfBirth;
 
@@ -68,7 +68,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
     private boolean isSavingData = false;
 
-    protected MaterialEditText etbarcode, etFirstName, etSurname, etMotherFirstName, etMotherSurname, etPhone, etNotes,etFirstname2;
+    protected MaterialEditText etbarcode, etFirstName, etSurname, etMotherFirstName, etMotherSurname, etPhone, etNotes,etFirstname2, etMotherVVUStatus, etMotherTT2Status;
 
     String barcode, firstanme, surname, motherFirstname, motherLastname, gender_val, gen, genderChildWithoutApp,firstname2;
 
@@ -124,6 +124,16 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         placeOfDomicileSpinner.setSelection(spVillagePos);
 
 
+        motherTT2 = new ArrayList<>();
+        motherTT2.add("Ndio");
+        motherTT2.add("Hapana");
+        motherTT2.add("Sijui");
+
+        motherVVU = new ArrayList<>();
+        motherVVU.add("1");
+        motherVVU.add("2");
+        motherVVU.add("U");
+
         gender = new ArrayList<>();
         gender.add("Male");
         gender.add("Female");
@@ -131,23 +141,51 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         dateOfBirth.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                if(b){
+                if (b) {
                     pickDate();
                 }
             }
         });
 
-        scanButton.setOnClickListener(RegisterChildFragment.this);
+//        scanButton.setOnClickListener(RegisterChildFragment.this);
         submitButton.setOnClickListener(RegisterChildFragment.this);
 
-//        pobAdapter = new PlacesOfBirthAdapter(RegisterChildFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, placesOfBirthsList);
-//        podAdapter = new PlacesOfBirthAdapter(RegisterChildFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, placesOfDomicileList);
-        genderAdapter = new PlacesOfBirthAdapter(RegisterChildFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, gender);
+        genderAdapter   = new PlacesOfBirthAdapter(RegisterChildFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, gender);
+        vvuAdapter      = new PlacesOfBirthAdapter(RegisterChildFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, motherVVU);
+        tt2Adapter      = new PlacesOfBirthAdapter(RegisterChildFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, motherTT2);
 
-//        placeOfBirthSpinner.setAdapter(pobAdapter);
-//        placeOfDomicileSpinner.setAdapter(podAdapter);
         genderSpinner.setAdapter(genderAdapter);
+        motherTT2StatusSpinner.setAdapter(tt2Adapter);
+        motherVVUStatusSpinner.setAdapter(vvuAdapter);
 
+        motherVVUStatusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (!(i == -1)){
+                    Log.d("vvu_tt2", motherVVU.get(i));
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+        motherTT2StatusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (!(i == -1)){
+                    Log.d("vvu_tt2", motherTT2.get(i));
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
         genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -174,21 +212,25 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
     public void setUpView(View v){
 
-        etbarcode = (MaterialEditText) v. findViewById(R.id.reg_barcode);
-        etFirstName = (MaterialEditText) v. findViewById(R.id.reg_fname);
-        etFirstname2 = (MaterialEditText) v.findViewById(R.id.reg_mname);
-        etSurname = (MaterialEditText) v. findViewById(R.id.reg_surname);
-        etMotherFirstName = (MaterialEditText) v. findViewById(R.id.reg_mot_fname);
-        etMotherSurname = (MaterialEditText) v. findViewById(R.id.reg_mot_sname);
-        etPhone = (MaterialEditText) v. findViewById(R.id.reg_phone);
-        etNotes = (MaterialEditText) v. findViewById(R.id.reg_notes);
-        dateOfBirth = (MaterialEditText) v.findViewById(R.id.reg_dob);
+        etbarcode           = (MaterialEditText) v. findViewById(R.id.reg_barcode);
+        etFirstName         = (MaterialEditText) v. findViewById(R.id.reg_fname);
+        etFirstname2        = (MaterialEditText) v.findViewById(R.id.reg_mname);
+        etSurname           = (MaterialEditText) v. findViewById(R.id.reg_surname);
+        etMotherFirstName   = (MaterialEditText) v. findViewById(R.id.reg_mot_fname);
+        etMotherSurname     = (MaterialEditText) v. findViewById(R.id.reg_mot_sname);
+        etPhone             = (MaterialEditText) v. findViewById(R.id.reg_phone);
+        etNotes             = (MaterialEditText) v. findViewById(R.id.reg_notes);
+        dateOfBirth         = (MaterialEditText) v.findViewById(R.id.reg_dob);
+        etMotherVVUStatus   = (MaterialEditText) v.findViewById(R.id.reg_mot_vvu_sts);
+        etMotherVVUStatus   = (MaterialEditText) v.findViewById(R.id.reg_mot_tt2_sts);
 
         placeOfBirthSpinner = (MaterialSpinner) v.findViewById(R.id.reg_spin_pob);
         placeOfDomicileSpinner = (MaterialSpinner) v.findViewById(R.id.reg_spin_pod);
         genderSpinner = (MaterialSpinner) v.findViewById(R.id.reg_spin_gender);
+        motherVVUStatusSpinner  = (MaterialSpinner) v.findViewById(R.id.reg_spin_mother_vvu_status);
+        motherTT2StatusSpinner  = (MaterialSpinner) v.findViewById(R.id.reg_spin_mother_tt2_status);
 
-        scanButton = (Button) v.findViewById(R.id.reg_scan_btn);
+//        scanButton = (Button) v.findViewById(R.id.reg_scan_btn);
         submitButton = (Button) v.findViewById(R.id.reg_submit_btn);
 
         progressDialog = new ProgressDialog(getActivity());
@@ -196,6 +238,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         progressDialog.setMessage("Saving the child. \nPlease wait ...");
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setCancelable(false);
+
 
 
 
@@ -214,14 +257,14 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.reg_scan_btn) {
-            if (barcode != null) {
-                if (!barcode.equalsIgnoreCase("")) {
-                    showDialogGoingScanWhenHasBarcode();
-                }
-
-            }
-        }
+//        if (v.getId() == R.id.reg_scan_btn) {
+//            if (barcode != null) {
+//                if (!barcode.equalsIgnoreCase("")) {
+//                    showDialogGoingScanWhenHasBarcode();
+//                }
+//
+//            }
+//        }
 
         if(v.getId() == R.id.reg_submit_btn){
             if(!isSavingData) {
@@ -515,6 +558,9 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         contentValues.put(SQLHandler.ChildColumns.BIRTHPLACE, birthplaceList.get(placeOfBirthSpinner.getSelectedItemPosition() - 1).getName());
         contentValues.put(SQLHandler.ChildColumns.BIRTHPLACE_ID, birthplaceList.get(placeOfBirthSpinner.getSelectedItemPosition() - 1).getId());
 
+        contentValues.put(SQLHandler.ChildColumns.MOTHER_VVU_STS, motherVVU.get(motherVVUStatusSpinner.getSelectedItemPosition() - 1));
+        contentValues.put(SQLHandler.ChildColumns.MOTHER_TT2_STS, motherTT2.get(motherTT2StatusSpinner.getSelectedItemPosition()-1));
+
         contentValues.put(SQLHandler.ChildColumns.DOMICILE, placeList.get(placeOfDomicileSpinner.getSelectedItemPosition() - 1).getName());
         contentValues.put(SQLHandler.ChildColumns.DOMICILE_ID, placeList.get(placeOfDomicileSpinner.getSelectedItemPosition() - 1).getId());
 
@@ -533,6 +579,8 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         contentValues.put("modfied_at", "/Date(" + Calendar.getInstance().getTime().getTime() + "-0500)/");
         contentValues.put(SQLHandler.ChildColumns.PHONE, etPhone.getText().toString());
         contentValues.put(SQLHandler.ChildColumns.NOTES, etNotes.getText().toString());
+        contentValues.put(SQLHandler.ChildColumns.MOTHER_TT2_STS, etMotherTT2Status.getText().toString());
+        contentValues.put(SQLHandler.ChildColumns.MOTHER_VVU_STS, etMotherVVUStatus.getText().toString());
         contentValues.put("updated", 1);
         contentValues.put("owners_username", "");
         contentValues.put("STATUS_ID", "");
@@ -577,7 +625,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                             etNotes.getText().toString(),
                             app.getLOGGED_IN_USER_ID(),
                             modifiedOn.getTime(),
-                            uuid,etFirstname2.getText().toString());
+                            uuid,etFirstname2.getText().toString(), etMotherVVUStatus.getText().toString(), etMotherTT2Status.getText().toString());
                 }catch(Exception exception){
                     exception.printStackTrace();
                 }
@@ -658,7 +706,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
     }
 
     private synchronized void registerChildWithoutAppointments(String barcode, String fristname, String lastname, Date bDate, String gender, String  hfid, String birthPlaceId, String domId,
-                                                               String addr, String phone, String motherFirstname, String motherLastname, String notes, String userID, Date modOn, final String tempId,String firstname2) {
+                                                               String addr, String phone, String motherFirstname, String motherLastname, String notes, String userID, Date modOn, final String tempId,String firstname2, String threadMotherVVUStatus, String threadMotherTT2Status) {
         new Thread() {
             String threadBDateString;
             String threadModOn;
@@ -688,29 +736,33 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
             String threadUserID;
             String threadTempId;
             String threadFirstname2;
+            String threadMotherVVUStatus;
+            String threadMotherTT2Status;
 
             public Thread setData(String threadbarcode, String threadfristname, String threadLastname, Date threadBDate, String threadGender, String threadhfid, String threadBirthPlaceID, String threadDomID,
-                                  String threadAddr, String threadPhone, String threadMotherFirstname, String threadMotherLastname, String threadNotes, String threadUserID, Date threadModOn, String tempId,String threadFirstname2) {
+                                  String threadAddr, String threadPhone, String threadMotherFirstname, String threadMotherLastname, String threadNotes, String threadUserID, Date threadModOn, String tempId,String threadFirstname2, String threadMotherVVUStatus, String threadMotherTT2Status) {
 
                 try {
-                    this.threadbarcode = threadbarcode;
-                    this.threadfristname = threadfristname;
-                    this.threadFirstname2 = threadFirstname2;
-                    this.threadLastname = threadLastname;
-                    this.threadGender = threadGender;
-                    this.threadhfid = threadhfid;
-                    this.threadBirthPlaceID = threadBirthPlaceID;
-                    this.threadDomID = threadDomID;
-                    this.threadAddr = threadAddr;
-                    this.threadPhone = threadPhone;
-                    this.threadMotherFirstname = threadMotherFirstname;
-                    this.threadMotherLastname = threadMotherLastname;
-                    this.threadNotes = threadNotes;
-                    this.threadUserID = threadUserID;
-                    this.threadTempId = tempId;
-                    this.threadModOn = URLEncoder.encode(new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(threadModOn), "utf-8");
-                    this.threadBDateString = URLEncoder.encode(new SimpleDateFormat("yyyy-MM-dd").format(threadBDate), "utf-8");
-                    this.threadGender = threadGender;
+                    this.threadbarcode          = threadbarcode;
+                    this.threadfristname        = threadfristname;
+                    this.threadFirstname2       = threadFirstname2;
+                    this.threadLastname         = threadLastname;
+                    this.threadGender           = threadGender;
+                    this.threadhfid             = threadhfid;
+                    this.threadBirthPlaceID     = threadBirthPlaceID;
+                    this.threadDomID            = threadDomID;
+                    this.threadAddr             = threadAddr;
+                    this.threadPhone            = threadPhone;
+                    this.threadMotherFirstname  = threadMotherFirstname;
+                    this.threadMotherLastname   = threadMotherLastname;
+                    this.threadNotes            = threadNotes;
+                    this.threadUserID           = threadUserID;
+                    this.threadTempId           = tempId;
+                    this.threadModOn            = URLEncoder.encode(new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(threadModOn), "utf-8");
+                    this.threadBDateString      = URLEncoder.encode(new SimpleDateFormat("yyyy-MM-dd").format(threadBDate), "utf-8");
+                    this.threadGender           = threadGender;
+                    this.threadMotherVVUStatus  = threadMotherVVUStatus;
+                    this.threadMotherTT2Status  = threadMotherTT2Status;
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -724,7 +776,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                 BackboneApplication backbone = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
 
                 int results = backbone.registerChildWithAppoitments(threadbarcode, threadfristname, threadLastname, threadBDateString, threadGender, threadhfid, threadBirthPlaceID, threadDomID, threadAddr
-                        , threadPhone, threadMotherFirstname, threadMotherLastname, threadNotes, threadUserID, threadModOn, null,threadFirstname2,threadTempId,threadbarcode);
+                        , threadPhone, threadMotherFirstname, threadMotherLastname, threadNotes, threadUserID, threadModOn, null,threadFirstname2,threadTempId,threadbarcode, threadMotherVVUStatus, threadMotherTT2Status);
                 if(results!=-1) {
                     Intent childDetailsActivity = new Intent(getActivity(), ChildDetailsActivity.class);
                     Bundle bnd = new Bundle();
@@ -746,7 +798,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                 }
             }
 
-        }.setData(barcode, fristname, lastname, bDate, gender, hfid, birthPlaceId, domId, addr, phone, motherFirstname, motherLastname, notes, userID, modOn, tempId,firstname2).start();
+        }.setData(barcode, fristname, lastname, bDate, gender, hfid, birthPlaceId, domId, addr, phone, motherFirstname, motherLastname, notes, userID, modOn, tempId,firstname2, threadMotherVVUStatus, threadMotherTT2Status).start();
     }
 
 }

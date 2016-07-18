@@ -2488,7 +2488,7 @@ public class BackboneApplication extends Application {
     private int childId;
     public int registerChildWithAppoitments(String barcode, String fristname, String lastname, String bDate, String gender, String hfid, String birthPlaceId, String domId,
                                             String addr, String phone, String motherFirstname, String motherLastname, String notes, String userID, String modOn,
-                                            PostmanModel postmanModel, String firstname2,final String threadTempId, final String threadbarcode) {
+                                            PostmanModel postmanModel, String firstname2,final String threadTempId, final String threadbarcode, String motherVVUStatus, String motherTT2Status) {
         childId = -1;
         final StringBuilder webServiceUrl;
         if (postmanModel == null) {

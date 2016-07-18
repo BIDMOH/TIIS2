@@ -53,6 +53,17 @@ public class GIISContract {
         String MODIFIED_ON = "MODIFIED_ON";
         String HEALTH_FACILITY_ID = "HEALTH_FACILITY_ID";
     }
+
+    interface  CummulativeSerialNumberColumns{
+        String ID = "ID";
+        String YEAR = "YEAR";
+        String MONTH = "MONTH";
+        String CHILD_ID = "CHILD_ID";
+        String CUMMULATIVE_SERIAL_NUMBER = "CUMMULATIVE_SERIAL_NUMBER";
+        String MODIFIED_ON = "MODIFIED_ON";
+        String HEALTH_FACILITY_ID = "HEALTH_FACILITY_ID";
+    }
+
     interface AdjustmentColumns {
         String ID = "ID";
         String NAME = "NAME";
@@ -106,6 +117,9 @@ public class GIISContract {
         String STATUS = "STATUS";
         String HEALTH_FACILITY_ID = "HEALTH_FACILITY_ID";
         String HEALTH_FACILITY = "HEALTH_FACILITY";
+        String MOTHER_VVU_STS  = "MOTHER_VVU_STS";
+        String MOTHER_TT2_STS = "MOTHER_TT2_STS";
+        String CUMMULATIVE_SERIAL_NUMBER = "CUMMULATIVE_SERIAL_NUMBER";
     }
 
     interface  StatusColumns{

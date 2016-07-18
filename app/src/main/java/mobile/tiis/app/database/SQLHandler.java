@@ -505,6 +505,7 @@ public class SQLHandler {
                     + GIISContract.PlaceColumns.CODE + " TEXT,"
                     + GIISContract.PlaceColumns.MODIFIED_ON + " DATETIME, "
                     + GIISContract.PlaceColumns.HEALTH_FACILITY_ID + " TEXT);";
+
     public static final String SQLUserTable =
             "CREATE TABLE " + Tables.USER + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -524,6 +525,7 @@ public class SQLHandler {
                     + GIISContract.UserColumns.LASTLOGIN + " DATETIME, "
                     + GIISContract.UserColumns.USER_ROLE_ID + " TEXT,"
                     + GIISContract.UserColumns.HEALTH_FACILITY_ID + " TEXT);";
+
     public static final String SQLChildTable =
             "CREATE TABLE " + Tables.CHILD + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -556,6 +558,9 @@ public class SQLHandler {
                     + GIISContract.ChildColumns.MODIFIED_ON + " TEXT,"
                     + GIISContract.ChildColumns.MODIFIED_BY + " TEXT,"
                     + GIISContract.ChildColumns.STATUS_ID + " TEXT,"
+                    + GIISContract.ChildColumns.MOTHER_VVU_STS + " TEXT,"
+                    + GIISContract.ChildColumns.MOTHER_TT2_STS + " TEXT,"
+                    + GIISContract.ChildColumns.CUMMULATIVE_SERIAL_NUMBER + " TEXT,"
                     + GIISContract.ChildColumns.HEALTH_FACILITY_ID + " TEXT);";
     public static final String SQLStatusTable =
             "CREATE TABLE " + Tables.STATUS + " ("
@@ -679,6 +684,16 @@ public class SQLHandler {
         String VALUE = "VALUE";
     }
 
+    public interface CummulativeSerialNumberColumns{
+        String ID = "ID";
+        String YEAR = "YEAR";
+        String MONTH = "MONTH";
+        String CUMMULATIVE_SERIAL_NUMBER = "CUMMULATIVE_SERIAL_NUMBER";
+        String CHILD_ID = "CHILD_ID";
+        String MODIFIED_ON = "MODIFIED_ON";
+        String HEALTH_FACILITY_ID = "HEALTH_FACILITY_ID";
+    }
+
     public interface UserColumns {
         String ID = "ID";
         String USERNAME = "USERNAME";
@@ -695,35 +710,38 @@ public class SQLHandler {
         String HEALTH_FACILITY_ID = "HEALTH_FACILITY_ID";
     }
 
-        public interface ChildColumns {
-                String ID = "ID";
-                String SYSTEM_ID = "SYSTEM_ID";
-                String BARCODE_ID = "BARCODE_ID";
-                String TEMP_ID = "TEMP_ID";
-                String HEALTH_FACILITY = "HEALTH_FACILITY";
-                String FIRSTNAME1 = "FIRSTNAME1";
-                String FIRSTNAME2 = "FIRSTNAME2";
-                String LASTNAME1 = "LASTNAME1";
-                String BIRTHDATE = "BIRTHDATE";
-                String GENDER = "GENDER";
-                String BIRTHPLACE_ID = "BIRTHPLACE_ID";
-                String BIRTHPLACE = "BIRTHPLACE";
-                String COMMUNITY_ID = "COMMUNITY_ID";
-                String DOMICILE_ID = "DOMICILE_ID";
-                String DOMICILE = "DOMICILE";
-                String ADDRESS = "ADDRESS";
-                String PHONE = "PHONE";
-                String MOBILE = "MOBILE";
-                String MOTHER_FIRSTNAME = "MOTHER_FIRSTNAME";
-                String MOTHER_LASTNAME = "MOTHER_LASTNAME";
-                String MOTHER_ID = "MOTHER_ID";
-                String NOTES = "NOTES";
-                String MODIFIED_ON = "MODIFIED_ON";
-                String MODIFIED_BY = "MODIFIED_BY";
-                String STATUS_ID = "STATUS_ID";
-                String STATUS = "STATUS";
-                String HEALTH_FACILITY_ID = "HEALTH_FACILITY_ID";
-        }
+    public interface ChildColumns {
+        String ID = "ID";
+        String SYSTEM_ID = "SYSTEM_ID";
+        String BARCODE_ID = "BARCODE_ID";
+        String TEMP_ID = "TEMP_ID";
+        String HEALTH_FACILITY = "HEALTH_FACILITY";
+        String FIRSTNAME1 = "FIRSTNAME1";
+        String FIRSTNAME2 = "FIRSTNAME2";
+        String LASTNAME1 = "LASTNAME1";
+        String BIRTHDATE = "BIRTHDATE";
+        String GENDER = "GENDER";
+        String BIRTHPLACE_ID = "BIRTHPLACE_ID";
+        String BIRTHPLACE = "BIRTHPLACE";
+        String COMMUNITY_ID = "COMMUNITY_ID";
+        String DOMICILE_ID = "DOMICILE_ID";
+        String DOMICILE = "DOMICILE";
+        String ADDRESS = "ADDRESS";
+        String PHONE = "PHONE";
+        String MOBILE = "MOBILE";
+        String MOTHER_FIRSTNAME = "MOTHER_FIRSTNAME";
+        String MOTHER_LASTNAME = "MOTHER_LASTNAME";
+        String MOTHER_ID = "MOTHER_ID";
+        String NOTES = "NOTES";
+        String MODIFIED_ON = "MODIFIED_ON";
+        String MODIFIED_BY = "MODIFIED_BY";
+        String STATUS_ID = "STATUS_ID";
+        String STATUS = "STATUS";
+        String MOTHER_VVU_STS = "MOTHER_VVU_STS";
+        String MOTHER_TT2_STS = "MOTHER_TT2_STS";
+        String CUMMULATIVE_SERIAL_NUMBER = "CUMMULATIVE_SERIAL_NUMBER";
+        String HEALTH_FACILITY_ID = "HEALTH_FACILITY_ID";
+    }
 
     public interface StatusColumns {
         String ID = "ID";
@@ -927,7 +945,7 @@ public class SQLHandler {
         String HEALTH_FACILITY_BALANCE = "health_facility_balance";
         String BIRTHPLACE = "birthplace";
         String CONFIG = "config";
-            String ADJUSTMENT_REASONS = "Adjustment_Reasons";
+        String ADJUSTMENT_REASONS = "Adjustment_Reasons";
     }
 
     public interface Views {
