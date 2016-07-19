@@ -590,7 +590,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         contentValues.put("modfied_at", "/Date(" + Calendar.getInstance().getTime().getTime() + "-0500)/");
         contentValues.put(SQLHandler.ChildColumns.PHONE, etPhone.getText().toString());
         contentValues.put(SQLHandler.ChildColumns.NOTES, etNotes.getText().toString());
-        contentValues.put(SQLHandler.ChildColumns.CUMMULATIVE_SERIAL_NUMBER, etChildCumulativeSn.getText().toString());
+        contentValues.put(SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER, etChildCumulativeSn.getText().toString());
         contentValues.put(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR, "2016"); //TODO: CUMMULATIVE SN get from substring of the Cummulative SN
         contentValues.put("updated", 1);
         contentValues.put("owners_username", "");
