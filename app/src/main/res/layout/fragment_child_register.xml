@@ -1569,7 +1569,6 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="4dp"
                 android:id="@+id/separator2"
                 android:background="@color/card_grid_tex"/>
 
