@@ -560,7 +560,8 @@ public class SQLHandler {
                     + GIISContract.ChildColumns.STATUS_ID + " TEXT,"
                     + GIISContract.ChildColumns.MOTHER_VVU_STS + " TEXT,"
                     + GIISContract.ChildColumns.MOTHER_TT2_STS + " TEXT,"
-                    + GIISContract.ChildColumns.CUMMULATIVE_SERIAL_NUMBER + " TEXT,"
+                    + GIISContract.ChildColumns.CUMULATIVE_SERIAL_NUMBER + " TEXT,"
+                    + GIISContract.ChildColumns.CHILD_REGISTRY_YEAR + " TEXT,"
                     + GIISContract.ChildColumns.HEALTH_FACILITY_ID + " TEXT);";
     public static final String SQLStatusTable =
             "CREATE TABLE " + Tables.STATUS + " ("
@@ -739,7 +740,8 @@ public class SQLHandler {
         String STATUS = "STATUS";
         String MOTHER_VVU_STS = "MOTHER_VVU_STS";
         String MOTHER_TT2_STS = "MOTHER_TT2_STS";
-        String CUMMULATIVE_SERIAL_NUMBER = "CUMMULATIVE_SERIAL_NUMBER";
+        String CUMULATIVE_SERIAL_NUMBER = "CUMULATIVE_SERIAL_NUMBER";
+        String CHILD_REGISTRY_YEAR = "CHILD_REGISTRY_YEAR";
         String HEALTH_FACILITY_ID = "HEALTH_FACILITY_ID";
     }
 

@@ -3,13 +3,11 @@ package mobile.tiis.app.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,11 +41,9 @@ import mobile.tiis.app.base.BackboneActivity;
 import mobile.tiis.app.base.BackboneApplication;
 import mobile.tiis.app.database.DatabaseHandler;
 import mobile.tiis.app.database.SQLHandler;
-import mobile.tiis.app.entity.AdministerVaccinesModel;
 import mobile.tiis.app.entity.Birthplace;
 import mobile.tiis.app.entity.Child;
 import mobile.tiis.app.entity.HealthFacility;
-import mobile.tiis.app.entity.ImmunizationCardItem;
 import mobile.tiis.app.entity.Place;
 import mobile.tiis.app.entity.Status;
 import mobile.tiis.app.util.ViewAppointmentRow;
@@ -72,11 +68,11 @@ public class ChildSummaryPagerFragment extends Fragment {
 
     private String hf_id, child_id, birthplacestr, villagestr, hfstr, statusstr, gender_val, birthdate_val;
 
-    private ArrayList<String> gender;
+    private ArrayList<String> gender, vvuStatusList, tt2StatusList;
 
     private String localBarcode = "";
 
-    private String tempIdOrig, firstnameOrig, lastnameOrig, birthdateOrig, motherFirOrig, motherLastOrig, phoneOrig, notesOrig, barcodeOrig,firstname2Orig;
+    private String tempIdOrig, firstnameOrig, lastnameOrig, birthdateOrig, motherFirOrig, motherLastOrig, phoneOrig, notesOrig, barcodeOrig,firstname2Orig, vvuStatusOrig, tt2StatusOrig, childCummulativeSnOrig, childRegistryYearOrig;
 
     private int birthplaceOrig, villageOrig, healthFacOrig, statusOrig, genderOrig;
 
@@ -100,11 +96,11 @@ public class ChildSummaryPagerFragment extends Fragment {
 
     private boolean editable = false;
 
-    private MaterialEditText metBarcodeValue, metSystemID, metFirstName, metNotesValue,metMiddleName, metLastName, metMothersFirstName, metMothersSurname, metPhoneNumber, metDOB;
+    private MaterialEditText metBarcodeValue, metFirstName, metNotesValue,metMiddleName, metLastName, metMothersFirstName, metMothersSurname, metPhoneNumber, metDOB, metCummulativeSn;
 
     private VaccinationHistoryListAdapter adapter;
 
-    private PlacesOfBirthAdapter spinnerAdapter;
+    private PlacesOfBirthAdapter spinnerAdapter, vvuSpinnerAdapter, tt2SpinnerAdapter;
 
     private ListView lvImmunizationHistory;
 
@@ -114,7 +110,7 @@ public class ChildSummaryPagerFragment extends Fragment {
 
     private Button editButton, saveButton;
 
-    private MaterialSpinner ms, pobSpinner, villageSpinner, healthFacilitySpinner, statusSpinner;
+    private MaterialSpinner ms, pobSpinner, villageSpinner, healthFacilitySpinner, statusSpinner, VVUSpinner, TT2Spinner;
 
     private DatabaseHandler mydb;
 
@@ -162,12 +158,23 @@ public class ChildSummaryPagerFragment extends Fragment {
         gender.add("Male");
         gender.add("Female");
 
-        spinnerAdapter = new PlacesOfBirthAdapter(ChildSummaryPagerFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, gender);
+        tt2StatusList   = new ArrayList<>();
+        tt2StatusList.add("Ndio");
+        tt2StatusList.add("Hapana");
+        tt2StatusList.add("Sijui");
+
+        vvuStatusList   = new ArrayList<>();
+        vvuStatusList.add("1");
+        vvuStatusList.add("2");
+        vvuStatusList.add("U");
+
+        spinnerAdapter      = new PlacesOfBirthAdapter(ChildSummaryPagerFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, gender);
+        vvuSpinnerAdapter   = new PlacesOfBirthAdapter(ChildSummaryPagerFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, tt2StatusList);
+        tt2SpinnerAdapter   = new PlacesOfBirthAdapter(ChildSummaryPagerFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, vvuStatusList);
 
         View header = (View) inflater.inflate(R.layout.childinfo_summary_header, null);
 
         metBarcodeValue     = (MaterialEditText) header.findViewById(R.id.met_barcode_value);
-        metSystemID         = (MaterialEditText) header.findViewById(R.id.met_sysId_value);
         metFirstName        = (MaterialEditText) header.findViewById(R.id.met_fname_value);
         metMiddleName       = (MaterialEditText) header.findViewById(R.id.met_mname_value);
         metLastName         = (MaterialEditText) header.findViewById(R.id.met_surname_value);
@@ -176,12 +183,15 @@ public class ChildSummaryPagerFragment extends Fragment {
         metPhoneNumber      = (MaterialEditText) header.findViewById(R.id.met_phone_value);
         metDOB              = (MaterialEditText) header.findViewById(R.id.met_dob_value);
         metNotesValue       = (MaterialEditText) header.findViewById(R.id.met_notes_value);
+        metCummulativeSn    = (MaterialEditText) header.findViewById(R.id.met_cummulative_sn);
 
         ms                  = (MaterialSpinner) header.findViewById(R.id.spin_gender);
         pobSpinner          = (MaterialSpinner) header.findViewById(R.id.spin_pob);
         villageSpinner      = (MaterialSpinner) header.findViewById(R.id.spin_village);
         healthFacilitySpinner=(MaterialSpinner) header.findViewById(R.id.spin_health_facility);
         statusSpinner       = (MaterialSpinner) header.findViewById(R.id.spin_status);
+        VVUSpinner          = (MaterialSpinner) header.findViewById(R.id.spin_vvu_status);
+        TT2Spinner          = (MaterialSpinner) header.findViewById(R.id.spin_tt2_status);
 
         editButton          = (Button) header.findViewById(R.id.edit_button);
         saveButton          = (Button) header.findViewById(R.id.save_button);
@@ -265,6 +275,7 @@ public class ChildSummaryPagerFragment extends Fragment {
                 healthFacilityList = mydb.getAllHealthFacility();
 
                 statusList = mydb.getStatus();
+
                 return null;
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -418,7 +429,6 @@ public class ChildSummaryPagerFragment extends Fragment {
     public void enableUserInputs(boolean fieldStatus){
         editable = fieldStatus;
         metBarcodeValue.setFocusableInTouchMode(fieldStatus);
-        metSystemID     .setFocusableInTouchMode(fieldStatus);
         metFirstName    .setFocusableInTouchMode(fieldStatus);
         metMiddleName   .setFocusableInTouchMode(fieldStatus);
         metLastName     .setFocusableInTouchMode(fieldStatus);
@@ -428,12 +438,15 @@ public class ChildSummaryPagerFragment extends Fragment {
         metMothersSurname       .setFocusableInTouchMode(fieldStatus);
         metPhoneNumber          .setFocusableInTouchMode(fieldStatus);
         metDOB                  .setFocusableInTouchMode(false);
+        metCummulativeSn        .setFocusableInTouchMode(fieldStatus);
 
         ms                      .setEnabled(fieldStatus);
         pobSpinner              .setEnabled(fieldStatus);
         villageSpinner          .setEnabled(fieldStatus);
         healthFacilitySpinner   .setEnabled(fieldStatus);
         statusSpinner           .setEnabled(fieldStatus);
+        VVUSpinner              .setEnabled(fieldStatus);
+        TT2Spinner              .setEnabled(fieldStatus);
 
         if(!fieldStatus){
             ms.setBaseColor(R.color.card_light_text);
@@ -500,12 +513,16 @@ public class ChildSummaryPagerFragment extends Fragment {
 
             localBarcode = currentChild.getBarcodeID();
 
+            Log.d("CSN", "cummulative saved");
+
+            metCummulativeSn        .setText(currentChild.getChildCumulativeSn());
+            childCummulativeSnOrig  = currentChild.getChildCumulativeSn();
+
             metBarcodeValue     .setText(currentChild.getBarcodeID());
             barcodeOrig         = currentChild.getBarcodeID();
             tempIdOrig          = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.TEMP_ID));
 
             childId = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.ID));
-            metSystemID.setText(childId);
 
             metFirstName.setText(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME1)));
             metNotesValue.setText(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.NOTES)));
@@ -533,6 +550,44 @@ public class ChildSummaryPagerFragment extends Fragment {
 
             notesOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.NOTES));
 
+            if (mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_VVU_STS))!= null){
+                vvuStatusOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_VVU_STS));
+            }else {
+                vvuStatusOrig = "";
+            }
+
+
+            VVUSpinner.setAdapter(vvuSpinnerAdapter);
+            switch (vvuStatusOrig){
+                case "1":
+                    VVUSpinner.setSelection(1);
+                    break;
+                case "2":
+                    VVUSpinner.setSelection(2);
+                    break;
+                case "U":
+                    VVUSpinner.setSelection(3);
+                    break;
+            }
+
+            if (mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_TT2_STS)) != null){
+                tt2StatusOrig   = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_TT2_STS));
+            }else {
+                tt2StatusOrig = "";
+            }
+
+            TT2Spinner.setAdapter(tt2SpinnerAdapter);
+            switch (tt2StatusOrig){
+                case "Ndio":
+                    TT2Spinner.setSelection(1);
+                    break;
+                case "Hapana":
+                    TT2Spinner.setSelection(2);
+                    break;
+                case "Sijui":
+                    TT2Spinner.setSelection(3);
+                    break;
+            }
 
             if (Boolean.parseBoolean(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.GENDER)))) {
                 ms.setAdapter(spinnerAdapter);
@@ -873,6 +928,22 @@ public class ChildSummaryPagerFragment extends Fragment {
         giveValueAfterSave();
         ContentValues contentValues = new ContentValues();
 
+        if (!metCummulativeSn.getText().toString().equalsIgnoreCase(currentChild.getChildCumulativeSn())){
+            currentChild.setChildCumulativeSn(metCummulativeSn.getText().toString());
+            Log.d("CSN", "cummulative saved"+currentChild.getChildCumulativeSn());
+            contentValues.put(SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER, metCummulativeSn.getText().toString());
+        }
+
+        if (!vvuStatusList.get(VVUSpinner.getSelectedItemPosition()-1).equalsIgnoreCase(currentChild.getMotherHivStatus())){
+            currentChild.setMotherHivStatus(vvuStatusList.get(VVUSpinner.getSelectedItemPosition() - 1));
+            contentValues.put(SQLHandler.ChildColumns.MOTHER_VVU_STS, vvuStatusList.get(VVUSpinner.getSelectedItemPosition()-1));
+        }
+
+        if (!tt2StatusList.get(TT2Spinner.getSelectedItemPosition()-1).equalsIgnoreCase(currentChild.getMotherTT2Status())){
+            currentChild.setMotherTT2Status(tt2StatusList.get(TT2Spinner.getSelectedItemPosition() - 1));
+            contentValues.put(SQLHandler.ChildColumns.MOTHER_TT2_STS, tt2StatusList.get(TT2Spinner.getSelectedItemPosition()-1));
+        }
+
         if (!metBarcodeValue.getText().toString().equalsIgnoreCase(currentChild.getBarcodeID())) {
             currentChild.setBarcodeID(metBarcodeValue.getText().toString());
             contentValues.put(SQLHandler.ChildColumns.BARCODE_ID, metBarcodeValue.getText().toString());
@@ -1067,6 +1138,18 @@ public class ChildSummaryPagerFragment extends Fragment {
             e.printStackTrace();
         }
         try {
+            webServiceUrl.append("&mothersHivStatus=" + URLEncoder.encode(vvuStatusList.get(VVUSpinner.getSelectedItemPosition()-1), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            webServiceUrl.append("&mothersTT2Status=" + URLEncoder.encode(tt2StatusList.get(TT2Spinner.getSelectedItemPosition()-1), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        try {
             webServiceUrl.append("&birthplaceId=" + URLEncoder.encode(birthplaceList.get(pobSpinner.getSelectedItemPosition()-1).getId(), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -1119,11 +1202,23 @@ public class ChildSummaryPagerFragment extends Fragment {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+        //
+        try {
+            webServiceUrl.append("&childCumulativeSn=" + URLEncoder.encode(metCummulativeSn.getText().toString(), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            webServiceUrl.append("&childRegistryYear=" + URLEncoder.encode("2016", "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
         return webServiceUrl;
     }
 
     public void giveValueAfterSave(){
-        tempIdOrig = metSystemID.getText().toString();
         firstnameOrig = metFirstName.getText().toString();
         firstname2Orig = metMiddleName.getText().toString();
         lastnameOrig = metLastName.getText().toString();
@@ -1139,6 +1234,13 @@ public class ChildSummaryPagerFragment extends Fragment {
         statusOrig = statusSpinner.getSelectedItemPosition();
         genderOrig =   ms.getSelectedItemPosition();
 
+        if (VVUSpinner.getSelectedItemPosition() != 0){
+            vvuStatusOrig   = vvuStatusList.get(VVUSpinner.getSelectedItemPosition() - 1);
+        }
+        if (TT2Spinner.getSelectedItemPosition() != 0){
+            tt2StatusOrig   = tt2StatusList.get(TT2Spinner.getSelectedItemPosition() - 1);
+        }
+        childCummulativeSnOrig  = metCummulativeSn.getText().toString();
     }
 
     @Override

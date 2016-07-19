@@ -119,7 +119,8 @@ public class GIISContract {
         String HEALTH_FACILITY = "HEALTH_FACILITY";
         String MOTHER_VVU_STS  = "MOTHER_VVU_STS";
         String MOTHER_TT2_STS = "MOTHER_TT2_STS";
-        String CUMMULATIVE_SERIAL_NUMBER = "CUMMULATIVE_SERIAL_NUMBER";
+        String CUMULATIVE_SERIAL_NUMBER = "CUMULATIVE_SERIAL_NUMBER";
+        String CHILD_REGISTRY_YEAR = "CHILD_REGISTRY_YEAR";
     }
 
     interface  StatusColumns{

@@ -68,9 +68,9 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
     private boolean isSavingData = false;
 
-    protected MaterialEditText etbarcode, etFirstName, etSurname, etMotherFirstName, etMotherSurname, etPhone, etNotes,etFirstname2, etMotherVVUStatus, etMotherTT2Status;
+    protected MaterialEditText etChildCumulativeSn, etbarcode, etFirstName, etSurname, etMotherFirstName, etMotherSurname, etPhone, etNotes,etFirstname2, etMotherVVUStatus, etMotherTT2Status;
 
-    String barcode, firstanme, surname, motherFirstname, motherLastname, gender_val, gen, genderChildWithoutApp,firstname2;
+    String barcode, firstanme, surname, motherFirstname, motherLastname, gender_val, gen, genderChildWithoutApp,firstname2, childRegistryYear;
 
 
     private ProgressDialog progressDialog;
@@ -223,6 +223,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         dateOfBirth         = (MaterialEditText) v.findViewById(R.id.reg_dob);
         etMotherVVUStatus   = (MaterialEditText) v.findViewById(R.id.reg_mot_vvu_sts);
         etMotherVVUStatus   = (MaterialEditText) v.findViewById(R.id.reg_mot_tt2_sts);
+        etChildCumulativeSn = (MaterialEditText) v.findViewById(R.id.cummulative_sn);
 
         placeOfBirthSpinner = (MaterialSpinner) v.findViewById(R.id.reg_spin_pob);
         placeOfDomicileSpinner = (MaterialSpinner) v.findViewById(R.id.reg_spin_pod);
@@ -512,6 +513,16 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
             return false;
         }
 
+        //TODO: Substring ChildRegistryYear From The Cummulative Serial Number here and assign cummulative
+        //TODO: serial number and childRegistryYear accordingly
+        if (etChildCumulativeSn.length() > 0){
+            //childregistryYear set to default
+        }else{
+            //separate the cummulative sn from the registry year and assign
+        }
+
+
+
         return true;
     }
 
@@ -559,7 +570,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         contentValues.put(SQLHandler.ChildColumns.BIRTHPLACE_ID, birthplaceList.get(placeOfBirthSpinner.getSelectedItemPosition() - 1).getId());
 
         contentValues.put(SQLHandler.ChildColumns.MOTHER_VVU_STS, motherVVU.get(motherVVUStatusSpinner.getSelectedItemPosition() - 1));
-        contentValues.put(SQLHandler.ChildColumns.MOTHER_TT2_STS, motherTT2.get(motherTT2StatusSpinner.getSelectedItemPosition()-1));
+        contentValues.put(SQLHandler.ChildColumns.MOTHER_TT2_STS, motherTT2.get(motherTT2StatusSpinner.getSelectedItemPosition() - 1));
 
         contentValues.put(SQLHandler.ChildColumns.DOMICILE, placeList.get(placeOfDomicileSpinner.getSelectedItemPosition() - 1).getName());
         contentValues.put(SQLHandler.ChildColumns.DOMICILE_ID, placeList.get(placeOfDomicileSpinner.getSelectedItemPosition() - 1).getId());
@@ -579,8 +590,8 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         contentValues.put("modfied_at", "/Date(" + Calendar.getInstance().getTime().getTime() + "-0500)/");
         contentValues.put(SQLHandler.ChildColumns.PHONE, etPhone.getText().toString());
         contentValues.put(SQLHandler.ChildColumns.NOTES, etNotes.getText().toString());
-        contentValues.put(SQLHandler.ChildColumns.MOTHER_TT2_STS, etMotherTT2Status.getText().toString());
-        contentValues.put(SQLHandler.ChildColumns.MOTHER_VVU_STS, etMotherVVUStatus.getText().toString());
+        contentValues.put(SQLHandler.ChildColumns.CUMMULATIVE_SERIAL_NUMBER, etChildCumulativeSn.getText().toString());
+        contentValues.put(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR, "2016"); //TODO: CUMMULATIVE SN get from substring of the Cummulative SN
         contentValues.put("updated", 1);
         contentValues.put("owners_username", "");
         contentValues.put("STATUS_ID", "");
@@ -625,7 +636,11 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                             etNotes.getText().toString(),
                             app.getLOGGED_IN_USER_ID(),
                             modifiedOn.getTime(),
-                            uuid,etFirstname2.getText().toString(), etMotherVVUStatus.getText().toString(), etMotherTT2Status.getText().toString());
+                            uuid,etFirstname2.getText().toString(),
+                            motherVVU.get(motherVVUStatusSpinner.getSelectedItemPosition() - 1),
+                            motherTT2.get(motherTT2StatusSpinner.getSelectedItemPosition() - 1),
+                            etChildCumulativeSn.getText().toString(),
+                            "2016");
                 }catch(Exception exception){
                     exception.printStackTrace();
                 }
@@ -706,7 +721,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
     }
 
     private synchronized void registerChildWithoutAppointments(String barcode, String fristname, String lastname, Date bDate, String gender, String  hfid, String birthPlaceId, String domId,
-                                                               String addr, String phone, String motherFirstname, String motherLastname, String notes, String userID, Date modOn, final String tempId,String firstname2, String threadMotherVVUStatus, String threadMotherTT2Status) {
+                                                               String addr, String phone, String motherFirstname, String motherLastname, String notes, String userID, Date modOn, final String tempId,String firstname2, String threadMotherVVUStatus, String threadMotherTT2Status, String childCummulativeSn, String childRegistryYear) {
         new Thread() {
             String threadBDateString;
             String threadModOn;
@@ -738,9 +753,11 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
             String threadFirstname2;
             String threadMotherVVUStatus;
             String threadMotherTT2Status;
+            String childCummulativeSn;
+            String childRegistryYear;
 
             public Thread setData(String threadbarcode, String threadfristname, String threadLastname, Date threadBDate, String threadGender, String threadhfid, String threadBirthPlaceID, String threadDomID,
-                                  String threadAddr, String threadPhone, String threadMotherFirstname, String threadMotherLastname, String threadNotes, String threadUserID, Date threadModOn, String tempId,String threadFirstname2, String threadMotherVVUStatus, String threadMotherTT2Status) {
+                                  String threadAddr, String threadPhone, String threadMotherFirstname, String threadMotherLastname, String threadNotes, String threadUserID, Date threadModOn, String tempId,String threadFirstname2, String threadMotherVVUStatus, String threadMotherTT2Status, String threadCummulativeSn, String threadChildRegistryYear) {
 
                 try {
                     this.threadbarcode          = threadbarcode;
@@ -763,6 +780,8 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                     this.threadGender           = threadGender;
                     this.threadMotherVVUStatus  = threadMotherVVUStatus;
                     this.threadMotherTT2Status  = threadMotherTT2Status;
+                    this.childCummulativeSn     = threadCummulativeSn;
+                    this.childRegistryYear      = threadChildRegistryYear;
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -776,7 +795,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                 BackboneApplication backbone = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
 
                 int results = backbone.registerChildWithAppoitments(threadbarcode, threadfristname, threadLastname, threadBDateString, threadGender, threadhfid, threadBirthPlaceID, threadDomID, threadAddr
-                        , threadPhone, threadMotherFirstname, threadMotherLastname, threadNotes, threadUserID, threadModOn, null,threadFirstname2,threadTempId,threadbarcode, threadMotherVVUStatus, threadMotherTT2Status);
+                        , threadPhone, threadMotherFirstname, threadMotherLastname, threadNotes, threadUserID, threadModOn, null,threadFirstname2,threadTempId,threadbarcode, threadMotherVVUStatus, threadMotherTT2Status, childCummulativeSn, childRegistryYear);
                 if(results!=-1) {
                     Intent childDetailsActivity = new Intent(getActivity(), ChildDetailsActivity.class);
                     Bundle bnd = new Bundle();
@@ -798,7 +817,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                 }
             }
 
-        }.setData(barcode, fristname, lastname, bDate, gender, hfid, birthPlaceId, domId, addr, phone, motherFirstname, motherLastname, notes, userID, modOn, tempId,firstname2, threadMotherVVUStatus, threadMotherTT2Status).start();
+        }.setData(barcode, fristname, lastname, bDate, gender, hfid, birthPlaceId, domId, addr, phone, motherFirstname, motherLastname, notes, userID, modOn, tempId,firstname2, threadMotherVVUStatus, threadMotherTT2Status, childCummulativeSn, childRegistryYear).start();
     }
 
 }
