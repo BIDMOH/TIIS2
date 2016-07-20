@@ -59,12 +59,16 @@ public class Child implements Serializable{
     private String motherFirstname;
     private String motherId;
     private String motherLastname;
+    private String MotherHivStatus;
+    private String MotherTT2Status;
     private String notes;
     private String phone;
     private String status;
     private String statusId;
     private String systemId;
     private String tempId;
+    private String ChildCumulativeSn;
+    private String ChildRegistryYear;
 
 
     public Child() {
@@ -431,8 +435,43 @@ public class Child implements Serializable{
         this.tempId = tempId;
     }
 
+    @JsonProperty("MotherHivStatus")
+    public String getMotherHivStatus() {
+        return MotherHivStatus;
+    }
 
-//
+    public void setMotherHivStatus(String motherHivStatus) {
+        this.MotherHivStatus = motherHivStatus;
+    }
+
+    @JsonProperty("MotherTT2Status")
+    public String getMotherTT2Status() {
+        return MotherTT2Status;
+    }
+
+    public void setMotherTT2Status(String motherTT2Status) {
+        this.MotherTT2Status = motherTT2Status;
+    }
+
+    @JsonProperty("ChildCumulativeSn")
+    public String getChildCumulativeSn() {
+        return ChildCumulativeSn;
+    }
+
+    public void setChildCumulativeSn(String childCumulativeSn) {
+        this.ChildCumulativeSn = childCumulativeSn;
+    }
+
+    @JsonProperty("ChildRegistryYear")
+    public String getChildRegistryYear() {
+        return ChildRegistryYear;
+    }
+
+    public void setChildRegistryYear(String childRegistryYear) {
+        this.ChildRegistryYear = childRegistryYear;
+    }
+
+    //
 //    public String getId() {
 //        return id;
 //    }
@@ -643,6 +682,10 @@ public class Child implements Serializable{
     public static final String TAG_MODIFIED_BY = "MODIFIED_BY";
     public static final String TAG_STATUS_ID = "STATUS_ID";
     public static final String TAG_HEALTH_FACILITY_ID = "HEALTH_FACILITY_ID";
+    public static final String TAG_CUMULATIVE_SERIAL_NUMBER = "CUMULATIVE_SERIAL_NUMBER";
+    public static final String TAG_REGISTRY_YEAR = "REGISTRY_YEAR";
+    public static final String TAG_MOTHER_VVU_STATUS = "MOTHER_VVU_STATUS";
+    public static final String TAG_MOTHER_TT2_STATUS = "MOTHER_TT2_STATUS";
 
 //    /**
 //     * @return a <code>Map</code> containing all tags

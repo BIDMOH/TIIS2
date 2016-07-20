@@ -139,7 +139,7 @@ public class BackboneApplication extends Application {
     public static final String STATUS_MANAGEMENT_SVC_GETTER = "getstatuslist";
     public static final String DOSE_MANAGEMENT_SVC_GETTER = "getdoselist";
     public static final String CHILD_MANAGEMENT_SVC_GETTER = "GetChildrenByHealthFacility?healthFacilityId=";
-    public static final String CHILD_UPDATE = "UpdateChild?";
+    public static final String CHILD_UPDATE = "UpdateChildWithMothersHivStatusAndTT2VaccineStatus?"; //NOTE: URL Changed
     public static final String REGISTER_CHILD_AEFI = "RegisterChildAEFI?";
     public static final String REGISTER_CHILD_AEFI_BARCODE = "RegisterChildAEFIBarcode?";
     public static final String CHILD_SUPPLEMENTS_INSERT = "RegisterSupplementsBarcode";
@@ -715,6 +715,10 @@ public class BackboneApplication extends Application {
                     SQLHandler.ChildColumns.MOTHER_FIRSTNAME+","+
                     SQLHandler.ChildColumns.MOTHER_LASTNAME+","+
                     SQLHandler.ChildColumns.PHONE+","+
+                    SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER+","+
+                    SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR+","+
+                    SQLHandler.ChildColumns.MOTHER_VVU_STS+","+
+                    SQLHandler.ChildColumns.MOTHER_TT2_STS+","+
                     SQLHandler.ChildColumns.MODIFIED_ON+
                     " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
 
@@ -741,7 +745,11 @@ public class BackboneApplication extends Application {
                     stmt0.bindString(18, child.getMotherFirstname()==null?"":child.getMotherFirstname());
                     stmt0.bindString(19, child.getMotherLastname()==null?"":child.getMotherLastname());
                     stmt0.bindString(20, child.getPhone()==null?"":child.getPhone());
-                    stmt0.bindString(21, child.getModifiedOn()==null?"":child.getModifiedOn());
+                    stmt0.bindString(21, child.getChildCumulativeSn()==null?"":child.getChildCumulativeSn());
+                    stmt0.bindString(22, child.getChildRegistryYear()==null?"":child.getChildRegistryYear());
+                    stmt0.bindString(23, child.getMotherHivStatus()==null?"":child.getMotherHivStatus());
+                    stmt0.bindString(24, child.getMotherTT2Status()==null?"":child.getMotherTT2Status());
+                    stmt0.bindString(25, child.getModifiedOn()==null?"":child.getModifiedOn());
                     stmt0.execute();
                     stmt0.clearBindings();
                 }
@@ -2487,21 +2495,26 @@ public class BackboneApplication extends Application {
     private int childId;
     public int registerChildWithAppoitments(String barcode, String fristname, String lastname, String bDate, String gender, String hfid, String birthPlaceId, String domId,
                                             String addr, String phone, String motherFirstname, String motherLastname, String notes, String userID, String modOn,
-                                            PostmanModel postmanModel, String firstname2,final String threadTempId, final String threadbarcode) {
+                                            PostmanModel postmanModel, String firstname2,final String threadTempId, final String threadbarcode, String motherVVUStatus, String motherTT2Status, String childCummulativeSn, String childRegistryYear) {
         childId = -1;
         final StringBuilder webServiceUrl;
         if (postmanModel == null) {
             webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC);
-            webServiceUrl.append("RegisterChildWithAppoitments?barcodeid=").append(barcode).append("&firstname1=")
+            webServiceUrl.append("RegisterChildWithAppoitmentsWithMothersHivStatusAndTT2VaccineStatus?barcodeid=").append(barcode).append("&firstname1=")
                     .append(URLEncoder.encode(fristname)).append("&lastname1=").append(URLEncoder.encode(lastname))
                     .append("&birthdate=").append(bDate).append("&gender=").append(gender)
                     .append("&healthFacilityId=").append(hfid).append("&birthplaceId=").append(birthPlaceId).append("&domicileId=")
                     .append(domId).append("&address=").append(URLEncoder.encode(addr))
                     .append("&phone=").append(URLEncoder.encode(phone))
-                    .append("&motherFirstname=").append(URLEncoder.encode(motherFirstname)).append("&motherLastname=").append(URLEncoder.encode(motherLastname))
+                    .append("&motherFirstname=").append(URLEncoder.encode(motherFirstname))
+                    .append("&motherLastname=").append(URLEncoder.encode(motherLastname))
+                    .append("&mothersHivStatus=").append(URLEncoder.encode(motherVVUStatus))
+                    .append("&mothersTT2Status=").append(URLEncoder.encode(motherTT2Status))
                     .append("&notes=").append(URLEncoder.encode(notes))
                     .append("&userId=").append(userID).append("&modifiedOn=").append(modOn)
-                    .append("&firstname2=").append((firstname2!=null)?firstname2:"");
+                    .append("&firstname2=").append((firstname2 != null) ? firstname2 : "")
+                    .append("&childCumulativeSn=").append(URLEncoder.encode(childCummulativeSn))
+                    .append("&childRegistryYear=").append(URLEncoder.encode(childRegistryYear));
 
         } else {
             webServiceUrl = new StringBuilder(postmanModel.getUrl());
