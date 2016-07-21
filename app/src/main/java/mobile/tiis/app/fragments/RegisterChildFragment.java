@@ -48,7 +48,7 @@ import mobile.tiis.app.entity.Place;
  */
 public class RegisterChildFragment extends android.support.v4.app.Fragment implements DatePickerDialog.OnDateSetListener, View.OnClickListener, View.OnTouchListener {
 
-    public List<String> motherVVU, gender, motherTT2;
+    public List<String> motherVVU, gender, motherTT2, spinnerYears;
 
     private Date bdate;
 
@@ -56,9 +56,9 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
     List<Birthplace> birthplaceList;
 
-    PlacesOfBirthAdapter vvuAdapter, genderAdapter, tt2Adapter;
+    PlacesOfBirthAdapter vvuAdapter, genderAdapter, tt2Adapter, yearSpinnerAdapter;
 
-    public MaterialSpinner placeOfBirthSpinner, genderSpinner, placeOfDomicileSpinner, motherVVUStatusSpinner, motherTT2StatusSpinner;
+    public MaterialSpinner placeOfBirthSpinner, genderSpinner, placeOfDomicileSpinner, motherVVUStatusSpinner, motherTT2StatusSpinner, registryYearSpinner;
 
     public MaterialEditText dateOfBirth;
 
@@ -138,6 +138,12 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         gender.add("Male");
         gender.add("Female");
 
+        spinnerYears = new ArrayList<>();
+        spinnerYears.add("2014");
+        spinnerYears.add("2015");
+        spinnerYears.add("2016");
+
+
         dateOfBirth.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
@@ -153,10 +159,27 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         genderAdapter   = new PlacesOfBirthAdapter(RegisterChildFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, gender);
         vvuAdapter      = new PlacesOfBirthAdapter(RegisterChildFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, motherVVU);
         tt2Adapter      = new PlacesOfBirthAdapter(RegisterChildFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, motherTT2);
+        yearSpinnerAdapter      = new PlacesOfBirthAdapter(RegisterChildFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, spinnerYears);
 
         genderSpinner.setAdapter(genderAdapter);
         motherTT2StatusSpinner.setAdapter(tt2Adapter);
         motherVVUStatusSpinner.setAdapter(vvuAdapter);
+        registryYearSpinner.setAdapter(yearSpinnerAdapter);
+
+        registryYearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (!(i == -1)){
+                    Log.d("vvu_tt2", motherVVU.get(i));
+                    childRegistryYear = spinnerYears.get(registryYearSpinner.getSelectedItemPosition()-1);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         motherVVUStatusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -230,6 +253,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         genderSpinner = (MaterialSpinner) v.findViewById(R.id.reg_spin_gender);
         motherVVUStatusSpinner  = (MaterialSpinner) v.findViewById(R.id.reg_spin_mother_vvu_status);
         motherTT2StatusSpinner  = (MaterialSpinner) v.findViewById(R.id.reg_spin_mother_tt2_status);
+        registryYearSpinner     = (MaterialSpinner) v.findViewById(R.id.reg_spin_register_year);
 
 //        scanButton = (Button) v.findViewById(R.id.reg_scan_btn);
         submitButton = (Button) v.findViewById(R.id.reg_submit_btn);
@@ -591,7 +615,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         contentValues.put(SQLHandler.ChildColumns.PHONE, etPhone.getText().toString());
         contentValues.put(SQLHandler.ChildColumns.NOTES, etNotes.getText().toString());
         contentValues.put(SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER, etChildCumulativeSn.getText().toString());
-        contentValues.put(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR, "2016"); //TODO: CUMMULATIVE SN get from substring of the Cummulative SN
+        contentValues.put(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR, childRegistryYear);
         contentValues.put("updated", 1);
         contentValues.put("owners_username", "");
         contentValues.put("STATUS_ID", "");
@@ -640,7 +664,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                             motherVVU.get(motherVVUStatusSpinner.getSelectedItemPosition() - 1),
                             motherTT2.get(motherTT2StatusSpinner.getSelectedItemPosition() - 1),
                             etChildCumulativeSn.getText().toString(),
-                            "2016");
+                            childRegistryYear);
                 }catch(Exception exception){
                     exception.printStackTrace();
                 }
@@ -796,6 +820,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
                 int results = backbone.registerChildWithAppoitments(threadbarcode, threadfristname, threadLastname, threadBDateString, threadGender, threadhfid, threadBirthPlaceID, threadDomID, threadAddr
                         , threadPhone, threadMotherFirstname, threadMotherLastname, threadNotes, threadUserID, threadModOn, null,threadFirstname2,threadTempId,threadbarcode, threadMotherVVUStatus, threadMotherTT2Status, childCummulativeSn, childRegistryYear);
+                Log.d("CSN", "Result from server is : "+results);
                 if(results!=-1) {
                     Intent childDetailsActivity = new Intent(getActivity(), ChildDetailsActivity.class);
                     Bundle bnd = new Bundle();

@@ -56,20 +56,54 @@
                             android:layout_marginLeft="32dp"
                             android:layout_centerVertical="true"/>
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
+                        <LinearLayout
                             android:layout_width="350dp"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/met_cummulative_sn"
-                            android:hint="Cummulative Serial Number"
-                            android:textColor="@color/black"
-                            android:inputType="number"
-                            android:text=""
-                            app:met_floatingLabelText="Child Cummulative Sn"
-                            app:met_floatingLabel="normal"
-                            app:met_floatingLabelTextColor="@color/light_blue_500"
-                            android:layout_alignParentRight="true"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
                             android:layout_marginRight="32dp"
-                            android:layout_centerVertical="true"/>
+                            android:layout_alignParentRight="true">
+
+                            <fr.ganfra.materialspinner.MaterialSpinner
+                                android:id="@+id/spin_register_year"
+                                android:layout_width="0dp"
+                                android:layout_weight=".35"
+                                android:layout_height="wrap_content"
+                                android:divider="@null"
+                                app_ms:ms_multiline="false"
+                                app_ms:ms_hint="Register Year"
+                                app_ms:ms_enableFloatingLabel="true"
+                                app_ms:ms_enableErrorLabel="false"
+                                app_ms:ms_floatingLabelText="Register Year"
+                                app_ms:ms_baseColor="@color/light_blue_600"
+                                app_ms:ms_highlightColor="@color/light_blue_700"
+                                app_ms:ms_errorColor="@color/red_500"
+                                app_ms:ms_typeface="Roboto-LightItalic.ttf"
+                                app_ms:ms_hintColor="@color/card_light_text"
+                                app_ms:ms_arrowColor="@color/light_blue_600"
+                                app_ms:ms_arrowSize="16dp"
+                                app_ms:ms_alignLabels="false"
+                                app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
+
+                            <View
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.2"/>
+
+
+                            <com.rengwuxian.materialedittext.MaterialEditText
+                                android:visibility="visible"
+                                android:id="@+id/met_cummulative_sn"
+                                android:layout_width="0dp"
+                                android:layout_weight=".35"
+                                android:layout_height="wrap_content"
+                                app:met_floatingLabelText="Cummulative Serial Number"
+                                app:met_floatingLabel="normal"
+                                android:inputType="number"
+                                android:textColor="@color/black"
+                                app:met_floatingLabelTextColor="@color/light_blue_500"
+                                android:hint="Serial Number"/>
+
+                        </LinearLayout>
 
                     </RelativeLayout>
 

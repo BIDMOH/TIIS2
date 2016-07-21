@@ -69,7 +69,7 @@ public class ChildSummaryPagerFragment extends Fragment {
 
     private String hf_id, child_id, birthplacestr, villagestr, hfstr, statusstr, gender_val, birthdate_val;
 
-    private ArrayList<String> gender, vvuStatusList, tt2StatusList;
+    private ArrayList<String> gender, vvuStatusList, tt2StatusList, registryYearList;
 
     private String localBarcode = "";
 
@@ -87,7 +87,7 @@ public class ChildSummaryPagerFragment extends Fragment {
 
     private List<Status> statusList;
 
-    private String childId;
+    private String childId, childRegistryYear;
 
     private ArrayList<ViewAppointmentRow> var;
 
@@ -101,7 +101,7 @@ public class ChildSummaryPagerFragment extends Fragment {
 
     private VaccinationHistoryListAdapter adapter;
 
-    private PlacesOfBirthAdapter spinnerAdapter, vvuSpinnerAdapter, tt2SpinnerAdapter;
+    private PlacesOfBirthAdapter spinnerAdapter, vvuSpinnerAdapter, tt2SpinnerAdapter, registryYearAdapter;
 
     private ListView lvImmunizationHistory;
 
@@ -111,7 +111,7 @@ public class ChildSummaryPagerFragment extends Fragment {
 
     private Button editButton, saveButton;
 
-    private MaterialSpinner ms, pobSpinner, villageSpinner, healthFacilitySpinner, statusSpinner, VVUSpinner, TT2Spinner;
+    private MaterialSpinner ms, pobSpinner, villageSpinner, healthFacilitySpinner, statusSpinner, VVUSpinner, TT2Spinner, registryYearSpinner;
 
     private DatabaseHandler mydb;
 
@@ -169,9 +169,15 @@ public class ChildSummaryPagerFragment extends Fragment {
         vvuStatusList.add("2");
         vvuStatusList.add("U");
 
+        registryYearList = new ArrayList<>();
+        registryYearList.add("2014");
+        registryYearList.add("2015");
+        registryYearList.add("2016");
+
         spinnerAdapter      = new PlacesOfBirthAdapter(ChildSummaryPagerFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, gender);
         vvuSpinnerAdapter   = new PlacesOfBirthAdapter(ChildSummaryPagerFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, tt2StatusList);
         tt2SpinnerAdapter   = new PlacesOfBirthAdapter(ChildSummaryPagerFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, vvuStatusList);
+        registryYearAdapter = new PlacesOfBirthAdapter(ChildSummaryPagerFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, registryYearList);
 
         View header = (View) inflater.inflate(R.layout.childinfo_summary_header, null);
 
@@ -193,6 +199,7 @@ public class ChildSummaryPagerFragment extends Fragment {
         statusSpinner       = (MaterialSpinner) header.findViewById(R.id.spin_status);
         VVUSpinner          = (MaterialSpinner) header.findViewById(R.id.spin_vvu_status);
         TT2Spinner          = (MaterialSpinner) header.findViewById(R.id.spin_tt2_status);
+        registryYearSpinner = (MaterialSpinner) header.findViewById(R.id.spin_register_year);
 
         TT2Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -230,9 +237,6 @@ public class ChildSummaryPagerFragment extends Fragment {
 
         editButton          = (Button) header.findViewById(R.id.edit_button);
         saveButton          = (Button) header.findViewById(R.id.save_button);
-
-
-
 
         metDOB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -494,6 +498,7 @@ public class ChildSummaryPagerFragment extends Fragment {
         statusSpinner           .setEnabled(fieldStatus);
         VVUSpinner              .setEnabled(fieldStatus);
         TT2Spinner              .setEnabled(fieldStatus);
+        registryYearSpinner     .setEnabled(fieldStatus);
 
         if(!fieldStatus){
             ms.setBaseColor(R.color.card_light_text);
@@ -609,6 +614,27 @@ public class ChildSummaryPagerFragment extends Fragment {
 
             notesOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.NOTES));
 
+            if (mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR))!= null){
+                childRegistryYearOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR));
+            }else {
+                childRegistryYearOrig = "";
+            }
+
+
+            registryYearSpinner.setAdapter(registryYearAdapter);
+            switch (childRegistryYearOrig){
+                case "2014":
+                    registryYearSpinner.setSelection(1);
+                    break;
+                case "2015":
+                    registryYearSpinner.setSelection(2);
+                    break;
+                case "2016":
+                    registryYearSpinner.setSelection(3);
+                    break;
+            }
+
+
             if (mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_VVU_STS))!= null){
                 vvuStatusOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_VVU_STS));
 
@@ -627,7 +653,6 @@ public class ChildSummaryPagerFragment extends Fragment {
             }else {
                 vvuStatusOrig = "";
             }
-
 
             if (mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_TT2_STS)) != null){
                 tt2StatusOrig   = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_TT2_STS));
@@ -648,8 +673,6 @@ public class ChildSummaryPagerFragment extends Fragment {
                 tt2StatusOrig = "";
                 TT2Spinner.setError("Please select mothers TT2 status");
             }
-
-
 
             if (Boolean.parseBoolean(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.GENDER)))) {
                 ms.setAdapter(spinnerAdapter);
@@ -844,6 +867,10 @@ public class ChildSummaryPagerFragment extends Fragment {
         parsedChild.setNotes(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.NOTES)));
         parsedChild.setBirthplaceId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.BIRTHPLACE_ID)));
         parsedChild.setGender(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.GENDER)));
+        parsedChild.setChildRegistryYear(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR)));
+        parsedChild.setChildCumulativeSn(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER)));
+        parsedChild.setMotherHivStatus(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_VVU_STS)));
+        parsedChild.setMotherTT2Status(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_TT2_STS)));
         Cursor cursor1 = mydb.getReadableDatabase().rawQuery("SELECT * FROM birthplace WHERE ID=?", new String[]{parsedChild.getBirthplaceId()});
         if (cursor1.getCount() > 0) {
             cursor1.moveToFirst();
@@ -1010,6 +1037,13 @@ public class ChildSummaryPagerFragment extends Fragment {
     private void saveChangedData() {
         giveValueAfterSave();
         ContentValues contentValues = new ContentValues();
+
+        if (registryYearSpinner.getSelectedItemPosition() != 0){
+            if (!registryYearList.get(registryYearSpinner.getSelectedItemPosition()-1).equalsIgnoreCase(currentChild.getChildRegistryYear())){
+                currentChild.setChildRegistryYear(registryYearList.get(registryYearSpinner.getSelectedItemPosition() - 1));
+                contentValues.put(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR, registryYearList.get(registryYearSpinner.getSelectedItemPosition()-1));
+            }
+        }
 
         if (!metCummulativeSn.getText().toString().equalsIgnoreCase(currentChild.getChildCumulativeSn())){
             currentChild.setChildCumulativeSn(metCummulativeSn.getText().toString());
