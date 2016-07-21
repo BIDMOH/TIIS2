@@ -87,7 +87,7 @@ public class GIISContract {
         String HEALTH_FACILITY_ID = "HEALTH_FACILITY_ID";
     }
 
-    interface ChildColumns {
+    public  interface ChildColumns {
         String UPDATED = "updated";
 
         String ID = "ID";
@@ -123,7 +123,7 @@ public class GIISContract {
         String CHILD_REGISTRY_YEAR = "CHILD_REGISTRY_YEAR";
     }
 
-    interface  StatusColumns{
+    public interface  StatusColumns{
         String ID = "ID";
         String NAME = "NAME";
         String CODE = "CODE";

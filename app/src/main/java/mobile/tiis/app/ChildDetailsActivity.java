@@ -29,12 +29,15 @@ import com.astuetz.PagerSlidingTabStrip;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 
+import mobile.tiis.app.CustomViews.CustomTabStrip;
+import mobile.tiis.app.CustomViews.SwipeControllableViewPager;
 import mobile.tiis.app.R;
 import mobile.tiis.app.SubClassed.BackHandledFragment;
 import mobile.tiis.app.adapters.ChildDetailsViewPager;
 import mobile.tiis.app.base.BackboneActivity;
 import mobile.tiis.app.base.BackboneApplication;
 import mobile.tiis.app.database.DatabaseHandler;
+import mobile.tiis.app.database.GIISContract;
 import mobile.tiis.app.database.SQLHandler;
 import mobile.tiis.app.entity.Child;
 import mobile.tiis.app.fragments.ChildAppointmentsListFragment;
@@ -44,12 +47,12 @@ import mobile.tiis.app.helpers.Utils;
  * Created by issymac on 25/02/16.
  */
 public class ChildDetailsActivity extends BackboneActivity implements BackHandledFragment.BackHandlerInterface {
-
+    private static final String TAG = ChildDetailsActivity.class.getSimpleName();
     private String hf_id, child_id, birthplacestr, villagestr, hfstr, statusstr, gender_val, birthdate_val;
 
-    private PagerSlidingTabStrip tabs;
+    private CustomTabStrip tabs;
 
-    private ViewPager pager;
+    private SwipeControllableViewPager pager;
 
     private ChildDetailsViewPager adapter;
 
@@ -81,12 +84,15 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
 
     public BackboneApplication app;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.child_details_activity);
         setUpView();
         currentChild = null;
+
+        Log.d(TAG,"imeingia ");
 
         app = (BackboneApplication) getApplication();
         final Bundle extras = getIntent().getExtras();
@@ -100,68 +106,31 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
             appointmentId       = extras.getString("appointmentId");
             currentChild        = (Child)getIntent().getSerializableExtra("myChild");
 
-
-            if (true){
-                if (value == null || value.equalsIgnoreCase("")) {
-                    if (extras.getString("barcode") != null) {
-                        /**
-                         * Get Child Information and store all into one place
-                         */
-                        new AsyncTask<Void, Void, Void>(){
-
-                            @Override
-                            protected void onPreExecute() {
-                                super.onPreExecute();
-                                currentChild = null;
-                                value = extras.getString("barcode");
-                                handlerBarcode  = value;
-                                childInfoLoader.setVisibility(View.VISIBLE);
-                            }
-
-                            @Override
-                            protected Void doInBackground(Void... voids) {
-                                Cursor getChildIdCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.BARCODE_ID + "=?",
-                                        new String[]{String.valueOf(value)});
-                                if (getChildIdCursor != null && getChildIdCursor.getCount() > 0) {
-                                    getChildIdCursor.moveToFirst();
-                                    currentChild = getChildFromCursror(getChildIdCursor);
-                                }
-                                return null;
-                            }
-
-                            @Override
-                            protected void onPostExecute(Void aVoid) {
-                                super.onPostExecute(aVoid);
-                                String name = currentChild.getFirstname1()+" "+currentChild.getFirstname2()+" "+currentChild.getLastname1();
-                                toolbarTitle.setText(name);
-                                initializePagers();
-                                childInfoLoader.setVisibility(View.GONE);
-                            }
-
-                        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-
-                    }else {
-                        toastMessage(getString(R.string.empty_barcode));
-                        finish();
-                    }
-                }
-                else{
+            Log.d("currentpage", "extras not null");
+            if (value == null || value.equalsIgnoreCase("")) {
+                if (extras.getString("barcode") != null) {
+                    Log.d("currentpage", "value is null");
+                    /**
+                     * Get Child Information and store all into one place
+                     */
                     new AsyncTask<Void, Void, Void>(){
-                        Cursor cursor = null;
+
                         @Override
                         protected void onPreExecute() {
                             super.onPreExecute();
+                            currentChild = null;
+                            value = extras.getString("barcode");
+                            handlerBarcode  = value;
                             childInfoLoader.setVisibility(View.VISIBLE);
                         }
 
                         @Override
                         protected Void doInBackground(Void... voids) {
-                            cursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",
+                            Cursor getChildIdCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.BARCODE_ID + "=?",
                                     new String[]{String.valueOf(value)});
-                            if (cursor.getCount() > 0) {
-                                cursor.moveToFirst();
-                                currentChild = getChildFromCursror(cursor);
+                            if (getChildIdCursor != null && getChildIdCursor.getCount() > 0) {
+                                getChildIdCursor.moveToFirst();
+                                currentChild = getChildFromCursror(getChildIdCursor);
                             }
                             return null;
                         }
@@ -173,16 +142,90 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
                             toolbarTitle.setText(name);
                             initializePagers();
                             childInfoLoader.setVisibility(View.GONE);
+
+                            Log.d("currentpage","current child health facility id = "+currentChild.getHealthcenterId());
+                            Log.d("currentpage","current child health facility id = "+app.getLOGGED_IN_USER_HF_ID());
+
+                            if(currentChild.getHealthcenterId().equals(app.getLOGGED_IN_USER_HF_ID())) {
+                                Log.d("currentpage","equal");
+                                try {
+                                    if (currentChild.getChildCumulativeSn().equals("") || currentChild.getChildRegistryYear().equals("") || currentChild.getMotherHivStatus().equals("") || currentChild.getMotherTT2Status().equals("")) {
+                                        enableViewPagerPaging(false);
+                                        Log.d("currentpage","disabling viewpager");
+                                        Toast.makeText(ChildDetailsActivity.this, "Please edit and fill all relevant fields before continuing", Toast.LENGTH_LONG).show();
+                                    }else{
+                                        Log.d("currentpage","all is well");
+                                    }
+                                } catch (NullPointerException e) {
+
+                                    Log.d(TAG,"disabling viewpager due to null pointer exception");
+                                    pager.setPagingEnabled(false);
+                                    tabs.setDisabled(true);
+                                    Toast.makeText(ChildDetailsActivity.this, "Please edit and fill all relevant fields before continuing", Toast.LENGTH_LONG).show();
+                                }
+                            }
+
                         }
 
                     }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+
+                }else {
+                    toastMessage(getString(R.string.empty_barcode));
+                    finish();
                 }
             }else{
-                String name = currentChild.getFirstname1()+" "+currentChild.getFirstname2()+" "+currentChild.getLastname1();
-                toolbarTitle.setText(name);
-                childInfoLoader.setVisibility(View.VISIBLE);
-                childInfoLoader.setVisibility(View.GONE);
-                initializePagers();
+                Log.d("currentpage", "values not null");
+                new AsyncTask<Void, Void, Void>(){
+                    Cursor cursor = null;
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                        childInfoLoader.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    protected Void doInBackground(Void... voids) {
+                        cursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",
+                                new String[]{String.valueOf(value)});
+                        if (cursor.getCount() > 0) {
+                            cursor.moveToFirst();
+                            currentChild = getChildFromCursror(cursor);
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void aVoid) {
+                        super.onPostExecute(aVoid);
+                        String name = currentChild.getFirstname1()+" "+currentChild.getFirstname2()+" "+currentChild.getLastname1();
+                        toolbarTitle.setText(name);
+                        initializePagers();
+                        childInfoLoader.setVisibility(View.GONE);
+
+                        Log.d("currentpage","values not null current child health facility id = "+currentChild.getHealthcenterId());
+                        Log.d("currentpage","values not null current child health facility id = "+app.getLOGGED_IN_USER_HF_ID());
+                        if(currentChild.getHealthcenterId().equals(app.getLOGGED_IN_USER_HF_ID())) {
+                            Log.d("currentpage","equal");
+                            try {
+                                if (currentChild.getChildCumulativeSn().equals("") || currentChild.getChildRegistryYear().equals("") || currentChild.getMotherHivStatus().equals("") || currentChild.getMotherTT2Status().equals("")) {
+                                    enableViewPagerPaging(false);
+                                    Log.d("currentpage","disabling viewpager");
+                                    Toast.makeText(ChildDetailsActivity.this, "Please edit and fill all relevant fields before continuing", Toast.LENGTH_LONG).show();
+                                }else{
+                                    Log.d("currentpage","all is well");
+                                }
+                            } catch (NullPointerException e) {
+
+                                Log.d(TAG,"disabling viewpager due to null pointer exception");
+                                pager.setPagingEnabled(false);
+                                tabs.setDisabled(true);
+                                Toast.makeText(ChildDetailsActivity.this, "Please edit and fill all relevant fields before continuing", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+
+                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
 
         }
@@ -217,8 +260,8 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
     public void setUpView(){
         toolbar         = (Toolbar) findViewById(R.id.child_details_activity_toolbar);
         toolbarTitle    = (TextView) findViewById(R.id.child_details_activity_toolbar_title);
-        tabs            = (PagerSlidingTabStrip) findViewById(R.id.tabs_stock);
-        pager           = (ViewPager) findViewById(R.id.pager_stock);
+        tabs            = (CustomTabStrip) findViewById(R.id.tabs_stock);
+        pager           = (SwipeControllableViewPager) findViewById(R.id.pager_stock);
         childInfoLoader = (ProgressBar) findViewById(R.id.child_info_loader);
         childInfoLoader .setVisibility(View.GONE);
     }
@@ -254,6 +297,12 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
         parsedChild.setNotes(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.NOTES)));
         parsedChild.setBirthplaceId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.BIRTHPLACE_ID)));
         parsedChild.setGender(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.GENDER)));
+
+        parsedChild.setMotherHivStatus(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_VVU_STS)));
+        parsedChild.setMotherTT2Status(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_TT2_STS)));
+        parsedChild.setChildCumulativeSn(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER)));
+        parsedChild.setChildRegistryYear(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR)));
+
         Cursor cursor1 = mydb.getReadableDatabase().rawQuery("SELECT * FROM birthplace WHERE ID=?", new String[]{parsedChild.getBirthplaceId()});
         if (cursor1.getCount() > 0) {
             cursor1.moveToFirst();
@@ -371,6 +420,11 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
     @Override
     public void setSelectedFragment(BackHandledFragment selectedFragment) {
         this.selectedFragment = selectedFragment;
+    }
+
+    public void enableViewPagerPaging(boolean status){
+        pager.setPagingEnabled(status);
+        tabs.setDisabled(!status);
     }
 
 }

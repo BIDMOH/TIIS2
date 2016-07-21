@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -193,8 +194,45 @@ public class ChildSummaryPagerFragment extends Fragment {
         VVUSpinner          = (MaterialSpinner) header.findViewById(R.id.spin_vvu_status);
         TT2Spinner          = (MaterialSpinner) header.findViewById(R.id.spin_tt2_status);
 
+        TT2Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                try {
+                    tt2StatusOrig = tt2StatusList.get(position - 1);
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    tt2StatusOrig = "";
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        VVUSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                try {
+                    vvuStatusOrig = vvuStatusList.get(position - 1);
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    vvuStatusOrig = "";
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         editButton          = (Button) header.findViewById(R.id.edit_button);
         saveButton          = (Button) header.findViewById(R.id.save_button);
+
+
+
 
         metDOB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -428,6 +466,15 @@ public class ChildSummaryPagerFragment extends Fragment {
 
     public void enableUserInputs(boolean fieldStatus){
         editable = fieldStatus;
+
+        if(fieldStatus) {
+            if (tt2StatusOrig.equals(""))
+                TT2Spinner.setAdapter(tt2SpinnerAdapter);
+
+            if (vvuStatusOrig.equals(""))
+                VVUSpinner.setAdapter(vvuSpinnerAdapter);
+        }
+
         metBarcodeValue.setFocusableInTouchMode(fieldStatus);
         metFirstName    .setFocusableInTouchMode(fieldStatus);
         metMiddleName   .setFocusableInTouchMode(fieldStatus);
@@ -515,7 +562,19 @@ public class ChildSummaryPagerFragment extends Fragment {
 
             Log.d("CSN", "cummulative saved");
 
-            metCummulativeSn        .setText(currentChild.getChildCumulativeSn());
+
+
+
+            try{
+                if (currentChild.getChildCumulativeSn().equals("")) {
+                    metCummulativeSn.setError("Please Fill this field");
+                } else {
+                    metCummulativeSn.setText(currentChild.getChildCumulativeSn());
+                }
+            }catch (NullPointerException e){
+                metCummulativeSn.setError("Please Fill this field");
+            }
+
             childCummulativeSnOrig  = currentChild.getChildCumulativeSn();
 
             metBarcodeValue     .setText(currentChild.getBarcodeID());
@@ -552,42 +611,45 @@ public class ChildSummaryPagerFragment extends Fragment {
 
             if (mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_VVU_STS))!= null){
                 vvuStatusOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_VVU_STS));
+
+                VVUSpinner.setAdapter(vvuSpinnerAdapter);
+                switch (vvuStatusOrig){
+                    case "1":
+                        VVUSpinner.setSelection(1);
+                        break;
+                    case "2":
+                        VVUSpinner.setSelection(2);
+                        break;
+                    case "U":
+                        VVUSpinner.setSelection(3);
+                        break;
+                }
             }else {
                 vvuStatusOrig = "";
             }
 
 
-            VVUSpinner.setAdapter(vvuSpinnerAdapter);
-            switch (vvuStatusOrig){
-                case "1":
-                    VVUSpinner.setSelection(1);
-                    break;
-                case "2":
-                    VVUSpinner.setSelection(2);
-                    break;
-                case "U":
-                    VVUSpinner.setSelection(3);
-                    break;
-            }
-
             if (mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_TT2_STS)) != null){
                 tt2StatusOrig   = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_TT2_STS));
+
+                TT2Spinner.setAdapter(tt2SpinnerAdapter);
+                switch (tt2StatusOrig){
+                    case "Ndio":
+                        TT2Spinner.setSelection(1);
+                        break;
+                    case "Hapana":
+                        TT2Spinner.setSelection(2);
+                        break;
+                    case "Sijui":
+                        TT2Spinner.setSelection(3);
+                        break;
+                }
             }else {
                 tt2StatusOrig = "";
+                TT2Spinner.setError("Please select mothers TT2 status");
             }
 
-            TT2Spinner.setAdapter(tt2SpinnerAdapter);
-            switch (tt2StatusOrig){
-                case "Ndio":
-                    TT2Spinner.setSelection(1);
-                    break;
-                case "Hapana":
-                    TT2Spinner.setSelection(2);
-                    break;
-                case "Sijui":
-                    TT2Spinner.setSelection(3);
-                    break;
-            }
+
 
             if (Boolean.parseBoolean(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.GENDER)))) {
                 ms.setAdapter(spinnerAdapter);
@@ -887,6 +949,27 @@ public class ChildSummaryPagerFragment extends Fragment {
             return false;
         }
 
+        if (TT2Spinner.getSelectedItemPosition()==0) {
+            alertDialogBuilder.setMessage("Please select mother TT2 vaccination status");
+            alertDialogBuilder.show();
+            VVUSpinner.setError("Please select mother TT2 vaccination status");
+            return false;
+        }
+
+        if (VVUSpinner.getSelectedItemPosition()==0) {
+            alertDialogBuilder.setMessage("Please select mothers VVU status");
+            alertDialogBuilder.show();
+            VVUSpinner.setError("Please select mothers vvu status");
+            return false;
+        }
+
+        if (metCummulativeSn.getText().toString().equals("")) {
+            alertDialogBuilder.setMessage("Please fill Child Cumulative Sn");
+            alertDialogBuilder.show();
+            metCummulativeSn.setError("Please fill Child Cumulative Sn");
+            return false;
+        }
+
         return true;
     }
 
@@ -935,12 +1018,12 @@ public class ChildSummaryPagerFragment extends Fragment {
         }
 
         if (!vvuStatusList.get(VVUSpinner.getSelectedItemPosition()-1).equalsIgnoreCase(currentChild.getMotherHivStatus())){
-            currentChild.setMotherHivStatus(vvuStatusList.get(VVUSpinner.getSelectedItemPosition() - 1));
+            currentChild.setMotherHivStatus(vvuStatusList.get(VVUSpinner.getSelectedItemPosition()-1));
             contentValues.put(SQLHandler.ChildColumns.MOTHER_VVU_STS, vvuStatusList.get(VVUSpinner.getSelectedItemPosition()-1));
         }
 
         if (!tt2StatusList.get(TT2Spinner.getSelectedItemPosition()-1).equalsIgnoreCase(currentChild.getMotherTT2Status())){
-            currentChild.setMotherTT2Status(tt2StatusList.get(TT2Spinner.getSelectedItemPosition() - 1));
+            currentChild.setMotherTT2Status(tt2StatusList.get(TT2Spinner.getSelectedItemPosition()-1));
             contentValues.put(SQLHandler.ChildColumns.MOTHER_TT2_STS, tt2StatusList.get(TT2Spinner.getSelectedItemPosition()-1));
         }
 
@@ -1053,6 +1136,8 @@ public class ChildSummaryPagerFragment extends Fragment {
                     }
 
                     alertDialogBuilder.setMessage(R.string.child_change_data_saved_success);
+                    ((ChildDetailsActivity)getActivity()).enableViewPagerPaging(true);
+
                     thread = new Thread() {
                         @Override
                         public void run() {
