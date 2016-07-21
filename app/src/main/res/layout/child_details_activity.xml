@@ -60,7 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.astuetz.PagerSlidingTabStrip
+            <mobile.tiis.app.CustomViews.CustomTabStrip
                 android:id="@+id/tabs_stock"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
@@ -68,7 +68,7 @@
                 app:pstsIndicatorColor="@color/white"
                 app:pstsDividerColor="@color/light_blue_600"/>
 
-            <android.support.v4.view.ViewPager
+            <mobile.tiis.app.CustomViews.SwipeControllableViewPager
                 android:id="@+id/pager_stock"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

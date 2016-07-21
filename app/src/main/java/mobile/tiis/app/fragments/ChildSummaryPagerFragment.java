@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -199,6 +200,41 @@ public class ChildSummaryPagerFragment extends Fragment {
         VVUSpinner          = (MaterialSpinner) header.findViewById(R.id.spin_vvu_status);
         TT2Spinner          = (MaterialSpinner) header.findViewById(R.id.spin_tt2_status);
         registryYearSpinner = (MaterialSpinner) header.findViewById(R.id.spin_register_year);
+
+        TT2Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                try {
+                    tt2StatusOrig = tt2StatusList.get(position - 1);
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    tt2StatusOrig = "";
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        VVUSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                try {
+                    vvuStatusOrig = vvuStatusList.get(position - 1);
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    vvuStatusOrig = "";
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         editButton          = (Button) header.findViewById(R.id.edit_button);
         saveButton          = (Button) header.findViewById(R.id.save_button);
 
@@ -433,8 +469,16 @@ public class ChildSummaryPagerFragment extends Fragment {
     }
 
     public void enableUserInputs(boolean fieldStatus){
-
         editable = fieldStatus;
+
+        if(fieldStatus) {
+            if (tt2StatusOrig.equals(""))
+                TT2Spinner.setAdapter(tt2SpinnerAdapter);
+
+            if (vvuStatusOrig.equals(""))
+                VVUSpinner.setAdapter(vvuSpinnerAdapter);
+        }
+
         metBarcodeValue.setFocusableInTouchMode(fieldStatus);
         metFirstName    .setFocusableInTouchMode(fieldStatus);
         metMiddleName   .setFocusableInTouchMode(fieldStatus);
@@ -523,7 +567,19 @@ public class ChildSummaryPagerFragment extends Fragment {
 
             Log.d("CSN", "cummulative saved");
 
-            metCummulativeSn        .setText(currentChild.getChildCumulativeSn());
+
+
+
+            try{
+                if (currentChild.getChildCumulativeSn().equals("")) {
+                    metCummulativeSn.setError("Please Fill this field");
+                } else {
+                    metCummulativeSn.setText(currentChild.getChildCumulativeSn());
+                }
+            }catch (NullPointerException e){
+                metCummulativeSn.setError("Please Fill this field");
+            }
+
             childCummulativeSnOrig  = currentChild.getChildCumulativeSn();
 
             metBarcodeValue     .setText(currentChild.getBarcodeID());
@@ -581,41 +637,41 @@ public class ChildSummaryPagerFragment extends Fragment {
 
             if (mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_VVU_STS))!= null){
                 vvuStatusOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_VVU_STS));
+
+                VVUSpinner.setAdapter(vvuSpinnerAdapter);
+                switch (vvuStatusOrig){
+                    case "1":
+                        VVUSpinner.setSelection(1);
+                        break;
+                    case "2":
+                        VVUSpinner.setSelection(2);
+                        break;
+                    case "U":
+                        VVUSpinner.setSelection(3);
+                        break;
+                }
             }else {
                 vvuStatusOrig = "";
             }
 
-
-            VVUSpinner.setAdapter(vvuSpinnerAdapter);
-            switch (vvuStatusOrig){
-                case "1":
-                    VVUSpinner.setSelection(1);
-                    break;
-                case "2":
-                    VVUSpinner.setSelection(2);
-                    break;
-                case "U":
-                    VVUSpinner.setSelection(3);
-                    break;
-            }
-
             if (mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_TT2_STS)) != null){
                 tt2StatusOrig   = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_TT2_STS));
+
+                TT2Spinner.setAdapter(tt2SpinnerAdapter);
+                switch (tt2StatusOrig){
+                    case "Ndio":
+                        TT2Spinner.setSelection(1);
+                        break;
+                    case "Hapana":
+                        TT2Spinner.setSelection(2);
+                        break;
+                    case "Sijui":
+                        TT2Spinner.setSelection(3);
+                        break;
+                }
             }else {
                 tt2StatusOrig = "";
-            }
-
-            TT2Spinner.setAdapter(tt2SpinnerAdapter);
-            switch (tt2StatusOrig){
-                case "Ndio":
-                    TT2Spinner.setSelection(1);
-                    break;
-                case "Hapana":
-                    TT2Spinner.setSelection(2);
-                    break;
-                case "Sijui":
-                    TT2Spinner.setSelection(3);
-                    break;
+                TT2Spinner.setError("Please select mothers TT2 status");
             }
 
             if (Boolean.parseBoolean(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.GENDER)))) {
@@ -920,6 +976,27 @@ public class ChildSummaryPagerFragment extends Fragment {
             return false;
         }
 
+        if (TT2Spinner.getSelectedItemPosition()==0) {
+            alertDialogBuilder.setMessage("Please select mother TT2 vaccination status");
+            alertDialogBuilder.show();
+            VVUSpinner.setError("Please select mother TT2 vaccination status");
+            return false;
+        }
+
+        if (VVUSpinner.getSelectedItemPosition()==0) {
+            alertDialogBuilder.setMessage("Please select mothers VVU status");
+            alertDialogBuilder.show();
+            VVUSpinner.setError("Please select mothers vvu status");
+            return false;
+        }
+
+        if (metCummulativeSn.getText().toString().equals("")) {
+            alertDialogBuilder.setMessage("Please fill Child Cumulative Sn");
+            alertDialogBuilder.show();
+            metCummulativeSn.setError("Please fill Child Cumulative Sn");
+            return false;
+        }
+
         return true;
     }
 
@@ -974,45 +1051,36 @@ public class ChildSummaryPagerFragment extends Fragment {
             contentValues.put(SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER, metCummulativeSn.getText().toString());
         }
 
-        if (VVUSpinner.getSelectedItemPosition() != 0){
-            if (!vvuStatusList.get(VVUSpinner.getSelectedItemPosition()-1).equalsIgnoreCase(currentChild.getMotherHivStatus())){
-                currentChild.setMotherHivStatus(vvuStatusList.get(VVUSpinner.getSelectedItemPosition() - 1));
-                contentValues.put(SQLHandler.ChildColumns.MOTHER_VVU_STS, vvuStatusList.get(VVUSpinner.getSelectedItemPosition()-1));
-            }
+        if (!vvuStatusList.get(VVUSpinner.getSelectedItemPosition()-1).equalsIgnoreCase(currentChild.getMotherHivStatus())){
+            currentChild.setMotherHivStatus(vvuStatusList.get(VVUSpinner.getSelectedItemPosition()-1));
+            contentValues.put(SQLHandler.ChildColumns.MOTHER_VVU_STS, vvuStatusList.get(VVUSpinner.getSelectedItemPosition()-1));
         }
 
-        if (TT2Spinner.getSelectedItemPosition() != 0){
-            if (!tt2StatusList.get(TT2Spinner.getSelectedItemPosition()-1).equalsIgnoreCase(currentChild.getMotherTT2Status())){
-                currentChild.setMotherTT2Status(tt2StatusList.get(TT2Spinner.getSelectedItemPosition() - 1));
-                contentValues.put(SQLHandler.ChildColumns.MOTHER_TT2_STS, tt2StatusList.get(TT2Spinner.getSelectedItemPosition()-1));
-            }
+        if (!tt2StatusList.get(TT2Spinner.getSelectedItemPosition()-1).equalsIgnoreCase(currentChild.getMotherTT2Status())){
+            currentChild.setMotherTT2Status(tt2StatusList.get(TT2Spinner.getSelectedItemPosition()-1));
+            contentValues.put(SQLHandler.ChildColumns.MOTHER_TT2_STS, tt2StatusList.get(TT2Spinner.getSelectedItemPosition()-1));
         }
 
         if (!metBarcodeValue.getText().toString().equalsIgnoreCase(currentChild.getBarcodeID())) {
             currentChild.setBarcodeID(metBarcodeValue.getText().toString());
             contentValues.put(SQLHandler.ChildColumns.BARCODE_ID, metBarcodeValue.getText().toString());
         }
-
         if (!metFirstName.getText().toString().equalsIgnoreCase(currentChild.getFirstname1())) {
             currentChild.setFirstname1(metFirstName.getText().toString());
             contentValues.put(SQLHandler.ChildColumns.FIRSTNAME1, metFirstName.getText().toString());
         }
-
         if (!metNotesValue.getText().toString().equalsIgnoreCase(currentChild.getNotes())) {
             currentChild.setNotes(metNotesValue.getText().toString());
             contentValues.put(SQLHandler.ChildColumns.NOTES, metNotesValue.getText().toString());
         }
-
         if (!metMiddleName.getText().toString().equalsIgnoreCase(currentChild.getFirstname2())) {
             currentChild.setFirstname2(metMiddleName.getText().toString());
             contentValues.put(SQLHandler.ChildColumns.FIRSTNAME2, metMiddleName.getText().toString());
         }
-
         if (!metLastName.getText().toString().equalsIgnoreCase(currentChild.getLastname1())) {
             currentChild.setLastname1(metLastName.getText().toString());
             contentValues.put(SQLHandler.ChildColumns.LASTNAME1, metLastName.getText().toString());
         }
-
         if (bdate.compareTo(BackboneActivity.dateParser(currentChild.getBirthdate())) != 0) {
             birthDatesDiff = bdate.getTime() - BackboneActivity.dateParser(currentChild.getBirthdate()).getTime();
             // trick qe te marrim sa dite diference kemi dhe te gjejme fiks me sa dite ndryshon datelindja ne terma timestamp
@@ -1085,8 +1153,6 @@ public class ChildSummaryPagerFragment extends Fragment {
         try {
             if (contentValues.size() > 0) {
 
-                Log.d("CSN","Entering updating child on local database");
-
                 if (mydb.updateChild(contentValues, currentChild.getId()) > 0) {
                     if (birthDatesDiff != 0) {
                         mydb.updateVaccinationAppointementForBirthDtChangeChild(currentChild.getId(), birthDatesDiff);
@@ -1104,6 +1170,8 @@ public class ChildSummaryPagerFragment extends Fragment {
                     }
 
                     alertDialogBuilder.setMessage(R.string.child_change_data_saved_success);
+                    ((ChildDetailsActivity)getActivity()).enableViewPagerPaging(true);
+
                     thread = new Thread() {
                         @Override
                         public void run() {
@@ -1189,23 +1257,13 @@ public class ChildSummaryPagerFragment extends Fragment {
             e.printStackTrace();
         }
         try {
-            if (VVUSpinner.getSelectedItemPosition() != 0){
-                webServiceUrl.append("&mothersHivStatus=" + URLEncoder.encode(vvuStatusList.get(VVUSpinner.getSelectedItemPosition()-1), "UTF-8"));
-            }else {
-                webServiceUrl.append("&mothersHivStatus=" + URLEncoder.encode("", "UTF-8"));
-            }
+            webServiceUrl.append("&mothersHivStatus=" + URLEncoder.encode(vvuStatusList.get(VVUSpinner.getSelectedItemPosition()-1), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
         try {
-            if (TT2Spinner.getSelectedItemPosition()!=0){
-                webServiceUrl.append("&mothersTT2Status=" + URLEncoder.encode(tt2StatusList.get(TT2Spinner.getSelectedItemPosition()-1), "UTF-8"));
-            }
-            else {
-                webServiceUrl.append("&mothersTT2Status=" + URLEncoder.encode("", "UTF-8"));
-            }
-
+            webServiceUrl.append("&mothersTT2Status=" + URLEncoder.encode(tt2StatusList.get(TT2Spinner.getSelectedItemPosition()-1), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
