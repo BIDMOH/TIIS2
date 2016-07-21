@@ -782,6 +782,9 @@ public class ChildSummaryPagerFragment extends Fragment {
         parsedChild.setNotes(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.NOTES)));
         parsedChild.setBirthplaceId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.BIRTHPLACE_ID)));
         parsedChild.setGender(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.GENDER)));
+        parsedChild.setChildCumulativeSn(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER)));
+        parsedChild.setMotherHivStatus(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_VVU_STS)));
+        parsedChild.setMotherTT2Status(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_TT2_STS)));
         Cursor cursor1 = mydb.getReadableDatabase().rawQuery("SELECT * FROM birthplace WHERE ID=?", new String[]{parsedChild.getBirthplaceId()});
         if (cursor1.getCount() > 0) {
             cursor1.moveToFirst();
@@ -934,14 +937,18 @@ public class ChildSummaryPagerFragment extends Fragment {
             contentValues.put(SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER, metCummulativeSn.getText().toString());
         }
 
-        if (!vvuStatusList.get(VVUSpinner.getSelectedItemPosition()-1).equalsIgnoreCase(currentChild.getMotherHivStatus())){
-            currentChild.setMotherHivStatus(vvuStatusList.get(VVUSpinner.getSelectedItemPosition() - 1));
-            contentValues.put(SQLHandler.ChildColumns.MOTHER_VVU_STS, vvuStatusList.get(VVUSpinner.getSelectedItemPosition()-1));
+        if (VVUSpinner.getSelectedItemPosition() != 0){
+            if (!vvuStatusList.get(VVUSpinner.getSelectedItemPosition()-1).equalsIgnoreCase(currentChild.getMotherHivStatus())){
+                currentChild.setMotherHivStatus(vvuStatusList.get(VVUSpinner.getSelectedItemPosition() - 1));
+                contentValues.put(SQLHandler.ChildColumns.MOTHER_VVU_STS, vvuStatusList.get(VVUSpinner.getSelectedItemPosition()-1));
+            }
         }
 
-        if (!tt2StatusList.get(TT2Spinner.getSelectedItemPosition()-1).equalsIgnoreCase(currentChild.getMotherTT2Status())){
-            currentChild.setMotherTT2Status(tt2StatusList.get(TT2Spinner.getSelectedItemPosition() - 1));
-            contentValues.put(SQLHandler.ChildColumns.MOTHER_TT2_STS, tt2StatusList.get(TT2Spinner.getSelectedItemPosition()-1));
+        if (TT2Spinner.getSelectedItemPosition() != 0){
+            if (!tt2StatusList.get(TT2Spinner.getSelectedItemPosition()-1).equalsIgnoreCase(currentChild.getMotherTT2Status())){
+                currentChild.setMotherTT2Status(tt2StatusList.get(TT2Spinner.getSelectedItemPosition() - 1));
+                contentValues.put(SQLHandler.ChildColumns.MOTHER_TT2_STS, tt2StatusList.get(TT2Spinner.getSelectedItemPosition()-1));
+            }
         }
 
         if (!metBarcodeValue.getText().toString().equalsIgnoreCase(currentChild.getBarcodeID())) {
@@ -1035,6 +1042,8 @@ public class ChildSummaryPagerFragment extends Fragment {
 
         try {
             if (contentValues.size() > 0) {
+
+                Log.d("CSN","Entering updating child on local database");
 
                 if (mydb.updateChild(contentValues, currentChild.getId()) > 0) {
                     if (birthDatesDiff != 0) {
@@ -1138,13 +1147,23 @@ public class ChildSummaryPagerFragment extends Fragment {
             e.printStackTrace();
         }
         try {
-            webServiceUrl.append("&mothersHivStatus=" + URLEncoder.encode(vvuStatusList.get(VVUSpinner.getSelectedItemPosition()-1), "UTF-8"));
+            if (VVUSpinner.getSelectedItemPosition() != 0){
+                webServiceUrl.append("&mothersHivStatus=" + URLEncoder.encode(vvuStatusList.get(VVUSpinner.getSelectedItemPosition()-1), "UTF-8"));
+            }else {
+                webServiceUrl.append("&mothersHivStatus=" + URLEncoder.encode("", "UTF-8"));
+            }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
         try {
-            webServiceUrl.append("&mothersTT2Status=" + URLEncoder.encode(tt2StatusList.get(TT2Spinner.getSelectedItemPosition()-1), "UTF-8"));
+            if (TT2Spinner.getSelectedItemPosition()!=0){
+                webServiceUrl.append("&mothersTT2Status=" + URLEncoder.encode(tt2StatusList.get(TT2Spinner.getSelectedItemPosition()-1), "UTF-8"));
+            }
+            else {
+                webServiceUrl.append("&mothersTT2Status=" + URLEncoder.encode("", "UTF-8"));
+            }
+
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

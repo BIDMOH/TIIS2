@@ -717,7 +717,7 @@ public class BackboneApplication extends Application {
                     SQLHandler.ChildColumns.MOTHER_VVU_STS+","+
                     SQLHandler.ChildColumns.MOTHER_TT2_STS+","+
                     SQLHandler.ChildColumns.MODIFIED_ON+
-                    " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
+                    " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?)";
 
                 SQLiteStatement stmt0 = db1.compileStatement(sql0);
                 for (Child child : children) {
@@ -874,6 +874,10 @@ public class BackboneApplication extends Application {
         childCV.put(SQLHandler.ChildColumns.MOTHER_FIRSTNAME, child.getMotherFirstname());
         childCV.put(SQLHandler.ChildColumns.MOTHER_LASTNAME, child.getMotherLastname());
         childCV.put(SQLHandler.ChildColumns.PHONE, child.getPhone());
+        childCV.put(SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER, child.getChildCumulativeSn());
+        childCV.put(SQLHandler.ChildColumns.MOTHER_TT2_STS, child.getMotherTT2Status());
+        childCV.put(SQLHandler.ChildColumns.MOTHER_VVU_STS, child.getMotherHivStatus());
+        childCV.put(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR, child.getChildRegistryYear());
 
 
         if(!db.isChildIDInChildTable(child.getId())) {

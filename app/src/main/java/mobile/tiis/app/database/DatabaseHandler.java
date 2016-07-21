@@ -1503,6 +1503,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public long updateChild(ContentValues cv, String id) {
+        Log.d("CSN","Database Handler updating child");
         SQLiteDatabase sd = getWritableDatabase();
         long result = -1;
         sd.beginTransaction();
