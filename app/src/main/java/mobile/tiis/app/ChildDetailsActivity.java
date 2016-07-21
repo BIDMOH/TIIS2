@@ -169,7 +169,13 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
                         @Override
                         protected void onPostExecute(Void aVoid) {
                             super.onPostExecute(aVoid);
-                            String name = currentChild.getFirstname1()+" "+currentChild.getFirstname2()+" "+currentChild.getLastname1();
+                            String name = "";
+                            try {
+                                name = currentChild.getFirstname1()+" "+currentChild.getFirstname2()+" "+currentChild.getLastname1();
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+
                             toolbarTitle.setText(name);
                             initializePagers();
                             childInfoLoader.setVisibility(View.GONE);
@@ -254,6 +260,10 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
         parsedChild.setNotes(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.NOTES)));
         parsedChild.setBirthplaceId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.BIRTHPLACE_ID)));
         parsedChild.setGender(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.GENDER)));
+        parsedChild.setChildRegistryYear(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR)));
+        parsedChild.setChildCumulativeSn(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER)));
+        parsedChild.setMotherHivStatus(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_VVU_STS)));
+        parsedChild.setMotherTT2Status(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_TT2_STS)));
         Cursor cursor1 = mydb.getReadableDatabase().rawQuery("SELECT * FROM birthplace WHERE ID=?", new String[]{parsedChild.getBirthplaceId()});
         if (cursor1.getCount() > 0) {
             cursor1.moveToFirst();
