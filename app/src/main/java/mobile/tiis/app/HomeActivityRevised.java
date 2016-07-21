@@ -116,6 +116,7 @@ public class HomeActivityRevised extends BackboneActivity {
     public final String VACCINATION_QUEUE_FRAGMENT = "mobile.tiis.app.fragments.VaccinationQueueFragment";
     public final String REPORTS_FRAGMENT = "mobile.tiis.app.fragments.ReportsFragment";
     public final String MONTHLY_PLAN_FRAGMENT = "mobile.tiis.app.fragments.MonthlyPlanFragment";
+    public final String SETTINGS_FRAGMENT = "mobile.tiis.app.fragments.SettingsFragment";
     public final String STOCK_FRAGMENT = "mobile.tiis.app.fragments.StockFragment";
 
     public final String LOGOUT = "logout";
@@ -348,6 +349,16 @@ public class HomeActivityRevised extends BackboneActivity {
                                 app.LAST_FRAGMENT = HOME_FRAGMENT;
                                 app.LAST_FRAGMENT_TITLE = getString(R.string.home);
                                 changeFragmentToActivity(getString(R.string.home_stock));
+                            }
+                            break;
+                        case R.id.settings:
+                            if (app.saveNeeded) {
+                                app.LAST_FRAGMENT = SETTINGS_FRAGMENT;
+                                alertUserLeavingScreen(SETTINGS_FRAGMENT, getString(R.string.home_settings));
+                            } else {
+                                app.LAST_FRAGMENT = SETTINGS_FRAGMENT;
+                                app.LAST_FRAGMENT_TITLE = getString(R.string.home_settings);
+                                changeFragment(SETTINGS_FRAGMENT, getString(R.string.home_settings));
                             }
                             break;
                         default:

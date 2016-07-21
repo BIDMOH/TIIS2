@@ -170,6 +170,9 @@ public class BackboneApplication extends Application {
     public static final String REGISTER_AUDIT = "RegisterAudit";
     public static final String GET_VACCINATION_QUEUE_BY_DATE_AND_USER = "GetVaccinationQueueByDateAndUser";
     public static final String PLACEMANAGEMENT_GETBIRTHPLACELIST = "PlaceManagement.svc/GetBirthplaceList";
+
+    public static final String GET_HEALTH_FACILITY_CHILD_CUMULATIVE_REGISTRATION_NUMBER = "HealthFacilityManagement.svc/GetCumulativeChildId";
+    public static final String UPDATE_HEALTH_FACILITY_CHILD_CUMULATIVE_REGISTRATION_NUMBER = "HealthFacilityManagement.svc/UpdateHealthFacilityCumulativeChildSn";
     //ChildID
     public static final String CHILD_ID = "childID";
     //register audit Constants
@@ -3118,6 +3121,52 @@ public class BackboneApplication extends Application {
 
         return isStockAdjustmentReasonSaved;
 
+    }
+
+
+    private String data = "";
+    public String getHealthFacilityCumulativeChildRegistrationNumber() {
+        String url = WCF_URL + GET_HEALTH_FACILITY_CHILD_CUMULATIVE_REGISTRATION_NUMBER +"?healthFacilityId="+ getLOGGED_IN_USER_HF_ID();
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+
+        Log.e("getHealthFacitliyCumulativeChildRegistrationNumber", url + "");
+
+        RequestHandle message = client.get(url, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                throwable.printStackTrace();
+                data = "Error fetching the cumulative value. Please check if you have an active internet connection";
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String response) {
+                data = response;
+            }
+        });
+        return data;
+    }
+
+
+    private int resp;
+    public int  updateHealthFacilityCumulativeChildRegistrationNumber(int no) {
+        String url = WCF_URL + UPDATE_HEALTH_FACILITY_CHILD_CUMULATIVE_REGISTRATION_NUMBER +"?healthFacilityId="+ getLOGGED_IN_USER_HF_ID()+"&cumulativeChildSn="+no;
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+
+        Log.e("updateHealthFacitliyCumulativeChildRegistrationNumber", url + "");
+
+        RequestHandle message = client.get(url, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                throwable.printStackTrace();
+                resp = -999;
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String response) {
+                resp = 1;
+            }
+        });
+        return resp;
     }
 
 
