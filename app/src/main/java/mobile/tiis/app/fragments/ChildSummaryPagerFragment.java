@@ -170,9 +170,17 @@ public class ChildSummaryPagerFragment extends Fragment {
         vvuStatusList.add("U");
 
         registryYearList = new ArrayList<>();
-        registryYearList.add("2014");
-        registryYearList.add("2015");
-        registryYearList.add("2016");
+        Calendar c = Calendar.getInstance();
+        Date d = new Date(c.getTimeInMillis());
+
+
+        int y =c.get(Calendar.YEAR);
+
+        Log.d("time","year = "+y);
+        while(y>2010){
+            registryYearList.add(y+"");
+            y--;
+        }
 
         spinnerAdapter      = new PlacesOfBirthAdapter(ChildSummaryPagerFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, gender);
         vvuSpinnerAdapter   = new PlacesOfBirthAdapter(ChildSummaryPagerFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, tt2StatusList);
@@ -225,6 +233,23 @@ public class ChildSummaryPagerFragment extends Fragment {
                     vvuStatusOrig = vvuStatusList.get(position - 1);
                 }catch (ArrayIndexOutOfBoundsException e) {
                     vvuStatusOrig = "";
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        registryYearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                try {
+                    childRegistryYearOrig = registryYearList.get(position - 1);
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    childRegistryYearOrig = "";
                     e.printStackTrace();
                 }
             }
@@ -477,6 +502,9 @@ public class ChildSummaryPagerFragment extends Fragment {
 
             if (vvuStatusOrig.equals(""))
                 VVUSpinner.setAdapter(vvuSpinnerAdapter);
+
+            if (childRegistryYearOrig.equals(""))
+                registryYearSpinner.setAdapter(registryYearAdapter);
         }
 
         metBarcodeValue.setFocusableInTouchMode(fieldStatus);
@@ -616,22 +644,12 @@ public class ChildSummaryPagerFragment extends Fragment {
 
             if (mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR))!= null){
                 childRegistryYearOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR));
+
+                registryYearSpinner.setAdapter(registryYearAdapter);
+                registryYearSpinner.setSelection(registryYearList.indexOf(childRegistryYearOrig)+1);
             }else {
                 childRegistryYearOrig = "";
-            }
-
-
-            registryYearSpinner.setAdapter(registryYearAdapter);
-            switch (childRegistryYearOrig){
-                case "2014":
-                    registryYearSpinner.setSelection(1);
-                    break;
-                case "2015":
-                    registryYearSpinner.setSelection(2);
-                    break;
-                case "2016":
-                    registryYearSpinner.setSelection(3);
-                    break;
+                registryYearSpinner.setError("Please select Child's Registration Year");
             }
 
 
@@ -652,6 +670,7 @@ public class ChildSummaryPagerFragment extends Fragment {
                 }
             }else {
                 vvuStatusOrig = "";
+                VVUSpinner.setError("Please select mothers HIV status");
             }
 
             if (mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_TT2_STS)) != null){
@@ -990,6 +1009,13 @@ public class ChildSummaryPagerFragment extends Fragment {
             return false;
         }
 
+        if (registryYearSpinner.getSelectedItemPosition()==0) {
+            alertDialogBuilder.setMessage("Please select Child Registration Year");
+            alertDialogBuilder.show();
+            VVUSpinner.setError("Please select Child Registration Year");
+            return false;
+        }
+
         if (metCummulativeSn.getText().toString().equals("")) {
             alertDialogBuilder.setMessage("Please fill Child Cumulative Sn");
             alertDialogBuilder.show();
@@ -1038,12 +1064,11 @@ public class ChildSummaryPagerFragment extends Fragment {
         giveValueAfterSave();
         ContentValues contentValues = new ContentValues();
 
-        if (registryYearSpinner.getSelectedItemPosition() != 0){
-            if (!registryYearList.get(registryYearSpinner.getSelectedItemPosition()-1).equalsIgnoreCase(currentChild.getChildRegistryYear())){
-                currentChild.setChildRegistryYear(registryYearList.get(registryYearSpinner.getSelectedItemPosition() - 1));
-                contentValues.put(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR, registryYearList.get(registryYearSpinner.getSelectedItemPosition()-1));
-            }
+        if (!registryYearList.get(registryYearSpinner.getSelectedItemPosition()-1).equalsIgnoreCase(currentChild.getChildRegistryYear())){
+            currentChild.setChildRegistryYear(registryYearList.get(registryYearSpinner.getSelectedItemPosition() - 1));
+            contentValues.put(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR, registryYearList.get(registryYearSpinner.getSelectedItemPosition()-1));
         }
+
 
         if (!metCummulativeSn.getText().toString().equalsIgnoreCase(currentChild.getChildCumulativeSn())){
             currentChild.setChildCumulativeSn(metCummulativeSn.getText().toString());

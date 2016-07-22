@@ -139,9 +139,18 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         gender.add("Female");
 
         spinnerYears = new ArrayList<>();
-        spinnerYears.add("2014");
-        spinnerYears.add("2015");
-        spinnerYears.add("2016");
+        Calendar c = Calendar.getInstance();
+        Date d = new Date(c.getTimeInMillis());
+
+
+        int y =c.get(Calendar.YEAR);
+
+        Log.d("time","year = "+y);
+        while(y>2010){
+            spinnerYears.add(y+"");
+            y--;
+        }
+
 
 
         dateOfBirth.setOnFocusChangeListener(new View.OnFocusChangeListener() {

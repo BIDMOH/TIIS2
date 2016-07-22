@@ -57,12 +57,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/card_light_text"/>
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
@@ -75,7 +69,7 @@
                         android:layout_weight="1">
 
                         <TextView
-                            android:id="@+id/no_ya_utambulisho_mwaka"
+                            android:id="@+id/child_cumulative_sn"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"/>
@@ -93,7 +87,7 @@
                         android:layout_weight="1">
 
                         <TextView
-                            android:id="@+id/no_ya_utambulisho_namba"
+                            android:id="@+id/child_registration_year"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"/>
@@ -139,7 +133,7 @@
             android:padding="4dp">
 
             <TextView
-                android:id="@+id/jina_la_mtoto"
+                android:id="@+id/childsName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -159,7 +153,7 @@
             android:padding="4dp">
 
             <TextView
-                android:id="@+id/tarehe_ya_kuzaliwa"
+                android:id="@+id/date_of_birth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -179,7 +173,7 @@
             android:padding="4dp">
 
             <TextView
-                android:id="@+id/mahali_anapoishi"
+                android:id="@+id/domicile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -197,7 +191,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/jinsia"
+                android:id="@+id/gender"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -233,7 +227,7 @@
                         android:layout_height="match_parent">
 
                         <TextView
-                            android:id="@+id/jina_la_mama"
+                            android:id="@+id/mothers_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
@@ -263,6 +257,7 @@
                                 android:layout_weight="1">
 
                                 <TextView
+                                    android:id="@+id/mothers_tt2_status"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_centerInParent="true"
@@ -290,6 +285,7 @@
                                 android:layout_weight="1">
 
                                 <TextView
+                                    android:id="@+id/mothers_hiv_status"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_centerInParent="true"

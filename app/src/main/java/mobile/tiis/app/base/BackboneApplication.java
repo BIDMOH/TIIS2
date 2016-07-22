@@ -2517,8 +2517,8 @@ public class BackboneApplication extends Application {
                     .append("&notes=").append(URLEncoder.encode(notes))
                     .append("&userId=").append(userID).append("&modifiedOn=").append(modOn)
                     .append("&firstname2=").append((firstname2 != null) ? firstname2 : "")
-                    .append("&childCumulativeSn=").append(URLEncoder.encode(childCummulativeSn))
-                    .append("&childRegistryYear=").append(URLEncoder.encode(childRegistryYear));
+                    .append("&childCumulativeSn=").append(childCummulativeSn)
+                    .append("&childRegistryYear=").append(childRegistryYear);
 
         } else {
             webServiceUrl = new StringBuilder(postmanModel.getUrl());

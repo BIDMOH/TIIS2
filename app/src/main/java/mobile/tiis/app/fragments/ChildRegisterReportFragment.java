@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import mobile.tiis.app.CustomViews.DividerItemDecoration;
 import mobile.tiis.app.R;
 import mobile.tiis.app.adapters.ChildRegisterReportRecyclerAdapter;
 import mobile.tiis.app.base.BackboneActivity;
@@ -130,7 +131,7 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
 
             DatabaseHandler mydb = app.getDatabaseInstance();
 
-            String SQLChildRegistry = "SELECT FIRSTNAME1,FIRSTNAME2,LASTNAME1, BIRTHDATE,GENDER,MOTHER_FIRSTNAME,MOTHER_LASTNAME,\n" +
+            String SQLChildRegistry = "SELECT FIRSTNAME1,FIRSTNAME2,LASTNAME1, BIRTHDATE,GENDER,MOTHER_FIRSTNAME,MOTHER_LASTNAME,MOTHER_VVU_STS,MOTHER_TT2_STS,CUMULATIVE_SERIAL_NUMBER,CHILD_REGISTRY_YEAR, \n" +
                     "\t\t(CASE \n" +
                     "\t\t\tWHEN (place.ID = '-100') \n" +
                     "\t\t\t\tTHEN child.NOTES\n" +
@@ -234,7 +235,7 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
                     "\t\n" +
                     "         FROM CHILD \n" +
                     "\t\t INNER JOIN \n" +
-                    "\t\t place on child.DOMICILE_ID = place.ID\n";
+                    "\t\t place on child.DOMICILE_ID = place.ID WHERE child.HEALTH_FACILITY_ID = '"+app.getLOGGED_IN_USER_HF_ID()+"'";
 
 
 
@@ -283,13 +284,17 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
                         row.DTP3 = cursor.getString(cursor.getColumnIndex("DTP3"));
                         row.Rota1 = cursor.getString(cursor.getColumnIndex("Rota1"));
                         row.Rota2 = cursor.getString(cursor.getColumnIndex("Rota2"));
-                        row.Measles1 = cursor.getString(cursor.getColumnIndex("Measles1"));
-                        row.Measles2 = cursor.getString(cursor.getColumnIndex("Measles2"));
+                        row.measles1 = cursor.getString(cursor.getColumnIndex("Measles1"));
+                        row.measles2 = cursor.getString(cursor.getColumnIndex("Measles2"));
                         row.PCV1 = cursor.getString(cursor.getColumnIndex("PCV1"));
                         row.PCV2 = cursor.getString(cursor.getColumnIndex("PCV2"));
                         row.PCV3 = cursor.getString(cursor.getColumnIndex("PCV3"));
-                        row.MeaslesRubella1 = cursor.getString(cursor.getColumnIndex("MeaslesRubella1"));
-                        row.MeaslesRubella2 = cursor.getString(cursor.getColumnIndex("MeaslesRubella2"));
+                        row.measlesRubella1 = cursor.getString(cursor.getColumnIndex("MeaslesRubella1"));
+                        row.measlesRubella2 = cursor.getString(cursor.getColumnIndex("MeaslesRubella2"));
+                        row.childRegistrationYear = cursor.getString(cursor.getColumnIndex("CHILD_REGISTRY_YEAR"));
+                        row.childCumulativeSn = cursor.getString(cursor.getColumnIndex("CUMULATIVE_SERIAL_NUMBER"));
+                        row.motherTT2Status = cursor.getString(cursor.getColumnIndex("MOTHER_TT2_STS"));
+                        row.motherHivStatus = cursor.getString(cursor.getColumnIndex("MOTHER_VVU_STS"));
 
                         mVar.add(row);
                     } while (cursor.moveToNext());
@@ -310,6 +315,10 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
             var                     = mVar;
 
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+
+            childRegisterListView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
+
+            childRegisterListView.setHasFixedSize(true);
             childRegisterListView.setLayoutManager(mLayoutManager);
             childRegisterListView.setItemAnimator(new DefaultItemAnimator());
             childRegisterListView.setAdapter(adapter);
@@ -319,124 +328,5 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
         protected void onProgressUpdate(Void... values) {
         }
 
-    }
-
-    public void displayChildRegisteryList(ArrayList<ViewChildRegisterInfoRow> mVar) {
-        ArrayList<ViewChildRegisterInfoRow> nVar = mVar;
-        childRegisterTable.removeAllViews();
-        for (final ViewChildRegisterInfoRow a : nVar) {
-
-            View convertView = inflater.inflate(R.layout.child_register_table_item, null);
-
-            ((TextView)convertView.findViewById(R.id.sn)).setText(a.sn+"");
-            SimpleDateFormat ft = new SimpleDateFormat("dd-MM");
-            SimpleDateFormat ft2 = new SimpleDateFormat("dd-MM-yyyy");
-
-            if(a.OPV0!=null) {
-                Date scheduled_date = BackboneActivity.dateParser(a.OPV0);
-                ((TextView) convertView.findViewById(R.id.date)).setText(ft2.format(scheduled_date));
-            }else if(a.OPV1!=null){
-                Date date = BackboneActivity.dateParser(a.OPV1);
-                ((TextView) convertView.findViewById(R.id.date)).setText(ft2.format(date));
-            }
-
-            if(a.birthdate!=null) {
-                Date birth_date = BackboneActivity.dateParser(a.birthdate);
-                ((TextView) convertView.findViewById(R.id.tarehe_ya_kuzaliwa)).setText(ft2.format(birth_date));
-            }
-
-            String name = "";
-            if(a.childFirstName!=null){
-                name+=a.childFirstName;
-            }
-            if(a.childMiddleName!=null){
-                name+=" "+a.childMiddleName;
-            }
-            if(a.childSurname!=null){
-                name+=" "+a.childSurname;
-            }
-
-
-            ((TextView)convertView.findViewById(R.id.jina_la_mtoto)).setText(name);
-            ((TextView)convertView.findViewById(R.id.mahali_anapoishi)).setText(a.domicile);
-            ((TextView)convertView.findViewById(R.id.jinsia)).setText(a.gender.equals("true")?"ME":"KE");
-            ((TextView)convertView.findViewById(R.id.jina_la_mama)).setText(a.motherFirstName+" "+a.motherLastName);
-
-            if(a.bcg!=null) {
-                Date date = BackboneActivity.dateParser(a.bcg);
-                ((TextView) convertView.findViewById(R.id.bcg)).setText(ft.format(date));
-            }
-
-            if(a.OPV0!=null) {
-                Date date = BackboneActivity.dateParser(a.OPV0);
-                ((TextView) convertView.findViewById(R.id.opv0)).setText(ft.format(date));
-            }
-            if(a.OPV1!=null) {
-                Date date = BackboneActivity.dateParser(a.OPV1);
-                ((TextView) convertView.findViewById(R.id.opv1)).setText(ft.format(date));
-            }
-
-            if(a.OPV2!=null) {
-                Date date = BackboneActivity.dateParser(a.OPV2);
-                ((TextView) convertView.findViewById(R.id.opv2)).setText(ft.format(date));
-            }
-
-            if(a.OPV3!=null) {
-                Date date = BackboneActivity.dateParser(a.OPV3);
-                ((TextView) convertView.findViewById(R.id.opv3)).setText(ft.format(date));
-            }
-
-            if(a.DTP1!=null) {
-                Date date = BackboneActivity.dateParser(a.DTP1);
-                ((TextView) convertView.findViewById(R.id.dtp1)).setText(ft.format(date));
-            }
-
-            if(a.DTP2!=null) {
-                Date date = BackboneActivity.dateParser(a.DTP2);
-                ((TextView) convertView.findViewById(R.id.dtp2)).setText(ft.format(date));
-            }
-
-            if(a.DTP3!=null) {
-                Date date = BackboneActivity.dateParser(a.DTP3);
-                ((TextView) convertView.findViewById(R.id.dtp3)).setText(ft.format(date));
-            }
-
-            if(a.PCV1!=null) {
-                Date date = BackboneActivity.dateParser(a.PCV1);
-                ((TextView) convertView.findViewById(R.id.pcv1)).setText(ft.format(date));
-            }
-
-            if(a.PCV2!=null) {
-                Date date = BackboneActivity.dateParser(a.PCV2);
-                ((TextView) convertView.findViewById(R.id.pcv2)).setText(ft.format(date));
-            }
-
-            if(a.PCV3!=null) {
-                Date date = BackboneActivity.dateParser(a.PCV3);
-                ((TextView) convertView.findViewById(R.id.pcv3)).setText(ft.format(date));
-            }
-
-            if(a.Rota1!=null) {
-                Date date = BackboneActivity.dateParser(a.Rota1);
-                ((TextView) convertView.findViewById(R.id.rota1)).setText(ft.format(date));
-            }
-
-
-            if(a.Rota2!=null) {
-                Date date = BackboneActivity.dateParser(a.Rota2);
-                ((TextView) convertView.findViewById(R.id.rota2)).setText(ft.format(date));
-            }
-
-            if(a.MeaslesRubella1!=null) {
-                Date date = BackboneActivity.dateParser(a.MeaslesRubella1);
-                ((TextView) convertView.findViewById(R.id.rubella1)).setText(ft.format(date));
-            }
-            if(a.MeaslesRubella2!=null) {
-                Date date = BackboneActivity.dateParser(a.MeaslesRubella2);
-                ((TextView) convertView.findViewById(R.id.rubella2)).setText(ft.format(date));
-            }
-
-            childRegisterTable.addView(convertView);
-        }
     }
 }

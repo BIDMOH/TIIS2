@@ -99,7 +99,7 @@
                                     android:layout_gravity="right"
                                     android:layout_width="0dp"
                                     android:layout_weight=".35"
-                                    android:layout_height="wrap_content"
+                                    android:layout_height="match_parent"
                                     app:met_floatingLabelText="Cummulative Serial Number"
                                     app:met_floatingLabel="normal"
                                     android:inputType="number"

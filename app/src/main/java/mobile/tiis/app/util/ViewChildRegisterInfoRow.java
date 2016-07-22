@@ -40,7 +40,7 @@ public class ViewChildRegisterInfoRow extends BackboneApplication{
     public String OPV0,OPV1,OPV2,OPV3;
     public String DTP1,DTP2,DTP3;
     public String Rota1,Rota2;
-    public String Measles1,Measles2;
+    public String measles1,measles2;
     public String PCV1,PCV2,PCV3;
-    public String MeaslesRubella1,MeaslesRubella2;
+    public String measlesRubella1,measlesRubella2,motherHivStatus,motherTT2Status,childCumulativeSn,childRegistrationYear;
 }

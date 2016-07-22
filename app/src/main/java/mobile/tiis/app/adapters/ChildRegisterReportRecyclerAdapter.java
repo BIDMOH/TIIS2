@@ -1,23 +1,10 @@
 package mobile.tiis.app.adapters;
 
-import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.os.Build;
-import android.os.Bundle;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.util.Pair;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -50,21 +37,29 @@ public class ChildRegisterReportRecyclerAdapter extends RecyclerView.Adapter<Rec
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView sn;
         TextView date;
-        TextView tarehe_ya_kuzaliwa;
-        TextView jina_la_mtoto;
-        TextView mahali_anapoishi;
-        TextView jinsia;
-        TextView jina_la_mama;
+        TextView dateOfBirth;
+        TextView childsName;
+        TextView domicile;
+        TextView gender;
+        TextView mothersName;
+        TextView mothers_hiv_status;
+        TextView mothers_tt2_status;
+        TextView childCumulativeSn;
+        TextView childRegistrationYear;
         TextView bcg,opv0,opv1,opv2,opv3,dtp1,dtp2,dtp3,pcv1,pcv2,pcv3,rota1,rota2,rubella1,rubella2;
         public ViewHolder(View convertView) {
             super(convertView);
             sn = ((TextView)convertView.findViewById(R.id.sn));
             date = ((TextView) convertView.findViewById(R.id.date));
-            tarehe_ya_kuzaliwa = ((TextView) convertView.findViewById(R.id.tarehe_ya_kuzaliwa));
-            jina_la_mtoto = ((TextView) convertView.findViewById(R.id.jina_la_mtoto));
-            jinsia = ((TextView) convertView.findViewById(R.id.jinsia));
-            mahali_anapoishi = ((TextView) convertView.findViewById(R.id.mahali_anapoishi));
-            jina_la_mama = ((TextView) convertView.findViewById(R.id.jina_la_mama));
+            dateOfBirth = ((TextView) convertView.findViewById(R.id.date_of_birth));
+            childsName = ((TextView) convertView.findViewById(R.id.childsName));
+            gender = ((TextView) convertView.findViewById(R.id.gender));
+            mothersName = ((TextView) convertView.findViewById(R.id.mothers_name));
+            mothers_hiv_status = ((TextView) convertView.findViewById(R.id.mothers_hiv_status));
+            mothers_tt2_status = ((TextView) convertView.findViewById(R.id.mothers_tt2_status));
+            domicile = ((TextView) convertView.findViewById(R.id.domicile));
+            childCumulativeSn = ((TextView) convertView.findViewById(R.id.child_cumulative_sn));
+            childRegistrationYear = ((TextView) convertView.findViewById(R.id.child_registration_year));
             bcg = ((TextView) convertView.findViewById(R.id.bcg));
             opv0 = ((TextView) convertView.findViewById(R.id.opv0));
             opv1 = ((TextView) convertView.findViewById(R.id.opv1));
@@ -108,7 +103,7 @@ public class ChildRegisterReportRecyclerAdapter extends RecyclerView.Adapter<Rec
         }
         if(a.birthdate!=null) {
             Date birth_date = BackboneActivity.dateParser(a.birthdate);
-            holder.tarehe_ya_kuzaliwa.setText(ft2.format(birth_date));
+            holder.dateOfBirth.setText(ft2.format(birth_date));
         }
 
         String name = "";
@@ -122,10 +117,15 @@ public class ChildRegisterReportRecyclerAdapter extends RecyclerView.Adapter<Rec
             name+=" "+a.childSurname;
         }
 
-        holder.jina_la_mtoto.setText(name);
-        holder.mahali_anapoishi.setText(a.domicile);
-        holder.jinsia.setText(a.gender.equals("true")?"ME":"KE");
-        holder.jina_la_mama.setText(a.motherFirstName+" "+a.motherLastName);
+        holder.childsName.setText(name);
+        holder.domicile.setText(a.domicile);
+        holder.gender.setText(a.gender.equals("true")?"ME":"KE");
+        holder.mothersName.setText(a.motherFirstName+" "+a.motherLastName);
+        holder.mothers_hiv_status.setText(a.motherHivStatus);
+        holder.mothers_tt2_status.setText(a.motherTT2Status);
+
+        holder.childCumulativeSn.setText(a.childCumulativeSn);
+        holder.childRegistrationYear.setText(a.childRegistrationYear);
 
         if(a.bcg!=null) {
             Date date = BackboneActivity.dateParser(a.bcg);
@@ -192,12 +192,12 @@ public class ChildRegisterReportRecyclerAdapter extends RecyclerView.Adapter<Rec
             holder.rota2.setText(ft.format(date));
         }
 
-        if(a.MeaslesRubella1!=null) {
-            Date date = BackboneActivity.dateParser(a.MeaslesRubella1);
+        if(a.measlesRubella1!=null) {
+            Date date = BackboneActivity.dateParser(a.measlesRubella1);
             holder.rubella1.setText(ft.format(date));
         }
-        if(a.MeaslesRubella2!=null) {
-            Date date = BackboneActivity.dateParser(a.MeaslesRubella2);
+        if(a.measlesRubella2!=null) {
+            Date date = BackboneActivity.dateParser(a.measlesRubella2);
             holder.rubella2.setText(ft.format(date));
         }
     }
