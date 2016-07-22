@@ -1920,6 +1920,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 child.setHealthcenter(getHealthCenterName(child.getHealthcenterId()));
                 child.setBarcodeID(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.BARCODE_ID)));
                 child.setId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.ID)));
+                child.setChildRegistryYear(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR)));
+                child.setMotherHivStatus(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_VVU_STS)));
+                child.setMotherTT2Status(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_TT2_STS)));
+                child.setChildCumulativeSn(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER)));
                 children.add(child);
             } while (cursor.moveToNext());
 

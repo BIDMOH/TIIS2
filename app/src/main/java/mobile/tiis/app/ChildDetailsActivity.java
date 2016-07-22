@@ -138,7 +138,13 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
                         @Override
                         protected void onPostExecute(Void aVoid) {
                             super.onPostExecute(aVoid);
-                            String name = currentChild.getFirstname1()+" "+currentChild.getFirstname2()+" "+currentChild.getLastname1();
+                            String name = "";
+                            try {
+                                name = currentChild.getFirstname1()+" "+currentChild.getFirstname2()+" "+currentChild.getLastname1();
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+
                             toolbarTitle.setText(name);
                             initializePagers();
                             childInfoLoader.setVisibility(View.GONE);

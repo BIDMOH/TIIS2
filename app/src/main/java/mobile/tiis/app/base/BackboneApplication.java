@@ -836,7 +836,7 @@ public class BackboneApplication extends Application {
             db1.endTransaction();
             e.printStackTrace();
         }
-        Log.d("coze","saving data to db returning = "+containsData);
+        Log.d("coze", "saving data to db returning = " + containsData);
         return containsData ;
     }
 
@@ -1068,6 +1068,7 @@ public class BackboneApplication extends Application {
                     Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
                     ArrayList<Child> children = new ArrayList<>();
                     JSONArray jChildren = new JSONArray(result);
+                    Log.d("WhyDHC", jChildren.toString());
                     for (int i = 0; i < jChildren.length(); i++) {
                         try {
                             long tStart = System.currentTimeMillis();
@@ -1086,6 +1087,16 @@ public class BackboneApplication extends Application {
                             c.setGender(jc.getBoolean("Gender") == true ? "Male" : "Female");
                             c.setHealthcenter(jc.getString("HealthcenterId"));
                             c.setId(jc.getInt("Id") + "");
+                            if (jc.getString("MothersTT2Status") != null){
+                                c.setMotherTT2Status(jc.getString("MothersTT2Status"));
+                            }
+                            if (jc.getString("MothersHivStatus") != null){
+                                c.setMotherHivStatus(jc.getString("MothersHivStatus"));
+                            }
+//                            if (jc.getString("ChildRegistryYear") != null){
+//                                c.setChildRegistryYear(jc.getString("ChildRegistryYear"));
+//                            }
+
                             children.add(c);
                             Log.e("TIMING LOG", "elapsed time parsing search children (milliseconds): " + (System.currentTimeMillis() - tStart));
                         } catch (Exception e) {
@@ -1583,8 +1594,12 @@ public class BackboneApplication extends Application {
                     SQLHandler.ChildColumns.STATUS+","+
                     SQLHandler.ChildColumns.MOTHER_FIRSTNAME+","+
                     SQLHandler.ChildColumns.MOTHER_LASTNAME+","+
+                    SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER+","+
+                    SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR+","+
+                    SQLHandler.ChildColumns.MOTHER_TT2_STS+","+
+                    SQLHandler.ChildColumns.MOTHER_VVU_STS+","+
                     SQLHandler.ChildColumns.PHONE+
-                    " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?, ?)";
 
             SQLiteStatement stmt0 = db1.compileStatement(sql0);
             stmt0.bindString(1, "1");
@@ -1606,6 +1621,10 @@ public class BackboneApplication extends Application {
             stmt0.bindString(17, child.getDomicile()==null?"":child.getDomicile());
             stmt0.bindString(18, child.getMotherFirstname()==null?"":child.getMotherFirstname());
             stmt0.bindString(19, child.getMotherLastname()==null?"":child.getMotherLastname());
+            stmt0.bindString(20, child.getChildCumulativeSn()==null?"":child.getChildCumulativeSn());
+            stmt0.bindString(21, child.getChildRegistryYear()==null?"":child.getChildRegistryYear());
+            stmt0.bindString(19, child.getMotherTT2Status()==null?"":child.getMotherTT2Status());
+            stmt0.bindString(19, child.getMotherHivStatus()==null?"":child.getMotherHivStatus());
             stmt0.bindString(20, child.getPhone()==null?"":child.getPhone());
             stmt0.execute();
             stmt0.clearBindings();
@@ -2120,6 +2139,7 @@ public class BackboneApplication extends Application {
             public void onSuccess(int statusCode, Header[] headers, String response) {
                 Log.d("parseChildCollectorbyId", webServiceUrl.toString());
                 ChildCollector childCollector = new ChildCollector();
+                Log.d("WhyDHC2", response);
                 try {
                     Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
                     ObjectMapper mapper = new ObjectMapper();
@@ -2524,51 +2544,51 @@ public class BackboneApplication extends Application {
             webServiceUrl = new StringBuilder(postmanModel.getUrl());
         }
 
-        getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
+//        getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
         childId = -1;
         Log.e("service weight", webServiceUrl + "");
 
         //TODO this should be fully tested if it has no impact on the application.
-//        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
-//        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
-//            @Override
-//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-//                throwable.printStackTrace();
-//                Log.e("coze", "adding a post to send data when the connection is available");
-//                getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
-//                childId = -1;
-//            }
-//
-//            @Override
-//            public void onSuccess(int statusCode, Header[] headers, String result) {
-//                try {
-//                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
-//                    JSONObject jobj = new JSONObject(result);
-//                    childId = jobj.getInt("id");
-//                    if (childId != -1) {
-//
-//                        Log.e("coze","data stored successfully");
-//                        ContentValues contentValues = new ContentValues();
-//                        contentValues.put(SQLHandler.ChildColumns.ID, childId);
-//                        DatabaseHandler mydb = getDatabaseInstance();
-//
-//                        mydb.updateChildTableWithChildID(contentValues, threadTempId);
-//                        mydb.updateVaccinationAppointementChildId(threadTempId, childId + "");
-//                        mydb.updateVaccinationEventChildId(threadTempId, childId + "");
-//
-//                    } else {
-//                        Log.e("coze","data stored failed");
-//                        Log.e("coze","adding a post to send data when the connection is available");
-//                        getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
-//                    }
-//
-//
-//                } catch (Exception e) {
-//                    getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
-//                    childId = -1;
-//                }
-//            }
-//        });
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                throwable.printStackTrace();
+                Log.e("coze", "adding a post to send data when the connection is available");
+                getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
+                childId = -1;
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String result) {
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
+                    JSONObject jobj = new JSONObject(result);
+                    childId = jobj.getInt("id");
+                    if (childId != -1) {
+
+                        Log.e("coze","data stored successfully");
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put(SQLHandler.ChildColumns.ID, childId);
+                        DatabaseHandler mydb = getDatabaseInstance();
+
+                        mydb.updateChildTableWithChildID(contentValues, threadTempId);
+                        mydb.updateVaccinationAppointementChildId(threadTempId, childId + "");
+                        mydb.updateVaccinationEventChildId(threadTempId, childId + "");
+
+                    } else {
+                        Log.e("coze","data stored failed");
+                        Log.e("coze","adding a post to send data when the connection is available");
+                        getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
+                    }
+
+
+                } catch (Exception e) {
+                    getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
+                    childId = -1;
+                }
+            }
+        });
         return childId;
     }
 

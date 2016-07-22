@@ -818,9 +818,6 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
                 Intent childDetailsActivity = new Intent(SearchChildFragment.this.getActivity(), ChildDetailsActivity.class);
                 childDetailsActivity.putExtra("barcode", adapter.getBarcode(currentChildPosition));
                 childDetailsActivity.putExtra(BackboneApplication.CHILD_ID, adapter.getChildid(currentChildPosition));
-                Log.e("coze", "child id is 1  : " + adapter.getChildId(currentChildPosition));
-                Log.e("coze", "OR child id is 2  : " + adapter.getChildid(currentChildPosition));
-                Log.e("coze", "BARCODE IS  : " + adapter.getBarcode(currentChildPosition));
                 startActivity(childDetailsActivity);
                 currentChildPosition = -1;
             }
