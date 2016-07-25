@@ -3248,7 +3248,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         List<Stock> stockList = new ArrayList<>();
 
         //Query on Child Table
-        String selectQuery = "SELECT lot_id, gtin , lot_number , item , sum(balance) as balance , expire_date , ReorderQty, GtinIsActive, LotIsActive FROM "+ Tables.HEALTH_FACILITY_BALANCE +" group by item" ;
+        String selectQuery = "SELECT lot_id, gtin , lot_number , item , sum(balance) as balance , expire_date , ReorderQty, GtinIsActive, LotIsActive FROM "+ Tables.HEALTH_FACILITY_BALANCE +" where datetime(substr(expire_date,7,10), 'unixepoch') >= datetime('now') group by item" ;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);

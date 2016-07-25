@@ -206,6 +206,17 @@ public class HealthFacilityBalanceFragment extends Fragment {
         return diff < Constants.LimitNumberOfDaysBeforeExpireVal;
     }
 
+    public boolean expDateValue(Date expiry) {
+        Date now = new Date();
+        long diff = getDaysDifference(now, expiry);
+        if (diff<0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
     public static final long  getDaysDifference(Date d1, Date d2){
         long diff = d2.getTime() - d1.getTime();
         long difference = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
