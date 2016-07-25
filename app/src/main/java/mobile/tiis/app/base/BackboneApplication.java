@@ -1599,7 +1599,7 @@ public class BackboneApplication extends Application {
                     SQLHandler.ChildColumns.MOTHER_TT2_STS+","+
                     SQLHandler.ChildColumns.MOTHER_VVU_STS+","+
                     SQLHandler.ChildColumns.PHONE+
-                    " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?, ?)";
+                    " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             SQLiteStatement stmt0 = db1.compileStatement(sql0);
             stmt0.bindString(1, "1");
@@ -1618,14 +1618,14 @@ public class BackboneApplication extends Application {
             stmt0.bindString(14, child.getStatusId()==null?"":child.getStatusId());
             stmt0.bindString(15, child.getBirthplaceId()==null?"":child.getBirthplaceId());
             stmt0.bindString(16, child.getNotes()==null?"":child.getNotes());
-            stmt0.bindString(17, child.getDomicile()==null?"":child.getDomicile());
+            stmt0.bindString(17, child.getStatus()==null?"":child.getStatus());
             stmt0.bindString(18, child.getMotherFirstname()==null?"":child.getMotherFirstname());
             stmt0.bindString(19, child.getMotherLastname()==null?"":child.getMotherLastname());
             stmt0.bindString(20, child.getChildCumulativeSn()==null?"":child.getChildCumulativeSn());
             stmt0.bindString(21, child.getChildRegistryYear()==null?"":child.getChildRegistryYear());
-            stmt0.bindString(19, child.getMotherTT2Status()==null?"":child.getMotherTT2Status());
-            stmt0.bindString(19, child.getMotherHivStatus()==null?"":child.getMotherHivStatus());
-            stmt0.bindString(20, child.getPhone()==null?"":child.getPhone());
+            stmt0.bindString(22, child.getMotherTT2Status()==null?"":child.getMotherTT2Status());
+            stmt0.bindString(23, child.getMotherHivStatus()==null?"":child.getMotherHivStatus());
+            stmt0.bindString(24, child.getPhone()==null?"":child.getPhone());
             stmt0.execute();
             stmt0.clearBindings();
 
