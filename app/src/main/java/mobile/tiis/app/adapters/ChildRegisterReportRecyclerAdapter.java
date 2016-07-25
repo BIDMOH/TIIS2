@@ -124,8 +124,8 @@ public class ChildRegisterReportRecyclerAdapter extends RecyclerView.Adapter<Rec
         holder.mothers_hiv_status.setText(a.motherHivStatus);
         holder.mothers_tt2_status.setText(a.motherTT2Status);
 
-        holder.childCumulativeSn.setText(a.childCumulativeSn);
-        holder.childRegistrationYear.setText(a.childRegistrationYear);
+        holder.childCumulativeSn.setText(a.childCumulativeSn.equals("0")?"":a.childCumulativeSn);
+        holder.childRegistrationYear.setText(a.childRegistrationYear.equals("0")?"":a.childRegistrationYear);
 
         if(a.bcg!=null) {
             Date date = BackboneActivity.dateParser(a.bcg);

@@ -325,7 +325,7 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
                     "\t\t place on child.DOMICILE_ID = place.ID" +
                     "     INNER JOIN vaccination_event on child.ID = vaccination_event.CHILD_ID " +
                     "     WHERE child.HEALTH_FACILITY_ID = '"+app.getLOGGED_IN_USER_HF_ID()+"' " +
-                    "     AND ((substr(vaccination_event.VACCINATION_DATE,7,10)) >= ('" +from_date+ "') AND (substr(vaccination_event.VACCINATION_DATE,7,10)) <= ('" +to_date+ "') AND vaccination_event.VACCINATION_STATUS='true')" ;
+                    "     AND ((substr(vaccination_event.VACCINATION_DATE,7,10)) >= ('" +from_date+ "') AND (substr(vaccination_event.VACCINATION_DATE,7,10)) <= ('" +to_date+ "') AND vaccination_event.VACCINATION_STATUS='true') ORDER BY OPV0 DESC " ;
 
 
 
