@@ -60,6 +60,7 @@ public class SynchronisationService extends IntentService {
             List<PostmanModel> listPosts = db.getAllPosts();
             if (listPosts != null && app.getLOGGED_IN_USER_PASS() != null && app.getLOGGED_IN_USERNAME() != null) {
                 for (PostmanModel p : listPosts) {
+                    Log.d("POSTMAN PROCESSING","url = "+p.getUrl());
                     if(p.getUrl() == null || p.getUrl().trim().equals(""))continue;
                     try {
                         DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -68,6 +69,11 @@ public class SynchronisationService extends IntentService {
                         httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((app.getLOGGED_IN_USERNAME() + ":" + app.getLOGGED_IN_USER_PASS()).getBytes(), Base64.NO_WRAP));
                         HttpResponse httpResponse = httpClient.execute(httpGet);
                         if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                            Log.d("POSTMAN Processing","code not 200. Code = "+httpResponse.getStatusLine().getStatusCode());
+                            InputStream inputStream = httpResponse.getEntity().getContent();
+                            // the response as a string if needed
+                            String response = Utils.getStringFromInputStream(inputStream);
+                            Log.d("POSTMAN Processing","code not 200. Responce = "+response);
                             Utils.writeNetworkLogFileOnSD(
                                     Utils.returnDeviceIdAndTimestamp(getApplicationContext())
                                             + " StatusCode " + httpResponse.getStatusLine().getStatusCode()
@@ -87,7 +93,11 @@ public class SynchronisationService extends IntentService {
                             JSONObject jobj= null;
                             jobj = new JSONObject(response);
                             codeNeg99 = jobj.getInt("id");
-                        }catch(Exception e){}
+
+                            Log.d("POSTMAN Processing","received id = "+codeNeg99);
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
 
                         if(codeNeg99 != -99 && codeNeg99 != -1) {
                             boolean res = false;
@@ -95,6 +105,7 @@ public class SynchronisationService extends IntentService {
                                 try {
                                     Thread.sleep(10000);
                                     res = db.deletePostFromPostman(p.getPostId());
+                                    Log.d("POSTMAN COMPLETE","url = "+p.getUrl());
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }

@@ -69,7 +69,7 @@ public class GCMService extends GCMBaseIntentService {
             application.parseGCMChildById(childId);
         }
 
-        createNotification(context,"updates received");
+//        createNotification(context,"updates received");
         sendResult(childId,context);
 
 
