@@ -3263,7 +3263,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         List<Stock> stockList = new ArrayList<>();
 
         //Query on Child Table
-        String selectQuery = "SELECT lot_id, gtin , lot_number , item , sum(balance) as balance , expire_date , ReorderQty, GtinIsActive, LotIsActive FROM "+ Tables.HEALTH_FACILITY_BALANCE +" group by item" ;
+        String selectQuery = "SELECT lot_id, gtin , lot_number , item , sum(balance) as balance , expire_date , ReorderQty, GtinIsActive, LotIsActive FROM "+ Tables.HEALTH_FACILITY_BALANCE +" where datetime(substr(expire_date,7,10), 'unixepoch') >= datetime('now') group by item" ;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -3555,6 +3555,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String scheduled_vaccination_id, item_id;
         Map<String, String> vac_lot_map = new HashMap<String, String>();
         List<String> lot_name = new ArrayList<String>();
+        List<String> lot_balance = new ArrayList<>();
 
         SQLiteDatabase database = getWritableDatabase();
         Cursor cursor = null;
@@ -3574,9 +3575,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 cursor2.moveToFirst();
                 item_id = cursor2.getString(cursor2.getColumnIndex("ITEM_ID"));
 
-                cursor =   database.rawQuery("SELECT '-1' AS id, '-----' AS lot_number, datetime('now') as expire_date UNION " +
-                        " SELECT '-2' AS id, 'No Lot' AS lot_number, datetime('now') as expire_date UNION " +
-                        " SELECT item_lot.id, item_lot.lot_number, datetime(substr(item_lot.expire_date,7,10), 'unixepoch') " +
+                cursor =   database.rawQuery("SELECT '-1' AS id, '-----' AS lot_number,'30' AS balance, datetime('now') as expire_date UNION " +
+                        " SELECT '-2' AS id, 'No Lot' AS lot_number, '30' AS balance, datetime('now') as expire_date UNION " +
+                        " SELECT item_lot.id, item_lot.lot_number, health_facility_balance.balance, datetime(substr(item_lot.expire_date,7,10), 'unixepoch') " +
                         " FROM item_lot  join health_facility_balance ON item_lot.ID = health_facility_balance.lot_id " +
                         " WHERE item_lot.item_id = ? AND health_facility_balance.LotIsActive = 'true'" +
                         " AND datetime(substr(item_lot.expire_date,7,10), 'unixepoch') >= datetime('now') ORDER BY expire_date", new String[]{item_id});
@@ -3586,9 +3587,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                             Log.d("", "Adding to map" + cursor.getString(cursor.getColumnIndex("lot_number")));
                             vac_lot_map.put(cursor.getString(cursor.getColumnIndex("lot_number")), cursor.getString(cursor.getColumnIndex("id")));
                             lot_name.add(cursor.getString(cursor.getColumnIndex("lot_number")));
+                            lot_balance.add(cursor.getString(cursor.getColumnIndex(SQLHandler.HealthFacilityBalanceColumns.BALANCE)));
                         } while (cursor.moveToNext());
                         adminvacc.setVaccine_lot_map(vac_lot_map);
                         adminvacc.setVaccine_lot_list(lot_name);
+                        adminvacc.setBalance(lot_balance);
                     }
                 }
             }

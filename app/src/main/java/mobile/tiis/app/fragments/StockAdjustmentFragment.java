@@ -1,6 +1,7 @@
 package mobile.tiis.app.fragments;
 
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -21,7 +22,9 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
 import mobile.tiis.app.R;
@@ -94,59 +97,84 @@ public class StockAdjustmentFragment extends Fragment{
     public void addViewsToTable(){
         stockHostTable.removeAllViews();
         for (final HealthFacilityBalance healthFacilityBalance : rowCollectorList){
-            View rowView = View.inflate(StockAdjustmentFragment.this.getActivity(), R.layout.stock_adjustment_list_item, null);
 
-            TextView vaccineName = (TextView) rowView.findViewById(R.id.item_name);
-            vaccineName.setTypeface(BackboneActivity.Rosario_Regular);
-            vaccineName.setText(healthFacilityBalance.getItem_name());
+            if(expDateValue(BackboneActivity.dateParser(healthFacilityBalance.getExpire_date()))){
 
-            TextView vaccineLotNumber = (TextView) rowView.findViewById(R.id.lot_number);
-            vaccineLotNumber.setTypeface(BackboneActivity.Rosario_Regular);
-            vaccineLotNumber.setText(healthFacilityBalance.getLot_number());
+            }else {
 
-            TextView vacccineBalance = (TextView) rowView.findViewById(R.id.balance);
-            vacccineBalance.setTypeface(BackboneActivity.Rosario_Regular);
-            vacccineBalance.setText(healthFacilityBalance.getBalance()+"");
+                View rowView = View.inflate(StockAdjustmentFragment.this.getActivity(), R.layout.stock_adjustment_list_item, null);
 
-            final MaterialEditText stockAdjustmentQuantity = (MaterialEditText) rowView.findViewById(R.id.met_quantity);
+                TextView vaccineName = (TextView) rowView.findViewById(R.id.item_name);
+                vaccineName.setTypeface(BackboneActivity.Rosario_Regular);
+                vaccineName.setText(healthFacilityBalance.getItem_name());
 
-            MaterialSpinner stockAdjustmentReason = (MaterialSpinner)rowView.findViewById(R.id.reason_spinner);
-            SingleTextViewAdapter spAdjustmentReasons = new SingleTextViewAdapter(this.getActivity(), R.layout.single_text_spinner_item_drop_down, database.getNameFromAdjustmentReasons());
-            stockAdjustmentReason.setAdapter(spAdjustmentReasons);
+                TextView vaccineLotNumber = (TextView) rowView.findViewById(R.id.lot_number);
+                vaccineLotNumber.setTypeface(BackboneActivity.Rosario_Regular);
+                vaccineLotNumber.setText(healthFacilityBalance.getLot_number());
 
-            stockAdjustmentQuantity.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                TextView vacccineBalance = (TextView) rowView.findViewById(R.id.balance);
+                vacccineBalance.setTypeface(BackboneActivity.Rosario_Regular);
+                vacccineBalance.setText(healthFacilityBalance.getBalance()+"");
 
-                }
+                final MaterialEditText stockAdjustmentQuantity = (MaterialEditText) rowView.findViewById(R.id.met_quantity);
 
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                MaterialSpinner stockAdjustmentReason = (MaterialSpinner)rowView.findViewById(R.id.reason_spinner);
+                SingleTextViewAdapter spAdjustmentReasons = new SingleTextViewAdapter(this.getActivity(), R.layout.single_text_spinner_item_drop_down, database.getNameFromAdjustmentReasons());
+                stockAdjustmentReason.setAdapter(spAdjustmentReasons);
+
+                stockAdjustmentQuantity.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
 //                item.setTempBalance(etQuantity.getText().toString());
-                    healthFacilityBalance.setTempBalance(stockAdjustmentQuantity.getText().toString());
-                }
+                        healthFacilityBalance.setTempBalance(stockAdjustmentQuantity.getText().toString());
+                    }
 
-                @Override
-                public void afterTextChanged(Editable s) {
+                    @Override
+                    public void afterTextChanged(Editable s) {
 
-                }
-            });
+                    }
+                });
 
-            stockAdjustmentReason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int i, long id) {
+                stockAdjustmentReason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int i, long id) {
 //                item.setSelectedAdjustmentReasonPosition(i);
-                    healthFacilityBalance.setSelectedAdjustmentReasonPosition(i);
-                }
+                        healthFacilityBalance.setSelectedAdjustmentReasonPosition(i);
+                    }
 
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
 
-                }
-            });
+                    }
+                });
 
-            stockHostTable.addView(rowView);
+                stockHostTable.addView(rowView);
+
+            }
+
         }
+    }
+
+    public boolean expDateValue(Date expiry) {
+        Date now = new Date();
+        long diff = getDaysDifference(now, expiry);
+        if (diff<0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public static final long  getDaysDifference(Date d1, Date d2){
+        long diff = d2.getTime() - d1.getTime();
+        long difference = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+        return difference;
     }
 
     private void saveButtonClicked(){
