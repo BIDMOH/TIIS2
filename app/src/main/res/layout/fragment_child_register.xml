@@ -27,7 +27,7 @@
                 android:gravity="right"
                 android:layout_height="wrap_content"
                 android:textStyle="italic|bold"
-                android:text="Reporting Period"
+                android:text="Vaccinated Period"
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"/>
             <TextView
@@ -77,6 +77,81 @@
                     android:layout_marginLeft="32dp"
                     android:id="@+id/met_dob_value"
                     app:met_iconRight="@drawable/ic_monthly_plan"
+                    app:met_floatingLabelText="To Date"
+                    app:met_floatingLabel="normal"
+                    app:met_floatingLabelTextColor="@color/light_blue_500"
+                    android:layout_marginRight="16dp"
+                    android:layout_centerVertical="true"/>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/black"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginBottom="32dp"/>
+            </LinearLayout>
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:gravity="right"
+                android:layout_height="wrap_content"
+                android:textStyle="italic|bold"
+                android:text="Child Registration Number"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="|"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"/>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_alignParentRight="true">
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:hint="From number"
+                    android:layout_gravity="center_vertical"
+                    android:id="@+id/from_registration_number"
+                    app:met_floatingLabelText="From Date"
+
+                    android:layout_marginRight="16dp"
+                    app:met_floatingLabel="normal"
+                    app:met_floatingLabelTextColor="@color/light_blue_500"
+                    android:layout_centerVertical="true"/>
+
+                <View
+                    android:visibility="visible"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/black"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:hint="To number"
+                    android:textSize="12sp"
+                    android:layout_marginLeft="16dp"
+                    android:id="@+id/to_registration_number"
                     app:met_floatingLabelText="To Date"
                     app:met_floatingLabel="normal"
                     app:met_floatingLabelTextColor="@color/light_blue_500"

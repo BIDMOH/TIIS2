@@ -8,6 +8,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,10 +54,10 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
     private RecyclerView childRegisterListView;
     private ChildRegisterReportRecyclerAdapter adapter;
     private ProgressBar progressBar;
-    private MaterialEditText metDOBFrom,metDOBTo;
+    private MaterialEditText metDOBFrom,metDOBTo,metStartChildCumulativeRegNo,metEndChildCumulativeRegNo;
     private DatePickerDialog fromDatePicker = new DatePickerDialog();
     private DatePickerDialog toDatePicker = new DatePickerDialog();
-    private String toDateString = "", fromDateString = "";
+    private String toDateString = "", fromDateString = "", startChildCumulativeNo="", endChildCumulativeNo="";
 
     public static ChildRegisterReportFragment newInstance(int position) {
         ChildRegisterReportFragment f = new ChildRegisterReportFragment();
@@ -76,6 +78,46 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
         metDOBTo = (MaterialEditText) root.findViewById(R.id.met_dob_value);
 
 
+        metStartChildCumulativeRegNo = (MaterialEditText) root.findViewById(R.id.from_registration_number);
+        metEndChildCumulativeRegNo = (MaterialEditText) root.findViewById(R.id.to_registration_number);
+
+
+        metStartChildCumulativeRegNo.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                startChildCumulativeNo=s.toString();
+                new filterList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,fromDateString, toDateString,startChildCumulativeNo,endChildCumulativeNo);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+
+        metEndChildCumulativeRegNo.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                endChildCumulativeNo = s.toString();
+                new filterList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,fromDateString, toDateString,startChildCumulativeNo,endChildCumulativeNo);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
 
 
         metDOBTo.setOnClickListener(new View.OnClickListener() {
@@ -94,7 +136,7 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
                         toDateString = (toCalendar.getTimeInMillis() / 1000) + "";
 
                         if (!fromDateString.equals("")) {
-                            new filterList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,fromDateString, toDateString);
+                            new filterList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,fromDateString, toDateString,startChildCumulativeNo,endChildCumulativeNo);
                         } else {
                             final Snackbar snackbar = Snackbar.make(root, "Please select a start date to view the chart", Snackbar.LENGTH_LONG);
                             snackbar.setAction("OK", new View.OnClickListener() {
@@ -109,6 +151,8 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
                 });
             }
         });
+
+
 
 
 
@@ -128,7 +172,7 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
                         fromDateString = (fromCalendar.getTimeInMillis() / 1000) + "";
 
                         if (!toDateString.equals("")) {
-                            new filterList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,fromDateString, toDateString);
+                            new filterList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,fromDateString, toDateString,startChildCumulativeNo,endChildCumulativeNo);
                         } else {
                             final Snackbar snackbar = Snackbar.make(root, "Please select an end date to view the report", Snackbar.LENGTH_LONG);
                             snackbar.setAction("OK", new View.OnClickListener() {
@@ -203,6 +247,12 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
             String to_date =  t1+ "";
             String from_date = t2+ "";
 
+            String startNumber = "";
+            String endNumber = "";
+
+            String year = c.get(Calendar.YEAR)+"";
+
+
             try {
                 if (!params[0].equals("") && !params[1].equals("")) {
                     from_date = (Long.parseLong(params[0])-(24*60*60))+"";
@@ -212,6 +262,23 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            try{
+                if (!params[2].equals("")) {
+                    startNumber = params[2];
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+            try{
+                if (!params[3].equals("")) {
+                    endNumber = params[3];
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
 
             Cursor cursor;
             mVar = new ArrayList<>();
@@ -321,15 +388,24 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
                     "\t\t\n" +
                     "\t\n" +
                     "         FROM CHILD \n" +
-                    "\t\t INNER JOIN \n" +
+                    "\t\t INNER JOIN \n";
+            String querry2 =
                     "\t\t place on child.DOMICILE_ID = place.ID" +
                     "     INNER JOIN vaccination_event on child.ID = vaccination_event.CHILD_ID " +
                     "     WHERE child.HEALTH_FACILITY_ID = '"+app.getLOGGED_IN_USER_HF_ID()+"' " +
-                    "     AND ((substr(vaccination_event.VACCINATION_DATE,7,10)) >= ('" +from_date+ "') AND (substr(vaccination_event.VACCINATION_DATE,7,10)) <= ('" +to_date+ "') AND vaccination_event.VACCINATION_STATUS='true') ORDER BY OPV0 DESC " ;
+                    "     AND ((substr(vaccination_event.VACCINATION_DATE,7,10)) >= ('" +from_date+ "') AND " +
+                    "    (substr(vaccination_event.VACCINATION_DATE,7,10)) <= ('" +to_date+ "') AND " +
+                    "    vaccination_event.VACCINATION_STATUS='true') " +
+
+                    (startNumber.equals("")?"":" AND   child.CUMULATIVE_SERIAL_NUMBER >= "+startNumber+" ") +
+                    (endNumber.equals("")?"":"  AND  child.CUMULATIVE_SERIAL_NUMBER < "+endNumber+"  ") +
+                    (startNumber.equals("")?"":" AND child.CHILD_REGISTRY_YEAR = "+year+" ")
+                    +"ORDER BY OPV0 DESC " ;
 
 
+            SQLChildRegistry +=querry2;
 
-            Log.e("optimization", SQLChildRegistry);
+            Log.e("optimization", querry2);
             long tStart = System.currentTimeMillis();
             cursor = mydb.getReadableDatabase().rawQuery(SQLChildRegistry, null);
 

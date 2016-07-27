@@ -58,6 +58,7 @@ public class ChildSummaryPagerFragment extends Fragment {
     private static final String ARG_POSITION = "position";
 
     private static final String VALUE = "value";
+    private static final String NEW_REGISTERED_CHILD = "new_registered_child";
 
     private int position;
 
@@ -120,6 +121,7 @@ public class ChildSummaryPagerFragment extends Fragment {
     private List<String> place_names;
 
     final DatePickerDialog doBDatePicker = new DatePickerDialog();
+    private boolean isNewChild;
 
     LayoutInflater inflator;
 
@@ -129,11 +131,12 @@ public class ChildSummaryPagerFragment extends Fragment {
         return difference;
     }
 
-    public static ChildSummaryPagerFragment newInstance(int position, String value) {
+    public static ChildSummaryPagerFragment newInstance(int position, String value, boolean isNewChilc) {
         ChildSummaryPagerFragment f = new ChildSummaryPagerFragment();
         Bundle b                    = new Bundle();
         b                           .putInt(ARG_POSITION, position);
         b                           .putString(VALUE, value);
+        b                           .putBoolean(NEW_REGISTERED_CHILD, isNewChilc);
         f                           .setArguments(b);
         return f;
     }
@@ -143,6 +146,7 @@ public class ChildSummaryPagerFragment extends Fragment {
         super.onCreate(savedInstanceState);
         position    = getArguments().getInt(ARG_POSITION);
         value     = getArguments().getString(VALUE);
+        isNewChild = getArguments().getBoolean(NEW_REGISTERED_CHILD);
     }
 
     @Override
@@ -246,12 +250,8 @@ public class ChildSummaryPagerFragment extends Fragment {
         registryYearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                try {
+                if(position>0)
                     childRegistryYearOrig = registryYearList.get(position - 1);
-                }catch (ArrayIndexOutOfBoundsException e) {
-                    childRegistryYearOrig = "";
-                    e.printStackTrace();
-                }
             }
 
             @Override
@@ -260,6 +260,11 @@ public class ChildSummaryPagerFragment extends Fragment {
             }
         });
 
+
+        if(isNewChild){
+            registryYearSpinner.setVisibility(View.GONE);
+            metCummulativeSn.setVisibility(View.GONE);
+        }
         editButton          = (Button) header.findViewById(R.id.edit_button);
         saveButton          = (Button) header.findViewById(R.id.save_button);
 
@@ -495,7 +500,7 @@ public class ChildSummaryPagerFragment extends Fragment {
 
     public void enableUserInputs(boolean fieldStatus){
         editable = fieldStatus;
-
+        Log.d("childSumarry","Child registry year = "+childRegistryYearOrig);
         if(fieldStatus) {
             if (tt2StatusOrig.equals(""))
                 TT2Spinner.setAdapter(tt2SpinnerAdapter);
@@ -503,8 +508,9 @@ public class ChildSummaryPagerFragment extends Fragment {
             if (vvuStatusOrig.equals(""))
                 VVUSpinner.setAdapter(vvuSpinnerAdapter);
 
-            if (childRegistryYearOrig.equals(""))
+            if (childRegistryYearOrig.equals("")) {
                 registryYearSpinner.setAdapter(registryYearAdapter);
+            }
         }
 
         metBarcodeValue.setFocusableInTouchMode(fieldStatus);
@@ -648,6 +654,7 @@ public class ChildSummaryPagerFragment extends Fragment {
                 registryYearSpinner.setAdapter(registryYearAdapter);
                 registryYearSpinner.setSelection(registryYearList.indexOf(childRegistryYearOrig)+1);
             }else {
+                Log.d("childSumarry","Setting Child registry year to empty ");
                 childRegistryYearOrig = "";
                 registryYearSpinner.setError("Please select Child's Registration Year");
             }
@@ -952,21 +959,57 @@ public class ChildSummaryPagerFragment extends Fragment {
                 return false;
             }
         }
+        if (metLastName.getText().toString().isEmpty() || metLastName.getText().toString().isEmpty()) {
+            alertDialogBuilder.setMessage(getString(R.string.empty_names));
+            alertDialogBuilder.show();
+            return false;
+        }
+
+
+        if(checkIfTheEditTextContainsSpaces(metFirstName)){
+            return false;
+        }
+
+        if(checkIfTheEditTextContainsSpaces(metMiddleName)){
+            return false;
+        }
+
+
+        if(checkIfTheEditTextContainsSpaces(metLastName)){
+            return false;
+        }
+
+
         if (metFirstName.getText().toString().isEmpty() || metFirstName.getText().toString().isEmpty()) {
             alertDialogBuilder.setMessage(getString(R.string.empty_names));
             alertDialogBuilder.show();
             return false;
         }
+
         if (metMothersFirstName.getText().toString().isEmpty() || metMothersFirstName.getText().toString().isEmpty()) {
             alertDialogBuilder.setMessage(getString(R.string.empty_mother_names));
             alertDialogBuilder.show();
             return false;
         }
-        if (metMothersFirstName.getText().toString().isEmpty() || metMothersFirstName.getText().toString().isEmpty()) {
+
+
+        if(checkIfTheEditTextContainsSpaces(metMothersFirstName)){
+            return false;
+        }
+
+
+        if(checkIfTheEditTextContainsSpaces(metMothersSurname)){
+            return false;
+        }
+
+
+        if (metMothersSurname.getText().toString().isEmpty() || metMothersSurname.getText().toString().isEmpty()) {
             alertDialogBuilder.setMessage(getString(R.string.empty_mother_names));
             alertDialogBuilder.show();
             return false;
         }
+
+
         if (bdate.compareTo(new Date()) > 0) {
             alertDialogBuilder.setMessage(getString(R.string.future_birth_date));
             alertDialogBuilder.show();
@@ -998,7 +1041,7 @@ public class ChildSummaryPagerFragment extends Fragment {
         if (TT2Spinner.getSelectedItemPosition()==0) {
             alertDialogBuilder.setMessage("Please select mother TT2 vaccination status");
             alertDialogBuilder.show();
-            VVUSpinner.setError("Please select mother TT2 vaccination status");
+            TT2Spinner.setError("Please select mother TT2 vaccination status");
             return false;
         }
 
@@ -1009,18 +1052,28 @@ public class ChildSummaryPagerFragment extends Fragment {
             return false;
         }
 
-        if (registryYearSpinner.getSelectedItemPosition()==0) {
+        if (registryYearSpinner.getSelectedItemPosition()==0 && !isNewChild) {
             alertDialogBuilder.setMessage("Please select Child Registration Year");
             alertDialogBuilder.show();
-            VVUSpinner.setError("Please select Child Registration Year");
+            registryYearSpinner.setError("Please select Child Registration Year");
             return false;
         }
 
-        if (metCummulativeSn.getText().toString().equals("")) {
+        if (metCummulativeSn.getText().toString().equals("") && !isNewChild) {
             alertDialogBuilder.setMessage("Please fill Child Cumulative Sn");
             alertDialogBuilder.show();
             metCummulativeSn.setError("Please fill Child Cumulative Sn");
             return false;
+        }
+
+        if(!isNewChild){
+            if(mydb.isChildRegistrationNoPresentInDb(registryYearList.get(registryYearSpinner.getSelectedItemPosition() - 1),metCummulativeSn.getText().toString(),metBarcodeValue.getText().toString())){
+                alertDialogBuilder.setMessage("The entered Child Cumulative Sn and Year have already been used");
+                alertDialogBuilder.show();
+                metCummulativeSn.setError("Please fill Child Cumulative Sn");
+                registryYearSpinner.setError("Please select Child Registration Year");
+                return false;
+            }
         }
 
         return true;
@@ -1360,6 +1413,16 @@ public class ChildSummaryPagerFragment extends Fragment {
         }
 
         return webServiceUrl;
+    }
+
+
+    private boolean checkIfTheEditTextContainsSpaces(MaterialEditText editText){
+        if(editText.getText().toString().contains(" ")){
+            editText.setError(app.getString(R.string.name_contains_spaces));
+            return true;
+        }else{
+            return false;
+        }
     }
 
     public void giveValueAfterSave(){

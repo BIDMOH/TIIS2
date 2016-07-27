@@ -3170,6 +3170,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor.close();
         return found;
     }
+
+    public boolean isChildRegistrationNoPresentInDb(String year,String childRegistrationSn,String barcodeId) {
+        //Query on Child Table
+        String selectQuery = "SELECT  * FROM " + Tables.CHILD + " WHERE "+
+                SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR+" = '"+ year+"' AND "+
+                SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER+" = '"+ childRegistrationSn+"' AND "+
+                SQLHandler.ChildColumns.BARCODE_ID+" <> '"+barcodeId+"'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        boolean found = cursor.moveToFirst();
+        cursor.close();
+        return found;
+    }
+
     public List<Birthplace> getAllBirthplaces() {
         //Container
         List<Birthplace> placeList = new ArrayList<>();
