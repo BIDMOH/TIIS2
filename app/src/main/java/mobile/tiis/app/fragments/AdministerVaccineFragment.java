@@ -49,6 +49,7 @@ import java.util.concurrent.TimeUnit;
 import mobile.tiis.app.R;
 import mobile.tiis.app.SubClassed.BackHandledFragment;
 import mobile.tiis.app.adapters.SingleTextViewAdapter;
+import mobile.tiis.app.adapters.SingleTextViewAdapterForVaccineLot;
 import mobile.tiis.app.base.BackboneActivity;
 import mobile.tiis.app.base.BackboneApplication;
 import mobile.tiis.app.database.DatabaseHandler;
@@ -408,7 +409,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 //############################################################# VACCINE LOT SPINNER ::::::.....
 
 
-            SingleTextViewAdapter statusAdapter = new SingleTextViewAdapter(AdministerVaccineFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, item.getVaccine_lot_list());
+            SingleTextViewAdapterForVaccineLot statusAdapter = new SingleTextViewAdapterForVaccineLot(AdministerVaccineFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, item.getVaccine_lot_list(), item.getBalance());
             spVaccLot.setAdapter(statusAdapter);
             if (item.getVaccine_lot_list().size() > 2) {
                 spVaccLot.setSelection(2);

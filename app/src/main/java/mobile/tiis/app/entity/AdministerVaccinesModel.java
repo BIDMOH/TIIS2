@@ -64,6 +64,9 @@ public class AdministerVaccinesModel {
 
     private Boolean starter_row = false;
 
+    //lot balance in health facility balance
+    private List<String> balance;
+
 
     public AdministerVaccinesModel() {
 
@@ -251,5 +254,13 @@ public class AdministerVaccinesModel {
 
     public void setKeep_child_due(boolean keep_child_due) {
         this.keep_child_due = keep_child_due;
+    }
+
+    public List<String> getBalance() {
+        return balance;
+    }
+
+    public void setBalance(List<String> balance) {
+        this.balance = balance;
     }
 }

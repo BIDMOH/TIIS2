@@ -154,15 +154,12 @@ public class ChildVaccinatePagerFragment extends Fragment {
         setUpView(v);
 
         if (currentChild.getBarcodeID().isEmpty() || currentChild.getBarcodeID().equals("")){
+            Toast.makeText(ChildVaccinatePagerFragment.this.getActivity(), getString(R.string.empty_barcode), Toast.LENGTH_SHORT).show();
             noBarcode.setVisibility(View.VISIBLE);
             frameLayout.setVisibility(View.GONE);
         }else{
             noBarcode.setVisibility(View.GONE);
             frameLayout.setVisibility(View.VISIBLE);
-        }
-
-        if (currentChild.getBarcodeID() == null || currentChild.getBarcodeID().isEmpty()) {
-            Toast.makeText(ChildVaccinatePagerFragment.this.getActivity(), getString(R.string.empty_barcode), Toast.LENGTH_SHORT).show();
         }
 
         if (!appointmentID.isEmpty()){
