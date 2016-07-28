@@ -216,12 +216,11 @@ public class ChildSummaryPagerFragment extends Fragment {
         TT2Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                try {
+
+                if(position>0){
                     tt2StatusOrig = tt2StatusList.get(position - 1);
-                }catch (ArrayIndexOutOfBoundsException e) {
-                    tt2StatusOrig = "";
-                    e.printStackTrace();
                 }
+
             }
 
             @Override
@@ -233,12 +232,10 @@ public class ChildSummaryPagerFragment extends Fragment {
         VVUSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                try {
+                if(position>0){
                     vvuStatusOrig = vvuStatusList.get(position - 1);
-                }catch (ArrayIndexOutOfBoundsException e) {
-                    vvuStatusOrig = "";
-                    e.printStackTrace();
                 }
+                
             }
 
             @Override
