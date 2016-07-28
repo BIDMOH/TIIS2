@@ -400,7 +400,7 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
                     (startNumber.equals("")?"":" AND   child.CUMULATIVE_SERIAL_NUMBER >= "+startNumber+" ") +
                     (endNumber.equals("")?"":"  AND  child.CUMULATIVE_SERIAL_NUMBER < "+endNumber+"  ") +
                     (startNumber.equals("")?"":" AND child.CHILD_REGISTRY_YEAR = "+year+" ")
-                    +"ORDER BY OPV0 DESC " ;
+                    +"ORDER BY OPV1 DESC " ;
 
 
             SQLChildRegistry +=querry2;

@@ -10,7 +10,6 @@
         android:layout_height="1dp"
         android:id="@+id/edit_text_used_to_request_focus2"/>
     <RelativeLayout
-        android:paddingLeft="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -19,7 +18,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:layout_gravity="right"
-            android:layout_marginLeft="16dp"
+            android:layout_marginLeft="8dp"
             android:orientation="horizontal">
 
             <TextView
@@ -34,8 +33,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="|"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"/>
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"/>
 
 
             <LinearLayout
@@ -44,7 +43,7 @@
                 android:orientation="horizontal"
                 android:layout_alignParentRight="true">
                 <com.rengwuxian.materialedittext.MaterialEditText
-                    android:layout_width="150dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:focusable="false"
                     android:textSize="12sp"
@@ -67,14 +66,14 @@
                     android:layout_marginBottom="8dp"/>
 
                 <com.rengwuxian.materialedittext.MaterialEditText
-                    android:layout_width="150dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:focusable="false"
                     android:editable="false"
                     android:layout_gravity="center_vertical"
                     android:hint="Date to"
                     android:textSize="12sp"
-                    android:layout_marginLeft="32dp"
+                    android:layout_marginLeft="16dp"
                     android:id="@+id/met_dob_value"
                     app:met_iconRight="@drawable/ic_monthly_plan"
                     app:met_floatingLabelText="To Date"
@@ -113,8 +112,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="|"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"/>
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"/>
 
 
             <LinearLayout
@@ -123,7 +122,7 @@
                 android:orientation="horizontal"
                 android:layout_alignParentRight="true">
                 <com.rengwuxian.materialedittext.MaterialEditText
-                    android:layout_width="150dp"
+                    android:layout_width="64dp"
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
                     android:hint="From number"
@@ -145,7 +144,7 @@
                     android:layout_marginBottom="8dp"/>
 
                 <com.rengwuxian.materialedittext.MaterialEditText
-                    android:layout_width="150dp"
+                    android:layout_width="64dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:hint="To number"
@@ -156,7 +155,7 @@
                     app:met_floatingLabelText="To Date"
                     app:met_floatingLabel="normal"
                     app:met_floatingLabelTextColor="@color/light_blue_500"
-                    android:layout_marginRight="16dp"
+                    android:layout_marginRight="8dp"
                     android:layout_centerVertical="true"/>
 
                 <View
