@@ -560,8 +560,8 @@ public class SQLHandler {
                     + GIISContract.ChildColumns.STATUS_ID + " TEXT,"
                     + GIISContract.ChildColumns.MOTHER_VVU_STS + " TEXT,"
                     + GIISContract.ChildColumns.MOTHER_TT2_STS + " TEXT,"
-                    + GIISContract.ChildColumns.CUMULATIVE_SERIAL_NUMBER + " TEXT,"
-                    + GIISContract.ChildColumns.CHILD_REGISTRY_YEAR + " TEXT,"
+                    + GIISContract.ChildColumns.CUMULATIVE_SERIAL_NUMBER + " INTEGER,"
+                    + GIISContract.ChildColumns.CHILD_REGISTRY_YEAR + " INTEGER,"
                     + GIISContract.ChildColumns.HEALTH_FACILITY_ID + " TEXT);";
     public static final String SQLStatusTable =
             "CREATE TABLE " + Tables.STATUS + " ("

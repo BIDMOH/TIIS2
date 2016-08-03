@@ -76,6 +76,8 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
 
     public String appointmentId = "";
 
+    private boolean isNewChild;
+
     private Child currentChild;
 
     private ProgressBar childInfoLoader;
@@ -104,6 +106,7 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
             currentPagerPage    = extras.getInt("current");
             handlerBarcode      = extras.getString("barcode");
             appointmentId       = extras.getString("appointmentId");
+            isNewChild          = extras.getBoolean("isNewChild",false);
             currentChild        = (Child)getIntent().getSerializableExtra("myChild");
 
             Log.d("currentpage", "extras not null");
@@ -214,12 +217,14 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
                         if(currentChild.getHealthcenterId().equals(app.getLOGGED_IN_USER_HF_ID())) {
                             Log.d("currentpage","equal");
                             try {
-                                if (currentChild.getChildCumulativeSn().equals("") || currentChild.getChildRegistryYear().equals("") || currentChild.getMotherHivStatus().equals("") || currentChild.getMotherTT2Status().equals("")) {
-                                    enableViewPagerPaging(false);
-                                    Log.d("currentpage","disabling viewpager");
-                                    Toast.makeText(ChildDetailsActivity.this, "Please edit and fill all relevant fields before continuing", Toast.LENGTH_LONG).show();
-                                }else{
-                                    Log.d("currentpage","all is well");
+                                if(!isNewChild) {
+                                    if (currentChild.getChildCumulativeSn().equals("") || currentChild.getChildRegistryYear().equals("") || currentChild.getMotherHivStatus().equals("") || currentChild.getMotherTT2Status().equals("")) {
+                                        enableViewPagerPaging(false);
+                                        Log.d("currentpage", "disabling viewpager");
+                                        Toast.makeText(ChildDetailsActivity.this, "Please edit and fill all relevant fields before continuing", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Log.d("currentpage", "all is well");
+                                    }
                                 }
                             } catch (NullPointerException e) {
 
@@ -246,7 +251,7 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
     }
 
     private void initializePagers(){
-        adapter = new ChildDetailsViewPager(this, getSupportFragmentManager(), currentChild, appointmentId);
+        adapter = new ChildDetailsViewPager(this, getSupportFragmentManager(), currentChild, appointmentId,isNewChild);
         pager.setOffscreenPageLimit(6);
 
 

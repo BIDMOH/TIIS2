@@ -397,6 +397,7 @@
     <string name="device_camera">User Device Camera</string>
     <string name="stock_balance">Stock Balance Graph</string>
     <string name="comments">Comments</string>
+    <string name="name_contains_spaces">The name should not contain spaces</string>
 
 
 </resources>

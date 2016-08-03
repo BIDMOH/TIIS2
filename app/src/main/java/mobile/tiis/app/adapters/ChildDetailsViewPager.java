@@ -26,14 +26,15 @@ public class ChildDetailsViewPager extends FragmentPagerAdapter {
     private Context context;
     private Child currentChild;
     private String appointmentId;
-
-    public ChildDetailsViewPager(Context ctx, FragmentManager fm, Child currentChild, String appointmentId) {
+    private boolean newRegisteredChild;
+    public ChildDetailsViewPager(Context ctx, FragmentManager fm, Child currentChild, String appointmentId,boolean newRegisteredChild) {
         super(fm);
         fragmentManager = fm;
         tx              = fragmentManager.beginTransaction();
         context         = ctx;
         this.currentChild    = currentChild;
         this.appointmentId = appointmentId;
+        this.newRegisteredChild = newRegisteredChild;
     }
 
     @Override
@@ -58,7 +59,7 @@ public class ChildDetailsViewPager extends FragmentPagerAdapter {
 
         if (position == 0){
             tx.addToBackStack("ChildSummaryFragment");
-            return ChildSummaryPagerFragment.newInstance(position, currentChild.getId());
+            return ChildSummaryPagerFragment.newInstance(position, currentChild.getId(),newRegisteredChild);
         }
         else if (position == 1){
             tx.addToBackStack(TITLES[position]);

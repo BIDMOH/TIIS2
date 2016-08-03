@@ -71,10 +71,9 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
     protected MaterialEditText etChildCumulativeSn, etbarcode, etFirstName, etSurname, etMotherFirstName, etMotherSurname, etPhone, etNotes,etFirstname2, etMotherVVUStatus, etMotherTT2Status;
 
     String barcode, firstanme, surname, motherFirstname, motherLastname, gender_val, gen, genderChildWithoutApp,firstname2, childRegistryYear;
-
-
+    private  DatabaseHandler mydb;
     private ProgressDialog progressDialog;
-
+    private BackboneApplication app;
     public static final long getDaysDifference(Date d1, Date d2) {
         long diff = d2.getTime() - d1.getTime();
         long difference = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
@@ -85,8 +84,8 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_register_child, null);
         setUpView(root);
 
-        BackboneApplication app = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
-        DatabaseHandler mydb = app.getDatabaseInstance();
+        app = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
+        mydb = app.getDatabaseInstance();
 
         app.saveNeeded = true;
 
@@ -503,11 +502,36 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 //            etSurname.setErrorColor(Color.RED);
 //            return false;
 //        }
+
+        if(checkIfTheEditTextContainsSpaces(etFirstName)){
+            return false;
+        }
+
+        if(checkIfTheEditTextContainsSpaces(etSurname)){
+            return false;
+        }
+
+
+        if(checkIfTheEditTextContainsSpaces(etFirstname2)){
+            return false;
+        }
+
+
         if (etMotherFirstName.getText().toString().isEmpty() || etMotherSurname.getText().toString().isEmpty()) {
             etMotherFirstName.setError(getString(R.string.empty_mother_names));
             etMotherFirstName.setErrorColor(Color.RED);
             return false;
         }
+
+        if(checkIfTheEditTextContainsSpaces(etMotherFirstName)){
+            return false;
+        }
+
+
+        if(checkIfTheEditTextContainsSpaces(etMotherSurname)){
+            return false;
+        }
+
         if (bdate == null || bdate.compareTo(new Date()) > 0) {
             dateOfBirth.setError(getString(R.string.future_birth_date));
             dateOfBirth.setErrorColor(Color.RED);
@@ -532,13 +556,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
             errorText.setText(getString(R.string.empty_village));//changes the selected item text to this
             return false;
         }
-//        If not applicable is selected in the Birthplace or Domicile spinners and Notes is empty , than we need the user to fill the notes field
-//        if (spVillage.getSelectedItemPosition() == notApplicablePos && etNotes.getText().toString().isEmpty()) {
-//            alertDialogBuilder.setMessage(getString(R.string.empty_notes));
-//            alertDialogBuilder.show();
-//            progBar.setVisibility(View.GONE);
-//            return false;
-//        }
+
 
         if (genderSpinner.getSelectedItemPosition() == -1) {
             genderSpinner.setError(getString(R.string.empty_gender));
@@ -546,13 +564,23 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
             return false;
         }
 
-        //TODO: Substring ChildRegistryYear From The Cummulative Serial Number here and assign cummulative
-        //TODO: serial number and childRegistryYear accordingly
+
         if (etChildCumulativeSn.length() > 0){
-            //childregistryYear set to default
-        }else{
-            //separate the cummulative sn from the registry year and assign
+            if(mydb.isChildRegistrationNoPresentInDb(spinnerYears.get(registryYearSpinner.getSelectedItemPosition() - 1),etChildCumulativeSn.getText().toString(),etbarcode.getText().toString())){
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity())
+                        .setTitle(getString(R.string.alert_empty_fields))
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                ((AlertDialog) dialog).dismiss();
+                            }
+                        });
+                alertDialogBuilder.setMessage("The entered Child Cumulative Sn and Year have already been used");
+                alertDialogBuilder.show();
+                etChildCumulativeSn.setError("Please fill a valid Child Cumulative Sn");
+                return false;
+            }
         }
+
 
 
 
@@ -641,7 +669,6 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         if (contentValues.size() > 0) {
 
             BackboneApplication app = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
-            DatabaseHandler mydb = app.getDatabaseInstance();
             contentValues.put("MODIFIED_BY", app.getLOGGED_IN_USER_ID());
             if (mydb.registerChild(contentValues) > -1) {
                 mydb.InsertVaccinationsForChild(uuid, app.getLOGGED_IN_USER_ID());
@@ -753,6 +780,14 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         }.setData(lastname, bdate, gender).start();
     }
 
+    private boolean checkIfTheEditTextContainsSpaces(MaterialEditText editText){
+        if(editText.getText().toString().contains(" ")){
+            editText.setError(app.getString(R.string.name_contains_spaces));
+            return true;
+        }else{
+            return false;
+        }
+    }
     private synchronized void registerChildWithoutAppointments(String barcode, String fristname, String lastname, Date bDate, String gender, String  hfid, String birthPlaceId, String domId,
                                                                String addr, String phone, String motherFirstname, String motherLastname, String notes, String userID, Date modOn, final String tempId,String firstname2, String threadMotherVVUStatus, String threadMotherTT2Status, String childCummulativeSn, String childRegistryYear) {
         new Thread() {
@@ -836,6 +871,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                     bnd.putString(BackboneApplication.CHILD_ID, results + "");
                     bnd.putString("barcode", threadbarcode);
                     bnd.putInt("current", 0);
+                    bnd.putBoolean("isNewChild", true);
                     childDetailsActivity.putExtras(bnd);
 
                     Log.d("coze", "starting activity");
@@ -845,6 +881,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                     Bundle bnd = new Bundle();
                     bnd.putString(BackboneApplication.CHILD_ID, threadTempId);
                     bnd.putString("barcode", threadbarcode);
+                    bnd.putBoolean("isNewChild", true);
                     childDetailsActivity.putExtras(bnd);
 
                     startActivity(childDetailsActivity);
