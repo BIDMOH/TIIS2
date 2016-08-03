@@ -408,8 +408,9 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
 //############################################################# VACCINE LOT SPINNER ::::::.....
 
+            item.removeZeroBalanceVaccineLots();
 
-            SingleTextViewAdapterForVaccineLot statusAdapter = new SingleTextViewAdapterForVaccineLot(AdministerVaccineFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, item.getVaccine_lot_list(), item.getBalance());
+            SingleTextViewAdapterForVaccineLot statusAdapter = new SingleTextViewAdapterForVaccineLot(AdministerVaccineFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, item.getVaccine_lot_list());
             spVaccLot.setAdapter(statusAdapter);
             if (item.getVaccine_lot_list().size() > 2) {
                 spVaccLot.setSelection(2);
@@ -418,6 +419,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                 item.setVaccination_lot(item.getVaccine_lot_map().get(item.getVaccine_lot_list().get(2)).toString());
                 Log.d("RowCollId", item.getVaccination_lot());
             } else {
+                Log.d("TIMR_LOG", "size is less than 2");
                 spVaccLot.setSelection(1);
                 item.setVaccination_lot_pos(1);
                 item.setVaccination_lot(item.getVaccine_lot_map().get(item.getVaccine_lot_list().get(1)).toString());
@@ -432,17 +434,16 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                     spVaccLot.setSelection(position);
 //                vac_lot_pos = position;
                     item.setVaccination_lot_pos(position);
-                    item.setVaccination_lot(item.getVaccine_lot_map().get(item.getVaccine_lot_list().get(position)).toString());
+//                    item.setVaccination_lot(item.getVaccine_lot_map().get(item.getVaccine_lot_list().get(position)).toString());
                     Log.d("RowCollId", item.getVaccination_lot());
+                    Log.d("RowCollId", "position is " + position);
                 }
 
                 @Override
                 public void onNothingSelected(AdapterView<?> parentView) {
                     //no changes
                 }
-
             });
-
 
             vaccinesListTableLayout.addView(rowView);
             x++;
@@ -450,7 +451,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         }
 
     }
-
 
     public void pickDate(){
         Calendar now = Calendar.getInstance();
