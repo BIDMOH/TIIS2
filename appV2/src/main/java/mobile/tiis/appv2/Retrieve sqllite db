@@ -1,0 +1,1 @@
+./adb -d shell 'run-as appv2 cat /data/data/appv2/databases/giis_mobile.db > /sdcard/recovered_db.db'

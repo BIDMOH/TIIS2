@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:app_ms="http://schemas.android.com/tools"
+    android:background="@color/white">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp"
+        android:layout_marginBottom="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="32dp">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/check_in_title"
+                    android:text="Health Facility Settings"
+                    android:textSize="18sp"
+                    android:layout_centerVertical="true"/>
+
+                <View
+                    android:layout_marginLeft="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_toRightOf="@id/check_in_title"
+                    android:background="@color/card_light_text"
+                    android:layout_centerVertical="true"/>
+
+            </RelativeLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginTop="16dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight=".15"
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/blue_500"
+                        android:text="Current Health Facility Cumulative \nChild Registration Number"/>
+                    <TextView
+                        android:id="@+id/current_cumulative_sn"
+                        android:layout_width="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:text="Fetching data from the server"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".05"/>
+
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="0.3"
+                    android:layout_height="wrap_content">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/input_layout"
+                        android:layout_width="296dp"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/cumulative_no"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number"
+                            android:hint="New Health Facility Child Cumulative Number" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <Button
+                        android:visibility="visible"
+                        android:id="@+id/save_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:padding="4dp"
+                        android:layout_marginLeft="96dp"
+                        android:layout_toRightOf="@id/input_layout"
+                        android:layout_height="36dp"
+                        android:background="@color/light_blue_600"
+                        android:textColor="@color/white"
+                        android:text="Save"/>
+
+                    <mobile.tiis.appv2.CustomViews.MaterialLoader
+                        android:id="@+id/progress"
+                        android:visibility="gone"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginLeft="96dp"
+                        android:layout_toRightOf="@id/input_layout"/>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+            <View
+                android:layout_margin="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_toRightOf="@id/check_in_title"
+                android:background="@color/card_light_text"
+                android:layout_centerVertical="true"/>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>
