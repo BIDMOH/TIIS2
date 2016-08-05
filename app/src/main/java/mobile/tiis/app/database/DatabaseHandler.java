@@ -3579,7 +3579,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         " SELECT '-2' AS id, 'No Lot' AS lot_number, '30' AS balance, datetime('now') as expire_date UNION " +
                         " SELECT item_lot.id, item_lot.lot_number, health_facility_balance.balance, datetime(substr(item_lot.expire_date,7,10), 'unixepoch') " +
                         " FROM item_lot  join health_facility_balance ON item_lot.ID = health_facility_balance.lot_id " +
-                        " WHERE item_lot.item_id = ? AND health_facility_balance.LotIsActive = 'true'" +
+                        " WHERE item_lot.item_id = ? AND health_facility_balance.LotIsActive = 'true' AND CAST(health_facility_balance.balance as REAL) > "+0+"" +
                         " AND datetime(substr(item_lot.expire_date,7,10), 'unixepoch') >= datetime('now') ORDER BY expire_date", new String[]{item_id});
                 if (cursor.getCount() > 0) {
                     if (cursor.moveToFirst()) {
