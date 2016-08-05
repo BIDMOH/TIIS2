@@ -339,6 +339,9 @@ public class BackboneApplication extends Application {
         this.LOGGED_IN_USER_PASS = LOGGED_IN_USER_PASS;
     }
 
+    public String getHealthFacilityDistrictName(String healthFacilityId){
+        return  databaseInstance.getDistrictNames(healthFacilityId);
+    }
     public boolean getAdministerVaccineHidden() {
         return administerVaccineHidden;
     }
@@ -404,7 +407,7 @@ public class BackboneApplication extends Application {
                         values.put(SQLHandler.PlaceColumns.ID, object.getId());
                         values.put(SQLHandler.SyncColumns.UPDATED, 1);
                         values.put(SQLHandler.PlaceColumns.NAME, object.getName());
-                        //Log.d("Place NAME", object.getName());
+                        values.put(SQLHandler.PlaceColumns.HEALTH_FACILITY_ID, object.getHealthFacilityId());
                         values.put(SQLHandler.PlaceColumns.CODE, object.getCode());
                         DatabaseHandler db = getDatabaseInstance();
                         db.addPlacesThatWereNotInDB(values, object.getId());

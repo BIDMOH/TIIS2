@@ -596,6 +596,25 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
 
+
+    public String getDistrictNames(String healthFacilityId) {
+        SQLiteDatabase sd = getWritableDatabase();
+        String result = "";
+
+        sd.beginTransaction();
+        try {
+            Cursor c = sd.rawQuery("SELECT * FROM "+Tables.PLACE+" WHERE "+GIISContract.PlaceColumns.HEALTH_FACILITY_ID+" = '"+healthFacilityId+"'",null);
+            c.moveToFirst();
+            result = c.getString(c.getColumnIndex(GIISContract.HealthFacilityColumns.NAME));
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+    }
+
     public boolean isAgeDefinitionsPresent(String id) {
         String selectQuery = "SELECT * FROM " + Tables.AGE_DEFINITIONS +
                 " WHERE "+SQLHandler.AgeDefinitionsColumns.ID+" = '" + id + "'";

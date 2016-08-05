@@ -69,6 +69,11 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         rowview = inflater.inflate(R.layout.fragment_health_facility_list_and_vaccination_summary, null);
+
+        TextView districtValue = (TextView)rowview.findViewById(R.id.district_value);
+        districtValue.setText(app.getHealthFacilityDistrictName(app.getLOGGED_IN_USER_HF_ID()));
+
+
         prepareUIElements(rowview);
         mydb = app.getDatabaseInstance();
         healthFacility.setText(mydb.getHealthCenterName(app.getLOGGED_IN_USER_HF_ID()));
