@@ -263,4 +263,14 @@ public class AdministerVaccinesModel {
     public void setBalance(List<String> balance) {
         this.balance = balance;
     }
+
+    public void removeZeroBalanceVaccineLots(){
+        for (int i=0; i<vaccine_lot_list.size(); i++){
+            int bal = Integer.parseInt(balance.get(i));
+            if (bal <= 0){
+                vaccine_lot_list.remove(i);
+            }
+        }
+    }
+
 }
