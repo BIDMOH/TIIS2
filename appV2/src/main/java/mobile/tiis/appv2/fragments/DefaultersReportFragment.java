@@ -83,6 +83,9 @@ public class DefaultersReportFragment extends Fragment {
         mydb = app.getDatabaseInstance();
         healthFacility.setText(mydb.getHealthCenterName(app.getLOGGED_IN_USER_HF_ID()));
 
+        TextView districtValue = (TextView)rowview.findViewById(R.id.district_value);
+        districtValue.setText(app.getHealthFacilityDistrictName(app.getLOGGED_IN_USER_HF_ID()));
+
 
         metDOBTo.setOnClickListener(new View.OnClickListener() {
             @Override

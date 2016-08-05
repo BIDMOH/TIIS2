@@ -74,6 +74,9 @@ public class DropoutReportFragment extends Fragment {
         rowview = inflater.inflate(R.layout.fragment_dropout_report, null);
         prepareUIElements(rowview);
 
+        TextView districtValue = (TextView)rowview.findViewById(R.id.district_value);
+        districtValue.setText(app.getHealthFacilityDistrictName(app.getLOGGED_IN_USER_HF_ID()));
+
         mydb = app.getDatabaseInstance();
         healthFacility.setText(mydb.getHealthCenterName(app.getLOGGED_IN_USER_HF_ID()));
 

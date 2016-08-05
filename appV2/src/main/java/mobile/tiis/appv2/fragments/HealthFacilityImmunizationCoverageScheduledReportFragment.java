@@ -79,6 +79,9 @@ public class HealthFacilityImmunizationCoverageScheduledReportFragment extends F
         this.inflater = inflater;
         rowview = inflater.inflate(R.layout.fragment_health_facility_immunization_coverage_scheduled_report, null);
 
+        TextView districtValue = (TextView)rowview.findViewById(R.id.district_value);
+        districtValue.setText(app.getHealthFacilityDistrictName(app.getLOGGED_IN_USER_HF_ID()));
+
         editTextUsedToRequestFocus = (EditText) rowview.findViewById(R.id.edit_text_used_to_request_focus2);
         editTextUsedToRequestFocus.requestFocus();
 
