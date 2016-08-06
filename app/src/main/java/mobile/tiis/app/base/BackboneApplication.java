@@ -138,7 +138,7 @@ public class BackboneApplication extends Application {
     public static final String ITEM_LOT_MANAGEMENT_SVC_GETTER = "getitemlots";
     public static final String STATUS_MANAGEMENT_SVC_GETTER = "getstatuslist";
     public static final String DOSE_MANAGEMENT_SVC_GETTER = "getdoselist";
-    public static final String CHILD_MANAGEMENT_SVC_GETTER = "GetChildrenByHealthFacility?healthFacilityId=";
+    public static final String CHILD_MANAGEMENT_SVC_GETTER = "GetChildrenByHealthFacilityV1?healthFacilityId=";
     public static final String CHILD_UPDATE = "UpdateChildWithMothersHivStatusAndTT2VaccineStatus?"; //NOTE: URL Changed
     public static final String REGISTER_CHILD_AEFI = "RegisterChildAEFI?";
     public static final String REGISTER_CHILD_AEFI_BARCODE = "RegisterChildAEFIBarcode?";
@@ -165,7 +165,7 @@ public class BackboneApplication extends Application {
     public static final String GET_SCHEDULED_VACCINATION_LIST = "GET_SCHEDULED_VACCINATION_LIST";
     public static final String GET_NON_VACCINATION_REASON_LIST = "GET_NON_VACCINATION_REASON_LIST";
     //checkin
-    public static final String SEARCH_BY_BARCODE = "SearchByBarcode";
+    public static final String SEARCH_BY_BARCODE = "SearchByBarcodeV1";
     public static final String UPDATE_VACCINATION_QUEUE = "UpdateVaccinationQueue";
     public static final String REGISTER_AUDIT = "RegisterAudit";
     public static final String GET_VACCINATION_QUEUE_BY_DATE_AND_USER = "GetVaccinationQueueByDateAndUser";
@@ -2129,7 +2129,7 @@ public class BackboneApplication extends Application {
 
     private int parsedChildResults;
     public int parseChildById(String id) {
-        final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC).append("GetChildById?childId=").append(id);
+        final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC).append("GetChildByIdV1?childId=").append(id);
 
         client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
         client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
@@ -2172,7 +2172,7 @@ public class BackboneApplication extends Application {
 
 
     public int parseGCMChildById(String id) {
-        final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC).append("GetChildById?childId=").append(id);
+        final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC).append("GetChildByIdV1?childId=").append(id);
 
         client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
         client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
@@ -2659,7 +2659,7 @@ public class BackboneApplication extends Application {
     public void continuousModificationParser() {
         if (!USERNAME.equalsIgnoreCase("default")) {
 
-            String url = WCF_URL + "ChildManagement.svc/GetChildrenByHealthFacilityBeforeLastLogin?idUser=" + getLOGGED_IN_USER_ID();
+            String url = WCF_URL + "ChildManagement.svc/GetChildrenByHealthFacilityBeforeLastLoginV1?idUser=" + getLOGGED_IN_USER_ID();
             Log.d("secondLoginURL", url);
 
             client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
@@ -2700,7 +2700,7 @@ public class BackboneApplication extends Application {
     public void firstLoginOfTheDay() {
         if (!USERNAME.equalsIgnoreCase("default")) {
 
-            String url = WCF_URL + "ChildManagement.svc/GetChildrenByHealthFacilityDayFirstLogin?idUser=" + getLOGGED_IN_USER_ID();
+            String url = WCF_URL + "ChildManagement.svc/GetChildrenByHealthFacilityDayFirstLoginV1?idUser=" + getLOGGED_IN_USER_ID();
             Log.d("secondLoginURL", url);
 
             client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
@@ -2785,7 +2785,7 @@ public class BackboneApplication extends Application {
      */
     public void intervalGetChildrenByHealthFacilitySinceLastLogin() {
 
-        String url = WCF_URL + "ChildManagement.svc/GetChildrenByHealthFacilitySinceLastLogin?idUser=" + getLOGGED_IN_USER_ID();
+        String url = WCF_URL + "ChildManagement.svc/GetChildrenByHealthFacilitySinceLastLoginV1?idUser=" + getLOGGED_IN_USER_ID();
         Log.e("SinceLastLogin", "GetChildrenByHealthFacilitySinceLastLogin url is: " + url);
 
         ChildCollector2 objects2 = new ChildCollector2();
@@ -2827,7 +2827,7 @@ public class BackboneApplication extends Application {
      */
     public void getChildByBarcodeList(String childIds) {
 
-        String url = WCF_URL + "Childmanagement.svc/GetChildByBarcodeList?childList=" + childIds;
+        String url = WCF_URL + "Childmanagement.svc/GetChildByBarcodeListV1?childList=" + childIds;
         Log.d("getChildByBarcodeList", url);
 
         client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
@@ -2956,8 +2956,8 @@ public class BackboneApplication extends Application {
     public void getGetChildByIdList() {
         String childIds = getDatabaseInstance().getChildrenFromOtherHFIDThanLoggedUser(getLOGGED_IN_USER_HF_ID());
         if (childIds == null) return;
-        String url = WCF_URL + "ChildManagement.svc/GetChildByIdList?childIdList=" + childIds + "&userId=" + getLOGGED_IN_USER_ID();
-        Log.d("getChildByBarcodeList", url);
+        String url = WCF_URL + "ChildManagement.svc/GetChildByIdListV1?childIdList=" + childIds + "&userId=" + getLOGGED_IN_USER_ID();
+        Log.d("getChildByIdList", url);
 
         client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
         RequestHandle message = client.get(url, new TextHttpResponseHandler() {
