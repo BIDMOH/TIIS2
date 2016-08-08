@@ -343,8 +343,14 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
             String timeLong = tLong[0];
 
             Date scheduledDate = new Date(Long.parseLong(timeLong));
-
             Calendar now = Calendar.getInstance();
+
+            Date compDateOne = getZeroTimeDate(now.getTime());
+            Date compDateTwo = getZeroTimeDate(scheduledDate);
+
+            if (compDateOne.before(compDateTwo)){
+                correnctDateSelected = false;
+            }
 
             chDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -677,20 +683,19 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                                     .setCancelable(false)
                                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                         public void onClick(final DialogInterface dialog, int id) {
-                                            progressDialog = new ProgressDialog(getActivity());
 
-                                            progressDialog.setMessage("Saving data. \nPlease wait ...");
-                                            progressDialog.setCanceledOnTouchOutside(false);
-                                            progressDialog.setCancelable(false);
+                                            final AlertDialog.Builder adb = new AlertDialog.Builder(AdministerVaccineFragment.this.getActivity());
+                                            // set title
+                                            adb.setTitle("Warning");
 
                                             // set dialog message
-                                            alertDialogBuilder
+                                            adb
                                                     .setMessage("The selected vaccination date is before due date. Are you sure you want to set this date?")
                                                     .setCancelable(false)
                                                     .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                                                         public void onClick(final DialogInterface dialog, int id) {
                                                             progressDialog = new ProgressDialog(getActivity());
-
+                                                            Log.d("ADB" , "I am here saving data I did not get you the dialogue");
                                                             progressDialog.setMessage("Saving data. \nPlease wait ...");
                                                             progressDialog.setCanceledOnTouchOutside(false);
                                                             progressDialog.setCancelable(false);
@@ -806,10 +811,10 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                                                     });
 
                                             // create alert dialog
-                                            AlertDialog alertDialog = alertDialogBuilder.create();
+                                            AlertDialog ad = adb.create();
 
                                             // show it
-                                            alertDialog.show();
+                                            ad.show();
 
                                         }}
                                         )
@@ -946,7 +951,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                                             // if this button is clicked, just close
                                             // the dialog box and do nothing
                                             dialog.cancel();
-                                            savingInProgress=false;
+                                            savingInProgress = false;
                                         }
                                     });
 
