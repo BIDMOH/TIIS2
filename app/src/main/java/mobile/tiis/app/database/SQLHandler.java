@@ -496,8 +496,8 @@ public class SQLHandler {
 
     public static final String SQLChildUpdatesQueueTable =
             "CREATE TABLE " + Tables.CHILD_UPDATES_QUEUE + " ("
-                    + BaseColumns._ID + " INTEGER  AUTOINCREMENT,"
-                    + ChildUpdatesQueueColumns.CHILD_ID + " TEXT PRIMARY KEY,"
+                    + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + ChildUpdatesQueueColumns.CHILD_ID + " TEXT NOT NULL UNIQUE,"
                     + ChildUpdatesQueueColumns.RESPONSE_TYPE_ID + " INTEGER,"
                     + " FOREIGN KEY ("+ChildUpdatesQueueColumns.RESPONSE_TYPE_ID+") REFERENCES "+Tables.RESPONSE_TYPE+" ("+BaseColumns._ID+"));";
 
