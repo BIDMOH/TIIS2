@@ -3013,8 +3013,16 @@ public class BackboneApplication extends Application {
     public void getGetChildByIdList() {
         String childIds = getDatabaseInstance().getChildrenFromOtherHFIDThanLoggedUser(getLOGGED_IN_USER_HF_ID());
         if (childIds == null) return;
-        String url = WCF_URL + "ChildManagement.svc/GetChildByIdListV1?childIdList=" + childIds + "&userId=" + getLOGGED_IN_USER_ID();
+
+        String query="";
+        try {
+            query = URLEncoder.encode(childIds, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String url = WCF_URL + "ChildManagement.svc/GetChildByIdListV1?childIdList=" + query + "&userId=" + getLOGGED_IN_USER_ID();
         Log.d("getChildByIdList", url);
+
 
         client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
         RequestHandle message = client.get(url, new TextHttpResponseHandler() {

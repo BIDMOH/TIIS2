@@ -679,9 +679,9 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                         if (thereIsNoVaccinesInLot){
                             // set dialog message
                             alertDialogBuilder
-                                    .setMessage("There is no LOT number for \n\n "+ emptyVaccineLotsVaccines)
+                                    .setMessage("There is no LOT number for \n\n "+ emptyVaccineLotsVaccines+"\nPlease make the necessary adjustment to reflect the physical stock or untick the above antigens")
                                     .setCancelable(false)
-                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    .setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
                                         public void onClick(final DialogInterface dialog, int id) {
 
                                             final AlertDialog.Builder adb = new AlertDialog.Builder(AdministerVaccineFragment.this.getActivity());
@@ -840,7 +840,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 //                            Toast.makeText(AdministerVaccineFragment.this.getActivity(), "No Vaccine Lot", Toast.LENGTH_LONG).show();
                             // set dialog message
                             alertDialogBuilder
-                                    .setMessage("There is no LOT number for \n\n "+ emptyVaccineLotsVaccines)
+                                    .setMessage("There is no LOT number for \n\n "+ emptyVaccineLotsVaccines+"\nPlease make the necessary adjustment to reflect the physical stock or untick the above antigens")
                                     .setCancelable(false)
                                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                         public void onClick(final DialogInterface dialog, int id) {
