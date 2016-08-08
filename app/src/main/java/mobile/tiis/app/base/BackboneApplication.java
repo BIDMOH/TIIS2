@@ -2212,6 +2212,7 @@ public class BackboneApplication extends Application {
     }
 
     public void parseGCMChildrenInQueueById() {
+        Log.d(TAG, "passing children in childupdates queue");
         final List<String> childIds = databaseInstance.getChildIdsFromChildUpdatesQueue();
         int size = childIds.size();
 
@@ -2225,8 +2226,11 @@ public class BackboneApplication extends Application {
         }
 
 
+        Log.d(TAG, "child updates queue size  = "+size);
         for(int i=0;i<size;i++){
             final String childId = childIds.get(i);
+
+            Log.d(TAG, "passing child "+childId);
             final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC).append("GetChildByIdV1?childId=").append(childId);
             client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
                 @Override
@@ -2236,7 +2240,7 @@ public class BackboneApplication extends Application {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, String response) {
-                    Log.d("parseChildCollectorbyId", webServiceUrl.toString());
+                    Log.d(TAG,"parseChildCollectorbyId = "+webServiceUrl.toString());
                     ChildCollector childCollector = new ChildCollector();
                     try {
                         Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
