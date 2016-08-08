@@ -78,7 +78,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String TAG = "DatabaseHandler";
 
     private static final String DATABASE_NAME = "giis_mobile.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     public static boolean dbPreinstalled = false;
 
     public DatabaseHandler(Context context) {
@@ -131,6 +131,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         if (!dbPreinstalled) {
             db.execSQL(SQLHandler.SQLHealthFacilityTable);
+            db.execSQL(SQLHandler.SQLChildUpdatesQueueTable);
             db.execSQL(SQLHandler.SQLPlaceTable);
             db.execSQL(SQLHandler.SQLBirthplaceTable);
             db.execSQL(SQLHandler.SQLAdjustmentTable);
@@ -186,6 +187,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (!dbPreinstalled) {
             // KILL PREVIOUS TABLES IF UPGRADED
             db.execSQL("DROP TABLE IF EXISTS " + Tables.HEALTH_FACILITY);
+            db.execSQL("DROP TABLE IF EXISTS " + Tables.CHILD_UPDATES_QUEUE);
             db.execSQL("DROP TABLE IF EXISTS " + Tables.PLACE);
             db.execSQL("DROP TABLE IF EXISTS " + Tables.ADJUSTMENT_REASONS);
             db.execSQL("DROP TABLE IF EXISTS " + Tables.USER);
@@ -836,6 +838,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 user.setUsername(cursor.getString(5));
                 user.setFirstname(cursor.getString(7));
                 user.setLastname(cursor.getString(8));
+                user.setPassword(cursor.getString(6));
                 //user.setLastLogin(Date.valueOf(cursor.getString(4)));
                 //user.setUserRoleId(cursor.getString(4));
                 user.setHealthFacilityId(cursor.getString(16));
@@ -1009,6 +1012,65 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             sd.endTransaction();
             return result;
         }
+    }
+
+    /**
+     * This method adds a child id to the childupdates queue to be used to pull child updates incase of network failure
+     *
+     * @param childId            the url to be posted later
+     * @param responseTypeId the response type id
+     * @return
+     */
+    public long addChildToChildUpdatesQueue(String childId, int responseTypeId) {
+        // RETRIEVE WRITEABLE DATABASE AND INSERT
+        SQLiteDatabase sd = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(SQLHandler.ChildUpdatesQueueColumns.CHILD_ID, childId);
+        cv.put(SQLHandler.ChildUpdatesQueueColumns.RESPONSE_TYPE_ID, responseTypeId);
+        long result = -1;
+        sd.beginTransaction();
+        try {
+            result = sd.insert(Tables.CHILD_UPDATES_QUEUE, null, cv);
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+    }
+
+    /**
+     * This method select all child id from the childupdates queue to be used to pull child updates uponreceiving a push tickle message
+     *
+     * @return List<ChildIds>
+     */
+    public List<String> getChildIdsFromChildUpdatesQueue() {
+        String selectQuery = "SELECT CHILD_ID FROM " + Tables.CHILD_UPDATES_QUEUE;
+        List<String> childIds = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        int size = cursor.getCount();
+
+        for(int i=0;i<size;i++) {
+            cursor.moveToPosition(i);
+            childIds.add(cursor.getString(0));
+
+        }
+        cursor.close();
+        return childIds;
+    }
+
+
+    public boolean removeChildFromChildUpdateQueue(String childId) {
+        SQLiteDatabase sd = getWritableDatabase();
+        String[] whereArgs = new String[]{String.valueOf(childId)};
+        int result = sd.delete(Tables.CHILD_UPDATES_QUEUE, SQLHandler.ChildUpdatesQueueColumns.CHILD_ID
+                + "= ? ", whereArgs);
+
+        return (result > 0);
     }
 
     /**

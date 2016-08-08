@@ -65,8 +65,9 @@ public class GCMService extends GCMBaseIntentService {
 
         BackboneApplication application = (BackboneApplication) getApplication();
         String childId = intent.getStringExtra("message");
+        application.getDatabaseInstance().addChildToChildUpdatesQueue(childId,3);
         synchronized (application) {
-            application.parseGCMChildById(childId);
+            application.parseGCMChildrenInQueueById();
         }
 
 //        createNotification(context,"updates received");
