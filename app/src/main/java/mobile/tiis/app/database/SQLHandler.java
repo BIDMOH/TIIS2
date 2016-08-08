@@ -493,6 +493,14 @@ public class SQLHandler {
                     + GIISContract.HealthFacilityColumns.CODE + " TEXT,"
                     + GIISContract.HealthFacilityColumns.PARENT_ID + " TEXT,"
                     + GIISContract.HealthFacilityColumns.MODIFIED_ON + " DATETIME);";
+
+    public static final String SQLChildUpdatesQueueTable =
+            "CREATE TABLE " + Tables.CHILD_UPDATES_QUEUE + " ("
+                    + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + ChildUpdatesQueueColumns.CHILD_ID + " TEXT NOT NULL UNIQUE,"
+                    + ChildUpdatesQueueColumns.RESPONSE_TYPE_ID + " INTEGER,"
+                    + " FOREIGN KEY ("+ChildUpdatesQueueColumns.RESPONSE_TYPE_ID+") REFERENCES "+Tables.RESPONSE_TYPE+" ("+BaseColumns._ID+"));";
+
     public static final String SQLPlaceTable =
             "CREATE TABLE " + Tables.PLACE + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -877,6 +885,11 @@ public class SQLHandler {
         String TEMPORARY_ID = "temporary_id";
     }
 
+    public interface ChildUpdatesQueueColumns {
+        String CHILD_ID = "CHILD_ID";
+        String RESPONSE_TYPE_ID = "response_type_id";
+    }
+
     public interface ResponseTypeColumns {
         String RESPONSE_DESCRIPTION = "response_description";
     }
@@ -924,6 +937,7 @@ public class SQLHandler {
     public interface Tables {
         String APP_STATE = "app_state";
         String HEALTH_FACILITY = "health_facility";
+        String CHILD_UPDATES_QUEUE = "child_updates_queue";
         String PLACE = "place";
         String USER = "user";
         String CHILD = "child";

@@ -120,6 +120,7 @@ public class SynchronisationService extends IntentService {
                     }
                 }
             }
+            app.parseGCMChildrenInQueueById();
         }
 
         this.stopSelf();
