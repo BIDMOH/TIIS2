@@ -350,6 +350,10 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
             if (compDateOne.before(compDateTwo)){
                 correnctDateSelected = false;
+                Log.d("DATECOMPARE", "Date is not correct");
+            }else{
+                correnctDateSelected = true;
+                Log.d("DATECOMPARE", "Correct Date");
             }
 
             chDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
