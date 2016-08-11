@@ -344,6 +344,13 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
             Calendar now = Calendar.getInstance();
 
+            Date compareDateOne = getZeroTimeDate(now.getTime());
+            Date compareDateTwo = getZeroTimeDate(scheduledDate);
+
+            if (compareDateOne.before(compareDateTwo)){
+                correnctDateSelected = false;
+            }
+
             chDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -671,7 +678,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                         if (thereIsNoVaccinesInLot){
                             // set dialog message
                             alertDialogBuilder
-                                    .setMessage("There is no LOT number for \n\n "+ emptyVaccineLotsVaccines+"\nPlease make the necessary adjustment to reflect the physical stock or untick the above antigens")
+                                    .setMessage("There is no LOT number for \n\n"+emptyVaccineLotsVaccines+"\n\nPlease make the necessary adjustment to reflect the physical stock or untick the above antigens")
                                     .setCancelable(false)
                                     .setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
                                         public void onClick(final DialogInterface dialog, int id) {
