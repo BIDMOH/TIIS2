@@ -93,6 +93,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
     private boolean thereIsNoVaccinesInLot = false;
     private String emptyVaccineLotsVaccines = "";
 
+    AlertDialog.Builder alertDialogBuilder;
 
     Date new_date = new Date();
     AdministerVaccinesModel tempHoldingVaccineModel;
@@ -674,538 +675,181 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
             switch (view.getId()) {
                 case R.id.addminister_vaccine_save_button:
                     savingInProgress = true;
-                    final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(AdministerVaccineFragment.this.getActivity());
-                    // set title
-                    alertDialogBuilder.setTitle("Warning");
 
                     if (correnctDateSelected == false) {
-
                         if (thereIsNoVaccinesInLot){
-                            // set dialog message
-                            alertDialogBuilder
-                                    .setMessage("There is no LOT number for \n\n "+ emptyVaccineLotsVaccines+"\nPlease make the necessary adjustment to reflect the physical stock or untick the above antigens")
-                                    .setCancelable(false)
-                                    .setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
-                                        public void onClick(final DialogInterface dialog, int id) {
-
-                                            final AlertDialog.Builder adb = new AlertDialog.Builder(AdministerVaccineFragment.this.getActivity());
-                                            // set title
-                                            adb.setTitle("Warning");
-
-                                            // set dialog message
-                                            adb
-                                                    .setMessage("The selected vaccination date is before due date. Are you sure you want to set this date?")
-                                                    .setCancelable(false)
-                                                    .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                                                        public void onClick(final DialogInterface dialog, int id) {
-                                                            progressDialog = new ProgressDialog(getActivity());
-                                                            Log.d("ADB" , "I am here saving data I did not get you the dialogue");
-                                                            progressDialog.setMessage("Saving data. \nPlease wait ...");
-                                                            progressDialog.setCanceledOnTouchOutside(false);
-                                                            progressDialog.setCancelable(false);
-
-                                                            new AsyncTask<Void, Void, Void>() {
-                                                                @Override
-                                                                protected void onPreExecute() {
-                                                                    super.onPreExecute();
-                                                                    progressDialog.show();
-
-                                                                }
-
-                                                                @Override
-                                                                protected void onPostExecute(Void aVoid) {
-                                                                    super.onPostExecute(aVoid);
-                                                                    if (progressDialog != null && progressDialog.isShowing()) {
-                                                                        progressDialog.dismiss();
-                                                                    }
-                                                                    savingInProgress = false;
-                                                                    final AlertDialog ad2 = new AlertDialog.Builder((Activity) getActivity()).create();
-                                                                    ad2.setTitle("Saved");
-                                                                    ad2.setMessage(getString(R.string.changes_saved));
-                                                                    ad2.setButton("OK", new DialogInterface.OnClickListener() {
-                                                                        @Override
-                                                                        public void onClick(DialogInterface dialog, int which) {
-
-                                                                            ad2.dismiss();
-                                                                            Log.d("day6", "poping a fragment");
-                                                                            FragmentManager manager = getFragmentManager();
-                                                                            manager.popBackStack("AdministerVaccineFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
-                                                                        }
-                                                                    });
-                                                                    ad2.show();
-
-                                                                }
-
-                                                                @Override
-                                                                protected Void doInBackground(Void... params) {
-                                                                    administerVaccineSaveButtonClicked();
-                                                                    if (SavedState) {
-                                                                        BackboneApplication application = (BackboneApplication) AdministerVaccineFragment.this.getActivity().getApplication();
-                                                                        for (AdministerVaccinesModel a : arrayListAdminVacc) {
-                                                                            try {
-                                                                                DatabaseHandler db = application.getDatabaseInstance();
-                                                                                Log.d("day4", "before uploading to server");
-                                                                                int status = application.updateVaccinationEventOnServer(a.getUpdateURL());
-                                                                                Log.d("day4", " Status is  : " + status + "");
-
-                                                                                String dateTodayTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(Calendar.getInstance().getTime());
-                                                                                try {
-                                                                                    dateTodayTimestamp = URLEncoder.encode(dateTodayTimestamp, "utf-8");
-                                                                                } catch (UnsupportedEncodingException e) {
-                                                                                    e.printStackTrace();
-                                                                                }
-                                                                                //Register Audit
-                                                                                application.registerAudit(BackboneApplication.CHILD_AUDIT, barcode, dateTodayTimestamp,
-                                                                                        application.getLOGGED_IN_USER_ID(), 7);
-
-                                                                                //a.syncVaccines();
-
-                                                                                if (outreachChecked) {
-                                                                                    int i = application.updateVaccinationAppOutreach(barcode, a.getDose_id());
-                                                                                    Log.d("day20", "called app outreach and result is  : " + i);
-                                                                                }
-
-
-                                                                                Log.d("Updating balance", "");
-                                                                                if (a.getStatus().equalsIgnoreCase("true")) {
-                                                                                    Log.d("Starting update protocol", "");
-                                                                                    Cursor cursor = db.getReadableDatabase().rawQuery("SELECT balance FROM health_facility_balance WHERE lot_id=?", new String[]{a.getVaccination_lot()});
-                                                                                    //Cursor cursor = db.getReadableDatabase().rawQuery("UPDATE health_facility_balance SET balance = balance - 1 WHERE lot_id=?", new String[]{a.getVaccination_lot()});
-                                                                                    if (cursor != null && cursor.getCount() > 0) {
-                                                                                        cursor.moveToFirst();
-                                                                                        int bal = cursor.getInt(cursor.getColumnIndex("balance"));
-                                                                                        Log.d("Balance found on database: ", bal + "");
-                                                                                        bal = bal - 1;
-                                                                                        Log.d("Balance being set: ", bal + "");
-                                                                                        ContentValues cv = new ContentValues();
-                                                                                        cv.put(SQLHandler.HealthFacilityBalanceColumns.BALANCE, bal);
-                                                                                        db.updateStockBalance(cv, a.getVaccination_lot());
-                                                                                        //cursor = db.getReadableDatabase().rawQuery("UPDATE health_facility_balance SET balance=? WHERE lot_id=?", new String[]{String.valueOf(bal), a.getVaccination_lot()});
-                                                                                    }
-                                                                                }
-
-                                                                            } catch (Exception e) {
-                                                                                e.printStackTrace();
-                                                                            }
-
-
-                                                                        }
-                                                                        try {
-                                                                            application.broadcastChildUpdates(Integer.parseInt(childId));
-                                                                        }catch (NumberFormatException e){
-                                                                            e.printStackTrace();
-                                                                            application.broadcastChildUpdatesWithBarcodeId(barcode);
-                                                                        }
-                                                                    }
-                                                                    return null;
-                                                                }
-                                                            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-
-                                                        }
-                                                    })
-                                                    .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                                                        public void onClick(DialogInterface dialog, int id) {
-                                                            // if this button is clicked, just close
-                                                            // the dialog box and do nothing
-                                                            dialog.cancel();
-                                                            savingInProgress=false;
-                                                        }
-                                                    });
-
-                                            // create alert dialog
-                                            AlertDialog ad = adb.create();
-
-                                            // show it
-                                            ad.show();
-
-                                        }}
-                                        )
-                                    .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            // if this button is clicked, just close
-                                            // the dialog box and do nothing
-                                            dialog.cancel();
-                                            savingInProgress=false;
-                                        }
-                                    });
-
-                            // create alert dialog
-                            AlertDialog alertDialog = alertDialogBuilder.create();
-
-                            // show it
-                            alertDialog.show();
-                        }else{
-
-
-                            final AlertDialog.Builder adb = new AlertDialog.Builder(AdministerVaccineFragment.this.getActivity());
-                            // set title
-                            adb.setTitle("Warning");
-
-                            // set dialog message
-                            adb
-                                    .setMessage("The selected vaccination date is before due date. Are you sure you want to set this date?")
-                                    .setCancelable(false)
-                                    .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                                        public void onClick(final DialogInterface dialog, int id) {
-                                            progressDialog = new ProgressDialog(getActivity());
-                                            Log.d("ADB" , "I am here saving data I did not get you the dialogue");
-                                            progressDialog.setMessage("Saving data. \nPlease wait ...");
-                                            progressDialog.setCanceledOnTouchOutside(false);
-                                            progressDialog.setCancelable(false);
-
-                                            new AsyncTask<Void, Void, Void>() {
-                                                @Override
-                                                protected void onPreExecute() {
-                                                    super.onPreExecute();
-                                                    progressDialog.show();
-
-                                                }
-
-                                                @Override
-                                                protected void onPostExecute(Void aVoid) {
-                                                    super.onPostExecute(aVoid);
-                                                    if (progressDialog != null && progressDialog.isShowing()) {
-                                                        progressDialog.dismiss();
-                                                    }
-                                                    savingInProgress = false;
-                                                    final AlertDialog ad2 = new AlertDialog.Builder((Activity) getActivity()).create();
-                                                    ad2.setTitle("Saved");
-                                                    ad2.setMessage(getString(R.string.changes_saved));
-                                                    ad2.setButton("OK", new DialogInterface.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialog, int which) {
-
-                                                            ad2.dismiss();
-                                                            Log.d("day6", "poping a fragment");
-                                                            FragmentManager manager = getFragmentManager();
-                                                            manager.popBackStack("AdministerVaccineFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
-                                                        }
-                                                    });
-                                                    ad2.show();
-
-                                                }
-
-                                                @Override
-                                                protected Void doInBackground(Void... params) {
-                                                    administerVaccineSaveButtonClicked();
-                                                    if (SavedState) {
-                                                        BackboneApplication application = (BackboneApplication) AdministerVaccineFragment.this.getActivity().getApplication();
-                                                        for (AdministerVaccinesModel a : arrayListAdminVacc) {
-                                                            try {
-                                                                DatabaseHandler db = application.getDatabaseInstance();
-                                                                Log.d("day4", "before uploading to server");
-                                                                int status = application.updateVaccinationEventOnServer(a.getUpdateURL());
-                                                                Log.d("day4", " Status is  : " + status + "");
-
-                                                                String dateTodayTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(Calendar.getInstance().getTime());
-                                                                try {
-                                                                    dateTodayTimestamp = URLEncoder.encode(dateTodayTimestamp, "utf-8");
-                                                                } catch (UnsupportedEncodingException e) {
-                                                                    e.printStackTrace();
-                                                                }
-                                                                //Register Audit
-                                                                application.registerAudit(BackboneApplication.CHILD_AUDIT, barcode, dateTodayTimestamp,
-                                                                        application.getLOGGED_IN_USER_ID(), 7);
-
-                                                                //a.syncVaccines();
-
-                                                                if (outreachChecked) {
-                                                                    int i = application.updateVaccinationAppOutreach(barcode, a.getDose_id());
-                                                                    Log.d("day20", "called app outreach and result is  : " + i);
-                                                                }
-
-
-                                                                Log.d("Updating balance", "");
-                                                                if (a.getStatus().equalsIgnoreCase("true")) {
-                                                                    Log.d("Starting update protocol", "");
-                                                                    Cursor cursor = db.getReadableDatabase().rawQuery("SELECT balance FROM health_facility_balance WHERE lot_id=?", new String[]{a.getVaccination_lot()});
-                                                                    //Cursor cursor = db.getReadableDatabase().rawQuery("UPDATE health_facility_balance SET balance = balance - 1 WHERE lot_id=?", new String[]{a.getVaccination_lot()});
-                                                                    if (cursor != null && cursor.getCount() > 0) {
-                                                                        cursor.moveToFirst();
-                                                                        int bal = cursor.getInt(cursor.getColumnIndex("balance"));
-                                                                        Log.d("Balance found on database: ", bal + "");
-                                                                        bal = bal - 1;
-                                                                        Log.d("Balance being set: ", bal + "");
-                                                                        ContentValues cv = new ContentValues();
-                                                                        cv.put(SQLHandler.HealthFacilityBalanceColumns.BALANCE, bal);
-                                                                        db.updateStockBalance(cv, a.getVaccination_lot());
-                                                                        //cursor = db.getReadableDatabase().rawQuery("UPDATE health_facility_balance SET balance=? WHERE lot_id=?", new String[]{String.valueOf(bal), a.getVaccination_lot()});
-                                                                    }
-                                                                }
-
-                                                            } catch (Exception e) {
-                                                                e.printStackTrace();
-                                                            }
-
-
-                                                        }
-                                                        try {
-                                                            application.broadcastChildUpdates(Integer.parseInt(childId));
-                                                        }catch (NumberFormatException e){
-                                                            e.printStackTrace();
-                                                            application.broadcastChildUpdatesWithBarcodeId(barcode);
-                                                        }
-                                                    }
-                                                    return null;
-                                                }
-                                            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-
-                                        }
-                                    })
-                                    .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            // if this button is clicked, just close
-                                            // the dialog box and do nothing
-                                            dialog.cancel();
-                                            savingInProgress=false;
-                                        }
-                                    });
-
-                            // create alert dialog
-                            AlertDialog ad = adb.create();
-
-                            // show it
-                            ad.show();
+                            /**
+                             * Call the dialogue builder method with nested true to display both the No LOT message and the wrong date message
+                             */
+                            String message = "There is no LOT number for \n\n " + emptyVaccineLotsVaccines + "\nPlease make the necessary adjustment to reflect the physical stock or untick the above antigens";
+                            createDialogWithMessages(message, true);
+                        }else {
+                            /**
+                             * There is vaccine in LOT but the date is not correct so call the dialogue message method with nested value FALSE
+                             * so as to display the wrong date only message
+                             */
+                            String message = "The selected vaccination date is before due date. Are you sure you want to set this date?";
+                            createDialogWithMessages(message, false);
                         }
-
                     } else {
-
                         if (thereIsNoVaccinesInLot){
-//                            Toast.makeText(AdministerVaccineFragment.this.getActivity(), "No Vaccine Lot", Toast.LENGTH_LONG).show();
-                            // set dialog message
-                            alertDialogBuilder
-                                    .setMessage("There is no LOT number for \n\n "+ emptyVaccineLotsVaccines+"\nPlease make the necessary adjustment to reflect the physical stock or untick the above antigens")
-                                    .setCancelable(false)
-                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        public void onClick(final DialogInterface dialog, int id) {
-                                            progressDialog = new ProgressDialog(getActivity());
-
-                                            progressDialog = new ProgressDialog(getActivity());
-
-                                            progressDialog.setMessage("Saving data. \nPlease wait ...");
-                                            progressDialog.setCanceledOnTouchOutside(false);
-                                            progressDialog.setCancelable(false);
-
-                                            new AsyncTask<Void, Void, Void>() {
-                                                @Override
-                                                protected void onPreExecute() {
-                                                    super.onPreExecute();
-                                                    progressDialog.show();
-
-                                                }
-
-                                                @Override
-                                                protected void onPostExecute(Void aVoid) {
-                                                    super.onPostExecute(aVoid);
-                                                    if (progressDialog != null && progressDialog.isShowing()) {
-                                                        progressDialog.dismiss();
-                                                    }
-                                                    savingInProgress = false;
-                                                    final AlertDialog ad2 = new AlertDialog.Builder((Activity) getActivity()).create();
-                                                    ad2.setTitle("Saved");
-                                                    ad2.setMessage(getString(R.string.changes_saved));
-                                                    ad2.setButton("OK", new DialogInterface.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialog, int which) {
-                                                            ad2.dismiss();
-                                                            Log.d("day6", "poping a fragment");
-                                                            FragmentManager manager = getFragmentManager();
-                                                            manager.popBackStack("AdministerVaccineFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                                                        }
-                                                    });
-                                                    ad2.show();
-                                                }
-
-                                                @Override
-                                                protected Void doInBackground(Void... params) {
-                                                    administerVaccineSaveButtonClicked();
-                                                    if (SavedState) {
-                                                        BackboneApplication application = (BackboneApplication) AdministerVaccineFragment.this.getActivity().getApplication();
-                                                        for (AdministerVaccinesModel a : arrayListAdminVacc) {
-                                                            try {
-                                                                DatabaseHandler db = application.getDatabaseInstance();
-                                                                Log.d("day4", "before uploading to server");
-                                                                int status = application.updateVaccinationEventOnServer(a.getUpdateURL());
-                                                                Log.d("day4 Status is : ", status + "");
-                                                                String dateTodayTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(Calendar.getInstance().getTime());
-                                                                try {
-                                                                    dateTodayTimestamp = URLEncoder.encode(dateTodayTimestamp, "utf-8");
-                                                                } catch (UnsupportedEncodingException e) {
-                                                                    e.printStackTrace();
-                                                                }
-                                                                //Register Audit
-                                                                application.registerAudit(BackboneApplication.CHILD_AUDIT, barcode, dateTodayTimestamp,
-                                                                        application.getLOGGED_IN_USER_ID(), 7);
-
-
-                                                                if (outreachChecked) {
-                                                                    int i = application.updateVaccinationAppOutreach(barcode, a.getDose_id());
-                                                                    Log.d("day20", "called app outreach and result is  : " + i);
-                                                                }
-
-
-                                                                Log.d("Updating balance", "");
-                                                                if (a.getStatus().equalsIgnoreCase("true")) {
-                                                                    Log.d("Starting update protocol", "");
-                                                                    Cursor cursor = db.getReadableDatabase().rawQuery("SELECT balance FROM health_facility_balance WHERE lot_id=?", new String[]{a.getVaccination_lot()});
-                                                                    //Cursor cursor = db.getReadableDatabase().rawQuery("UPDATE health_facility_balance SET balance = balance - 1 WHERE lot_id=?", new String[]{a.getVaccination_lot()});
-                                                                    if (cursor != null && cursor.getCount() > 0) {
-                                                                        cursor.moveToFirst();
-                                                                        int bal = cursor.getInt(cursor.getColumnIndex("balance"));
-                                                                        Log.d("Balance found on database: ", bal + "");
-                                                                        bal = bal - 1;
-                                                                        Log.d("Balance being set: ", bal + "");
-                                                                        ContentValues cv = new ContentValues();
-                                                                        cv.put(SQLHandler.HealthFacilityBalanceColumns.BALANCE, bal);
-                                                                        db.updateStockBalance(cv, a.getVaccination_lot());
-                                                                        //cursor = db.getReadableDatabase().rawQuery("UPDATE health_facility_balance SET balance=? WHERE lot_id=?", new String[]{String.valueOf(bal), a.getVaccination_lot()});
-                                                                    }
-                                                                }
-                                                            } catch (Exception e) {
-                                                                e.printStackTrace();
-                                                            }
-
-
-                                                        }
-                                                        try {
-                                                            application.broadcastChildUpdates(Integer.parseInt(childId));
-                                                        }catch (NumberFormatException e){
-                                                            e.printStackTrace();
-                                                            application.broadcastChildUpdatesWithBarcodeId(barcode);
-                                                        }
-                                                    }
-                                                    return null;
-                                                }
-                                            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-                                        }}
-                                    )
-                                    .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            // if this button is clicked, just close
-                                            // the dialog box and do nothing
-                                            dialog.cancel();
-                                            savingInProgress = false;
-                                        }
-                                    });
-
-                            // create alert dialog
-                            AlertDialog alertDialog = alertDialogBuilder.create();
-
-                            // show it
-                            alertDialog.show();
-
+                            /**
+                             * The correct date is selected but the vaccine LOT is not there so call the dialogue method with the NO LOT message only
+                             * and nested False so as not to repeat the second message
+                             */
+                            String message = "There is no LOT number for \n\n " + emptyVaccineLotsVaccines + "\nPlease make the necessary adjustment to reflect the physical stock or untick the above antigens";
+                            createDialogWithMessages(message, false);
                         }else{
-                            progressDialog = new ProgressDialog(getActivity());
-
-                            progressDialog = new ProgressDialog(getActivity());
-
-                            progressDialog.setMessage("Saving data. \nPlease wait ...");
-                            progressDialog.setCanceledOnTouchOutside(false);
-                            progressDialog.setCancelable(false);
-
-                            new AsyncTask<Void, Void, Void>() {
-                                @Override
-                                protected void onPreExecute() {
-                                    super.onPreExecute();
-                                    progressDialog.show();
-
-                                }
-
-                                @Override
-                                protected void onPostExecute(Void aVoid) {
-                                    super.onPostExecute(aVoid);
-                                    if (progressDialog != null && progressDialog.isShowing()) {
-                                        progressDialog.dismiss();
-                                    }
-                                    savingInProgress = false;
-                                    final AlertDialog ad2 = new AlertDialog.Builder((Activity) getActivity()).create();
-                                    ad2.setTitle("Saved");
-                                    ad2.setMessage(getString(R.string.changes_saved));
-                                    ad2.setButton("OK", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            ad2.dismiss();
-                                            Log.d("day6", "poping a fragment");
-                                            FragmentManager manager = getFragmentManager();
-                                            manager.popBackStack("AdministerVaccineFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                                        }
-                                    });
-                                    ad2.show();
-                                }
-
-                                @Override
-                                protected Void doInBackground(Void... params) {
-                                    administerVaccineSaveButtonClicked();
-                                    if (SavedState) {
-                                        BackboneApplication application = (BackboneApplication) AdministerVaccineFragment.this.getActivity().getApplication();
-                                        for (AdministerVaccinesModel a : arrayListAdminVacc) {
-                                            try {
-                                                DatabaseHandler db = application.getDatabaseInstance();
-                                                Log.d("day4", "before uploading to server");
-                                                int status = application.updateVaccinationEventOnServer(a.getUpdateURL());
-                                                Log.d("day4 Status is : ", status + "");
-                                                String dateTodayTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(Calendar.getInstance().getTime());
-                                                try {
-                                                    dateTodayTimestamp = URLEncoder.encode(dateTodayTimestamp, "utf-8");
-                                                } catch (UnsupportedEncodingException e) {
-                                                    e.printStackTrace();
-                                                }
-                                                //Register Audit
-                                                application.registerAudit(BackboneApplication.CHILD_AUDIT, barcode, dateTodayTimestamp,
-                                                        application.getLOGGED_IN_USER_ID(), 7);
-
-
-                                                if (outreachChecked) {
-                                                    int i = application.updateVaccinationAppOutreach(barcode, a.getDose_id());
-                                                    Log.d("day20", "called app outreach and result is  : " + i);
-                                                }
-
-
-                                                Log.d("Updating balance", "");
-                                                if (a.getStatus().equalsIgnoreCase("true")) {
-                                                    Log.d("Starting update protocol", "");
-                                                    Cursor cursor = db.getReadableDatabase().rawQuery("SELECT balance FROM health_facility_balance WHERE lot_id=?", new String[]{a.getVaccination_lot()});
-                                                    //Cursor cursor = db.getReadableDatabase().rawQuery("UPDATE health_facility_balance SET balance = balance - 1 WHERE lot_id=?", new String[]{a.getVaccination_lot()});
-                                                    if (cursor != null && cursor.getCount() > 0) {
-                                                        cursor.moveToFirst();
-                                                        int bal = cursor.getInt(cursor.getColumnIndex("balance"));
-                                                        Log.d("Balance found on database: ", bal + "");
-                                                        bal = bal - 1;
-                                                        Log.d("Balance being set: ", bal + "");
-                                                        ContentValues cv = new ContentValues();
-                                                        cv.put(SQLHandler.HealthFacilityBalanceColumns.BALANCE, bal);
-                                                        db.updateStockBalance(cv, a.getVaccination_lot());
-                                                        //cursor = db.getReadableDatabase().rawQuery("UPDATE health_facility_balance SET balance=? WHERE lot_id=?", new String[]{String.valueOf(bal), a.getVaccination_lot()});
-                                                    }
-                                                }
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
-
-
-                                        }
-                                        try {
-                                            application.broadcastChildUpdates(Integer.parseInt(childId));
-                                        }catch (NumberFormatException e){
-                                            e.printStackTrace();
-                                            application.broadcastChildUpdatesWithBarcodeId(barcode);
-                                        }
-                                    }
-                                    return null;
-                                }
-                            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                            /**
+                             * The correct date is selected and the vaccine LOT is there so here we just call the method to save the vaccines
+                             */
+                            saveVaccines();
                         }
-
                     }
                     app.saveNeeded = false;
                     break;
             }
         }
+    }
+
+    public void saveVaccines() {
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                progressDialog = new ProgressDialog(AdministerVaccineFragment.this.getActivity());
+                progressDialog.setMessage("Saving data. \nPlease wait ...");
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+                savingInProgress = false;
+                final AlertDialog ad2 = new AlertDialog.Builder((Activity) getActivity()).create();
+                ad2.setTitle("Saved");
+                ad2.setMessage(getString(R.string.changes_saved));
+                ad2.setButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        ad2.dismiss();
+                        Log.d("day6", "poping a fragment");
+                        FragmentManager manager = getFragmentManager();
+                        manager.popBackStack("AdministerVaccineFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+                    }
+                });
+                ad2.show();
+
+            }
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                administerVaccineSaveButtonClicked();
+                if (SavedState) {
+                    BackboneApplication application = (BackboneApplication) AdministerVaccineFragment.this.getActivity().getApplication();
+                    for (AdministerVaccinesModel a : arrayListAdminVacc) {
+                        try {
+                            DatabaseHandler db = application.getDatabaseInstance();
+                            Log.d("day4", "before uploading to server");
+                            int status = application.updateVaccinationEventOnServer(a.getUpdateURL());
+                            Log.d("day4", " Status is  : " + status + "");
+
+                            String dateTodayTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(Calendar.getInstance().getTime());
+                            try {
+                                dateTodayTimestamp = URLEncoder.encode(dateTodayTimestamp, "utf-8");
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                            //Register Audit
+                            application.registerAudit(BackboneApplication.CHILD_AUDIT, barcode, dateTodayTimestamp,
+                                    application.getLOGGED_IN_USER_ID(), 7);
+
+                            //a.syncVaccines();
+
+                            if (outreachChecked) {
+                                int i = application.updateVaccinationAppOutreach(barcode, a.getDose_id());
+                                Log.d("day20", "called app outreach and result is  : " + i);
+                            }
+
+
+                            Log.d("Updating balance", "");
+                            if (a.getStatus().equalsIgnoreCase("true")) {
+                                Log.d("Starting update protocol", "");
+                                Cursor cursor = db.getReadableDatabase().rawQuery("SELECT balance FROM health_facility_balance WHERE lot_id=?", new String[]{a.getVaccination_lot()});
+                                //Cursor cursor = db.getReadableDatabase().rawQuery("UPDATE health_facility_balance SET balance = balance - 1 WHERE lot_id=?", new String[]{a.getVaccination_lot()});
+                                if (cursor != null && cursor.getCount() > 0) {
+                                    cursor.moveToFirst();
+                                    int bal = cursor.getInt(cursor.getColumnIndex("balance"));
+                                    Log.d("Balance found on database: ", bal + "");
+                                    bal = bal - 1;
+                                    Log.d("Balance being set: ", bal + "");
+                                    ContentValues cv = new ContentValues();
+                                    cv.put(SQLHandler.HealthFacilityBalanceColumns.BALANCE, bal);
+                                    db.updateStockBalance(cv, a.getVaccination_lot());
+                                    //cursor = db.getReadableDatabase().rawQuery("UPDATE health_facility_balance SET balance=? WHERE lot_id=?", new String[]{String.valueOf(bal), a.getVaccination_lot()});
+                                }
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                    try {
+                        application.broadcastChildUpdates(Integer.parseInt(childId));
+                    }catch (NumberFormatException e){
+                        e.printStackTrace();
+                        application.broadcastChildUpdatesWithBarcodeId(barcode);
+                    }
+                }
+                return null;
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    public void createDialogWithMessages(String dialogueMessage, final boolean isNested){
+        // set title
+        alertDialogBuilder = new AlertDialog.Builder(AdministerVaccineFragment.this.getActivity());
+        alertDialogBuilder.setTitle("Warning");
+        // set dialog message
+        alertDialogBuilder
+                .setMessage(dialogueMessage)
+                .setCancelable(false)
+                .setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+                            public void onClick(final DialogInterface dialog, int id) {
+                                if (isNested) {
+                                    String theMessage = "The selected vaccination date is before due date. Are you sure you want to set this date?";
+                                    createDialogWithMessages(theMessage, false);
+                                } else {
+                                    saveVaccines();
+                                }
+                            }
+                        }
+                )
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // if this button is clicked, just close
+                        // the dialog box and do nothing
+                        dialog.cancel();
+                        savingInProgress = false;
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
     }
 
     public String calculateDateDiff(int daysDiff,AdministerVaccinesModel a) {
