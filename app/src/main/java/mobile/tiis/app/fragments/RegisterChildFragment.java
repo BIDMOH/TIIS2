@@ -252,8 +252,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         etPhone             = (MaterialEditText) v. findViewById(R.id.reg_phone);
         etNotes             = (MaterialEditText) v. findViewById(R.id.reg_notes);
         dateOfBirth         = (MaterialEditText) v.findViewById(R.id.reg_dob);
-        etMotherVVUStatus   = (MaterialEditText) v.findViewById(R.id.reg_mot_vvu_sts);
-        etMotherVVUStatus   = (MaterialEditText) v.findViewById(R.id.reg_mot_tt2_sts);
+
         etChildCumulativeSn = (MaterialEditText) v.findViewById(R.id.cummulative_sn);
 
         placeOfBirthSpinner = (MaterialSpinner) v.findViewById(R.id.reg_spin_pob);
@@ -517,11 +516,34 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         }
 
 
-        if (etMotherFirstName.getText().toString().isEmpty() || etMotherSurname.getText().toString().isEmpty()) {
+        if (etMotherFirstName.getText().toString().isEmpty()) {
             etMotherFirstName.setError(getString(R.string.empty_mother_names));
             etMotherFirstName.setErrorColor(Color.RED);
             return false;
         }
+
+        if (etMotherSurname.getText().toString().isEmpty()) {
+            etMotherSurname.setError(getString(R.string.empty_mother_names));
+            etMotherSurname.setErrorColor(Color.RED);
+            return false;
+        }
+
+        if (motherVVUStatusSpinner.getSelectedItemPosition() == 0) {
+            TextView errorText = (TextView)motherVVUStatusSpinner.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText(getString(R.string.empty_mother_vvu));//changes the selected item text to this
+            return false;
+        }
+
+        if (motherTT2StatusSpinner.getSelectedItemPosition() == 0) {
+            TextView errorText = (TextView)motherTT2StatusSpinner.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText(getString(R.string.empty_mother_vvu));//changes the selected item text to this
+            return false;
+        }
+
 
         if(checkIfTheEditTextContainsSpaces(etMotherFirstName)){
             return false;
@@ -548,6 +570,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
             errorText.setText(getString(R.string.empty_birthplace));//changes the selected item text to this
             return false;
         }
+
         // we have as the last element the one that is empty element. We can not select it.
         if (placeOfDomicileSpinner.getSelectedItemPosition() == 0) {
             TextView errorText = (TextView)placeOfDomicileSpinner.getSelectedView();
