@@ -83,6 +83,15 @@ public class ImmunizationCardAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int i) {
-        return Long.parseLong(items.get(i).getAppointementId());
+        long id = 0;
+
+        try{
+            id = Long.parseLong(items.get(i).getAppointementId());
+        }catch (Exception e){
+            e.printStackTrace();
+            id = 0;
+        }
+
+        return id;
     }
 }
