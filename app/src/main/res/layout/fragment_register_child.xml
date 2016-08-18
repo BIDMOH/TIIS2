@@ -5,6 +5,7 @@
     xmlns:app_ms="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app_exp="http://schemas.android.com/tools"
     android:scrollbars="none"
     android:background="@color/white">
 
@@ -15,673 +16,800 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white">
+            android:background="#e5e5e5">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingTop="16dp"
-                android:paddingLeft="32dp"
-                android:paddingRight="32dp">
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Search Child First"
-                        android:textStyle="bold"
-                        android:id="@+id/search_child_title"/>
-
-                    <RelativeLayout
+                    <android.support.v7.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp">
 
-                        <android.support.v7.widget.CardView
-                            android:layout_width="wrap_content"
+                        <RelativeLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
-                            android:id="@+id/search_button"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginRight="16dp">
+                            android:paddingBottom="16dp"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Search Child First"
+                                android:textStyle="bold"
+                                android:layout_marginTop="16dp"
+                                android:layout_marginLeft="16dp"
+                                android:id="@+id/search_child_title"/>
+
+                            <LinearLayout
+                                android:layout_width="150dp"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentRight="true"
+                                android:orientation="vertical"
+                                android:layout_centerVertical="true">
+
+                                <android.support.v7.widget.CardView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:layout_marginTop="4dp"
+                                    android:id="@+id/search_button">
+
+                                    <RelativeLayout
+                                        android:layout_width="130dp"
+                                        android:layout_height="50dp"
+                                        android:background="@color/white">
+
+                                        <ImageButton
+                                            android:layout_width="30dp"
+                                            android:layout_height="30dp"
+                                            android:layout_marginLeft="8dp"
+                                            android:layout_centerVertical="true"
+                                            android:id="@+id/search_btn_child"
+                                            android:scaleType="fitCenter"
+                                            android:background="@color/white"
+                                            android:src="@drawable/blue_search"/>
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_alignParentRight="true"
+                                            android:layout_centerVertical="true"
+                                            android:text="Search"
+                                            android:textSize="18sp"
+                                            android:layout_marginRight="16dp"
+                                            android:textColor="@color/card_grid_tex"
+                                            android:layout_marginBottom="16dp"/>
+
+                                    </RelativeLayout>
+
+                                </android.support.v7.widget.CardView>
+
+                                <android.support.v7.widget.CardView
+                                    android:layout_marginTop="8dp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:id="@+id/clear_button"
+                                    android:layout_marginBottom="4dp">
+
+                                    <RelativeLayout
+                                        android:layout_width="130dp"
+                                        android:layout_height="50dp"
+                                        android:background="@color/white">
+
+                                        <ImageButton
+                                            android:visibility="gone"
+                                            android:layout_width="30dp"
+                                            android:layout_height="30dp"
+                                            android:layout_marginLeft="8dp"
+                                            android:layout_centerVertical="true"
+                                            android:scaleType="fitCenter"
+                                            android:background="@color/white"
+                                            android:src="@drawable/blue_search"/>
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_centerInParent="true"
+                                            android:text="Clear"
+                                            android:textSize="18sp"
+                                            android:layout_marginRight="16dp"
+                                            android:textColor="@color/card_grid_tex"
+                                            android:layout_marginBottom="16dp"/>
+
+                                    </RelativeLayout>
+
+                                </android.support.v7.widget.CardView>
+
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="16dp"
+                                android:layout_below="@id/search_child_title"
+                                android:id="@+id/top_search_linear"
+                                android:layout_marginRight="166dp">
+
+                                <com.rengwuxian.materialedittext.MaterialEditText
+                                    android:layout_width="0dp"
+                                    android:layout_weight=".25"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/search_barcode"
+                                    android:inputType="number"
+                                    app:met_floatingLabel="normal"
+                                    app:met_floatingLabelTextColor="@color/light_blue_600"
+                                    app:met_floatingLabelText="Barcode"
+                                    app:met_textColorHint="@color/card_light_text"
+                                    app:met_baseColor="#395670"
+                                    android:textSize="14sp"
+                                    android:hint="Barcode"/>
+
+                                <View
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.1"
+                                    android:layout_height="match_parent"/>
+
+
+                                <com.rengwuxian.materialedittext.MaterialEditText
+                                    android:layout_width="0dp"
+                                    android:layout_weight=".25"
+                                    android:layout_marginLeft="8dp"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/search_fname"
+                                    app:met_floatingLabel="normal"
+                                    app:met_floatingLabelTextColor="@color/light_blue_600"
+                                    app:met_floatingLabelText="First Name"
+                                    app:met_textColorHint="@color/card_light_text"
+                                    app:met_baseColor="#395670"
+                                    android:textSize="14sp"
+                                    android:hint="First Name"/>
+
+                                <View
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.1"
+                                    android:layout_height="match_parent"/>
+
+
+                                <com.rengwuxian.materialedittext.MaterialEditText
+                                    android:layout_width="0dp"
+                                    android:layout_weight=".25"
+                                    android:layout_marginLeft="8dp"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/search_sname"
+                                    app:met_floatingLabel="normal"
+                                    app:met_floatingLabelTextColor="@color/light_blue_600"
+                                    app:met_floatingLabelText="Surname"
+                                    app:met_textColorHint="@color/card_light_text"
+                                    app:met_baseColor="#395670"
+                                    android:textSize="14sp"
+                                    android:hint="Surname"/>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/bottom_search_linear"
+                                android:layout_below="@id/top_search_linear"
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginRight="166dp">
+
+                                <com.rengwuxian.materialedittext.MaterialEditText
+                                    android:layout_width="0dp"
+                                    android:layout_weight=".25"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/search_dob"
+                                    android:hint="DOB"
+                                    android:textSize="14sp"
+                                    app:met_floatingLabel="normal"
+                                    app:met_floatingLabelTextColor="@color/light_blue_600"
+                                    app:met_floatingLabelText="DOB To"
+                                    app:met_textColorHint="@color/card_light_text"
+                                    app:met_baseColor="#395670"
+                                    app:met_iconRight="@drawable/ic_monthly_plan"/>
+
+                                <View
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.1"
+                                    android:layout_height="match_parent"/>
+
+                                <com.rengwuxian.materialedittext.MaterialEditText
+                                    android:layout_width="0dp"
+                                    android:layout_weight=".25"
+                                    android:layout_marginLeft="8dp"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/search_mother_fname"
+                                    app:met_floatingLabel="normal"
+                                    app:met_floatingLabelTextColor="@color/light_blue_600"
+                                    app:met_floatingLabelText="Mother First Name"
+                                    app:met_textColorHint="@color/card_light_text"
+                                    android:textSize="14sp"
+                                    app:met_baseColor="#395670"
+                                    android:hint="Mother First Name"/>
+
+                                <View
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.1"
+                                    android:layout_height="match_parent"/>
+
+                                <com.rengwuxian.materialedittext.MaterialEditText
+                                    android:layout_width="0dp"
+                                    android:layout_weight=".25"
+                                    android:layout_marginLeft="8dp"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/search_mother_sname"
+                                    app:met_floatingLabel="normal"
+                                    app:met_floatingLabelTextColor="@color/light_blue_600"
+                                    app:met_floatingLabelText="Mother Sec Name"
+                                    app:met_textColorHint="@color/card_light_text"
+                                    app:met_baseColor="#395670"
+                                    android:textSize="14sp"
+                                    android:hint="Mother Sec Name"/>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                    </android.support.v7.widget.CardView>
+
+                    <com.github.aakira.expandablelayout.ExpandableWeightLayout
+                        android:id="@+id/expandable_result_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="5"
+                        android:layout_marginTop="16dp"
+                        android:background="#e5e5e5"
+                        app_exp:ael_expanded="false"
+                        app_exp:ael_duration="50"
+                        app_exp:ael_interpolator="accelerate"
+                        app_exp:ael_orientation="vertical">
+
+                        <TableLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/result_table_layout">
+
+                        </TableLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Loading"
+                                android:layout_marginTop="16dp"
+                                android:layout_centerHorizontal="true"
+                                android:id="@+id/info_text"/>
+
+                            <com.wang.avi.AVLoadingIndicatorView
+                                android:layout_below="@id/info_text"
+                                android:id="@+id/avi"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                style="@style/AVLoadingIndicatorView.Small"
+                                android:visibility="visible"
+                                app:indicatorName="BallPulseIndicator"
+                                app:indicatorColor="@color/light_blue_600"
+                                />
+
+                        </RelativeLayout>
+
+                    </com.github.aakira.expandablelayout.ExpandableWeightLayout>
+
+
+                    <android.support.v7.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp">
 
                             <RelativeLayout
-                                android:layout_width="100dp"
-                                android:layout_height="90dp">
-
-                                <ImageButton
-                                    android:layout_width="50dp"
-                                    android:layout_height="50dp"
-                                    android:id="@+id/search_btn_child"
-                                    android:scaleType="fitCenter"
-                                    android:layout_centerHorizontal="true"
-                                    android:src="@drawable/blue_search"
-                                    android:background="@color/white"/>
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp">
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_alignParentBottom="true"
-                                    android:layout_centerHorizontal="true"
-                                    android:text="Search"
-                                    android:textSize="18sp"
-                                    android:textColor="@color/card_grid_tex"
-                                    android:layout_marginBottom="16dp"/>
+                                    android:text="Register Child"
+                                    android:textStyle="bold"
+                                    android:layout_marginLeft="16dp"
+                                    android:layout_centerVertical="true"
+                                    android:id="@+id/register_child_title"/>
+
+                                <View
+                                    android:visibility="gone"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="1dp"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginLeft="16dp"
+                                    android:layout_toRightOf="@id/register_child_title"
+                                    android:background="@color/card_separator"
+                                    android:id="@+id/search_first_separator"/>
 
                             </RelativeLayout>
 
-                        </android.support.v7.widget.CardView>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_marginTop="8dp"
+                                android:orientation="vertical"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginRight="16dp"
+                                android:layout_height="wrap_content">
 
-                        <LinearLayout
-                            android:orientation="horizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="16dp"
-                            android:id="@+id/top_search_linear"
-                            android:layout_marginRight="166dp">
+                                <LinearLayout
+                                    android:orientation="horizontal"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="70dp">
 
-                            <com.rengwuxian.materialedittext.MaterialEditText
-                                android:layout_width="0dp"
-                                android:layout_weight=".25"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/met_barcode"
-                                android:inputType="number"
-                                app:met_floatingLabel="normal"
-                                app:met_floatingLabelTextColor="@color/light_blue_600"
-                                app:met_floatingLabelText="Barcode"
-                                app:met_textColorHint="@color/card_light_text"
-                                app:met_baseColor="#395670"
-                                android:textSize="14sp"
-                                android:hint="Barcode"/>
+                                    <com.rengwuxian.materialedittext.MaterialEditText
+                                        android:layout_width="0dp"
+                                        android:layout_weight=".2"
+                                        android:layout_height="wrap_content"
+                                        android:id="@+id/reg_barcode"
+                                        android:hint="barcode"
+                                        android:textSize="14sp"
+                                        app:met_floatingLabelText="Barcode"
+                                        app:met_floatingLabel="normal"
+                                        android:inputType="number"
+                                        android:textColor="@color/black"
+                                        app:met_floatingLabelTextColor="@color/light_blue_500"/>
 
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_weight="0.1"
-                                android:layout_height="match_parent"/>
-
-
-                            <com.rengwuxian.materialedittext.MaterialEditText
-                                android:layout_width="0dp"
-                                android:layout_weight=".25"
-                                android:layout_marginLeft="8dp"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/met_fname"
-                                app:met_floatingLabel="normal"
-                                app:met_floatingLabelTextColor="@color/light_blue_600"
-                                app:met_floatingLabelText="First Name"
-                                app:met_textColorHint="@color/card_light_text"
-                                app:met_baseColor="#395670"
-                                android:textSize="14sp"
-                                android:hint="First Name"/>
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_weight="0.1"
-                                android:layout_height="match_parent"/>
+                                    <View
+                                        android:layout_width="0dp"
+                                        android:layout_weight="0.1"
+                                        android:layout_height="match_parent"/>
 
 
-                            <com.rengwuxian.materialedittext.MaterialEditText
-                                android:layout_width="0dp"
-                                android:layout_weight=".25"
-                                android:layout_marginLeft="8dp"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/met_sname"
-                                app:met_floatingLabel="normal"
-                                app:met_floatingLabelTextColor="@color/light_blue_600"
-                                app:met_floatingLabelText="Surname"
-                                app:met_textColorHint="@color/card_light_text"
-                                app:met_baseColor="#395670"
-                                android:textSize="14sp"
-                                android:hint="Surname"/>
+                                    <fr.ganfra.materialspinner.MaterialSpinner
+                                        android:id="@+id/reg_spin_register_year"
+                                        android:layout_width="0dp"
+                                        android:layout_weight=".2"
+                                        android:layout_height="wrap_content"
+                                        android:divider="@null"
+                                        app_ms:ms_multiline="false"
+                                        app_ms:ms_hint="Register Year"
+                                        app_ms:ms_enableFloatingLabel="true"
+                                        app_ms:ms_enableErrorLabel="false"
+                                        app_ms:ms_floatingLabelText="Register Year"
+                                        app_ms:ms_baseColor="@color/light_blue_600"
+                                        app_ms:ms_highlightColor="@color/light_blue_700"
+                                        app_ms:ms_errorColor="@color/red_500"
+                                        app_ms:ms_typeface="Roboto-LightItalic.ttf"
+                                        app_ms:ms_hintColor="@color/card_light_text"
+                                        app_ms:ms_arrowColor="@color/light_blue_600"
+                                        app_ms:ms_arrowSize="16dp"
+                                        app_ms:ms_alignLabels="false"
+                                        app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
+
+                                    <View
+                                        android:layout_width="0dp"
+                                        android:layout_weight="0.1"
+                                        android:layout_height="match_parent"/>
+
+                                    <com.rengwuxian.materialedittext.MaterialEditText
+                                        android:visibility="visible"
+                                        android:id="@+id/cummulative_sn"
+                                        android:layout_width="0dp"
+                                        android:layout_weight=".2"
+                                        android:textSize="14sp"
+                                        android:layout_height="wrap_content"
+                                        app:met_floatingLabelText="Cummulative Serial Number"
+                                        app:met_floatingLabel="normal"
+                                        android:inputType="number"
+                                        android:textColor="@color/black"
+                                        app:met_floatingLabelTextColor="@color/light_blue_500"
+                                        android:hint="Serial Number"/>
+
+                                    <View
+                                        android:layout_width="0dp"
+                                        android:layout_weight="0.1"
+                                        android:layout_height="match_parent"/>
+
+                                    <com.rengwuxian.materialedittext.MaterialEditText
+                                        android:layout_width="0dp"
+                                        android:layout_weight=".2"
+                                        android:layout_height="wrap_content"
+                                        android:focusable="true"
+                                        android:hint="Date of birth"
+                                        android:textColor="@color/black"
+                                        android:inputType="date"
+                                        android:id="@+id/reg_dob"
+                                        android:textSize="14sp"
+                                        app:met_iconRight="@drawable/ic_monthly_plan"
+                                        app:met_floatingLabelText="Date of birth"
+                                        app:met_floatingLabel="normal"
+                                        app:met_floatingLabelTextColor="@color/light_blue_500"/>
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:orientation="horizontal"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="70dp"
+                                    android:layout_marginTop="16dp">
+
+                                    <com.rengwuxian.materialedittext.MaterialEditText
+                                        android:layout_width="0dp"
+                                        android:layout_weight=".2"
+                                        android:layout_height="wrap_content"
+                                        android:id="@+id/reg_fname"
+                                        android:focusable="true"
+                                        android:inputType="textCapWords|textPersonName"
+                                        android:hint="First Name"
+                                        android:textSize="14sp"
+                                        android:textColor="@color/black"
+                                        app:met_floatingLabelText="First Name"
+                                        app:met_floatingLabel="normal"
+                                        app:met_floatingLabelTextColor="@color/light_blue_500"/>
+
+                                    <View
+                                        android:layout_width="0dp"
+                                        android:layout_weight="0.1"
+                                        android:layout_height="match_parent"/>
+
+
+                                    <com.rengwuxian.materialedittext.MaterialEditText
+                                        android:layout_width="0dp"
+                                        android:layout_weight=".2"
+                                        android:textSize="14sp"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="textCapWords|textPersonName"
+                                        android:id="@+id/reg_mname"
+                                        android:focusable="true"
+                                        android:textColor="@color/black"
+                                        android:hint="Middle Name"
+                                        app:met_floatingLabelText="Middle Name"
+                                        app:met_floatingLabel="normal"
+                                        app:met_floatingLabelTextColor="@color/light_blue_500"/>
+
+                                    <View
+                                        android:layout_width="0dp"
+                                        android:layout_weight="0.1"
+                                        android:layout_height="match_parent"/>
+
+
+                                    <com.rengwuxian.materialedittext.MaterialEditText
+                                        android:layout_width="0dp"
+                                        android:layout_weight="0.2"
+                                        android:textSize="14sp"
+                                        android:layout_height="wrap_content"
+                                        android:focusable="true"
+                                        android:hint="surname"
+                                        android:textColor="@color/black"
+                                        android:inputType="textCapWords|textPersonName"
+                                        android:id="@+id/reg_surname"
+                                        app:met_floatingLabelText="Surname"
+                                        app:met_floatingLabel="normal"
+                                        app:met_floatingLabelTextColor="@color/light_blue_500"/>
+
+                                    <View
+                                        android:layout_width="0dp"
+                                        android:layout_weight="0.1"
+                                        android:layout_height="match_parent"/>
+
+                                    <fr.ganfra.materialspinner.MaterialSpinner
+                                        android:id="@+id/reg_spin_gender"
+                                        android:layout_width="0dp"
+                                        android:layout_weight=".2"
+                                        android:layout_height="wrap_content"
+                                        android:divider="@null"
+                                        app_ms:ms_multiline="false"
+                                        app_ms:ms_hint="Gender"
+                                        app_ms:ms_enableFloatingLabel="true"
+                                        app_ms:ms_enableErrorLabel="false"
+                                        app_ms:ms_floatingLabelText="Gender"
+                                        app_ms:ms_baseColor="@color/light_blue_600"
+                                        app_ms:ms_highlightColor="@color/light_blue_700"
+                                        app_ms:ms_errorColor="@color/red_500"
+                                        app_ms:ms_typeface="Roboto-LightItalic.ttf"
+                                        app_ms:ms_hintColor="@color/card_light_text"
+                                        app_ms:ms_arrowColor="@color/light_blue_600"
+                                        app_ms:ms_arrowSize="16dp"
+                                        app_ms:ms_alignLabels="false"
+                                        app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
+
+
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:orientation="horizontal"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="70dp"
+                                    android:layout_marginTop="16dp">
+
+                                    <com.rengwuxian.materialedittext.MaterialEditText
+                                        android:layout_width="0dp"
+                                        android:layout_weight="0.2"
+                                        android:layout_height="wrap_content"
+                                        android:focusable="true"
+                                        android:textSize="14sp"
+                                        android:inputType="textCapWords|textPersonName"
+                                        android:hint="Mother's First Name"
+                                        android:id="@+id/reg_mot_fname"
+                                        android:textColor="@color/black"
+                                        app:met_floatingLabelText="Mother's First Name"
+                                        app:met_floatingLabel="normal"
+                                        app:met_floatingLabelTextColor="@color/light_blue_500"/>
+
+                                    <View
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight=".1"/>
+
+                                    <com.rengwuxian.materialedittext.MaterialEditText
+                                        android:layout_width="0dp"
+                                        android:layout_weight=".2"
+                                        android:textSize="14sp"
+                                        android:layout_height="wrap_content"
+                                        android:focusable="true"
+                                        android:inputType="textCapWords|textPersonName"
+                                        android:hint="Mother's Surname"
+                                        android:textColor="@color/black"
+                                        android:id="@+id/reg_mot_sname"
+                                        app:met_floatingLabelText="Mother's Surname"
+                                        app:met_floatingLabel="normal"
+                                        app:met_floatingLabelTextColor="@color/light_blue_500"/>
+
+                                    <View
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight=".1"/>
+
+
+                                    <fr.ganfra.materialspinner.MaterialSpinner
+                                        android:id="@+id/reg_spin_mother_vvu_status"
+                                        android:layout_width="0dp"
+                                        android:layout_weight=".2"
+                                        android:layout_height="wrap_content"
+                                        android:divider="@null"
+                                        app_ms:ms_multiline="false"
+                                        app_ms:ms_hint="Mother VVU Status"
+                                        app_ms:ms_enableFloatingLabel="true"
+                                        app_ms:ms_enableErrorLabel="false"
+                                        app_ms:ms_floatingLabelText="Mother VVU Status"
+                                        app_ms:ms_baseColor="@color/light_blue_600"
+                                        app_ms:ms_highlightColor="@color/light_blue_700"
+                                        app_ms:ms_errorColor="@color/red_500"
+                                        app_ms:ms_typeface="Roboto-LightItalic.ttf"
+                                        app_ms:ms_hintColor="@color/card_light_text"
+                                        app_ms:ms_arrowColor="@color/light_blue_600"
+                                        app_ms:ms_arrowSize="16dp"
+                                        app_ms:ms_alignLabels="false"
+                                        app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
+
+                                    <View
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight=".1"/>
+
+
+                                    <fr.ganfra.materialspinner.MaterialSpinner
+                                        android:id="@+id/reg_spin_mother_tt2_status"
+                                        android:layout_width="0dp"
+                                        android:layout_weight=".2"
+                                        android:layout_height="wrap_content"
+                                        android:divider="@null"
+                                        app_ms:ms_multiline="false"
+                                        app_ms:ms_hint="Mother TT2 Status"
+                                        app_ms:ms_enableFloatingLabel="true"
+                                        app_ms:ms_enableErrorLabel="false"
+                                        app_ms:ms_floatingLabelText="Mother TT2 Status"
+                                        app_ms:ms_baseColor="@color/light_blue_600"
+                                        app_ms:ms_highlightColor="@color/light_blue_700"
+                                        app_ms:ms_errorColor="@color/red_500"
+                                        app_ms:ms_typeface="Roboto-LightItalic.ttf"
+                                        app_ms:ms_hintColor="@color/card_light_text"
+                                        app_ms:ms_arrowColor="@color/light_blue_600"
+                                        app_ms:ms_arrowSize="16dp"
+                                        app_ms:ms_alignLabels="false"
+                                        app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
+
+
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:orientation="horizontal"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="16dp">
+
+                                    <com.rengwuxian.materialedittext.MaterialEditText
+                                        android:layout_width="0dp"
+                                        android:layout_weight=".2"
+                                        android:layout_height="wrap_content"
+                                        android:focusable="true"
+                                        android:textSize="14sp"
+                                        android:hint="Phone Number"
+                                        android:textColor="@color/black"
+                                        android:inputType="phone"
+                                        android:id="@+id/reg_phone"
+                                        app:met_floatingLabelText="Phone Number"
+                                        app:met_floatingLabel="normal"
+                                        app:met_floatingLabelTextColor="@color/light_blue_500"/>
+
+                                    <View
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight=".1"/>
+
+                                    <fr.ganfra.materialspinner.MaterialSpinner
+                                        android:id="@+id/reg_spin_pob"
+                                        android:layout_width="0dp"
+                                        android:layout_weight=".2"
+                                        android:layout_height="wrap_content"
+                                        android:divider="@null"
+                                        app_ms:ms_multiline="false"
+                                        app_ms:ms_hint="Place Of Birth"
+                                        app_ms:ms_enableFloatingLabel="true"
+                                        app_ms:ms_enableErrorLabel="false"
+                                        app_ms:ms_floatingLabelText="Place Of Birth"
+                                        app_ms:ms_baseColor="@color/light_blue_600"
+                                        app_ms:ms_highlightColor="@color/light_blue_700"
+                                        app_ms:ms_errorColor="@color/red_500"
+                                        app_ms:ms_typeface="Roboto-LightItalic.ttf"
+                                        app_ms:ms_hintColor="@color/card_light_text"
+                                        app_ms:ms_arrowColor="@color/light_blue_600"
+                                        app_ms:ms_arrowSize="16dp"
+                                        app_ms:ms_alignLabels="false"
+                                        app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
+
+                                    <View
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight=".1"/>
+
+                                    <fr.ganfra.materialspinner.MaterialSpinner
+                                        android:id="@+id/reg_spin_pod"
+                                        android:layout_width="0dp"
+                                        android:layout_weight=".2"
+                                        android:layout_height="wrap_content"
+                                        app_ms:ms_multiline="false"
+                                        app_ms:ms_hint="Village/Domicile"
+                                        app_ms:ms_enableFloatingLabel="true"
+                                        app_ms:ms_enableErrorLabel="false"
+                                        app_ms:ms_floatingLabelText="Village/Domicile"
+                                        app_ms:ms_baseColor="@color/light_blue_600"
+                                        app_ms:ms_highlightColor="@color/light_blue_700"
+                                        app_ms:ms_errorColor="@color/red_500"
+                                        app_ms:ms_typeface="Roboto-LightItalic.ttf"
+                                        app_ms:ms_thickness="0.5dp"
+                                        app_ms:ms_hintColor="@color/card_light_text"
+                                        app_ms:ms_arrowColor="@color/light_blue_600"
+                                        app_ms:ms_arrowSize="16dp"
+                                        app_ms:ms_alignLabels="false"
+                                        app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
+
+                                    <View
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight=".1"/>
+
+                                    <com.rengwuxian.materialedittext.MaterialEditText
+                                        android:layout_width="0dp"
+                                        android:layout_weight=".2"
+                                        android:textSize="14sp"
+                                        android:layout_height="wrap_content"
+                                        android:minLines="3"
+                                        android:focusable="true"
+                                        android:textColor="@color/black"
+                                        android:hint="@string/comments"
+                                        android:id="@+id/reg_notes"
+                                        android:layout_centerVertical="true"
+                                        app:met_floatingLabelText="Coments"
+                                        app:met_floatingLabel="highlight"
+                                        app:met_floatingLabelTextColor="@color/card_title_text"/>
+
+
+                                </LinearLayout>
+
+
+                                <LinearLayout
+                                    android:visibility="gone"
+                                    android:orientation="horizontal"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="16dp">
+
+                                    <fr.ganfra.materialspinner.MaterialSpinner
+                                        android:id="@+id/reg_spin_health_facility"
+                                        android:layout_width="0dp"
+                                        android:layout_weight=".35"
+                                        android:layout_height="wrap_content"
+                                        android:divider="@null"
+                                        app_ms:ms_multiline="false"
+                                        app_ms:ms_hint="Health Facility"
+                                        app_ms:ms_enableFloatingLabel="true"
+                                        app_ms:ms_enableErrorLabel="false"
+                                        app_ms:ms_floatingLabelText="Health Facility"
+                                        app_ms:ms_baseColor="@color/light_blue_600"
+                                        app_ms:ms_highlightColor="@color/light_blue_700"
+                                        app_ms:ms_errorColor="@color/red_500"
+                                        app_ms:ms_typeface="Roboto-LightItalic.ttf"
+                                        app_ms:ms_hintColor="@color/card_light_text"
+                                        app_ms:ms_arrowColor="@color/light_blue_600"
+                                        app_ms:ms_arrowSize="16dp"
+                                        app_ms:ms_alignLabels="false"
+                                        app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
+
+                                    <View
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight=".30"/>
+
+                                    <fr.ganfra.materialspinner.MaterialSpinner
+                                        android:id="@+id/reg_spin_status"
+                                        android:layout_width="0dp"
+                                        android:layout_weight=".35"
+                                        android:layout_height="wrap_content"
+                                        app_ms:ms_multiline="false"
+                                        app_ms:ms_hint="Status"
+                                        app_ms:ms_enableFloatingLabel="true"
+                                        app_ms:ms_enableErrorLabel="false"
+                                        app_ms:ms_floatingLabelText="Status"
+                                        app_ms:ms_baseColor="@color/light_blue_600"
+                                        app_ms:ms_highlightColor="@color/light_blue_700"
+                                        app_ms:ms_errorColor="@color/red_500"
+                                        app_ms:ms_typeface="Roboto-LightItalic.ttf"
+                                        app_ms:ms_thickness="0.5dp"
+                                        app_ms:ms_hintColor="@color/card_light_text"
+                                        app_ms:ms_arrowColor="@color/light_blue_600"
+                                        app_ms:ms_arrowSize="16dp"
+                                        app_ms:ms_alignLabels="false"
+                                        app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:orientation="horizontal"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:minHeight="100dp"
+                                    android:layout_marginTop="32dp">
+
+                                    <Button
+                                        android:layout_width="0dp"
+                                        android:layout_weight=".25"
+                                        android:layout_height="50dp"
+                                        android:id="@+id/reg_submit_btn"
+                                        android:textColor="@color/white"
+                                        android:text="Save"
+                                        android:background="@color/light_blue_600"/>
+
+                                </LinearLayout>
+
+                            </LinearLayout>
 
                         </LinearLayout>
 
-                        <LinearLayout
-                            android:id="@+id/bottom_search_linear"
-                            android:layout_below="@id/top_search_linear"
-                            android:orientation="horizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="32dp"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginRight="166dp">
-
-                            <com.rengwuxian.materialedittext.MaterialEditText
-                                android:layout_width="0dp"
-                                android:layout_weight=".25"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/met_dop_to"
-                                android:hint="DOB To"
-                                android:textSize="14sp"
-                                app:met_floatingLabel="normal"
-                                app:met_floatingLabelTextColor="@color/light_blue_600"
-                                app:met_floatingLabelText="DOB To"
-                                app:met_textColorHint="@color/card_light_text"
-                                app:met_baseColor="#395670"
-                                app:met_iconRight="@drawable/ic_monthly_plan"/>
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_weight="0.1"
-                                android:layout_height="match_parent"/>
-
-                            <com.rengwuxian.materialedittext.MaterialEditText
-                                android:layout_width="0dp"
-                                android:layout_weight=".25"
-                                android:layout_marginLeft="8dp"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/met_mother_fname"
-                                app:met_floatingLabel="normal"
-                                app:met_floatingLabelTextColor="@color/light_blue_600"
-                                app:met_floatingLabelText="Mother First Name"
-                                app:met_textColorHint="@color/card_light_text"
-                                android:textSize="14sp"
-                                app:met_baseColor="#395670"
-                                android:hint="Mother First Name"/>
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_weight="0.1"
-                                android:layout_height="match_parent"/>
-
-                            <com.rengwuxian.materialedittext.MaterialEditText
-                                android:layout_width="0dp"
-                                android:layout_weight=".25"
-                                android:layout_marginLeft="8dp"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/met_mother_sname"
-                                app:met_floatingLabel="normal"
-                                app:met_floatingLabelTextColor="@color/light_blue_600"
-                                app:met_floatingLabelText="Mother Sec Name"
-                                app:met_textColorHint="@color/card_light_text"
-                                app:met_baseColor="#395670"
-                                android:textSize="14sp"
-                                android:hint="Mother Sec Name"/>
-
-                        </LinearLayout>
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Register Child"
-                            android:textStyle="bold"
-                            android:layout_centerVertical="true"
-                            android:id="@+id/register_child_title"/>
-
-                        <View
-                            android:visibility="gone"
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_centerVertical="true"
-                            android:layout_marginLeft="16dp"
-                            android:layout_toRightOf="@id/register_child_title"
-                            android:background="@color/card_separator"
-                            android:id="@+id/search_first_separator"/>
-
-                    </RelativeLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_marginTop="32dp"
-                        android:orientation="vertical"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_height="wrap_content">
-
-                        <LinearLayout
-                            android:orientation="horizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="70dp">
-
-                            <com.rengwuxian.materialedittext.MaterialEditText
-                                android:layout_width="0dp"
-                                android:layout_weight=".2"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/reg_barcode"
-                                android:hint="barcode"
-                                android:textSize="14sp"
-                                app:met_floatingLabelText="Barcode"
-                                app:met_floatingLabel="normal"
-                                android:inputType="number"
-                                android:textColor="@color/black"
-                                app:met_floatingLabelTextColor="@color/light_blue_500"/>
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_weight="0.1"
-                                android:layout_height="match_parent"/>
-
-
-                            <fr.ganfra.materialspinner.MaterialSpinner
-                                android:id="@+id/reg_spin_register_year"
-                                android:layout_width="0dp"
-                                android:layout_weight=".2"
-                                android:layout_height="wrap_content"
-                                android:divider="@null"
-                                app_ms:ms_multiline="false"
-                                app_ms:ms_hint="Register Year"
-                                app_ms:ms_enableFloatingLabel="true"
-                                app_ms:ms_enableErrorLabel="false"
-                                app_ms:ms_floatingLabelText="Register Year"
-                                app_ms:ms_baseColor="@color/light_blue_600"
-                                app_ms:ms_highlightColor="@color/light_blue_700"
-                                app_ms:ms_errorColor="@color/red_500"
-                                app_ms:ms_typeface="Roboto-LightItalic.ttf"
-                                app_ms:ms_hintColor="@color/card_light_text"
-                                app_ms:ms_arrowColor="@color/light_blue_600"
-                                app_ms:ms_arrowSize="16dp"
-                                app_ms:ms_alignLabels="false"
-                                app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_weight="0.1"
-                                android:layout_height="match_parent"/>
-
-                            <com.rengwuxian.materialedittext.MaterialEditText
-                                android:visibility="visible"
-                                android:id="@+id/cummulative_sn"
-                                android:layout_width="0dp"
-                                android:layout_weight=".2"
-                                android:textSize="14sp"
-                                android:layout_height="wrap_content"
-                                app:met_floatingLabelText="Cummulative Serial Number"
-                                app:met_floatingLabel="normal"
-                                android:inputType="number"
-                                android:textColor="@color/black"
-                                app:met_floatingLabelTextColor="@color/light_blue_500"
-                                android:hint="Serial Number"/>
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_weight="0.1"
-                                android:layout_height="match_parent"/>
-
-                            <com.rengwuxian.materialedittext.MaterialEditText
-                                android:layout_width="0dp"
-                                android:layout_weight=".2"
-                                android:layout_height="wrap_content"
-                                android:focusable="true"
-                                android:hint="Date of birth"
-                                android:textColor="@color/black"
-                                android:inputType="date"
-                                android:id="@+id/reg_dob"
-                                android:textSize="14sp"
-                                app:met_iconRight="@drawable/ic_monthly_plan"
-                                app:met_floatingLabelText="Date of birth"
-                                app:met_floatingLabel="normal"
-                                app:met_floatingLabelTextColor="@color/light_blue_500"/>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:orientation="horizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="70dp"
-                            android:layout_marginTop="16dp">
-
-                            <com.rengwuxian.materialedittext.MaterialEditText
-                                android:layout_width="0dp"
-                                android:layout_weight=".2"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/reg_fname"
-                                android:focusable="true"
-                                android:inputType="textCapWords|textPersonName"
-                                android:hint="First Name"
-                                android:textSize="14sp"
-                                android:textColor="@color/black"
-                                app:met_floatingLabelText="First Name"
-                                app:met_floatingLabel="normal"
-                                app:met_floatingLabelTextColor="@color/light_blue_500"/>
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_weight="0.1"
-                                android:layout_height="match_parent"/>
-
-
-                            <com.rengwuxian.materialedittext.MaterialEditText
-                                android:layout_width="0dp"
-                                android:layout_weight=".2"
-                                android:textSize="14sp"
-                                android:layout_height="wrap_content"
-                                android:inputType="textCapWords|textPersonName"
-                                android:id="@+id/reg_mname"
-                                android:focusable="true"
-                                android:textColor="@color/black"
-                                android:hint="Middle Name"
-                                app:met_floatingLabelText="Middle Name"
-                                app:met_floatingLabel="normal"
-                                app:met_floatingLabelTextColor="@color/light_blue_500"/>
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_weight="0.1"
-                                android:layout_height="match_parent"/>
-
-
-                            <com.rengwuxian.materialedittext.MaterialEditText
-                                android:layout_width="0dp"
-                                android:layout_weight="0.2"
-                                android:textSize="14sp"
-                                android:layout_height="wrap_content"
-                                android:focusable="true"
-                                android:hint="surname"
-                                android:textColor="@color/black"
-                                android:inputType="textCapWords|textPersonName"
-                                android:id="@+id/reg_surname"
-                                app:met_floatingLabelText="Surname"
-                                app:met_floatingLabel="normal"
-                                app:met_floatingLabelTextColor="@color/light_blue_500"/>
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_weight="0.1"
-                                android:layout_height="match_parent"/>
-
-                            <fr.ganfra.materialspinner.MaterialSpinner
-                                android:id="@+id/reg_spin_gender"
-                                android:layout_width="0dp"
-                                android:layout_weight=".2"
-                                android:layout_height="wrap_content"
-                                android:divider="@null"
-                                app_ms:ms_multiline="false"
-                                app_ms:ms_hint="Gender"
-                                app_ms:ms_enableFloatingLabel="true"
-                                app_ms:ms_enableErrorLabel="false"
-                                app_ms:ms_floatingLabelText="Gender"
-                                app_ms:ms_baseColor="@color/light_blue_600"
-                                app_ms:ms_highlightColor="@color/light_blue_700"
-                                app_ms:ms_errorColor="@color/red_500"
-                                app_ms:ms_typeface="Roboto-LightItalic.ttf"
-                                app_ms:ms_hintColor="@color/card_light_text"
-                                app_ms:ms_arrowColor="@color/light_blue_600"
-                                app_ms:ms_arrowSize="16dp"
-                                app_ms:ms_alignLabels="false"
-                                app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
-
-
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:orientation="horizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="70dp"
-                            android:layout_marginTop="16dp">
-
-                            <com.rengwuxian.materialedittext.MaterialEditText
-                                android:layout_width="0dp"
-                                android:layout_weight="0.2"
-                                android:layout_height="wrap_content"
-                                android:focusable="true"
-                                android:textSize="14sp"
-                                android:inputType="textCapWords|textPersonName"
-                                android:hint="Mother's First Name"
-                                android:id="@+id/reg_mot_fname"
-                                android:textColor="@color/black"
-                                app:met_floatingLabelText="Mother's First Name"
-                                app:met_floatingLabel="normal"
-                                app:met_floatingLabelTextColor="@color/light_blue_500"/>
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight=".1"/>
-
-                            <com.rengwuxian.materialedittext.MaterialEditText
-                                android:layout_width="0dp"
-                                android:layout_weight=".2"
-                                android:textSize="14sp"
-                                android:layout_height="wrap_content"
-                                android:focusable="true"
-                                android:inputType="textCapWords|textPersonName"
-                                android:hint="Mother's Surname"
-                                android:textColor="@color/black"
-                                android:id="@+id/reg_mot_sname"
-                                app:met_floatingLabelText="Mother's Surname"
-                                app:met_floatingLabel="normal"
-                                app:met_floatingLabelTextColor="@color/light_blue_500"/>
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight=".1"/>
-
-
-                            <fr.ganfra.materialspinner.MaterialSpinner
-                                android:id="@+id/reg_spin_mother_vvu_status"
-                                android:layout_width="0dp"
-                                android:layout_weight=".2"
-                                android:layout_height="wrap_content"
-                                android:divider="@null"
-                                app_ms:ms_multiline="false"
-                                app_ms:ms_hint="Mother VVU Status"
-                                app_ms:ms_enableFloatingLabel="true"
-                                app_ms:ms_enableErrorLabel="false"
-                                app_ms:ms_floatingLabelText="Mother VVU Status"
-                                app_ms:ms_baseColor="@color/light_blue_600"
-                                app_ms:ms_highlightColor="@color/light_blue_700"
-                                app_ms:ms_errorColor="@color/red_500"
-                                app_ms:ms_typeface="Roboto-LightItalic.ttf"
-                                app_ms:ms_hintColor="@color/card_light_text"
-                                app_ms:ms_arrowColor="@color/light_blue_600"
-                                app_ms:ms_arrowSize="16dp"
-                                app_ms:ms_alignLabels="false"
-                                app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight=".1"/>
-
-
-                            <fr.ganfra.materialspinner.MaterialSpinner
-                                android:id="@+id/reg_spin_mother_tt2_status"
-                                android:layout_width="0dp"
-                                android:layout_weight=".2"
-                                android:layout_height="wrap_content"
-                                android:divider="@null"
-                                app_ms:ms_multiline="false"
-                                app_ms:ms_hint="Mother TT2 Status"
-                                app_ms:ms_enableFloatingLabel="true"
-                                app_ms:ms_enableErrorLabel="false"
-                                app_ms:ms_floatingLabelText="Mother TT2 Status"
-                                app_ms:ms_baseColor="@color/light_blue_600"
-                                app_ms:ms_highlightColor="@color/light_blue_700"
-                                app_ms:ms_errorColor="@color/red_500"
-                                app_ms:ms_typeface="Roboto-LightItalic.ttf"
-                                app_ms:ms_hintColor="@color/card_light_text"
-                                app_ms:ms_arrowColor="@color/light_blue_600"
-                                app_ms:ms_arrowSize="16dp"
-                                app_ms:ms_alignLabels="false"
-                                app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
-
-
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:orientation="horizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp">
-
-                            <com.rengwuxian.materialedittext.MaterialEditText
-                                android:layout_width="0dp"
-                                android:layout_weight=".2"
-                                android:layout_height="wrap_content"
-                                android:focusable="true"
-                                android:textSize="14sp"
-                                android:hint="Phone Number"
-                                android:textColor="@color/black"
-                                android:inputType="phone"
-                                android:id="@+id/reg_phone"
-                                app:met_floatingLabelText="Phone Number"
-                                app:met_floatingLabel="normal"
-                                app:met_floatingLabelTextColor="@color/light_blue_500"/>
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight=".1"/>
-
-                            <fr.ganfra.materialspinner.MaterialSpinner
-                                android:id="@+id/reg_spin_pob"
-                                android:layout_width="0dp"
-                                android:layout_weight=".2"
-                                android:layout_height="wrap_content"
-                                android:divider="@null"
-                                app_ms:ms_multiline="false"
-                                app_ms:ms_hint="Place Of Birth"
-                                app_ms:ms_enableFloatingLabel="true"
-                                app_ms:ms_enableErrorLabel="false"
-                                app_ms:ms_floatingLabelText="Place Of Birth"
-                                app_ms:ms_baseColor="@color/light_blue_600"
-                                app_ms:ms_highlightColor="@color/light_blue_700"
-                                app_ms:ms_errorColor="@color/red_500"
-                                app_ms:ms_typeface="Roboto-LightItalic.ttf"
-                                app_ms:ms_hintColor="@color/card_light_text"
-                                app_ms:ms_arrowColor="@color/light_blue_600"
-                                app_ms:ms_arrowSize="16dp"
-                                app_ms:ms_alignLabels="false"
-                                app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight=".1"/>
-
-                            <fr.ganfra.materialspinner.MaterialSpinner
-                                android:id="@+id/reg_spin_pod"
-                                android:layout_width="0dp"
-                                android:layout_weight=".2"
-                                android:layout_height="wrap_content"
-                                app_ms:ms_multiline="false"
-                                app_ms:ms_hint="Village/Domicile"
-                                app_ms:ms_enableFloatingLabel="true"
-                                app_ms:ms_enableErrorLabel="false"
-                                app_ms:ms_floatingLabelText="Village/Domicile"
-                                app_ms:ms_baseColor="@color/light_blue_600"
-                                app_ms:ms_highlightColor="@color/light_blue_700"
-                                app_ms:ms_errorColor="@color/red_500"
-                                app_ms:ms_typeface="Roboto-LightItalic.ttf"
-                                app_ms:ms_thickness="0.5dp"
-                                app_ms:ms_hintColor="@color/card_light_text"
-                                app_ms:ms_arrowColor="@color/light_blue_600"
-                                app_ms:ms_arrowSize="16dp"
-                                app_ms:ms_alignLabels="false"
-                                app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight=".1"/>
-
-                            <com.rengwuxian.materialedittext.MaterialEditText
-                                android:layout_width="0dp"
-                                android:layout_weight=".2"
-                                android:textSize="14sp"
-                                android:layout_height="wrap_content"
-                                android:minLines="3"
-                                android:focusable="true"
-                                android:textColor="@color/black"
-                                android:hint="@string/comments"
-                                android:id="@+id/reg_notes"
-                                android:layout_centerVertical="true"
-                                app:met_floatingLabelText="Coments"
-                                app:met_floatingLabel="highlight"
-                                app:met_floatingLabelTextColor="@color/card_title_text"/>
-
-
-                        </LinearLayout>
-
-
-                        <LinearLayout
-                            android:visibility="gone"
-                            android:orientation="horizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp">
-
-                            <fr.ganfra.materialspinner.MaterialSpinner
-                                android:id="@+id/reg_spin_health_facility"
-                                android:layout_width="0dp"
-                                android:layout_weight=".35"
-                                android:layout_height="wrap_content"
-                                android:divider="@null"
-                                app_ms:ms_multiline="false"
-                                app_ms:ms_hint="Health Facility"
-                                app_ms:ms_enableFloatingLabel="true"
-                                app_ms:ms_enableErrorLabel="false"
-                                app_ms:ms_floatingLabelText="Health Facility"
-                                app_ms:ms_baseColor="@color/light_blue_600"
-                                app_ms:ms_highlightColor="@color/light_blue_700"
-                                app_ms:ms_errorColor="@color/red_500"
-                                app_ms:ms_typeface="Roboto-LightItalic.ttf"
-                                app_ms:ms_hintColor="@color/card_light_text"
-                                app_ms:ms_arrowColor="@color/light_blue_600"
-                                app_ms:ms_arrowSize="16dp"
-                                app_ms:ms_alignLabels="false"
-                                app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight=".30"/>
-
-                            <fr.ganfra.materialspinner.MaterialSpinner
-                                android:id="@+id/reg_spin_status"
-                                android:layout_width="0dp"
-                                android:layout_weight=".35"
-                                android:layout_height="wrap_content"
-                                app_ms:ms_multiline="false"
-                                app_ms:ms_hint="Status"
-                                app_ms:ms_enableFloatingLabel="true"
-                                app_ms:ms_enableErrorLabel="false"
-                                app_ms:ms_floatingLabelText="Status"
-                                app_ms:ms_baseColor="@color/light_blue_600"
-                                app_ms:ms_highlightColor="@color/light_blue_700"
-                                app_ms:ms_errorColor="@color/red_500"
-                                app_ms:ms_typeface="Roboto-LightItalic.ttf"
-                                app_ms:ms_thickness="0.5dp"
-                                app_ms:ms_hintColor="@color/card_light_text"
-                                app_ms:ms_arrowColor="@color/light_blue_600"
-                                app_ms:ms_arrowSize="16dp"
-                                app_ms:ms_alignLabels="false"
-                                app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:orientation="horizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:minHeight="100dp"
-                            android:layout_marginTop="32dp">
-
-                            <Button
-                                android:layout_width="0dp"
-                                android:layout_weight=".25"
-                                android:layout_height="50dp"
-                                android:id="@+id/reg_submit_btn"
-                                android:textColor="@color/white"
-                                android:text="Save"
-                                android:background="@color/light_blue_600"/>
-
-                        </LinearLayout>
-
-                    </LinearLayout>
+                    </android.support.v7.widget.CardView>
 
                 </LinearLayout>
 

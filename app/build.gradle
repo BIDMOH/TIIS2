@@ -63,7 +63,10 @@ dependencies {
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     compile 'io.realm:realm-android:0.87.5'
     compile 'com.hannesdorfmann.smoothprogressbar:library:1.0.0'
+    compile 'com.github.aakira:expandable-layout:1.5.1@aar'
     compile files('libs/jackson-databind-2.7.1-1.jar')
     compile files('libs/jackson-annotations-2.7.0.jar')
     compile files('libs/jackson-core-2.7.1.jar')
+
+    compile 'com.wang.avi:library:2.1.2'
 }

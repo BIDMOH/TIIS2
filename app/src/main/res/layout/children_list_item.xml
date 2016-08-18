@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:gravity="center_vertical"
-        android:background="@color/white">
+        android:background="#e5e5e5">
 
         <TextView
             android:paddingLeft="16dp"
@@ -18,6 +18,7 @@
             android:layout_weight=".08"
             android:layout_height="wrap_content"
             android:id="@+id/sn_number"
+            android:textStyle="italic"
             android:textColor="@color/black"
             android:text="SN"/>
 
@@ -26,30 +27,38 @@
             android:layout_width="0dp"
             android:layout_weight=".18"
             android:layout_height="wrap_content"
-            android:id="@+id/txt_child_names"
+            android:textStyle="italic"
+            android:id="@+id/reg_search_txt_child_names"
+            android:textColor="@color/black"
             android:text="Joan Richard"/>
 
         <TextView
             android:paddingLeft="16dp"
             android:layout_width="0dp"
             android:layout_weight=".18"
+            android:textStyle="italic"
             android:layout_height="wrap_content"
             android:id="@+id/txt_mother_names"
+            android:textColor="@color/black"
             android:text="Rosemary Onesmo"/>
 
         <TextView
             android:paddingLeft="16dp"
             android:layout_width="0dp"
             android:layout_weight=".14"
+            android:textStyle="italic"
             android:layout_height="wrap_content"
             android:id="@+id/txt_child_dob"
+            android:textColor="@color/black"
             android:text="21-Jun-2015"/>
 
         <TextView
             android:paddingLeft="16dp"
             android:layout_width="0dp"
             android:layout_weight=".11"
+            android:textStyle="italic"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:id="@+id/txt_child_gender"
             android:text="M"/>
 
@@ -57,16 +66,20 @@
             android:paddingLeft="16dp"
             android:layout_width="0dp"
             android:layout_weight=".12"
+            android:textStyle="italic"
             android:layout_height="wrap_content"
             android:id="@+id/txt_child_village_domicile"
+            android:textColor="@color/black"
             android:text="N/A"/>
 
         <TextView
             android:paddingLeft="16dp"
             android:layout_width="0dp"
             android:layout_weight=".16"
+            android:textStyle="italic"
             android:layout_height="wrap_content"
             android:id="@+id/txt_child_health_facility"
+            android:textColor="@color/black"
             android:text=""/>
 
     </LinearLayout>

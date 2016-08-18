@@ -100,7 +100,7 @@ import mobile.tiis.app.fragments.SearchChildFragment;
         final Child item = items.get(position);
         if (rowView == null) {
             LayoutInflater li = (LayoutInflater) ctx.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            rowView = li.inflate(R.layout.children_list_item, null);
+            rowView = li.inflate(R.layout.search_screen_children_list_item, null);
 
             viewHolder = new ViewHolder();
             viewHolder.tvName = (TextView) rowView.findViewById(R.id.txt_child_names);

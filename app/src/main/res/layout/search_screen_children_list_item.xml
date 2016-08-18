@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:gravity="center_vertical"
+        android:background="#e5e5e5">
+
+        <TextView
+            android:paddingLeft="16dp"
+            android:layout_width="0dp"
+            android:layout_weight=".08"
+            android:layout_height="wrap_content"
+            android:id="@+id/sn_number"
+            android:textColor="@color/black"
+            android:text="SN"/>
+
+        <TextView
+            android:paddingLeft="16dp"
+            android:layout_width="0dp"
+            android:layout_weight=".18"
+            android:layout_height="wrap_content"
+            android:textStyle="italic"
+            android:id="@+id/txt_child_names"
+            android:textColor="@color/black"
+            android:text="Joan Richard"/>
+
+        <TextView
+            android:paddingLeft="16dp"
+            android:layout_width="0dp"
+            android:layout_weight=".18"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_mother_names"
+            android:textColor="@color/black"
+            android:text="Rosemary Onesmo"/>
+
+        <TextView
+            android:paddingLeft="16dp"
+            android:layout_width="0dp"
+            android:layout_weight=".14"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_child_dob"
+            android:textColor="@color/black"
+            android:text="21-Jun-2015"/>
+
+        <TextView
+            android:paddingLeft="16dp"
+            android:layout_width="0dp"
+            android:layout_weight=".11"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:id="@+id/txt_child_gender"
+            android:text="M"/>
+
+        <TextView
+            android:paddingLeft="16dp"
+            android:layout_width="0dp"
+            android:layout_weight=".12"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_child_village_domicile"
+            android:textColor="@color/black"
+            android:text="N/A"/>
+
+        <TextView
+            android:paddingLeft="16dp"
+            android:layout_width="0dp"
+            android:layout_weight=".16"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_child_health_facility"
+            android:textColor="@color/black"
+            android:text=""/>
+
+    </LinearLayout>
+
+</RelativeLayout>
