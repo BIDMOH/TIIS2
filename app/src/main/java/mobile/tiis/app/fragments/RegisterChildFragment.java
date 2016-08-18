@@ -773,20 +773,6 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 //            return false;
 //        }
 
-        if(checkIfTheEditTextContainsSpaces(etFirstName)){
-            return false;
-        }
-
-        if(checkIfTheEditTextContainsSpaces(etSurname)){
-            return false;
-        }
-
-
-        if(checkIfTheEditTextContainsSpaces(etFirstname2)){
-            return false;
-        }
-
-
         if (etMotherFirstName.getText().toString().isEmpty()) {
             etMotherFirstName.setError(getString(R.string.empty_mother_names));
             etMotherFirstName.setErrorColor(Color.RED);
@@ -812,16 +798,6 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
             errorText.setError("");
             errorText.setTextColor(Color.RED);//just to highlight that this is an error
             errorText.setText(getString(R.string.empty_mother_vvu));//changes the selected item text to this
-            return false;
-        }
-
-
-        if(checkIfTheEditTextContainsSpaces(etMotherFirstName)){
-            return false;
-        }
-
-
-        if(checkIfTheEditTextContainsSpaces(etMotherSurname)){
             return false;
         }
 
@@ -893,25 +869,25 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
         if (!etbarcode.getText().toString().equalsIgnoreCase("")) {
 
-            contentValues.put(SQLHandler.ChildColumns.BARCODE_ID, etbarcode.getText().toString());
+            contentValues.put(SQLHandler.ChildColumns.BARCODE_ID, removeWhiteSpaces(etbarcode.getText().toString()));
         }
 
 
-        contentValues.put(SQLHandler.ChildColumns.FIRSTNAME1, etFirstName.getText().toString());
-        contentValues.put(SQLHandler.ChildColumns.FIRSTNAME2, etFirstname2.getText().toString());
+        contentValues.put(SQLHandler.ChildColumns.FIRSTNAME1, removeWhiteSpaces(etFirstName.getText().toString()));
+        contentValues.put(SQLHandler.ChildColumns.FIRSTNAME2, removeWhiteSpaces(etFirstname2.getText().toString()));
 
 
         if (!etSurname.getText().toString().equalsIgnoreCase("")) {
-            contentValues.put(SQLHandler.ChildColumns.LASTNAME1, etSurname.getText().toString());
+            contentValues.put(SQLHandler.ChildColumns.LASTNAME1, removeWhiteSpaces(etSurname.getText().toString()));
         }
         if (bdate != null && bdate.compareTo(new Date()) < 0) {
             contentValues.put(SQLHandler.ChildColumns.BIRTHDATE, BackboneActivity.stringToDateParser(bdate));
         }
         if (!etMotherFirstName.getText().toString().equalsIgnoreCase("")) {
-            contentValues.put(SQLHandler.ChildColumns.MOTHER_FIRSTNAME, etMotherFirstName.getText().toString());
+            contentValues.put(SQLHandler.ChildColumns.MOTHER_FIRSTNAME, removeWhiteSpaces(etMotherFirstName.getText().toString()));
         }
         if (!etMotherSurname.getText().toString().equalsIgnoreCase("")) {
-            contentValues.put(SQLHandler.ChildColumns.MOTHER_LASTNAME, etMotherSurname.getText().toString());
+            contentValues.put(SQLHandler.ChildColumns.MOTHER_LASTNAME, removeWhiteSpaces(etMotherSurname.getText().toString()));
         }
 
 
@@ -943,10 +919,10 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         }
 
         contentValues.put("modfied_at", "/Date(" + Calendar.getInstance().getTime().getTime() + "-0500)/");
-        contentValues.put(SQLHandler.ChildColumns.PHONE, etPhone.getText().toString());
-        contentValues.put(SQLHandler.ChildColumns.NOTES, etNotes.getText().toString());
-        contentValues.put(SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER, etChildCumulativeSn.getText().toString());
-        contentValues.put(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR, childRegistryYear);
+        contentValues.put(SQLHandler.ChildColumns.PHONE, removeWhiteSpaces(etPhone.getText().toString()));
+        contentValues.put(SQLHandler.ChildColumns.NOTES, removeWhiteSpaces(etNotes.getText().toString()));
+        contentValues.put(SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER, removeWhiteSpaces(etChildCumulativeSn.getText().toString()));
+        contentValues.put(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR, removeWhiteSpaces(childRegistryYear));
         contentValues.put("updated", 1);
         contentValues.put("owners_username", "");
         contentValues.put("STATUS_ID", "");
@@ -975,25 +951,26 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
                 Calendar modifiedOn =Calendar.getInstance();
                 try {
-                    registerChildWithoutAppointments(etbarcode.getText().toString(),
-                            etFirstName.getText().toString(),
-                            etSurname.getText().toString(),
+                    registerChildWithoutAppointments(removeWhiteSpaces(etbarcode.getText().toString()),
+                            removeWhiteSpaces(etFirstName.getText().toString()),
+                            removeWhiteSpaces(etSurname.getText().toString()),
                             bdate,
                             genderChildWithoutApp,
                             app.getLOGGED_IN_USER_HF_ID(),
                             birthplaceList.get(placeOfBirthSpinner.getSelectedItemPosition() - 1).getId(),
                             placeList.get(placeOfDomicileSpinner.getSelectedItemPosition() - 1).getId(),
                             "",
-                            etPhone.getText().toString(),
-                            etMotherFirstName.getText().toString(),
-                            etMotherSurname.getText().toString(),
-                            etNotes.getText().toString(),
+                            removeWhiteSpaces(etPhone.getText().toString()),
+                            removeWhiteSpaces(etMotherFirstName.getText().toString()),
+                            removeWhiteSpaces(etMotherSurname.getText().toString()),
+                            removeWhiteSpaces(etNotes.getText().toString()),
                             app.getLOGGED_IN_USER_ID(),
                             modifiedOn.getTime(),
-                            uuid,etFirstname2.getText().toString(),
+                            uuid,
+                            removeWhiteSpaces(etFirstname2.getText().toString()),
                             motherVVU.get(motherVVUStatusSpinner.getSelectedItemPosition() - 1),
                             motherTT2.get(motherTT2StatusSpinner.getSelectedItemPosition() - 1),
-                            etChildCumulativeSn.getText().toString(),
+                            removeWhiteSpaces(etChildCumulativeSn.getText().toString()),
                             childRegistryYear);
                 }catch(Exception exception){
                     exception.printStackTrace();
@@ -1074,13 +1051,10 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         }.setData(lastname, bdate, gender).start();
     }
 
-    private boolean checkIfTheEditTextContainsSpaces(MaterialEditText editText){
-        if(editText.getText().toString().contains(" ")){
-            editText.setError(app.getString(R.string.name_contains_spaces));
-            return true;
-        }else{
-            return false;
-        }
+    private String removeWhiteSpaces(String withWhiteSpace){
+        String withoutWhiteSpace;
+        withoutWhiteSpace = withWhiteSpace.replaceAll("\\s+", "");
+        return withoutWhiteSpace;
     }
 
     private synchronized void registerChildWithoutAppointments(String barcode, String fristname, String lastname, Date bDate, String gender, String  hfid, String birthPlaceId, String domId,
