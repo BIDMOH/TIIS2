@@ -531,7 +531,7 @@ public class SearchChildFragment extends RxFragment implements DatePickerDialog.
                 return Observable.just(num);
             }
         })// Run on a background thread
-                .subscribeOn(AndroidSchedulers.from(backgroundLooper))
+                .subscribeOn(AndroidSchedulers.from(backgroundLooper)).compose(this.<String>bindToLifecycle())
                 // Be notified on the main thread
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<String>() {

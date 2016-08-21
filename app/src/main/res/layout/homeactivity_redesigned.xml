@@ -59,15 +59,7 @@
                     android:scaleType="fitXY"
                     android:src="@drawable/network_off" />
 
-                <ImageView
-                    android:id="@+id/postman_badge_icon"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_toLeftOf="@id/home_wifi_icon"
-                    android:layout_marginRight="8dp"
-                    android:layout_centerVertical="true"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/badge" />
+
 
             </RelativeLayout>
 

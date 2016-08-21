@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.trello.rxlifecycle.components.support.RxFragment;
 
 import java.util.ArrayList;
 
@@ -35,7 +36,7 @@ import rx.functions.Func0;
 /**
  * Created by issymac on 26/01/16.
  */
-public class ChildImmCardPagerFragment extends Fragment {
+public class ChildImmCardPagerFragment extends RxFragment {
     private static final String TAG = ChildImmCardPagerFragment.class.getSimpleName();
 
     private BackboneApplication app;
@@ -134,7 +135,7 @@ public class ChildImmCardPagerFragment extends Fragment {
         })// Run on a background thread
                 .subscribeOn(AndroidSchedulers.from(backgroundLooper))
                 // Be notified on the main thread
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread()).compose(this.<Boolean>bindToLifecycle())
                 .subscribe(new Subscriber<Boolean>() {
                     @Override
                     public void onCompleted() {

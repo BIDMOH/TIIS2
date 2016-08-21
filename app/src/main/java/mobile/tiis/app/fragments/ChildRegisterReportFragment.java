@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.trello.rxlifecycle.components.support.RxFragment;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.text.SimpleDateFormat;
@@ -49,7 +50,7 @@ import rx.functions.Func0;
 /**
  * Created by issy on 7/7/16.
  */
-public class ChildRegisterReportFragment extends android.support.v4.app.Fragment{
+public class ChildRegisterReportFragment extends RxFragment{
     private static final String TAG = ChildRegisterReportFragment.class.getSimpleName();
     //Table Layout to be used to loop the list of the children information in
     private TableLayout childRegisterTable;
@@ -482,7 +483,7 @@ public class ChildRegisterReportFragment extends android.support.v4.app.Fragment
         })// Run on a background thread
                 .subscribeOn(AndroidSchedulers.from(backgroundLooper))
                 // Be notified on the main thread
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread()).compose(this.<ArrayList<ViewChildRegisterInfoRow>>bindToLifecycle())
                 .subscribe(new Subscriber<ArrayList<ViewChildRegisterInfoRow>>() {
                     @Override
                     public void onCompleted() {

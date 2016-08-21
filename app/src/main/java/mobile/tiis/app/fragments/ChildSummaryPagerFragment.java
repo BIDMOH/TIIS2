@@ -383,12 +383,12 @@ public class ChildSummaryPagerFragment extends RxFragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                editButton.setVisibility(View.VISIBLE);
-                saveButton.setVisibility(View.GONE);
                 if (checkDataIntegrityBeforeSave()) {
                     if (!localBarcode.equals(metBarcodeValue.getText().toString()) && !localBarcode.equals("")) {
                         showAlertThatChildHadABarcode();
                     } else {
+                        editButton.setVisibility(View.VISIBLE);
+                        saveButton.setVisibility(View.GONE);
                         saveChangedData();
                         enableUserInputs(false);
                         ChildDetailsActivity.changeTitle(metFirstName.getText().toString()+" "+metMiddleName.getText().toString()+" "+metLastName.getText().toString());
@@ -443,6 +443,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
                 .subscribeOn(AndroidSchedulers.from(backgroundLooper))
                 // Be notified on the main thread
                 .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<Boolean>bindToLifecycle())
                 .subscribe(new Subscriber<Boolean>() {
                     @Override
                     public void onCompleted() {

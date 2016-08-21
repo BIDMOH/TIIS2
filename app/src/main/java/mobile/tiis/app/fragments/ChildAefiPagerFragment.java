@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.trello.rxlifecycle.components.support.RxFragment;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.io.UnsupportedEncodingException;
@@ -51,7 +52,7 @@ import rx.functions.Func0;
 /**
  * Created by issymac on 26/01/16.
  */
-public class ChildAefiPagerFragment extends Fragment  implements DatePickerDialog.OnDateSetListener{
+public class ChildAefiPagerFragment extends RxFragment implements DatePickerDialog.OnDateSetListener{
 
     private static final String TAG = ChildAefiPagerFragment.class.getSimpleName();
     private DatabaseHandler mydb;
@@ -275,6 +276,7 @@ public class ChildAefiPagerFragment extends Fragment  implements DatePickerDialo
                 .subscribeOn(AndroidSchedulers.from(backgroundLooper))
                 // Be notified on the main thread
                 .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<Boolean>bindToLifecycle())
                 .subscribe(new Subscriber<Boolean>() {
                     @Override
                     public void onCompleted() {

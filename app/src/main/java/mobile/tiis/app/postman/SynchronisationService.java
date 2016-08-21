@@ -19,6 +19,7 @@
 package mobile.tiis.app.postman;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.util.Base64;
 import android.util.Log;
@@ -33,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import mobile.tiis.app.GCMCommunication.CommonUtilities;
 import mobile.tiis.app.base.BackboneApplication;
 import mobile.tiis.app.database.DatabaseHandler;
 import mobile.tiis.app.helpers.Utils;
@@ -44,6 +46,8 @@ import mobile.tiis.app.helpers.Utils;
  */
 public class SynchronisationService extends IntentService {
 
+
+    public static final String SynchronisationService_MESSAGE = "mobile.giis.app.SynchronisationService.MSG";
     private static final String TAG = "SynchronisationService";
 
     public SynchronisationService() {
@@ -58,8 +62,14 @@ public class SynchronisationService extends IntentService {
         synchronized (app) {
             DatabaseHandler db = app.getDatabaseInstance();
             List<PostmanModel> listPosts = db.getAllPosts();
+            try {
+                sendResult(listPosts.size() + "", getApplicationContext());
+            }catch (Exception e){
+                sendResult("0", getApplicationContext());
+            }
             if (listPosts != null && app.getLOGGED_IN_USER_PASS() != null && app.getLOGGED_IN_USERNAME() != null) {
                 for (PostmanModel p : listPosts) {
+                    sendResult(db.getAllPosts().size()+"",getApplicationContext());
                     Log.d("POSTMAN PROCESSING","url = "+p.getUrl());
                     if(p.getUrl() == null || p.getUrl().trim().equals(""))continue;
                     try {
@@ -124,5 +134,17 @@ public class SynchronisationService extends IntentService {
         }
 
         this.stopSelf();
+    }
+
+    public void sendResult(String message,Context context) {
+        Log.d(TAG,"sending ppostman count "+message);
+        try {
+            Intent intent = new Intent(CommonUtilities.DISPLAY_POSTMAN_COUNT_ACTION);
+            if (message != null)
+                intent.putExtra(SynchronisationService_MESSAGE, message);
+            context.sendBroadcast(intent);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

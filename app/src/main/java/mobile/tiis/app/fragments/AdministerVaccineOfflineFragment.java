@@ -21,6 +21,8 @@ import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import com.trello.rxlifecycle.components.support.RxFragment;
+
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -47,7 +49,7 @@ import rx.functions.Func0;
 /**
  * Created by issymac on 14/03/16.
  */
-public class AdministerVaccineOfflineFragment extends Fragment {
+public class AdministerVaccineOfflineFragment extends RxFragment {
     private static final String TAG = AdministerVaccineOfflineFragment.class.getSimpleName();
     String barcode;
 
@@ -368,7 +370,7 @@ public class AdministerVaccineOfflineFragment extends Fragment {
                         }
                     }).subscribeOn(AndroidSchedulers.from(backgroundLooper))
                     // Be notified on the main thread
-                    .observeOn(AndroidSchedulers.mainThread())
+                    .observeOn(AndroidSchedulers.mainThread()).compose(this.<Boolean>bindToLifecycle())
                     .subscribe(new Subscriber<Boolean>() {
                     @Override
                     public void onCompleted() {

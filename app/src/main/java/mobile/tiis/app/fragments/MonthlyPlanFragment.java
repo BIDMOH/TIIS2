@@ -329,11 +329,11 @@ public class MonthlyPlanFragment extends RxFragment {
 
                             @Override
                             protected void onPostExecute(ArrayList<FragmentVaccineNameQuantity.VacineNameQuantity> mList) {
+                                progressBarLayout.setVisibility(View.GONE);
+                                listAndTitleWrapper.setVisibility(View.VISIBLE);
                                 Context ctx = getActivity().getApplicationContext();
                                 AdapterVaccineNameQuantity adapter = new AdapterVaccineNameQuantity(ctx, R.layout.item_vaccine_name_quantity, mList);
                                 lvNameQuantity.setAdapter(adapter);
-                                progressBarLayout.setVisibility(View.GONE);
-                                listAndTitleWrapper.setVisibility(View.VISIBLE);
                             }
                         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 

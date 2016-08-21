@@ -243,6 +243,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         }).subscribeOn(AndroidSchedulers.from(backgroundLooper))
         // Be notified on the main thread
         .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<Boolean>bindToLifecycle())
         .subscribe(new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
@@ -808,7 +809,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
             }
             }).subscribeOn(AndroidSchedulers.from(backgroundLooper))
                 // Be notified on the main thread
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread()).compose(this.<Boolean>bindToLifecycle())
                 .subscribe(new Subscriber<Boolean>() {
         @Override
         public void onCompleted() {

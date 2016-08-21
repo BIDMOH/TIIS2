@@ -3,10 +3,12 @@ package mobile.tiis.app.SubClassed;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.trello.rxlifecycle.components.support.RxFragment;
+
 /**
  * Created by issymac on 04/03/16.
  */
-public abstract class BackHandledFragment extends Fragment {
+public abstract class BackHandledFragment extends RxFragment {
     protected BackHandlerInterface backHandlerInterface;
     public abstract String getTagText();
     public abstract boolean onBackPressed();

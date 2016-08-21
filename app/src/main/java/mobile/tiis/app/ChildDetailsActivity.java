@@ -217,6 +217,7 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
                         .subscribeOn(AndroidSchedulers.from(backgroundLooper))
                         // Be notified on the main thread
                         .observeOn(AndroidSchedulers.mainThread())
+                        .compose(this.<Boolean>bindToLifecycle())
                         .subscribe(new Subscriber<Boolean>() {
                             @Override
                             public void onCompleted() {
