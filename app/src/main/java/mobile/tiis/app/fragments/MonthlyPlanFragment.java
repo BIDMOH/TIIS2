@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
@@ -27,7 +28,10 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.trello.rxlifecycle.components.support.RxFragment;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,13 +49,19 @@ import mobile.tiis.app.base.BackboneApplication;
 import mobile.tiis.app.database.DatabaseHandler;
 import mobile.tiis.app.database.GIISContract;
 import mobile.tiis.app.database.SQLHandler;
+import mobile.tiis.app.util.BackgroundThread;
 import mobile.tiis.app.util.ViewAppointmentRow;
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func0;
 
 /**
  * Created by issymac on 16/12/15.
  */
-public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
-
+public class MonthlyPlanFragment extends RxFragment {
+    private static final String TAG = MonthlyPlanFragment.class.getSimpleName();
     private List<String> ages;
 
     private NestedListView lvMonthlyPlanList;
@@ -106,9 +116,20 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
     private RelativeLayout progressBarLayout;
     private LinearLayout listAndTitleWrapper;
 
+    private boolean blockPrevious = false;
+    private boolean blockNext = false;
+    private Looper backgroundLooper;
+
+    private Subscription subscription;
+
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_monthly_plan, null);
         setUpView(root);
+
+        BackgroundThread backgroundThread = new BackgroundThread();
+        backgroundThread.start();
+        backgroundLooper = backgroundThread.getLooper();
+
 
         this.inflater = inflater;
 
@@ -134,7 +155,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
                 int count = Integer.parseInt(currentCount);
                 count = count + 10;
                 currentCount = count + "";
-                new filterList().execute(currentCategory, currentCount, fromDateString, toDateString);
+                filterList(currentCategory, currentCount, fromDateString, toDateString);
             }
         });
 
@@ -144,7 +165,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
                 int count = Integer.parseInt(currentCount);
                 count = count - 10;
                 currentCount = count + "";
-                new filterList().execute(currentCategory, currentCount, fromDateString, toDateString);
+                filterList(currentCategory, currentCount, fromDateString, toDateString);
             }
         });
 
@@ -170,7 +191,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
                             editTextUsedToRequestFocus.requestFocus();
 
                             if (!fromDateString.equals("")) {
-                                new filterList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentCategory, "0", fromDateString, toDateString);
+                                filterList(currentCategory, "0", fromDateString, toDateString);
                             } else {
                                 final Snackbar snackbar = Snackbar.make(root, "Please select a start date to view the chart", Snackbar.LENGTH_LONG);
                                 snackbar.setAction("OK", new View.OnClickListener() {
@@ -206,7 +227,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
                             editTextUsedToRequestFocus.requestFocus();
 
                             if (!toDateString.equals("")) {
-                                new filterList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentCategory, "0", fromDateString, toDateString);
+                                filterList(currentCategory, "0", fromDateString, toDateString);
                             } else {
                                 final Snackbar snackbar = Snackbar.make(root, "Please select an end date to view the report", Snackbar.LENGTH_LONG);
                                 snackbar.setAction("OK", new View.OnClickListener() {
@@ -254,14 +275,11 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
                     currentCategory = selectedAgeDefinition;
 //                    populatePageIndicatorContainer(getNumPages(selectedAgeDefinition));
 //                    compileVaccinationQueueTable(selectedAgeDefinition, selectedPage);
-                    new filterList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentCategory, "0", fromDateString, toDateString);
+                    filterList(currentCategory, "0", fromDateString, toDateString);
                 } else {
                     selectedAgeDefinition = "";
                     currentCategory = selectedAgeDefinition;
-                    new filterList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentCategory, "0", fromDateString, toDateString);
-//                    populatePageIndicatorContainer(getNumPages(selectedAgeDefinition));
-//                    compileVaccinationQueueTable(selectedAgeDefinition, selectedPage);
-//                    new filterList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentCategory, "0", fromDateString, toDateString);
+                    filterList(currentCategory, "0", fromDateString, toDateString);
                 }
 
             }
@@ -330,8 +348,7 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
                 }
             }
         });
-
-        new filterList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentCategory, "0");
+        filterList(currentCategory, "0", "", "");
 
         return root;
     }
@@ -394,150 +411,144 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
         }
     }
 
-    public class filterList extends AsyncTask<String, Void, Integer> {
 
-        ArrayList<ViewAppointmentRow> mVar;
-        boolean blockPrevious = false;
-        boolean blockNext = false;
-        @Override
-        protected void onPreExecute() {
-            loadingBar.setVisibility(View.VISIBLE);
-            lvMonthlyPlanList.setVisibility(View.GONE);
-        }
+    private void filterList(final String ageName,final String currentC,final String fromDate,final String toDate){
 
-        @Override
-        protected Integer doInBackground(String... params) {
-            String ageName = params[0];
-            String startRow = params[1];
-            currentCount = params[1];
+        loadingBar.setVisibility(View.VISIBLE);
+        lvMonthlyPlanList.setVisibility(View.GONE);
 
-            long t = Calendar.getInstance().getTimeInMillis()/1000;
-            long t1 = (t + (30 * 24 * 60 * 60));
-            long t2 = (t - (30 * 24 * 60 * 60));
-            String to_date =  t1+ "";
-            String from_date = t2+ "";
+        subscription = Observable.defer(new Func0<Observable<ArrayList<ViewAppointmentRow>>>() {
+            @Override
+            public Observable<ArrayList<ViewAppointmentRow>> call() {
+                // Do some long running operation
 
-            try {
-                if (!params[2].equals("") && !params[3].equals("")) {
-                    from_date = (Long.parseLong(params[2])-(24*60*60))+"";
-                    Log.d("day13", "from picker : "+from_date);
-                    to_date = params[3];
+                if(!currentC.equals(""))
+                    currentCount = currentC;
+
+                long t = Calendar.getInstance().getTimeInMillis()/1000;
+                long t1 = (t + (30 * 24 * 60 * 60));
+                long t2 = (t - (30 * 24 * 60 * 60));
+                String to_date =  t1+ "";
+                String from_date = t2+ "";
+
+                try {
+                    if (!fromDate.equals("") && !toDate.equals("")) {
+                        from_date = (Long.parseLong(fromDate)-(24*60*60))+"";
+                        Log.d("day13", "from picker : "+from_date);
+                        to_date = toDate;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
-            Cursor cursor;
-            mVar = new ArrayList<>();
+                Cursor cursor;
+                ArrayList<ViewAppointmentRow> mVar = new ArrayList<>();
 
-            BackboneApplication application = (BackboneApplication) MonthlyPlanFragment.this.getActivity().getApplication();
-            DatabaseHandler mydb            = application.getDatabaseInstance();
+                BackboneApplication application = (BackboneApplication) MonthlyPlanFragment.this.getActivity().getApplication();
+                DatabaseHandler mydb            = application.getDatabaseInstance();
 
-            String SQLVaccinationQueue =
-                    "SELECT DISTINCT APPOINTMENT_ID, CHILD_ID " +
-                            " , SCHEDULE, SCHEDULED_DATE " +
-                            " FROM MONTHLY_PLAN join dose on DOSE_ID = dose.ID" +
-                            " WHERE HEALTH_FACILITY_ID = '" + app.getLOGGED_IN_USER_HF_ID() + "' AND SCHEDULE like '%" + ageName + "%' " +
-                            " AND (substr(SCHEDULED_DATE,7,10)) >= ('" +from_date+ "') " +
-                            " AND (substr(SCHEDULED_DATE,7,10)) <= ('" +to_date+ "') " +
-                            " AND ( (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) IS NULL " +
-                            " OR (datetime(substr(SCHEDULED_DATE,7,10),'unixepoch') >= datetime('now','-' || (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) || ' days' )) )" +
-                            " GROUP BY APPOINTMENT_ID, SCHEDULED_DATE, DOMICILE, NAME, SCHEDULE, CHILD_ID, SCHEDULE_ID " +
-                            " ORDER BY SCHEDULED_DATE "+
-                            " LIMIT " + startRow + ", 10; ";
-//            "SELECT  " +
-//                    "DISTINCT " +
-//                    "APPOINTMENT_ID, CHILD_ID ,SCHEDULE, SCHEDULED_DATE " +
-//                    "FROM MONTHLY_PLAN  " +
-//                    "join dose on DOSE_ID = dose.ID  " +
-//                    "WHERE  " +
-//                    "    HEALTH_FACILITY_ID = '" + app.getLOGGED_IN_USER_HF_ID() + "' AND  " +
-//                    "    SCHEDULE like '%%'  AND  " +
-//                    "    (substr(SCHEDULED_DATE,7,10)) > ('"+from_date+"')   AND  " +
-//                    "    (substr(SCHEDULED_DATE,7,10)) <= ('"+to_date+"')  AND  " +
-//                    "    ( (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) IS NULL  OR (datetime(substr(SCHEDULED_DATE,7,10),'unixepoch') > datetime('now','-' || (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) || ' days' )) )  " +
-//                    "     " +
-//                    "    GROUP BY APPOINTMENT_ID, SCHEDULED_DATE, DOMICILE, NAME, SCHEDULE, CHILD_ID, SCHEDULE_ID   " +
-//                    "    ORDER BY SCHEDULED_DATE   LIMIT " + startRow + ", 10; " +
-//                    "   ";
+                String SQLVaccinationQueue =
+                        "SELECT DISTINCT APPOINTMENT_ID, CHILD_ID " +
+                                " , SCHEDULE, SCHEDULED_DATE " +
+                                " FROM MONTHLY_PLAN join dose on DOSE_ID = dose.ID" +
+                                " WHERE HEALTH_FACILITY_ID = '" + app.getLOGGED_IN_USER_HF_ID() + "' AND SCHEDULE like '%" + ageName + "%' " +
+                                " AND (substr(SCHEDULED_DATE,7,10)) >= ('" +from_date+ "') " +
+                                " AND (substr(SCHEDULED_DATE,7,10)) <= ('" +to_date+ "') " +
+                                " AND ( (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) IS NULL " +
+                                " OR (datetime(substr(SCHEDULED_DATE,7,10),'unixepoch') >= datetime('now','-' || (Select DAYS from age_definitions WHERE ID = dose.TO_AGE_DEFINITON_ID ) || ' days' )) )" +
+                                " GROUP BY APPOINTMENT_ID, SCHEDULED_DATE, DOMICILE, NAME, SCHEDULE, CHILD_ID, SCHEDULE_ID " +
+                                " ORDER BY SCHEDULED_DATE "+
+                                " LIMIT " + currentCount + ", 10; ";
 
 
 
-            Log.e("optimization", SQLVaccinationQueue);
-            long tStart = System.currentTimeMillis();
-            cursor = mydb.getReadableDatabase().rawQuery(SQLVaccinationQueue, null);
+                Log.e("optimization", SQLVaccinationQueue);
+                long tStart = System.currentTimeMillis();
+                cursor = mydb.getReadableDatabase().rawQuery(SQLVaccinationQueue, null);
 
-            if (startRow.equals("0")){
-                blockPrevious = true;
-            }else {
-                blockPrevious = false;
-            }
+                if (currentCount.equals("0")){
+                    blockPrevious = true;
+                }else {
+                    blockPrevious = false;
+                }
 
-            if (cursor.getCount() < 10 && blockPrevious == false){
-                blockNext = true;
-            }else {
-                blockNext = false;
-            }
+                if (cursor.getCount() < 10 && blockPrevious == false){
+                    blockNext = true;
+                }else {
+                    blockNext = false;
+                }
 
-            Log.e("optimization", "Querying time  = elapsed total time (milliseconds): " + (System.currentTimeMillis() - tStart));
+                Log.e("optimization", "Querying time  = elapsed total time (milliseconds): " + (System.currentTimeMillis() - tStart));
 
-            Log.d("optimization", "Done with getting the Monthly plan data");
-            if (cursor != null) {
-                tStart = System.currentTimeMillis();
-                Log.d("optimization", "cursor not null SIZE IS : "+cursor.getCount());
-                Log.e("optimization", "Getting total size time  = elapsed total time (milliseconds): " + (System.currentTimeMillis() - tStart));
+                Log.d("optimization", "Done with getting the Monthly plan data");
+                if (cursor != null) {
+                    tStart = System.currentTimeMillis();
+                    Log.d("optimization", "cursor not null SIZE IS : "+cursor.getCount());
+                    Log.e("optimization", "Getting total size time  = elapsed total time (milliseconds): " + (System.currentTimeMillis() - tStart));
 
-
-                tStart = System.currentTimeMillis();
-                if (cursor.moveToFirst()) {
-                    Log.d("optimization", "Moved to first item in the cursor");
-                    Log.e("optimization", "moving cursor to first time  = elapsed total time (milliseconds): " + (System.currentTimeMillis() - tStart));
 
                     tStart = System.currentTimeMillis();
-                    do {
-                        Log.d("optimization", "the loop here");
-                        ViewAppointmentRow row = new ViewAppointmentRow();
-                        row.setAppointment_id(cursor.getString(cursor.getColumnIndex("APPOINTMENT_ID")));
-                        row.setVaccine_dose(cursor.getString(cursor.getColumnIndex("SCHEDULE")));
-                        row.setSchedule(cursor.getString(cursor.getColumnIndex("SCHEDULE")));
-                        row.setScheduled_date(cursor.getString(cursor.getColumnIndex("SCHEDULED_DATE")));
-                        row.setChild_id(cursor.getString(cursor.getColumnIndex("CHILD_ID")));
-                        mVar.add(row);
-                    } while (cursor.moveToNext());
-                    Log.e("optimization", "Looping to get data  = elapsed total time (milliseconds): " + (System.currentTimeMillis() - tStart));
+                    if (cursor.moveToFirst()) {
+                        Log.d("optimization", "Moved to first item in the cursor");
+                        Log.e("optimization", "moving cursor to first time  = elapsed total time (milliseconds): " + (System.currentTimeMillis() - tStart));
+
+                        tStart = System.currentTimeMillis();
+                        do {
+                            Log.d("optimization", "the loop here");
+                            ViewAppointmentRow row = new ViewAppointmentRow();
+                            row.setAppointment_id(cursor.getString(cursor.getColumnIndex("APPOINTMENT_ID")));
+                            row.setVaccine_dose(cursor.getString(cursor.getColumnIndex("SCHEDULE")));
+                            row.setSchedule(cursor.getString(cursor.getColumnIndex("SCHEDULE")));
+                            row.setScheduled_date(cursor.getString(cursor.getColumnIndex("SCHEDULED_DATE")));
+                            row.setChild_id(cursor.getString(cursor.getColumnIndex("CHILD_ID")));
+                            mVar.add(row);
+                        } while (cursor.moveToNext());
+                        Log.e("optimization", "Looping to get data  = elapsed total time (milliseconds): " + (System.currentTimeMillis() - tStart));
 
 
+                    }
+                    cursor.close();
                 }
-                cursor.close();
+                return Observable.just(mVar);
             }
+        })// Run on a background thread
+                .subscribeOn(AndroidSchedulers.from(backgroundLooper))
+                // Be notified on the main thread
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindToLifecycle())
+                .subscribe(new Subscriber<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d(TAG, "onCompleted()");
+                    }
 
-            return 1;
-        }
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError()", e);
+                    }
 
-        @Override
-        protected void onPostExecute(Integer result) {
-            var = mVar;
-            displayMonthlyPlanList(mVar);
-            loadingBar.setVisibility(View.GONE);
-            lvMonthlyPlanList.setVisibility(View.VISIBLE);
-            if (blockPrevious) {
-                previousCard.setVisibility(View.INVISIBLE);
-            }
-            else{
-                previousCard.setVisibility(View.VISIBLE);
-            }
-            if (blockNext){
-                nextCard.setVisibility(View.INVISIBLE);
-            }
-            else {
-                nextCard.setVisibility(View.VISIBLE);
-            }
-        }
+                    @Override
+                    public void onNext(Object mVar) {
+                        Log.d(TAG, "onNext(" + mVar + ")");
 
-        @Override
-        protected void onProgressUpdate(Void... values) {
-        }
-
+                        var = (ArrayList<ViewAppointmentRow>)mVar;
+                        displayMonthlyPlanList(var);
+                        loadingBar.setVisibility(View.GONE);
+                        lvMonthlyPlanList.setVisibility(View.VISIBLE);
+                        if (blockPrevious) {
+                            previousCard.setVisibility(View.INVISIBLE);
+                        }
+                        else{
+                            previousCard.setVisibility(View.VISIBLE);
+                        }
+                        if (blockNext){
+                            nextCard.setVisibility(View.INVISIBLE);
+                        }
+                        else {
+                            nextCard.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
     }
 
     public void displayMonthlyPlanList(ArrayList<ViewAppointmentRow> mVar) {
@@ -722,6 +733,10 @@ public class MonthlyPlanFragment extends android.support.v4.app.Fragment {
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        subscription.unsubscribe();
 
-
+    }
 }

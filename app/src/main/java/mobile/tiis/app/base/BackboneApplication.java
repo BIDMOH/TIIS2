@@ -26,6 +26,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.multidex.MultiDex;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
 import android.util.Log;
@@ -3345,7 +3346,11 @@ public class BackboneApplication extends Application {
             error.printStackTrace();
 
         }
+    }
 
-
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 }

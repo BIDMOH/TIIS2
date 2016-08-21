@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,12 +37,18 @@ import mobile.tiis.app.base.BackboneActivity;
 import mobile.tiis.app.base.BackboneApplication;
 import mobile.tiis.app.database.DatabaseHandler;
 import mobile.tiis.app.entity.NonVaccinationReason;
+import mobile.tiis.app.util.BackgroundThread;
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func0;
 
 /**
  * Created by issymac on 14/03/16.
  */
 public class AdministerVaccineOfflineFragment extends Fragment {
-
+    private static final String TAG = AdministerVaccineOfflineFragment.class.getSimpleName();
     String barcode;
 
     private TextView vaccinesTitle, VaccineLotTitle, VaccinationDateTitle, doneTitle, reasonsTitle;
@@ -53,6 +60,11 @@ public class AdministerVaccineOfflineFragment extends Fragment {
     private DatabaseHandler database;
     private TableLayout tableLayout;
     private ProgressDialog progressDialog;
+
+
+    private Looper backgroundLooper;
+
+    private Subscription subscription;
 
     public static AdministerVaccineOfflineFragment newInstance(String barcode) {
         AdministerVaccineOfflineFragment f = new AdministerVaccineOfflineFragment();
@@ -71,6 +83,10 @@ public class AdministerVaccineOfflineFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.administer_vaccines_offline_fragment, null);
         setupviews(rootview);
+
+        BackgroundThread backgroundThread = new BackgroundThread();
+        backgroundThread.start();
+        backgroundLooper = backgroundThread.getLooper();
 
         rowCollectorContainer = new ArrayList<RowCollector>();
 
@@ -304,7 +320,7 @@ public class AdministerVaccineOfflineFragment extends Fragment {
         }
 
 
-        for (RowCollector a : rowCollectorContainer) {
+        for (final RowCollector a : rowCollectorContainer) {
 
             if (a.getVaccination_done_status().equalsIgnoreCase("true") && a.getVaccine_lot_names_list().get(a.getVaccine_lot_current_position()).equalsIgnoreCase("-----")) {
                 final AlertDialog ad22 = new AlertDialog.Builder(this.getActivity()).create();
@@ -323,20 +339,60 @@ public class AdministerVaccineOfflineFragment extends Fragment {
             if (a.getVaccination_done_status().equalsIgnoreCase("false") && a.getNonvaccination_reason_position() == 0) {
                 Log.d("Skip", "Skipping vaccine");
             } else {
-                SimpleDateFormat formatted = new SimpleDateFormat("yyyy-MM-dd");
-                updateOfflineAdministerVaccine task = new updateOfflineAdministerVaccine();
-                StringBuilder updateUrl = new StringBuilder(BackboneActivity.WCF_URL + "VaccinationEvent.svc/UpdateVaccinationEventByBarcodeVaccine?")
-                        .append("barcodeId=").append(barcode)
-                        .append("&vaccineId=").append(a.getScheduled_vaccination_id())
-                        .append("&vaccinelot=").append(a.getVaccine_lot_id_name_map().get(a.getVaccine_lot_names_list().get(a.getVaccine_lot_current_position())))
-                        .append("&healthFacilityId=").append(application.getLOGGED_IN_USER_HF_ID())
-                        .append("&vaccinationDate=").append(URLEncoder.encode(formatted.format(a.getVaccination_date())))
-                        .append("&notes=").append("")
-                        .append("&vaccinationStatus=").append(a.getVaccination_done_status())
-                        .append("&nonvaccinationReasonId=").append(a.getNon_vac_reason())
-                        .append("&userId=").append(application.getLOGGED_IN_USER_ID());
-                Log.d("Created URL", updateUrl.toString());
-                task.execute(updateUrl.toString());
+                final SimpleDateFormat formatted = new SimpleDateFormat("yyyy-MM-dd");
+
+                progressDialog.show();
+                //adding implementation for RXAndroid to substitute the use of AsyncTasks
+                subscription = Observable.defer(new Func0<Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call() {
+                        // Do some long running operation
+                        BackboneApplication application = (BackboneApplication) AdministerVaccineOfflineFragment.this.getActivity().getApplication();
+                        DatabaseHandler db = application.getDatabaseInstance();
+                        StringBuilder updateUrl = new StringBuilder(BackboneActivity.WCF_URL + "VaccinationEvent.svc/UpdateVaccinationEventByBarcodeVaccine?")
+                                .append("barcodeId=").append(barcode)
+                                .append("&vaccineId=").append(a.getScheduled_vaccination_id())
+                                .append("&vaccinelot=").append(a.getVaccine_lot_id_name_map().get(a.getVaccine_lot_names_list().get(a.getVaccine_lot_current_position())))
+                                .append("&healthFacilityId=").append(application.getLOGGED_IN_USER_HF_ID())
+                                .append("&vaccinationDate=").append(URLEncoder.encode(formatted.format(a.getVaccination_date())))
+                                .append("&notes=").append("")
+                                .append("&vaccinationStatus=").append(a.getVaccination_done_status())
+                                .append("&nonvaccinationReasonId=").append(a.getNon_vac_reason())
+                                .append("&userId=").append(application.getLOGGED_IN_USER_ID());
+                        Log.d("Created URL", updateUrl.toString());
+
+                        int status = application.updateVaccinationEventOnServer(updateUrl.toString());
+                        Log.d("Saving offline status", status + "");
+
+                        return Observable.just(true);
+                        }
+                    }).subscribeOn(AndroidSchedulers.from(backgroundLooper))
+                    // Be notified on the main thread
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d(TAG, "onCompleted()");
+                        if(progressDialog!=null && progressDialog.isShowing()){
+                            progressDialog.dismiss();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError()", e);
+                    }
+
+                    @Override
+                    public void onNext(Boolean string) {
+                        Log.d(TAG, "onNext(" + string + ")");
+                    }
+                });
+
+
+
+
+
             }
 
         }
@@ -484,34 +540,11 @@ public class AdministerVaccineOfflineFragment extends Fragment {
 
     }
 
-    private class updateOfflineAdministerVaccine extends AsyncTask<String, Integer, Boolean> {
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog.show();
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        subscription.unsubscribe();
 
-        }
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-            BackboneApplication application = (BackboneApplication) AdministerVaccineOfflineFragment.this.getActivity().getApplication();
-            DatabaseHandler db = application.getDatabaseInstance();
-            for (String a : params) {
-                int status = application.updateVaccinationEventOnServer(a);
-                Log.d("Saving offline status", status + "");
-            }
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            super.onPostExecute(result);
-
-            if(progressDialog!=null && progressDialog.isShowing()){
-                progressDialog.dismiss();
-            }
-
-        }
     }
 }

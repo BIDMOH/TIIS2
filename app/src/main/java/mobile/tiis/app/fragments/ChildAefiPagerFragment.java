@@ -3,10 +3,9 @@ package mobile.tiis.app.fragments;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
-import android.database.Cursor;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,12 +42,18 @@ import mobile.tiis.app.database.DatabaseHandler;
 import mobile.tiis.app.database.SQLHandler;
 import mobile.tiis.app.entity.AefiListItem;
 import mobile.tiis.app.entity.Child;
+import mobile.tiis.app.util.BackgroundThread;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func0;
 
 /**
  * Created by issymac on 26/01/16.
  */
 public class ChildAefiPagerFragment extends Fragment  implements DatePickerDialog.OnDateSetListener{
 
+    private static final String TAG = ChildAefiPagerFragment.class.getSimpleName();
     private DatabaseHandler mydb;
 
     private String childId;
@@ -86,6 +91,7 @@ public class ChildAefiPagerFragment extends Fragment  implements DatePickerDialo
     Button btnAefiDate, save;
 
     MaterialEditText edtNotesAefi;
+    private Looper backgroundLooper;
 
     public static final long getDaysDifference(Date d1, Date d2) {
         long diff = d2.getTime() - d1.getTime();
@@ -114,6 +120,10 @@ public class ChildAefiPagerFragment extends Fragment  implements DatePickerDialo
         v = (ViewGroup) inflater.inflate(R.layout.fragment_child_aefi, null);
         app = (BackboneApplication) ChildAefiPagerFragment.this.getActivity().getApplication();
         mydb = new DatabaseHandler(getActivity());
+
+        BackgroundThread backgroundThread = new BackgroundThread();
+        backgroundThread.start();
+        backgroundLooper = backgroundThread.getLooper();
 
         initViews(v);
         setupVariables();
@@ -243,12 +253,10 @@ public class ChildAefiPagerFragment extends Fragment  implements DatePickerDialo
     }
 
     private void setupVariables(){
-        new AsyncTask<Void,Void,Void>(){
+        Observable.defer(new Func0<Observable<Boolean>>() {
             @Override
-            protected Void doInBackground(Void... params) {
-                //delaying the loading of the fragment data inorder to smoothly open other viewpager fragments.
-
-
+            public Observable<Boolean> call() {
+                // Do some long running operation
                 if (currentChild != null) {
                     childId = currentChild.getId();
                 } else {
@@ -261,52 +269,57 @@ public class ChildAefiPagerFragment extends Fragment  implements DatePickerDialo
                 }
                 aefiItems = mydb.getAefiVaccinationAppointement(childId);
                 lastAppointementAefiList = mydb.getAefiLastVaccinationAppointement(childId);
-                return null;
+                return Observable.just(true);
             }
+        })// Run on a background thread
+                .subscribeOn(AndroidSchedulers.from(backgroundLooper))
+                // Be notified on the main thread
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d(TAG, "onCompleted()");
+                        if (aefiItems != null && aefiItems.size() > 0) {
+                            bottomListEmptyState.setVisibility(View.GONE);
+                            bottomListAdapter = new AefiBottomListAdapter(getActivity(), aefiItems);
+                            bottomListView.setAdapter(bottomListAdapter);
+                        }else{
+                            bottomListEmptyState.setVisibility(View.VISIBLE);
+                        }
 
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                if (aefiItems != null && aefiItems.size() > 0) {
-                    bottomListEmptyState.setVisibility(View.GONE);
-                    bottomListAdapter = new AefiBottomListAdapter(getActivity(), aefiItems);
-                    bottomListView.setAdapter(bottomListAdapter);
-                }else{
-                    bottomListEmptyState.setVisibility(View.VISIBLE);
-                }
+                        if (lastAppointementAefiList != null && lastAppointementAefiList.size() > 0) {
+                            topListEmptyState.setVisibility(View.GONE);
+                            lastAppointementAefi = lastAppointementAefiList.get(0);
 
-                if (lastAppointementAefiList != null && lastAppointementAefiList.size() > 0) {
-                    topListEmptyState.setVisibility(View.GONE);
-                    lastAppointementAefi = lastAppointementAefiList.get(0);
+                            if (lastAppointementAefi != null) {
 
-                    if (lastAppointementAefi != null) {
+                                topListAdapter = new AefiTopListAdapter(ChildAefiPagerFragment.this.getActivity(), lastAppointementAefiList);
+                                topListView.setAdapter(topListAdapter);
 
-                        topListAdapter = new AefiTopListAdapter(ChildAefiPagerFragment.this.getActivity(), lastAppointementAefiList);
-                        topListView.setAdapter(topListAdapter);
+                                chkHadAefi.setChecked(true);
+                                if (lastAppointementAefi.getAefiDate() != null)
+                                    btnAefiDate.setText(format.format(lastAppointementAefi.getAefiDate()));
+                                else
+                                    btnAefiDate.setText(format.format(new Date()));
+                                edtNotesAefi.setText(lastAppointementAefi.getNotes());
 
-                        chkHadAefi.setChecked(true);
-                        if (lastAppointementAefi.getAefiDate() != null)
-                            btnAefiDate.setText(format.format(lastAppointementAefi.getAefiDate()));
-                        else
-                            btnAefiDate.setText(format.format(new Date()));
-                        edtNotesAefi.setText(lastAppointementAefi.getNotes());
-
+                            }
+                        }else{
+                            topListEmptyState.setVisibility(View.VISIBLE);
+                        }
+                        aefiNewDate = new Date();
                     }
-                }else{
-                    topListEmptyState.setVisibility(View.VISIBLE);
-                }
-                aefiNewDate = new Date();
 
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError()", e);
+                    }
 
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-
-
-
-
-
-
+                    @Override
+                    public void onNext(Boolean string) {
+                        Log.d(TAG, "onNext(" + string + ")");
+                    }
+                });
 
     }
 
