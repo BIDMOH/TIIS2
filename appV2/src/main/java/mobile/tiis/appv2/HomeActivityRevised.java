@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -58,6 +60,7 @@ import mobile.tiis.appv2.fragments.VaccinationQueueFragment;
 import mobile.tiis.appv2.helpers.Utils;
 import mobile.tiis.appv2.postman.RoutineAlarmReceiver;
 import mobile.tiis.appv2.postman.SynchronisationService;
+import mobile.tiis.appv2.CustomViews.BadgeDrawable;
 
 /**
  *  Created by issymac on 10/12/15.
@@ -119,6 +122,8 @@ public class HomeActivityRevised extends BackboneActivity {
     public AlertDialog.Builder alertDialogBuilder;
 
     protected Handler handler;
+    private Menu optionsMenu;
+    private DatabaseHandler db;
 
 
     /**
@@ -158,22 +163,47 @@ public class HomeActivityRevised extends BackboneActivity {
     };
 
 
+    /**
+     * Callback method for Receiving postman items count on the main ui
+     */
+    private final BroadcastReceiver mHandlePostmanCountReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String count = intent.getExtras().getString(SynchronisationService.SynchronisationService_MESSAGE);
+            Log.d(TAG,"Received postman count = "+count);
+
+
+            try {
+                MenuItem itemCart = optionsMenu.findItem(R.id.upload);
+                LayerDrawable icon = (LayerDrawable) itemCart.getIcon();
+                setBadgeCount(HomeActivityRevised.this, icon, count);
+                invalidateOptionsMenu();
+            }catch (Exception e){
+                e.printStackTrace();
+                invalidateOptionsMenu();
+            }
+
+        }
+    };
+
+
 
     @Override
     protected void onCreate(Bundle starter) {
         super.onCreate(starter);
-        Log.e(TAG, TAG);
 
         setContentView(R.layout.homeactivity_redesigned);
         setupTypeface(HomeActivityRevised.this);
         initializeViews();
         Log.d(TAG, "starting my service");
 
+        db = ((BackboneApplication)getApplication()).getDatabaseInstance();
 
 
 
 
         registerReceiver(mHandleMessageReceiver, new IntentFilter(CommonUtilities.DISPLAY_MESSAGE_ACTION));
+        registerReceiver(mHandlePostmanCountReceiver, new IntentFilter(CommonUtilities.DISPLAY_POSTMAN_COUNT_ACTION));
 
         final BackboneApplication app = (BackboneApplication) getApplication();
         if (app.getLOGGED_IN_FIRSTNAME() != null && app.getLOGGED_IN_LASTNAME() != null && app.getUsername() != null){
@@ -517,6 +547,7 @@ public class HomeActivityRevised extends BackboneActivity {
         super.onResume();
 
         registerReceiver(mHandleMessageReceiver, new IntentFilter(CommonUtilities.DISPLAY_MESSAGE_ACTION));
+        registerReceiver(mHandlePostmanCountReceiver, new IntentFilter(CommonUtilities.DISPLAY_POSTMAN_COUNT_ACTION));
         registerReceiver(status_receiver,
                 new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
@@ -527,6 +558,7 @@ public class HomeActivityRevised extends BackboneActivity {
         unregisterReceiver(status_receiver);
 
         unregisterReceiver(mHandleMessageReceiver);
+        unregisterReceiver(mHandlePostmanCountReceiver);
     }
 
     @Override
@@ -593,7 +625,7 @@ public class HomeActivityRevised extends BackboneActivity {
                 }
 
 
-                String hfidFoundInVaccEvOnlyAndNotInHealthFac = application.getDatabaseInstance().getHFIDFoundInVaccEvAndNotInHealthFac();
+                String hfidFoundInVaccEvOnlyAndNotInHealthFac = db.getHFIDFoundInVaccEvAndNotInHealthFac();
                 if (hfidFoundInVaccEvOnlyAndNotInHealthFac != null) {
                     application.parseHealthFacilityThatAreInVaccEventButNotInHealthFac(hfidFoundInVaccEvOnlyAndNotInHealthFac);
                 }
@@ -1022,5 +1054,39 @@ public class HomeActivityRevised extends BackboneActivity {
     private SharedPreferences getGCMPreferences(Context context) {
         return getSharedPreferences(HomeActivityRevised.class.getSimpleName(),
                 Context.MODE_PRIVATE);
+    }
+
+    public static void setBadgeCount(Context context, LayerDrawable icon, String count) {
+
+        BadgeDrawable badge;
+
+        // Reuse drawable if possible
+        Drawable reuse = icon.findDrawableByLayerId(R.id.ic_badge);
+        if (reuse != null && reuse instanceof BadgeDrawable) {
+            badge = (BadgeDrawable) reuse;
+        } else {
+            badge = new BadgeDrawable(context);
+        }
+
+        badge.setCount(count);
+        icon.mutate();
+        icon.setDrawableByLayerId(R.id.ic_badge, badge);
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.home_activity, menu);
+
+        this.optionsMenu = menu;
+        MenuItem itemCart = menu.findItem(R.id.upload);
+
+        LayerDrawable icon = (LayerDrawable) itemCart.getIcon();
+        try {
+            setBadgeCount(HomeActivityRevised.this, icon, db.getAllPosts().size() + "");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return true;
     }
 }

@@ -59,6 +59,8 @@
                     android:scaleType="fitXY"
                     android:src="@drawable/network_off" />
 
+
+
             </RelativeLayout>
 
         </android.support.v7.widget.Toolbar>

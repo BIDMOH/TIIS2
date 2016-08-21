@@ -403,11 +403,6 @@ public class VaccinationQueueFragment extends android.support.v4.app.DialogFragm
                         @Override
                         public void run() {
                             Toast.makeText(VaccinationQueueFragment.this.getActivity(), "Child checkin finished", Toast.LENGTH_LONG).show();
-//                            var = compileVaccinationQueueTable("");
-//                            lvVaccQList.setAdapter(null);
-//                            adapter = new VaccinationQueueListAdapter(VaccinationQueueFragment.this.getActivity(), var);
-//                            lvVaccQList.setAdapter(adapter);
-//                            adapter.updateReceiptsList(var);
                             var = compileVaccinationQueueTable("");
                             adapter.updateReceiptsList(var);
                             adapter.notifyDataSetChanged();

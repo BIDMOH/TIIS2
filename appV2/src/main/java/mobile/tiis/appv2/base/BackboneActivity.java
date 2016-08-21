@@ -28,6 +28,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -45,7 +47,7 @@ import mobile.tiis.appv2.helpers.Utils;
  * @author Teodor Rupi
  * @author Melisa Aruci
  */
-public class BackboneActivity extends AppCompatActivity {
+public class BackboneActivity extends RxAppCompatActivity {
 
     public static final String WCF_URL = BackboneApplication.getWcfUrl(); //"http://142.222.45.61/svc/";
     public static final String USER_MANAGEMENT_SVC = "UserManagement.svc/";

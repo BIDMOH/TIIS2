@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.trello.rxlifecycle.components.support.RxFragment;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.io.UnsupportedEncodingException;
@@ -47,12 +49,18 @@ import mobile.tiis.appv2.entity.HealthFacility;
 import mobile.tiis.appv2.entity.Place;
 import mobile.tiis.appv2.entity.Status;
 import mobile.tiis.appv2.util.ViewAppointmentRow;
+import mobile.tiis.appv2.util.BackgroundThread;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func0;
 
 /**
  *  Created by issymac on 25/01/16.
  */
 
-public class ChildSummaryPagerFragment extends Fragment {
+public class ChildSummaryPagerFragment extends RxFragment {
+    private static final String TAG = ChildSummaryPagerFragment.class.getSimpleName();
 
     private static final String ARG_POSITION = "position";
 
@@ -121,6 +129,7 @@ public class ChildSummaryPagerFragment extends Fragment {
 
     final DatePickerDialog doBDatePicker = new DatePickerDialog();
     private boolean isNewChild;
+    private Looper backgroundLooper;
 
     LayoutInflater inflator;
 
@@ -155,6 +164,10 @@ public class ChildSummaryPagerFragment extends Fragment {
         v = (ViewGroup) inflater.inflate(R.layout.fragment_child_summary, null);
         app = (BackboneApplication) ChildSummaryPagerFragment.this.getActivity().getApplication();
         mydb = app.getDatabaseInstance();
+
+        BackgroundThread backgroundThread = new BackgroundThread();
+        backgroundThread.start();
+        backgroundLooper = backgroundThread.getLooper();
 
         setUpView(v);
 
@@ -309,27 +322,11 @@ public class ChildSummaryPagerFragment extends Fragment {
         summaryTableLayout.addView(header);
         View appointmentTableHeader = inflater.inflate(R.layout.appointment_table_header, null);
         summaryTableLayout.addView(appointmentTableHeader);
-        //        View appointmentTableHeader = inflater.inflate(R.layout.appointment_table_header, null);
-        //        View appointmentTableFooter = inflater.inflate(R.layout.appointment_table_footer, null);
-        //        lvImmunizationHistory.addHeaderView(appointmentTableHeader);
-        //        lvImmunizationHistory.addFooterView(appointmentTableFooter);
-
-        new AsyncTask<Void, Void, Void>() {
+        mCursor = null;
+        Observable.defer(new Func0<Observable<Boolean>>() {
             @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                mCursor = null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                enableUserInputs(false);
-                fillUIElements();
-                new appointmentTableTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            }
-
-            @Override
-            protected Void doInBackground(Void... params) {
+            public Observable<Boolean> call() {
+                // Do some long running operation
                 mCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",
                         new String[]{String.valueOf(value)});
                 if (mCursor.getCount() > 0) {
@@ -343,10 +340,33 @@ public class ChildSummaryPagerFragment extends Fragment {
                 healthFacilityList = mydb.getAllHealthFacility();
 
                 statusList = mydb.getStatus();
-
-                return null;
+                return Observable.just(true);
             }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        })// Run on a background thread
+                .subscribeOn(AndroidSchedulers.from(backgroundLooper))
+                // Be notified on the main thread
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<Boolean>bindToLifecycle())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d(TAG, "onCompleted()");
+                        enableUserInputs(false);
+                        fillUIElements();
+                        updateAppointmentTable();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError()", e);
+                    }
+
+                    @Override
+                    public void onNext(Boolean string) {
+                        Log.d(TAG, "onNext(" + string + ")");
+                    }
+                });
+
 
 
         editButton.setOnClickListener(new View.OnClickListener() {
@@ -362,12 +382,12 @@ public class ChildSummaryPagerFragment extends Fragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                editButton.setVisibility(View.VISIBLE);
-                saveButton.setVisibility(View.GONE);
                 if (checkDataIntegrityBeforeSave()) {
                     if (!localBarcode.equals(metBarcodeValue.getText().toString()) && !localBarcode.equals("")) {
                         showAlertThatChildHadABarcode();
                     } else {
+                        editButton.setVisibility(View.VISIBLE);
+                        saveButton.setVisibility(View.GONE);
                         saveChangedData();
                         enableUserInputs(false);
                         ChildDetailsActivity.changeTitle(metFirstName.getText().toString()+" "+metMiddleName.getText().toString()+" "+metLastName.getText().toString());
@@ -379,60 +399,67 @@ public class ChildSummaryPagerFragment extends Fragment {
         return v;
     }
 
-    class appointmentTableTask extends AsyncTask<Void, Void, Void> {
-
-        DatabaseHandler this_database;
-        SQLHandler handler;
-        String child_id = "";
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            this_database = app.getDatabaseInstance();
-            handler = new SQLHandler();
-            var = new ArrayList<ViewAppointmentRow>();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            mCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",
-                    new String[]{String.valueOf(value)});
-            if (mCursor.getCount() > 0) {
-                mCursor.moveToFirst();
-                currentChild = getChildFromCursror(mCursor);
-            }
-
-            if (currentChild.getId() != null && !currentChild.getId().isEmpty()) {
-                child_id = currentChild.getId();
-
-                Cursor cursor = null;
-                cursor = this_database.getReadableDatabase().rawQuery(handler.SQLVaccinations, new String[]{child_id, child_id});
-
-                if (cursor != null) {
-                    if (cursor.moveToFirst()) {
-                        do {
-                            ViewAppointmentRow row = new ViewAppointmentRow();
-                            row.setAppointment_id(cursor.getString(cursor.getColumnIndex("APPOINTMENT_ID")));
-                            row.setVaccine_dose(cursor.getString(cursor.getColumnIndex("VACCINES")));
-                            row.setSchedule(cursor.getString(cursor.getColumnIndex("SCHEDULE")));
-                            row.setScheduled_date(cursor.getString(cursor.getColumnIndex("SCHEDULED_DATE")));
-                            var.add(row);
-                        } while (cursor.moveToNext());
-                    }
+    public void updateAppointmentTable(){
+        var = new ArrayList<ViewAppointmentRow>();
+        Observable.defer(new Func0<Observable<Boolean>>() {
+            @Override
+            public Observable<Boolean> call() {
+                // Do some long running operation
+                mCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",
+                        new String[]{String.valueOf(value)});
+                if (mCursor.getCount() > 0) {
+                    mCursor.moveToFirst();
+                    currentChild = getChildFromCursror(mCursor);
                 }
 
+                if (currentChild.getId() != null && !currentChild.getId().isEmpty()) {
+                    String child_id = currentChild.getId();
+
+                    Cursor cursor = null;
+
+                    DatabaseHandler this_database = app.getDatabaseInstance();
+                    SQLHandler handler = new SQLHandler();
+                    cursor = this_database.getReadableDatabase().rawQuery(handler.SQLVaccinations, new String[]{child_id, child_id});
+
+                    if (cursor != null) {
+                        if (cursor.moveToFirst()) {
+                            do {
+                                ViewAppointmentRow row = new ViewAppointmentRow();
+                                row.setAppointment_id(cursor.getString(cursor.getColumnIndex("APPOINTMENT_ID")));
+                                row.setVaccine_dose(cursor.getString(cursor.getColumnIndex("VACCINES")));
+                                row.setSchedule(cursor.getString(cursor.getColumnIndex("SCHEDULE")));
+                                row.setScheduled_date(cursor.getString(cursor.getColumnIndex("SCHEDULED_DATE")));
+                                var.add(row);
+                            } while (cursor.moveToNext());
+                        }
+                    }
+
+                }
+
+                return Observable.just(true);
             }
+        })// Run on a background thread
+                .subscribeOn(AndroidSchedulers.from(backgroundLooper))
+                // Be notified on the main thread
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<Boolean>bindToLifecycle())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d(TAG, "onCompleted()");
+                        fillAppointmentTableLayout();
+                    }
 
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError()", e);
+                    }
 
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            fillAppointmentTableLayout();
-        }
-
+                    @Override
+                    public void onNext(Boolean string) {
+                        Log.d(TAG, "onNext(" + string + ")");
+                    }
+                });
     }
 
     private void fillAppointmentTableLayout(){

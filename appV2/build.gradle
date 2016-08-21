@@ -17,6 +17,7 @@ android {
         targetSdkVersion 21
         versionCode 133
         versionName "2.4.1"
+        multiDexEnabled true
 
     }
     buildTypes {
@@ -40,10 +41,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:recyclerview-v7:23.1.1'
-    compile 'com.android.support:design:23.1.1'
-    compile 'com.android.support:palette-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile files('libs/core.jar')
@@ -61,9 +59,14 @@ dependencies {
     compile 'io.realm:realm-android:0.87.5'
     compile 'com.wdullaer:materialdatetimepicker:2.3.0'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
-    compile 'io.realm:realm-android:0.87.5'
     compile 'com.hannesdorfmann.smoothprogressbar:library:1.0.0'
     compile files('libs/jackson-databind-2.7.1-1.jar')
     compile files('libs/jackson-annotations-2.7.0.jar')
     compile files('libs/jackson-core-2.7.1.jar')
+
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'com.android.support:multidex:1.0.0'
+
+    compile 'com.trello:rxlifecycle:0.4.0'
+    compile 'com.trello:rxlifecycle-components:0.4.0'
 }

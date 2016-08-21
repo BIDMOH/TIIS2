@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.util.Log;
@@ -27,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.trello.rxlifecycle.components.support.RxFragment;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.io.UnsupportedEncodingException;
@@ -38,6 +40,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.Timer;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
@@ -53,13 +56,18 @@ import mobile.tiis.appv2.entity.Child;
 import mobile.tiis.appv2.entity.HealthFacility;
 import mobile.tiis.appv2.entity.Place;
 import mobile.tiis.appv2.entity.Status;
+import mobile.tiis.appv2.util.BackgroundThread;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func0;
 
 /**
  *  Created by issymac on 12/12/15.
  */
 
-public class SearchChildFragment extends android.support.v4.app.Fragment implements DatePickerDialog.OnDateSetListener{
-
+public class SearchChildFragment extends RxFragment implements DatePickerDialog.OnDateSetListener{
+    private static final String TAG = SearchChildFragment.class.getSimpleName();
     public ListView lvChildrenSearchResults;
 
     public MaterialEditText metFName, metMName, metSurname, metMotFname, metMotSname, metBarcode, metDOBFrom, metDOBTo;
@@ -115,11 +123,17 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
 
     BackboneApplication app;
 
+    private Looper backgroundLooper;
+
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_search_child, null);
         app = (BackboneApplication) SearchChildFragment.this.getActivity().getApplication();
         mydb = app.getDatabaseInstance();
         setUpView(root);
+
+        BackgroundThread backgroundThread = new BackgroundThread();
+        backgroundThread.start();
+        backgroundLooper = backgroundThread.getLooper();
 
         previous        = (ImageView) root.findViewById(R.id.previous_10_contents);
         next            = (ImageView) root.findViewById(R.id.next_10_contents);
@@ -130,15 +144,6 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
         previousCard    = (CardView) root.findViewById(R.id.previous_card);
         forwardCard     = (CardView) root.findViewById(R.id.forward_card);
 
-//        nextBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                int count = Integer.parseInt(currentCount);
-//                count = count+10;
-//                currentCount = count+"";
-//                new getChildren().execute(currentCount);
-//            }
-//        });
 
         nextLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,19 +151,10 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
                 int count = Integer.parseInt(currentCount);
                 count = count+10;
                 currentCount = count+"";
-                new getChildren().execute(currentCount);
+                getChildren(currentCount);
             }
         });
 
-//        previousBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                int count = Integer.parseInt(currentCount);
-//                count = count - 10;
-//                currentCount = count + "";
-//                new getChildren().execute(currentCount);
-//            }
-//        });
 
         prevLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,7 +163,7 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
                 count = count - 10;
                 currentCount = count + "";
                 //new filterList().execute(currentCategory, currentCount);
-                new getChildren().execute(currentCount);
+                getChildren(currentCount);
             }
         });
 
@@ -223,7 +219,7 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
         statusSpinner.setAdapter(statusAdapter);
         statusSpinner.setSelection(3);
 
-        new getChildren().execute("0");
+        getChildren("0");
 
         lvChildrenSearchResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -232,8 +228,7 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
                 if (serverdata) {
                     if (i!=-1) {
                         childidToParse = childrensrv.get(i).getId();
-                        ChildSynchronization task = new ChildSynchronization();
-                        task.execute(childidToParse);
+                        ChildSynchronization(childidToParse);
                     }
                 } else {
                     if (i!=-1) {
@@ -264,7 +259,7 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
 
                     }else{
                         currentText  =  metBarcode.getText().toString();
-                        new getChildren().execute("0");
+                        getChildren("0");
                     }
                 }
                 return true;
@@ -287,7 +282,7 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
                                 "Select Ending Date to be able to filter children",
                                 Toast.LENGTH_LONG).show();
                     }else{
-                        new getChildren().execute(currentCount);
+                        getChildren(currentCount);
                     }
                 }
             }
@@ -306,7 +301,7 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
                                 "Select From Date to be able to filter children",
                                 Toast.LENGTH_LONG).show();
                     }else{
-                        new getChildren().execute(currentCount);
+                        getChildren(currentCount);
                     }
                 }
             }
@@ -318,7 +313,7 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
     public void updateList(){
         try {
             autorefreshTriggered = true;
-            new getChildren().execute(currentCount);
+            getChildren(currentCount);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -388,7 +383,7 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new getChildren().execute("0");
+                getChildren("0");
             }
         });
 
@@ -453,122 +448,131 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
         listView.setLayoutParams(params);
     }
 
-    private class getChildren extends AsyncTask<String, Void, Integer> {
+    private void getChildren(final String number){
+        pbar.setVisibility(View.VISIBLE);
+        barcode     = metBarcode.getText().toString();
+        firstname   = metFName.getText().toString();
+        firstname2  = metMName.getText().toString();
+        surname     = metSurname.getText().toString();
+        motherfirstname = metMotFname.getText().toString();
+        mothersurname   = metMotSname.getText().toString();
 
-        String num = "0";
+        //get the date from and date to and format them
+        SimpleDateFormat fmt = new SimpleDateFormat("d/M/yyyy");
+        try {
+            dateFrom = fmt.parse(metDOBFrom.getText().toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+            dateFrom = null;
+        }
 
-        @Override
-        protected void onPreExecute() {
-            pbar.setVisibility(View.VISIBLE);
-            barcode     = metBarcode.getText().toString();
-            firstname   = metFName.getText().toString();
-            firstname2  = metMName.getText().toString();
-            surname     = metSurname.getText().toString();
-            motherfirstname = metMotFname.getText().toString();
-            mothersurname   = metMotSname.getText().toString();
+        try {
+            dateTo = fmt.parse(metDOBTo.getText().toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+            dateTo=null;
+        }
 
-            //get the date from and date to and format them
-            SimpleDateFormat fmt = new SimpleDateFormat("d/M/yyyy");
-            try {
-                dateFrom = fmt.parse(metDOBFrom.getText().toString());
-            } catch (ParseException e) {
-                e.printStackTrace();
-                dateFrom = null;
-            }
-
-            try {
-                dateTo = fmt.parse(metDOBTo.getText().toString());
-            } catch (ParseException e) {
-                e.printStackTrace();
-                dateTo=null;
-            }
-
-            try {
-                if (placeSpiner.getSelectedItemPosition() != 0) {
-                    placeodbirthId = birthplaceList.get(placeSpiner.getSelectedItemPosition() - 1).getId();
-                    Log.d("Selected from spinner", placeodbirthId);
-                }else{
-                    placeodbirthId = "";
-                }
-            } catch (Exception e) {
-            }
-
-            try {
-                if (villageSpinner.getSelectedItemPosition() != 0) {
-                    villagename = placeList.get(villageSpinner.getSelectedItemPosition() - 1).getId();
-                    Log.d("Selected from spinner", villagename);
-                }else{
-                    villagename = "";
-                }
-            } catch (Exception e) {
-            }
-
-            try {
-                if (healthFacilitySpinner.getSelectedItemPosition() != 0) {
-                    healthfacility = healthFacilityList.get(healthFacilitySpinner.getSelectedItemPosition() - 1).getId();
-                    Log.d("Selected from spinner", healthfacility);
-                }else{
-                    healthfacility = "";
-                }
-            } catch (Exception e) {
-            }
-
-            try {
-                status="";
-            } catch (Exception e) {
-            }
-
-            if (currentCount.equals("0")){
-                previousCard.setVisibility(View.GONE);
+        try {
+            if (placeSpiner.getSelectedItemPosition() != 0) {
+                placeodbirthId = birthplaceList.get(placeSpiner.getSelectedItemPosition() - 1).getId();
+                Log.d("Selected from spinner", placeodbirthId);
             }else{
-                previousCard.setVisibility(View.VISIBLE);
+                placeodbirthId = "";
             }
-
-
+        } catch (Exception e) {
         }
 
-        @Override
-        protected Integer doInBackground(String... params) {
-            int responce = 0;
-            num = params[0];
-            children = mydb.searchChild(barcode,
-                    firstname,firstname2, motherfirstname, ((dateFrom != null) ? (dateFrom.getTime() / 1000) + "" : ""), ((dateTo != null) ? (dateTo.getTime() / 1000) + "" : ""),"", surname, mothersurname,
-                    placeodbirthId, healthfacility, villagename, status, params[0]);
-
-            return responce;
-        }
-
-        @Override
-        protected void onPostExecute(Integer result) {
-            if((children == null)){
-                pbar.setVisibility(View.GONE);
-                lvChildrenSearchResults.setAdapter(null);
-                previousCard.setVisibility(View.GONE);
-                forwardCard.setVisibility(View.GONE);
+        try {
+            if (villageSpinner.getSelectedItemPosition() != 0) {
+                villagename = placeList.get(villageSpinner.getSelectedItemPosition() - 1).getId();
+                Log.d("Selected from spinner", villagename);
             }else{
-                serverdata = false;
-                childListLayout.setVisibility(View.VISIBLE);
-                if (autorefreshTriggered){
-                    adapter.updateReceiptsList(children);
-                    adapter.notifyDataSetChanged();
-                }
-                else {
-                    adapter = new AdapterGridDataSearchResult(SearchChildFragment.this.getActivity(), children, mydb, num);
-                    lvChildrenSearchResults.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
-                }
-                pbar.setVisibility(View.GONE);
-                if (children.size() < 10){
-                    forwardCard.setVisibility(View.GONE);
-                }else{
-                    forwardCard.setVisibility(View.VISIBLE);
-                }
+                villagename = "";
             }
-
+        } catch (Exception e) {
         }
 
-        @Override
-        protected void onProgressUpdate(Void... values) {}
+        try {
+            if (healthFacilitySpinner.getSelectedItemPosition() != 0) {
+                healthfacility = healthFacilityList.get(healthFacilitySpinner.getSelectedItemPosition() - 1).getId();
+                Log.d("Selected from spinner", healthfacility);
+            }else{
+                healthfacility = "";
+            }
+        } catch (Exception e) {
+        }
+
+        try {
+            status="";
+        } catch (Exception e) {
+        }
+
+        if (currentCount.equals("0")){
+            previousCard.setVisibility(View.GONE);
+        }else{
+            previousCard.setVisibility(View.VISIBLE);
+        }
+
+        Observable.defer(new Func0<Observable<String>>() {
+            @Override
+            public Observable<String> call() {
+                // Do some long running operation
+                int responce = 0;
+                String num = "0";
+                if(!num.equals("")) {
+                    num = number;
+                }
+                children = mydb.searchChild(barcode,
+                        firstname,firstname2, motherfirstname, ((dateFrom != null) ? (dateFrom.getTime() / 1000) + "" : ""), ((dateTo != null) ? (dateTo.getTime() / 1000) + "" : ""),"", surname, mothersurname,
+                        placeodbirthId, healthfacility, villagename, status, number);
+                return Observable.just(num);
+            }
+        })// Run on a background thread
+                .subscribeOn(AndroidSchedulers.from(backgroundLooper)).compose(this.<String>bindToLifecycle())
+                // Be notified on the main thread
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d(TAG, "onCompleted()");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError()", e);
+                    }
+
+                    @Override
+                    public void onNext(String num) {
+                        Log.d(TAG, "onNext(" + num + ")");
+
+                        if((children == null)){
+                            pbar.setVisibility(View.GONE);
+                            lvChildrenSearchResults.setAdapter(null);
+                            previousCard.setVisibility(View.GONE);
+                            forwardCard.setVisibility(View.GONE);
+                        }else{
+                            serverdata = false;
+                            childListLayout.setVisibility(View.VISIBLE);
+                            if (autorefreshTriggered){
+                                adapter.updateReceiptsList(children);
+                                adapter.notifyDataSetChanged();
+                            }
+                            else {
+                                adapter = new AdapterGridDataSearchResult(SearchChildFragment.this.getActivity(), children, mydb, num);
+                                lvChildrenSearchResults.setAdapter(adapter);
+                                adapter.notifyDataSetChanged();
+                            }
+                            pbar.setVisibility(View.GONE);
+                            if (children.size() < 10){
+                                forwardCard.setVisibility(View.GONE);
+                            }else{
+                                forwardCard.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }
+                });
 
     }
 
@@ -751,22 +755,23 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
                 if(et.getText().toString().equals(currentText) || (et.getText().toString().length() == 0)){
 
                 }else{
-                    new getChildren().execute(currentCount);
+                    getChildren(currentCount);
                 }
             }
         }
 
     }
 
-    private class ChildSynchronization extends AsyncTask<String, Void, Integer> {
 
-        @Override
-        protected Integer doInBackground(String... params) {
-            BackboneApplication application = (BackboneApplication) SearchChildFragment.this.getActivity().getApplication();
-            int parse_status = 0;
-            String village_id, hf_id;
+    private void  ChildSynchronization(final String id){
+        Observable.defer(new Func0<Observable<Boolean>>() {
+            @Override
+            public Observable<Boolean> call() {
+                // Do some long running operation
+                BackboneApplication application = (BackboneApplication) SearchChildFragment.this.getActivity().getApplication();
+                int parse_status = 0;
+                String village_id, hf_id;
 
-            for (String id : params) {
                 parse_status = application.parseChildById(id);
                 Log.d("parseChildCollectorbyId", parse_status+"");
                 if (parse_status != 2 && parse_status != 3) {
@@ -802,25 +807,37 @@ public class SearchChildFragment extends android.support.v4.app.Fragment impleme
                         }
                     }
                 }
+                return Observable.just(true);
             }
-            return parse_status;
-        }
+        })// Run on a background thread
+                .subscribeOn(AndroidSchedulers.from(backgroundLooper))
+                // Be notified on the main thread
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<Boolean>bindToLifecycle())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d(TAG, "onCompleted()");
 
-        @Override
-        protected void onPostExecute(Integer result) {
-            //super.onPostExecute(result);;
-//            myHandler.sendEmptyMessage(result);
-            //parseChildByBarcode = result;
+                        if(currentChildPosition!=-1) {
+                            Intent childDetailsActivity = new Intent(SearchChildFragment.this.getActivity(), ChildDetailsActivity.class);
+                            childDetailsActivity.putExtra("barcode", adapter.getBarcode(currentChildPosition));
+                            childDetailsActivity.putExtra(BackboneApplication.CHILD_ID, adapter.getChildid(currentChildPosition));
+                            startActivity(childDetailsActivity);
+                            currentChildPosition = -1;
+                        }
+                    }
 
-            if(currentChildPosition!=-1) {
-                Intent childDetailsActivity = new Intent(SearchChildFragment.this.getActivity(), ChildDetailsActivity.class);
-                childDetailsActivity.putExtra("barcode", adapter.getBarcode(currentChildPosition));
-                childDetailsActivity.putExtra(BackboneApplication.CHILD_ID, adapter.getChildid(currentChildPosition));
-                startActivity(childDetailsActivity);
-                currentChildPosition = -1;
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError()", e);
+                    }
 
-        }
+                    @Override
+                    public void onNext(Boolean string) {
+                        Log.d(TAG, "onNext(" + string + ")");
+                    }
+                });
     }
 
     private void parseHFIDWhenNotInDb(DatabaseHandler db, BackboneApplication app){

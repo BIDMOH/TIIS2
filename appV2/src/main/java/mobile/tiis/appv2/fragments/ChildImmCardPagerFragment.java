@@ -2,12 +2,18 @@ package mobile.tiis.appv2.fragments;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.trello.rxlifecycle.components.support.RxFragment;
 
 import java.util.ArrayList;
 
@@ -19,11 +25,18 @@ import mobile.tiis.appv2.base.BackboneApplication;
 import mobile.tiis.appv2.database.DatabaseHandler;
 import mobile.tiis.appv2.entity.Child;
 import mobile.tiis.appv2.entity.ImmunizationCardItem;
+import mobile.tiis.appv2.CustomViews.NestedListView;
+import mobile.tiis.appv2.util.BackgroundThread;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func0;
 
 /**
  * Created by issymac on 26/01/16.
  */
-public class ChildImmCardPagerFragment extends Fragment {
+public class ChildImmCardPagerFragment extends RxFragment {
+    private static final String TAG = ChildImmCardPagerFragment.class.getSimpleName();
 
     private BackboneApplication app;
 
@@ -44,6 +57,7 @@ public class ChildImmCardPagerFragment extends Fragment {
     private TextView cardTitle, vacDoseTitle, vacLotTitle, healthFacTitle, vacDateTitle, doneCheckboxTitle, reasonTitle;
 
     RelativeLayout immListEmptyState;
+    private Looper backgroundLooper;
 
     public static ChildImmCardPagerFragment newInstance(Child currentChild) {
         ChildImmCardPagerFragment f = new ChildImmCardPagerFragment();
@@ -64,6 +78,10 @@ public class ChildImmCardPagerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup v;
         v = (ViewGroup) inflater.inflate(R.layout.fragment_child_imm_card, null);
+
+        BackgroundThread backgroundThread = new BackgroundThread();
+        backgroundThread.start();
+        backgroundLooper = backgroundThread.getLooper();
 
         app = (BackboneApplication) this.getActivity().getApplication();
         initViews(v);
@@ -106,28 +124,40 @@ public class ChildImmCardPagerFragment extends Fragment {
             childId = currentChild.getId();
         }
 
-        new AsyncTask<Void,Void,Void>(){
-
+        Observable.defer(new Func0<Observable<Boolean>>() {
             @Override
-            protected Void doInBackground(Void... params) {
+            public Observable<Boolean> call() {
+                // Do some long running operation
                 immunizationCardList = mydb.getImmunizationCard(childId);
-                return null;
+                return Observable.just(true);
             }
+        })// Run on a background thread
+                .subscribeOn(AndroidSchedulers.from(backgroundLooper))
+                // Be notified on the main thread
+                .observeOn(AndroidSchedulers.mainThread()).compose(this.<Boolean>bindToLifecycle())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d(TAG, "onCompleted()");
+                        if (immunizationCardList.size() > 0){
+                            immListEmptyState.setVisibility(View.GONE);
+                            adapter = new ImmunizationCardAdapter(getActivity(), immunizationCardList);
+                            immCardList.setAdapter(adapter);
+                        }else{
+                            immListEmptyState.setVisibility(View.VISIBLE);
+                        }
+                    }
 
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                if (immunizationCardList.size() > 0){
-                    immListEmptyState.setVisibility(View.GONE);
-                    adapter = new ImmunizationCardAdapter(getActivity(), immunizationCardList);
-                    immCardList.setAdapter(adapter);
-                }else{
-                    immListEmptyState.setVisibility(View.VISIBLE);
-                }
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError()", e);
+                    }
 
-
+                    @Override
+                    public void onNext(Boolean string) {
+                        Log.d(TAG, "onNext(" + string + ")");
+                    }
+                });
     }
 
     private void initListeners(){
