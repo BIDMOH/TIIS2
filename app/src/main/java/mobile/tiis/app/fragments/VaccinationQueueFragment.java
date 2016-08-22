@@ -200,6 +200,11 @@ public class VaccinationQueueFragment extends android.support.v4.app.DialogFragm
                     Intent childDetailsActivity = new Intent(VaccinationQueueFragment.this.getActivity(), ChildDetailsActivity.class);
                     childDetailsActivity.putExtra("barcode", barcode);
                     childDetailsActivity.putExtra("current", 2);
+
+                    if(!currentChild.getHealthcenterId().equals(app.getLOGGED_IN_USER_HF_ID())) {
+                        childDetailsActivity.putExtra("isNewChild", true);
+                    }
+
                     childDetailsActivity.putExtra("appointmentId", var.get(i - 1).getAppointment_id());
                     VaccinationQueueFragment.this.getActivity().startActivity(childDetailsActivity);
 
