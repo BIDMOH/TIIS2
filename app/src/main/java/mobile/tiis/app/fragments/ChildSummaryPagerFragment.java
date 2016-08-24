@@ -5,11 +5,8 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
-import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -129,7 +126,12 @@ public class ChildSummaryPagerFragment extends RxFragment {
     private List<String> place_names;
 
     final DatePickerDialog doBDatePicker = new DatePickerDialog();
-    private boolean isNewChild;
+
+    /** childWithEditableChildCumulativeSnAndChildRegistryYear is a boolean value used to specify children whose child cumulative registration numbers should not be editable
+     * these children include children from outside catchment whereby child cumulative number and child registration year should be left unchanged and
+     * new registered children who have not been synched to the server, child cumulative number and child registration year should also be left unchaged
+     */
+    private boolean childWithEditableChildCumulativeSnAndChildRegistryYear;
     private Looper backgroundLooper;
 
     LayoutInflater inflator;
@@ -155,7 +157,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
         super.onCreate(savedInstanceState);
         position    = getArguments().getInt(ARG_POSITION);
         value     = getArguments().getString(VALUE);
-        isNewChild = getArguments().getBoolean(NEW_REGISTERED_CHILD);
+        childWithEditableChildCumulativeSnAndChildRegistryYear = getArguments().getBoolean(NEW_REGISTERED_CHILD);
     }
 
     @Override
@@ -271,7 +273,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
         });
 
 
-        if(isNewChild){
+        if(childWithEditableChildCumulativeSnAndChildRegistryYear){
             registryYearSpinner.setVisibility(View.GONE);
             metCummulativeSn.setVisibility(View.GONE);
         }
@@ -1076,21 +1078,21 @@ public class ChildSummaryPagerFragment extends RxFragment {
             return false;
         }
 
-        if (registryYearSpinner.getSelectedItemPosition()==0 && !isNewChild) {
+        if (registryYearSpinner.getSelectedItemPosition()==0 && !childWithEditableChildCumulativeSnAndChildRegistryYear) {
             alertDialogBuilder.setMessage("Please select Child Registration Year");
             alertDialogBuilder.show();
             registryYearSpinner.setError("Please select Child Registration Year");
             return false;
         }
 
-        if (metCummulativeSn.getText().toString().equals("") && !isNewChild) {
+        if (metCummulativeSn.getText().toString().equals("") && !childWithEditableChildCumulativeSnAndChildRegistryYear) {
             alertDialogBuilder.setMessage("Please fill Child Cumulative Sn");
             alertDialogBuilder.show();
             metCummulativeSn.setError("Please fill Child Cumulative Sn");
             return false;
         }
 
-        if(!isNewChild){
+        if(!childWithEditableChildCumulativeSnAndChildRegistryYear){
             if(mydb.isChildRegistrationNoPresentInDb(registryYearList.get(registryYearSpinner.getSelectedItemPosition() - 1),metCummulativeSn.getText().toString(),metBarcodeValue.getText().toString())){
                 alertDialogBuilder.setMessage("The entered Child Cumulative Sn and Year have already been used");
                 alertDialogBuilder.show();
@@ -1141,16 +1143,18 @@ public class ChildSummaryPagerFragment extends RxFragment {
         giveValueAfterSave();
         ContentValues contentValues = new ContentValues();
 
-        if (!registryYearList.get(registryYearSpinner.getSelectedItemPosition()-1).equalsIgnoreCase(currentChild.getChildRegistryYear())){
-            currentChild.setChildRegistryYear(registryYearList.get(registryYearSpinner.getSelectedItemPosition() - 1));
-            contentValues.put(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR, registryYearList.get(registryYearSpinner.getSelectedItemPosition()-1));
-        }
+        if(!childWithEditableChildCumulativeSnAndChildRegistryYear) {
+            if (!registryYearList.get(registryYearSpinner.getSelectedItemPosition() - 1).equalsIgnoreCase(currentChild.getChildRegistryYear())) {
+                currentChild.setChildRegistryYear(registryYearList.get(registryYearSpinner.getSelectedItemPosition() - 1));
+                contentValues.put(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR, registryYearList.get(registryYearSpinner.getSelectedItemPosition() - 1));
+            }
 
 
-        if (!metCummulativeSn.getText().toString().equalsIgnoreCase(currentChild.getChildCumulativeSn())){
-            currentChild.setChildCumulativeSn(metCummulativeSn.getText().toString());
-            Log.d("CSN", "cummulative saved"+currentChild.getChildCumulativeSn());
-            contentValues.put(SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER, metCummulativeSn.getText().toString());
+            if (!metCummulativeSn.getText().toString().equalsIgnoreCase(currentChild.getChildCumulativeSn())) {
+                currentChild.setChildCumulativeSn(metCummulativeSn.getText().toString());
+                Log.d("CSN", "cummulative saved" + currentChild.getChildCumulativeSn());
+                contentValues.put(SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER, metCummulativeSn.getText().toString());
+            }
         }
 
         if (!vvuStatusList.get(VVUSpinner.getSelectedItemPosition()-1).equalsIgnoreCase(currentChild.getMotherHivStatus())){
