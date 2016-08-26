@@ -105,12 +105,12 @@ public class BackboneApplication extends Application {
     /**
      * Testing WCF
      */
-//    public static final String WCF_URL = "https://ec2-54-187-21-117.us-west-2.compute.amazonaws.com/SVC/";
+    public static final String WCF_URL = "https://ec2-54-187-21-117.us-west-2.compute.amazonaws.com/SVC/";
 
     /**
      * Live WCF
      */
-    public static final String WCF_URL = "https://ec2-52-11-215-89.us-west-2.compute.amazonaws.com/SVC/";
+//    public static final String WCF_URL = "https://ec2-52-11-215-89.us-west-2.compute.amazonaws.com/SVC/";
 
     public static final String USER_MANAGEMENT_SVC = "UserManagement.svc/";
     public static final String PLACE_MANAGEMENT_SVC = "PlaceManagement.svc/";
@@ -2581,9 +2581,17 @@ public class BackboneApplication extends Application {
      * @Arinela
      */
     private boolean isChildInServer = false;
-    public boolean checkChildInServer(String lastname, String bDate, String gender) {
+
+    public boolean checkChildInServer(String lastname,String motherFirstname, String motherLastname,String bDate, String gender) {
         final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC);
-        webServiceUrl.append("ChildExistsByLastnameAndBirthdateAndGender?lastname1=").append(URLEncoder.encode(lastname)).append("&birthdate=")
+        webServiceUrl
+                .append("ChildExistsByMotherAndBirthdateAndGender?lastname1=")
+                .append(URLEncoder.encode(lastname))
+                .append("&motherFirstname=")
+                .append(URLEncoder.encode(motherFirstname))
+                .append("&motherLastname=")
+                .append(URLEncoder.encode(motherLastname))
+                .append("&birthdate=")
                 .append(bDate).append("&gender=").append(gender);
 
         Log.e("service weight", webServiceUrl + "");
