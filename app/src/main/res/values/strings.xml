@@ -115,7 +115,8 @@
     <string name="change_barcode_scan_when_exists_dialog">Mtoto huyu tayari ananamba ya bakidi. Unataka kumpatia namba nyingine?</string>
     <string name="empty_child_id">Namba ya mtoto haijajazwa</string>
     <string name="empty_names">Jina la pili la mtoto halijajazwa</string>
-    <string name="empty_mother_names">Majina ya mama hayawezi kuachwa wazi</string>
+    <string name="empty_mother_names">Usiache Wazi</string>
+    <string name="empty_mother_vvu">Usiache Wazi</string>
     <string name="future_birth_date">Tarehe ya kuzaliwa sio sahihi</string>
     <string name="empty_birthplace">Tarehe ya kuzaliwa haijajazwa</string>
     <string name="empty_village">Chagua kijiji</string>

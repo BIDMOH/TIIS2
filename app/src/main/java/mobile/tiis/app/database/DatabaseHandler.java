@@ -1887,6 +1887,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         boolean thereIsData = false;
 
+        Log.d("PANDA", barcode);
+
         String selectQuery = "";
         if(!healthID.equals("")){
             thereIsData=true;
@@ -1935,11 +1937,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if(!statusId.equals("")){
             thereIsData=true;
             selectQuery+="STATUS_ID like '%" + statusId +  "%' AND ";
-        }
-
-        if(!barcode.equals("")){
-            thereIsData=true;
-            selectQuery+="BARCODE_ID like '%" + barcode +  "%' AND ";
         }
 
         if(!barcode.equals("")){
