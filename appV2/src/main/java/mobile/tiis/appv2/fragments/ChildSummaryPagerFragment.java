@@ -8,6 +8,9 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
+import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -134,6 +137,9 @@ public class ChildSummaryPagerFragment extends RxFragment {
      */
     private boolean childWithEditableChildCumulativeSnAndChildRegistryYear;
     private Looper backgroundLooper;
+    private boolean barcodeChanged = false;
+    private boolean registryYearChanged = false;
+    private boolean cummulativeSnChanged = false;
 
     LayoutInflater inflator;
 
@@ -263,12 +269,31 @@ public class ChildSummaryPagerFragment extends RxFragment {
         registryYearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position>0)
+                if(position>0){
+                    registryYearChanged = true;
                     childRegistryYearOrig = registryYearList.get(position - 1);
+                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        metCummulativeSn.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                cummulativeSnChanged = true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
 
             }
         });
@@ -378,6 +403,9 @@ public class ChildSummaryPagerFragment extends RxFragment {
             public void onClick(View view) {
                 enableUserInputs(true);
                 app.saveNeeded = true;
+                cummulativeSnChanged    = false;
+                registryYearChanged     = false;
+
                 editButton.setVisibility(View.GONE);
                 saveButton.setVisibility(View.VISIBLE);
             }
@@ -1094,12 +1122,14 @@ public class ChildSummaryPagerFragment extends RxFragment {
         }
 
         if(!childWithEditableChildCumulativeSnAndChildRegistryYear){
-            if(mydb.isChildRegistrationNoPresentInDb(registryYearList.get(registryYearSpinner.getSelectedItemPosition() - 1),metCummulativeSn.getText().toString(),metBarcodeValue.getText().toString())){
-                alertDialogBuilder.setMessage("The entered Child Cumulative Sn and Year have already been used");
-                alertDialogBuilder.show();
-                metCummulativeSn.setError("Please fill Child Cumulative Sn");
-                registryYearSpinner.setError("Please select Child Registration Year");
-                return false;
+            if (cummulativeSnChanged || registryYearChanged){
+                if(mydb.isChildRegistrationNoPresentInDb(registryYearList.get(registryYearSpinner.getSelectedItemPosition() - 1),metCummulativeSn.getText().toString(),metBarcodeValue.getText().toString())){
+                    alertDialogBuilder.setMessage("The entered Child Cumulative Sn and Year have already been used");
+                    alertDialogBuilder.show();
+                    metCummulativeSn.setError("Please fill Child Cumulative Sn");
+                    registryYearSpinner.setError("Please select Child Registration Year");
+                    return false;
+                }
             }
         }
 

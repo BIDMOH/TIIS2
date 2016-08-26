@@ -236,7 +236,7 @@
     <string name="change_barcode_scan_when_exists_dialog">This child already has a barcode, are you sure you want to assign another one?</string>
     <string name="empty_child_id">The child Id field can not be empty</string>
     <string name="empty_names">The last/first name cannot be empty</string>
-    <string name="empty_mother_names">The last/first mother name cannot be empty</string>
+    <string name="empty_mother_names">Can not be empty</string>
     <string name="empty_firstname">The firstname cannot be empty</string>
     <string name="empty_surname">The surname cannot be empty</string>
     <string name="future_birth_date">The selected date of birth is incorrect</string>
