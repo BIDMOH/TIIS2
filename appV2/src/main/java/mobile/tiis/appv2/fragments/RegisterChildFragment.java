@@ -591,7 +591,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                     } else {
                         if(!progressDialog.isShowing())
                             progressDialog.show();
-                        askServerIfthereIsSimilarChild(etSurname.getText().toString(), bdate, gen);
+                        askServerIfthereIsSimilarChild(etSurname.getText().toString(), etMotherFirstName.getText().toString(), etMotherSurname.getText().toString(), bdate, gen);
                         Log.e("CheckInSever", "CheckInSever");
                     }
 
@@ -763,16 +763,6 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
             etbarcode.setError(getString(R.string.barcode_ten_numbers_constraint));
             return false;
         }
-//        if (etFirstName.getText().toString().isEmpty()) {
-//            etFirstName.setErrorColor(Color.RED);
-//            etFirstName.setError(getString(R.string.empty_firstname));
-//            return false;
-//        }
-//        if (etSurname.getText().toString().isEmpty()) {
-//            etSurname.setError(getString(R.string.empty_surname));
-//            etSurname.setErrorColor(Color.RED);
-//            return false;
-//        }
 
         if (etMotherFirstName.getText().toString().isEmpty()) {
             etMotherFirstName.setError(getString(R.string.empty_mother_names));
@@ -1009,19 +999,19 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                 .create();
     }
 
-    private synchronized void askServerIfthereIsSimilarChild(String lastname, final Date bdate, String gender) {
+    private synchronized void askServerIfthereIsSimilarChild(String lastname,String threadMothersFirstName, String threadMothersLastName, final Date bdate, String gender) {
         new Thread() {
             String threadBDateString;
-            String threadLastname
-                    ,
-                    threadGender;
+            String threadLastname, threadGender,threadMothersFirstName,threadMothersLastName;
 
-            public Thread setData(String threadLastname, Date threadBDate, String threadGender) {
+            public Thread setData(String threadLastname,String threadMothersFirstName,String threadMothersLastName, Date threadBDate, String threadGender) {
 
                 try {
                     this.threadLastname = threadLastname;
                     this.threadBDateString = URLEncoder.encode(new SimpleDateFormat("yyyy-MM-dd").format(threadBDate), "utf-8");
                     this.threadGender = threadGender;
+                    this.threadMothersFirstName = threadMothersFirstName;
+                    this.threadMothersLastName = threadMothersLastName;
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -1034,7 +1024,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
                 BackboneApplication backbone = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
 
-                final boolean found = backbone.checkChildInServer(threadLastname, threadBDateString, threadGender);
+                final boolean found = backbone.checkChildInServer(threadLastname,threadMothersFirstName,threadMothersLastName, threadBDateString, threadGender);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -1049,7 +1039,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                     }
                 });
             }
-        }.setData(lastname, bdate, gender).start();
+        }.setData(lastname,threadMothersFirstName,threadMothersLastName, bdate, gender).start();
     }
 
     private String removeWhiteSpaces(String withWhiteSpace){
@@ -1396,12 +1386,6 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                         childFName = searchSectionFname.getText().toString();
                     }
 
-                    String ChildMName = null;
-//                    if (!(searchSectionSname.getText().toString().equals("") || metMName.getText().toString().isEmpty())){
-//                        ChildMName = metMName.getText().toString();
-//                    }else{
-//                        emptyInputDetected++;
-//                    }
 
                     String motherFname = null;
                     if (!(searchSectionMotherFname.getText().toString().equals("") || searchSectionMotherFname.getText().toString().isEmpty())) {
