@@ -1043,9 +1043,14 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
     }
 
     private String removeWhiteSpaces(String withWhiteSpace){
-        String withoutWhiteSpace;
-        withoutWhiteSpace = withWhiteSpace.replaceAll("\\s+", "");
-        return withoutWhiteSpace;
+        try {
+            String withoutWhiteSpace;
+            withoutWhiteSpace = withWhiteSpace.replaceAll("\\s+", "");
+            return withoutWhiteSpace;
+        }catch (Exception e){
+            e.printStackTrace();
+            return withWhiteSpace;
+        }
     }
 
     private synchronized void registerChildWithoutAppointments(String barcode, String fristname, String lastname, Date bDate, String gender, String  hfid, String birthPlaceId, String domId,
