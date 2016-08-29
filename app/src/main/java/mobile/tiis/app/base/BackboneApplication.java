@@ -3245,47 +3245,62 @@ public class BackboneApplication extends Application {
     }
 
     public void parseStockAdjustmentReasons() {
+        try {
+            String username, password;
+            if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
+                List<User> allUsers = databaseInstance.getAllUsers();
+                User user = allUsers.get(0);
 
-        final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(STOCK_MANAGEMENT_SVC).append(GET_STOCK_ADJUSTMENT);
-        Log.d("", webServiceUrl.toString());
-
-        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
-        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                throwable.printStackTrace();
+                username = user.getUsername();
+                password = user.getPassword();
+                client.setBasicAuth(username, password, true);
+            } else {
+                username = LOGGED_IN_USERNAME;
+                password = LOGGED_IN_USER_PASS;
+                client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
             }
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String response) {
-                List<AdjustmentReasons> objects = new ArrayList<AdjustmentReasons>();
-                try {
-                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-                    ObjectMapper mapper = new ObjectMapper();
-                    mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-                    objects = mapper.readValue(response, new TypeReference<List<AdjustmentReasons>>() {
-                    });
+            final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(STOCK_MANAGEMENT_SVC).append(GET_STOCK_ADJUSTMENT);
+            Log.d("", webServiceUrl.toString());
+            RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    throwable.printStackTrace();
+                }
 
-                } catch (JsonGenerationException e) {
-                    e.printStackTrace();
-                } catch (JsonMappingException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    for (AdjustmentReasons object : objects) {
-                        ContentValues adCV = new ContentValues();
-                        DatabaseHandler db = getDatabaseInstance();
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String response) {
+                    List<AdjustmentReasons> objects = new ArrayList<AdjustmentReasons>();
+                    try {
+                        Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                        ObjectMapper mapper = new ObjectMapper();
+                        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                        objects = mapper.readValue(response, new TypeReference<List<AdjustmentReasons>>() {
+                        });
 
-                        adCV.put(SQLHandler.AdjustmentColumns.NAME, object.getName());
-                        adCV.put(SQLHandler.AdjustmentColumns.ID, object.getId());
-                        adCV.put(SQLHandler.AdjustmentColumns.POSITIVE, object.getPozitive());
-                        adCV.put(SQLHandler.AdjustmentColumns.IS_ACTIVE, object.getIsActive());
-                        db.addStockAdjustment(adCV);
+                    } catch (JsonGenerationException e) {
+                        e.printStackTrace();
+                    } catch (JsonMappingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        for (AdjustmentReasons object : objects) {
+                            ContentValues adCV = new ContentValues();
+                            DatabaseHandler db = getDatabaseInstance();
+
+                            adCV.put(SQLHandler.AdjustmentColumns.NAME, object.getName());
+                            adCV.put(SQLHandler.AdjustmentColumns.ID, object.getId());
+                            adCV.put(SQLHandler.AdjustmentColumns.POSITIVE, object.getPozitive());
+                            adCV.put(SQLHandler.AdjustmentColumns.IS_ACTIVE, object.getIsActive());
+                            db.addStockAdjustment(adCV);
+                        }
                     }
                 }
-            }
-        });
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 
