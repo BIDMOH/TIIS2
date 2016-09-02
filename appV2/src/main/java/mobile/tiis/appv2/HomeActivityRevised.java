@@ -276,13 +276,14 @@ public class HomeActivityRevised extends BackboneActivity {
                     new firstLoginOfDaySynchronisation().execute(0);
             } else if (Utils.isOnline(this) && secondSyncNeeded) {
                 Log.e("RUBIN", "RUBIN secondSyncNeeded");
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-                    new updateSynchronisation().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, 0);
-                else
-                    new updateSynchronisation().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,0);
-
-                //Starting the repeating synchronisation procedure that happens every 10 minutes
-                // and pulls changes done to children or children added
+                try {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+                        new updateSynchronisation().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, 0);
+                    else
+                        new updateSynchronisation().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, 0);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
 
             }
             RoutineAlarmReceiver.setAlarmCheckForChangesInChild(this);
@@ -650,22 +651,22 @@ public class HomeActivityRevised extends BackboneActivity {
             return true;
         }
 
-    @Override
-    protected void onPostExecute(Boolean result) {
-        super.onPostExecute(result);
-        Log.e("SYNC FINISHED", "Database synchronization finished.");
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            Log.e("SYNC FINISHED", "Database synchronization finished.");
 
 
-        //Starting the repeating synchronisation procedure that happens every 10 minutes
-        // and pulls changes done to children or children added
-        RoutineAlarmReceiver.setAlarmCheckForChangesInChild(HomeActivityRevised.this);
+            //Starting the repeating synchronisation procedure that happens every 10 minutes
+            // and pulls changes done to children or children added
+            RoutineAlarmReceiver.setAlarmCheckForChangesInChild(HomeActivityRevised.this);
 
-        if (!DatabaseHandler.dbPreinstalled)
-            Toast.makeText(getApplicationContext(), "mainSynchronisation finished.", Toast.LENGTH_LONG).show(
+            if (!DatabaseHandler.dbPreinstalled)
+                Toast.makeText(getApplicationContext(), "mainSynchronisation finished.", Toast.LENGTH_LONG).show(
 
-        );
+                );
+        }
     }
-}
 
 
     private class updateSynchronisation extends AsyncTask<Integer, Integer, Boolean> {
@@ -834,23 +835,23 @@ public class HomeActivityRevised extends BackboneActivity {
                             });
         }else if(fragment.equals(REPORTS_FRAGMENT)){
             alertDialogBuilder
-        .setCancelable(false)
-                .setPositiveButton("OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int id) {
-                                // get user input and set it to result
-                                // edit text
-                                setPromptNeeded(false);
-                                changeFragmentToReportActivity(title);
-                            }
-                        })
-                .setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-    }else {
+                    .setCancelable(false)
+                    .setPositiveButton("OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,int id) {
+                                    // get user input and set it to result
+                                    // edit text
+                                    setPromptNeeded(false);
+                                    changeFragmentToReportActivity(title);
+                                }
+                            })
+                    .setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+        }else {
             // set dialog message
             alertDialogBuilder
                     .setCancelable(false)

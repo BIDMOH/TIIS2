@@ -134,6 +134,8 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
     private GoogleCloudMessaging gcm;
     private AsyncTask<Void, Void, Void> mRegisterTask;
 
+    private DatabaseHandler databaseHandler;
+    private BackboneApplication app;
 
 
 
@@ -340,6 +342,8 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
         client.setTimeout(DEFAULT_TIMEOUT);
         client.setMaxConnections(20);
 
+        app =(BackboneApplication)getApplication();
+        databaseHandler =app.getDatabaseInstance();
         if (checkPlayServices()) {
             gcm = GoogleCloudMessaging.getInstance(this);
             GCMRegistrar.checkDevice(this);
@@ -372,9 +376,8 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
             setSupportActionBar(toolbar);
         }
 
-        BackboneApplication app = (BackboneApplication)getApplication();
         String dateNow = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
-        app.getDatabaseInstance().deleteVaccinationQueueEntriesOfOtherDays(dateNow);
+        databaseHandler.deleteVaccinationQueueEntriesOfOtherDays(dateNow);
 
         app.LAST_FRAGMENT = "mobile.tiis.appv2.fragments.HomeFragment";
         app.LAST_FRAGMENT_TITLE = getString(R.string.home);
@@ -407,18 +410,18 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
         language.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    switch (i) {
-                        case 0:
-                            languagePosition = 0;
-                            setLocale("sw");
-                            Log.d(TAGG, "selected position is " + i + " I put 0");
-                            break;
-                        case 1:
-                            languagePosition = 1;
-                            setLocale("en");
-                            Log.d(TAGG, "selected position is "+i+" I put 1");
-                            break;
-                    }
+                switch (i) {
+                    case 0:
+                        languagePosition = 0;
+                        setLocale("sw");
+                        Log.d(TAGG, "selected position is " + i + " I put 0");
+                        break;
+                    case 1:
+                        languagePosition = 1;
+                        setLocale("en");
+                        Log.d(TAGG, "selected position is "+i+" I put 1");
+                        break;
+                }
             }
 
             @Override
@@ -458,6 +461,7 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
      */
 
     public void onClick(View v) {
+        Log.d(TAG,"clicked login");
         //get inserted username and password
         username = usernameEditText.getText().toString().trim();
         username = username.toLowerCase();
@@ -466,6 +470,7 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
         //check if required fields are not empty
         if(checkRequiredFields())
         {
+            Log.d(TAG,"check passed");
             progressDialog.setMessage("Signing in. \nPlease wait ...");
             progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.setCancelable(false);
@@ -476,41 +481,44 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
             if(Utils.isOnline(LoginActivity.this))
             {
 
-               //Checking if the user had once logged in
-                //check if user is already registered with AccountManager
-                AccountManager accountManager = AccountManager.get(LoginActivity.this);
-                Account[] accounts = accountManager.getAccountsByType(ACCOUNT_TYPE);
                 boolean loggedIn = false;
+                if(databaseHandler.getAllUsers().size()!=0){
+                    //Checking if the user had once logged in
+                    //check if user is already registered with AccountManager
+                    AccountManager accountManager = AccountManager.get(LoginActivity.this);
+                    Account[] accounts = accountManager.getAccountsByType(ACCOUNT_TYPE);
 
-                //go through all accounts found in Account Manager
-                for(Account account : accounts)
-                {
-                    //if there is a match set login as true and go to Home Activity
-                    if(account.name.equalsIgnoreCase(username) && accountManager.getPassword(account).equals(password))
-                    {
-                        //Activity mobile.tiis.appv2.LoginActivity has leaked window error was showing
-                        //this piece of code handles it, nonetheless in prod time the error  would not show
-                        if(progressDialog!=null && progressDialog.isShowing()){
-                            progressDialog.dismiss();
+                    //go through all accounts found in Account Manager
+                    for (Account account : accounts) {
+                        //if there is a match set login as true and go to Home Activity
+                        if (account.name.equalsIgnoreCase(username) && accountManager.getPassword(account).equals(password)) {
+                            //Activity mobile.tiis.app.LoginActivity has leaked window error was showing
+                            //this piece of code handles it, nonetheless in prod time the error  would not show
+                            if (progressDialog != null && progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                            }
+
+                            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+                            editor.putBoolean("secondSyncNeeded", true);
+                            editor.commit();
+
+                            Intent intent = new Intent(LoginActivity.this, HomeActivityRevised.class);
+
+                            app.initializeOffline(username, password);
+
+
+                            Log.d(TAG, "initiating offline for " + username + " password = " + password);
+
+                            app.setUsername(username);
+                            Log.d("supportLog", "call the loggin first time before the account was found");
+                            startActivity(intent);
+                            loggedIn = true;
                         }
-
-                        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
-                        editor.putBoolean("secondSyncNeeded", true);
-                        editor.commit();
-
-                        Intent intent = new Intent(LoginActivity.this, HomeActivityRevised.class);
-
-                        BackboneApplication app = (BackboneApplication) getApplication();
-
-                        app.initializeOffline(username, password);
-
-                        app.setUsername(username);
-                        Log.d("supportLog", "call the loggin first time before the account was found");
-                        startActivity(intent);
-                        loggedIn = true;
                     }
+                }else{
+                    SharedPreferences preferenceManager = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    preferenceManager.edit().putBoolean("synchronization_needed", true);
                 }
-
                 if (!loggedIn){
 
                     //build webservice url
@@ -524,41 +532,40 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
                     }
                 }
 
-            }
-            //continue with device offline
-            else
-            {
-//                fakeLogin(username, password);
+            }else{
+
 
                 //check if user is already registered with AccountManager
                 AccountManager accountManager = AccountManager.get(LoginActivity.this);
                 Account[] accounts = accountManager.getAccountsByType(ACCOUNT_TYPE);
                 boolean loggedIn = false;
+                if(databaseHandler.getAllUsers().size()!=0) {
 
-                //go through all accounts found in AM
-                for(Account account : accounts)
-                {
-                    //if there is a match set login as true and go to Home Activity
-                    if(account.name.equalsIgnoreCase(username) && accountManager.getPassword(account).equals(password))
-                    {
-                        //Activity mobile.tiis.appv2.LoginActivity has leaked window error was showing
-                        //this piece of code handles it, nonetheless in prod time the error  would not show
-                        if(progressDialog!=null && progressDialog.isShowing()){
-                            progressDialog.dismiss();
+                    //go through all accounts found in AM
+                    for (Account account : accounts) {
+                        //if there is a match set login as true and go to Home Activity
+                        if (account.name.equalsIgnoreCase(username) && accountManager.getPassword(account).equals(password)) {
+                            //Activity mobile.tiis.app.LoginActivity has leaked window error was showing
+                            //this piece of code handles it, nonetheless in prod time the error  would not show
+                            if (progressDialog != null && progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                            }
+
+                            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+                            editor.putBoolean("secondSyncNeeded", true);
+                            editor.commit();
+
+                            Intent intent = new Intent(LoginActivity.this, HomeActivityRevised.class);
+                            app.setUsername(username);
+                            Log.d(TAG, "initiating offline for " + username + " password = " + password);
+                            app.initializeOffline(username, password);
+                            startActivity(intent);
+                            loggedIn = true;
                         }
-
-                        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
-                        editor.putBoolean("secondSyncNeeded", true);
-                        editor.commit();
-
-                        Intent intent = new Intent(LoginActivity.this, HomeActivityRevised.class);
-                        BackboneApplication app = (BackboneApplication) getApplication();
-
-                        app.setUsername(username);
-                        app.initializeOffline(username, password);
-                        startActivity(intent);
-                        loggedIn = true;
                     }
+                }else{
+                    SharedPreferences preferenceManager = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    preferenceManager.edit().putBoolean("synchronization_needed", true);
                 }
                 //if login failed, show error
                 if(!loggedIn){
@@ -591,7 +598,6 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
             public void run() {
                 try
                 {
-                    BackboneApplication app = (BackboneApplication)getApplication();
                     int balanceCounter = 0;
                     DefaultHttpClient httpClient = new DefaultHttpClient();
                     HttpGet httpGet = new HttpGet(loginURL.toString());
@@ -692,8 +698,7 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
                         values.put(SQLHandler.UserColumns.HEALTH_FACILITY_ID, app.getLOGGED_IN_USER_HF_ID());
                         values.put(SQLHandler.UserColumns.ID, app.getLOGGED_IN_USER_ID());
                         values.put(SQLHandler.UserColumns.USERNAME, app.getLOGGED_IN_USERNAME());
-                        DatabaseHandler db = app.getDatabaseInstance();
-                        db.addUser(values);
+                        databaseHandler.addUser(values);
 
                         app.initializeOffline(username, password);
 

@@ -286,9 +286,13 @@ public class BackboneApplication extends Application {
     }
 
     public void initializeOffline(String username, String password) {
+        Log.d(TAG,"initiating offline");
         if (databaseInstance != null) {
+            Log.d(TAG,"databaseinstance is not null");
             List<User> allUsers = databaseInstance.getAllUsers();
+            Log.d(TAG,"users count = "+allUsers.size());
             for (User thisUser : allUsers) {
+                Log.d(TAG,"users in device = "+thisUser.getUsername());
                 if (thisUser.getUsername().equals(username)) {
                     //Log.d("UserId is now offline", thisUser.getId());
                     LOGGED_IN_USER_ID = thisUser.getId();
@@ -300,6 +304,7 @@ public class BackboneApplication extends Application {
                     //Log.d("Initializied offline lastname", thisUser.getLastname());
                     LOGGED_IN_USER_HF_ID = thisUser.getHealthFacilityId();
                     LOGGED_IN_USER_PASS = password;
+                    Log.d(TAG,"user found username = "+LOGGED_IN_USERNAME);
                     return;
                 }
             }
@@ -472,7 +477,7 @@ public class BackboneApplication extends Application {
 
     }
     public void loginRequest(){
-    Log.d("coze", "inside login request");
+        Log.d("coze", "inside login request");
         StringBuilder webServiceLoginURL = null;
         try {
 
@@ -729,32 +734,32 @@ public class BackboneApplication extends Application {
 
             if (children != null) {
                 String sql0 = "INSERT OR REPLACE INTO " + SQLHandler.Tables.CHILD + " ( "+
-                    SQLHandler.SyncColumns.UPDATED+", "+
-                    SQLHandler.ChildColumns.ID+","+
-                    SQLHandler.ChildColumns.BARCODE_ID+","+
-                    SQLHandler.ChildColumns.FIRSTNAME1+","+
-                    SQLHandler.ChildColumns.FIRSTNAME2+","+
-                    SQLHandler.ChildColumns.LASTNAME1+","+
-                    SQLHandler.ChildColumns.BIRTHDATE+","+
-                    SQLHandler.ChildColumns.GENDER+","+
-                    SQLHandler.ChildColumns.TEMP_ID+","+
-                    SQLHandler.ChildColumns.HEALTH_FACILITY+","+
-                    SQLHandler.ChildColumns.DOMICILE+","+
-                    SQLHandler.ChildColumns.DOMICILE_ID+","+
-                    SQLHandler.ChildColumns.HEALTH_FACILITY_ID+","+
-                    SQLHandler.ChildColumns.STATUS_ID+","+
-                    SQLHandler.ChildColumns.BIRTHPLACE_ID+","+
-                    SQLHandler.ChildColumns.NOTES+","+
-                    SQLHandler.ChildColumns.STATUS+","+
-                    SQLHandler.ChildColumns.MOTHER_FIRSTNAME+","+
-                    SQLHandler.ChildColumns.MOTHER_LASTNAME+","+
-                    SQLHandler.ChildColumns.PHONE+","+
-                    SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER+","+
-                    SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR+","+
-                    SQLHandler.ChildColumns.MOTHER_VVU_STS+","+
-                    SQLHandler.ChildColumns.MOTHER_TT2_STS+","+
-                    SQLHandler.ChildColumns.MODIFIED_ON+
-                    " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?)";
+                        SQLHandler.SyncColumns.UPDATED+", "+
+                        SQLHandler.ChildColumns.ID+","+
+                        SQLHandler.ChildColumns.BARCODE_ID+","+
+                        SQLHandler.ChildColumns.FIRSTNAME1+","+
+                        SQLHandler.ChildColumns.FIRSTNAME2+","+
+                        SQLHandler.ChildColumns.LASTNAME1+","+
+                        SQLHandler.ChildColumns.BIRTHDATE+","+
+                        SQLHandler.ChildColumns.GENDER+","+
+                        SQLHandler.ChildColumns.TEMP_ID+","+
+                        SQLHandler.ChildColumns.HEALTH_FACILITY+","+
+                        SQLHandler.ChildColumns.DOMICILE+","+
+                        SQLHandler.ChildColumns.DOMICILE_ID+","+
+                        SQLHandler.ChildColumns.HEALTH_FACILITY_ID+","+
+                        SQLHandler.ChildColumns.STATUS_ID+","+
+                        SQLHandler.ChildColumns.BIRTHPLACE_ID+","+
+                        SQLHandler.ChildColumns.NOTES+","+
+                        SQLHandler.ChildColumns.STATUS+","+
+                        SQLHandler.ChildColumns.MOTHER_FIRSTNAME+","+
+                        SQLHandler.ChildColumns.MOTHER_LASTNAME+","+
+                        SQLHandler.ChildColumns.PHONE+","+
+                        SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER+","+
+                        SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR+","+
+                        SQLHandler.ChildColumns.MOTHER_VVU_STS+","+
+                        SQLHandler.ChildColumns.MOTHER_TT2_STS+","+
+                        SQLHandler.ChildColumns.MODIFIED_ON+
+                        " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?)";
 
                 SQLiteStatement stmt0 = db1.compileStatement(sql0);
                 for (Child child : children) {
@@ -791,21 +796,21 @@ public class BackboneApplication extends Application {
 
             if (vaccinationEvents != null) {
                 String sql = "INSERT OR REPLACE INTO " + SQLHandler.Tables.VACCINATION_EVENT + " ( "+
-                    SQLHandler.SyncColumns.UPDATED+", "+
-                    SQLHandler.VaccinationEventColumns.APPOINTMENT_ID+","+
-                    SQLHandler.VaccinationEventColumns.CHILD_ID+","+
-                    SQLHandler.VaccinationEventColumns.DOSE_ID+","+
-                    SQLHandler.VaccinationEventColumns.HEALTH_FACILITY_ID+","+
-                    SQLHandler.VaccinationEventColumns.ID+","+
-                    SQLHandler.VaccinationEventColumns.IS_ACTIVE+","+
-                    SQLHandler.VaccinationEventColumns.MODIFIED_BY+","+
-                    SQLHandler.VaccinationEventColumns.MODIFIED_ON+","+
-                    SQLHandler.VaccinationEventColumns.NONVACCINATION_REASON_ID+","+
-                    SQLHandler.VaccinationEventColumns.SCHEDULED_DATE+","+
-                    SQLHandler.VaccinationEventColumns.VACCINATION_DATE+","+
-                    SQLHandler.VaccinationEventColumns.VACCINATION_STATUS+","+
-                    SQLHandler.VaccinationEventColumns.VACCINE_LOT_ID+
-                    " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        SQLHandler.SyncColumns.UPDATED+", "+
+                        SQLHandler.VaccinationEventColumns.APPOINTMENT_ID+","+
+                        SQLHandler.VaccinationEventColumns.CHILD_ID+","+
+                        SQLHandler.VaccinationEventColumns.DOSE_ID+","+
+                        SQLHandler.VaccinationEventColumns.HEALTH_FACILITY_ID+","+
+                        SQLHandler.VaccinationEventColumns.ID+","+
+                        SQLHandler.VaccinationEventColumns.IS_ACTIVE+","+
+                        SQLHandler.VaccinationEventColumns.MODIFIED_BY+","+
+                        SQLHandler.VaccinationEventColumns.MODIFIED_ON+","+
+                        SQLHandler.VaccinationEventColumns.NONVACCINATION_REASON_ID+","+
+                        SQLHandler.VaccinationEventColumns.SCHEDULED_DATE+","+
+                        SQLHandler.VaccinationEventColumns.VACCINATION_DATE+","+
+                        SQLHandler.VaccinationEventColumns.VACCINATION_STATUS+","+
+                        SQLHandler.VaccinationEventColumns.VACCINE_LOT_ID+
+                        " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
                 SQLiteStatement stmt = db1.compileStatement(sql);
 
@@ -832,17 +837,17 @@ public class BackboneApplication extends Application {
 
             if (vaccinationAppointments != null) {
                 String sql1 = "INSERT OR REPLACE INTO " + SQLHandler.Tables.VACCINATION_APPOINTMENT + " ( "+
-                    SQLHandler.SyncColumns.UPDATED+", "+
-                    SQLHandler.VaccinationAppointmentColumns.CHILD_ID+","+
-                    SQLHandler.VaccinationAppointmentColumns.ID+","+
-                    SQLHandler.VaccinationAppointmentColumns.IS_ACTIVE+","+
-                    SQLHandler.VaccinationAppointmentColumns.MODIFIED_BY+","+
-                    SQLHandler.VaccinationAppointmentColumns.MODIFIED_ON+","+
-                    SQLHandler.VaccinationAppointmentColumns.NOTES+","+
-                    SQLHandler.VaccinationAppointmentColumns.OUTREACH+","+
-                    SQLHandler.VaccinationAppointmentColumns.SCHEDULED_DATE+","+
-                    SQLHandler.VaccinationAppointmentColumns.SCHEDULED_FACILITY_ID+
-                    " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
+                        SQLHandler.SyncColumns.UPDATED+", "+
+                        SQLHandler.VaccinationAppointmentColumns.CHILD_ID+","+
+                        SQLHandler.VaccinationAppointmentColumns.ID+","+
+                        SQLHandler.VaccinationAppointmentColumns.IS_ACTIVE+","+
+                        SQLHandler.VaccinationAppointmentColumns.MODIFIED_BY+","+
+                        SQLHandler.VaccinationAppointmentColumns.MODIFIED_ON+","+
+                        SQLHandler.VaccinationAppointmentColumns.NOTES+","+
+                        SQLHandler.VaccinationAppointmentColumns.OUTREACH+","+
+                        SQLHandler.VaccinationAppointmentColumns.SCHEDULED_DATE+","+
+                        SQLHandler.VaccinationAppointmentColumns.SCHEDULED_FACILITY_ID+
+                        " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
 
                 SQLiteStatement stmt1 = db1.compileStatement(sql1);
                 for (VaccinationAppointment vaccinationAppointment : vaccinationAppointments) {
@@ -1316,19 +1321,19 @@ public class BackboneApplication extends Application {
             public void onSuccess(int statusCode, Header[] headers, String result) {
                 try {
 
-                        Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
-                        JSONObject jsonObject = null;
-                        try {
-                            jsonObject = new JSONObject(result);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            updateAefiAppointementResults = false;
-                        }
-                        if (jsonObject != null && jsonObject.optString("id", "-1").equalsIgnoreCase("1")) {
-                            updateAefiAppointementResults = true;
-                        } else {
-                            updateAefiAppointementResults = false;
-                        }
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
+                    JSONObject jsonObject = null;
+                    try {
+                        jsonObject = new JSONObject(result);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        updateAefiAppointementResults = false;
+                    }
+                    if (jsonObject != null && jsonObject.optString("id", "-1").equalsIgnoreCase("1")) {
+                        updateAefiAppointementResults = true;
+                    } else {
+                        updateAefiAppointementResults = false;
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -2620,7 +2625,7 @@ public class BackboneApplication extends Application {
             }
         });
 
-       return isChildInServer;
+        return isChildInServer;
 
     }
 
