@@ -3372,8 +3372,6 @@ public class BackboneApplication extends Application {
         String url = WCF_URL + UPDATE_HEALTH_FACILITY_CHILD_CUMULATIVE_REGISTRATION_NUMBER +"?healthFacilityId="+ getLOGGED_IN_USER_HF_ID()+"&cumulativeChildSn="+no;
         client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
 
-        Log.e("updateHealthFacitliyCumulativeChildRegistrationNumber", url + "");
-
         RequestHandle message = client.get(url, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {

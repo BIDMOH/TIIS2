@@ -751,9 +751,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                 for (AdministerVaccinesModel a : arrayListAdminVacc) {
                     try {
                         DatabaseHandler db = application.getDatabaseInstance();
-                        Log.d("day4", "before uploading to server");
                         int status = application.updateVaccinationEventOnServer(a.getUpdateURL());
-                        Log.d("day4", " Status is  : " + status + "");
 
                         String dateTodayTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(Calendar.getInstance().getTime());
                         try {
@@ -765,23 +763,17 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                         application.registerAudit(BackboneApplication.CHILD_AUDIT, barcode, dateTodayTimestamp,
                                 application.getLOGGED_IN_USER_ID(), 7);
 
-                        //a.syncVaccines();
-
                         if (outreachChecked) {
                             int i = application.updateVaccinationAppOutreach(barcode, a.getDose_id());
-                            Log.d("day20", "called app outreach and result is  : " + i);
                         }
 
 
-                        Log.d("Updating balance", "");
                         if (a.getStatus().equalsIgnoreCase("true")) {
-                            Log.d("Starting update protocol", "");
                             Cursor cursor = db.getReadableDatabase().rawQuery("SELECT balance FROM health_facility_balance WHERE lot_id=?", new String[]{a.getVaccination_lot()});
                             //Cursor cursor = db.getReadableDatabase().rawQuery("UPDATE health_facility_balance SET balance = balance - 1 WHERE lot_id=?", new String[]{a.getVaccination_lot()});
                             if (cursor != null && cursor.getCount() > 0) {
                                 cursor.moveToFirst();
                                 int bal = cursor.getInt(cursor.getColumnIndex("balance"));
-                                Log.d("Balance found on database: ", bal + "");
                                 bal = bal - 1;
                                 Log.d("Balance being set: ", bal + "");
                                 ContentValues cv = new ContentValues();
