@@ -417,6 +417,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
                 if (checkDataIntegrityBeforeSave()) {
                     if (!localBarcode.equals(metBarcodeValue.getText().toString()) && !localBarcode.equals("")) {
                         showAlertThatChildHadABarcode();
+                        enableUserInputs(false);
                     } else {
                         editButton.setVisibility(View.VISIBLE);
                         saveButton.setVisibility(View.GONE);
@@ -568,7 +569,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
             }
         }
 
-        metBarcodeValue.setFocusableInTouchMode(fieldStatus);
+        metBarcodeValue .setFocusableInTouchMode(fieldStatus);
         metFirstName    .setFocusableInTouchMode(fieldStatus);
         metMiddleName   .setFocusableInTouchMode(fieldStatus);
         metLastName     .setFocusableInTouchMode(fieldStatus);
@@ -686,6 +687,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
             firstname2Orig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME2));
             lastnameOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.LASTNAME1));
 
+            Log.d(TAG,"birthdate = "+mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.BIRTHDATE)));
             bdate = BackboneActivity.dateParser(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.BIRTHDATE)));
             SimpleDateFormat ft = new SimpleDateFormat("dd/MM/yyyy");
             metDOB.setText(ft.format(bdate));
@@ -1007,12 +1009,10 @@ public class ChildSummaryPagerFragment extends RxFragment {
             alertDialogBuilder.show();
             return false;
         }
-        if (!metBarcodeValue.getText().toString().equalsIgnoreCase(currentChild.getBarcodeID())) {
-            if (mydb.isBarcodeInChildTable(metBarcodeValue.getText().toString())) {
-                alertDialogBuilder.setMessage(getString(R.string.barcode_assigned));
-                alertDialogBuilder.show();
-                return false;
-            }
+        if (metBarcodeValue.getText().length()!=10) {
+            alertDialogBuilder.setMessage(getString(R.string.barcode_ten_numbers_constraint));
+            alertDialogBuilder.show();
+            return false;
         }
         if (metLastName.getText().toString().isEmpty() || metLastName.getText().toString().isEmpty()) {
             alertDialogBuilder.setMessage(getString(R.string.empty_names));
@@ -1020,6 +1020,14 @@ public class ChildSummaryPagerFragment extends RxFragment {
             return false;
         }
 
+
+        if (!metBarcodeValue.getText().toString().equalsIgnoreCase(currentChild.getBarcodeID())) {
+            if (mydb.isBarcodeInChildTable(metBarcodeValue.getText().toString())) {
+                alertDialogBuilder.setMessage(getString(R.string.barcode_assigned));
+                alertDialogBuilder.show();
+                return false;
+            }
+        }
 
         if(checkIfTheEditTextContainsSpaces(metFirstName)){
             return false;
@@ -1152,8 +1160,10 @@ public class ChildSummaryPagerFragment extends RxFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 saveChangedData();
-                enableUserInputs(false);
                 dialog.dismiss();
+                editButton.setVisibility(View.VISIBLE);
+                saveButton.setVisibility(View.GONE);
+                enableUserInputs(false);
             }
         });
 

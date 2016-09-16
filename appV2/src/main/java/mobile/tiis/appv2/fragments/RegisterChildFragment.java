@@ -101,7 +101,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
     private MaterialEditText etChildCumulativeSn, etbarcode, etFirstName, etSurname, etMotherFirstName, etMotherSurname, etPhone, etNotes,etFirstname2;
     private MaterialEditText searchSectionBarcode, searchSectionFname, searchSectionSname, searchSectionDob, searchSectionMotherFname, searchSectionMotherSname;
 
-    private String barcode, firstanme, surname, motherFirstname, motherLastname, gender_val, gen, genderChildWithoutApp,firstname2, childRegistryYear;
+    private String barcode, firstanme, surname, motherFirstname, motherLastname, gen, genderChildWithoutApp,firstname2, childRegistryYear;
     private DatabaseHandler mydb;
     private ProgressDialog progressDialog;
     private BackboneApplication app;
@@ -582,16 +582,23 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                         return;
                     }
 
-//                  progBar.setVisibility(View.VISIBLE);
+                    String genderValue="";
+                    if (gen.equals("M")) {
+                        genderValue =  "true";
+                    } else if (gen.equals("F")) {
+                        genderValue =  "false";
+                    }
+
+
                     //kontrrollojme nese kemi ne db kete child me keto te dhena,nese true nxjerim dialog,nese false bejme regjistrimin
-                    if (mydb.isChildinDb(etSurname.getText().toString(), bdate.getTime(), gender_val)) {
+                    if (mydb.isChildinDb(etFirstName.getText().toString(),etFirstname2.getText().toString(),etSurname.getText().toString(),etMotherFirstName.getText().toString(),etMotherSurname.getText().toString(), bdate.getTime(), genderValue)) {
                         progressDialog.dismiss();
                         createDialogAlertIsInChild().show();
                         isSavingData =false;
                     } else {
                         if(!progressDialog.isShowing())
                             progressDialog.show();
-                        askServerIfthereIsSimilarChild(etSurname.getText().toString(), etMotherFirstName.getText().toString(), etMotherSurname.getText().toString(), bdate, gen);
+                        askServerIfthereIsSimilarChild(etSurname.getText().toString(), etMotherFirstName.getText().toString(), etMotherSurname.getText().toString(), bdate, genderValue);
                         Log.e("CheckInSever", "CheckInSever");
                     }
 

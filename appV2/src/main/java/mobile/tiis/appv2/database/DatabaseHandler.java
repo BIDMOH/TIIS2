@@ -2074,20 +2074,25 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     /**
-     * @param lastname
+     * @param surname
      * @param birthdate
      * @param gender
      * @return
      * @Arinela This method check if in our db have another child with this properties,and special part is date that i use this method to convert only yyyy-MM-dd
      */
 
-    public boolean isChildinDb(String lastname, long birthdate, String gender) {
+    public boolean isChildinDb(String firstname, String middlename,String surname,String mothersfirstName, String mothersLastName, long birthdate, String gender) {
         String selectQuery = "SELECT * FROM child" +
-                " WHERE LASTNAME1 = '" + lastname + "' AND strftime('%Y-%m-%d',substr(BIRTHDATE ,7,10), 'unixepoch') = strftime('%Y-%m-%d','" + (birthdate / 1000) + "','unixepoch')" +
-                " AND GENDER = '" + gender + "' ";
+                " WHERE " +
+                SQLHandler.ChildColumns.FIRSTNAME1+" = '" + firstname + "' AND " +
+                SQLHandler.ChildColumns.FIRSTNAME2+" = '" + middlename + "' AND " +
+                SQLHandler.ChildColumns.LASTNAME1+" = '"+surname+"' AND " +
+                SQLHandler.ChildColumns.MOTHER_FIRSTNAME+" = '"+mothersfirstName+"' AND " +
+                SQLHandler.ChildColumns.MOTHER_LASTNAME+" = '"+mothersLastName+"' AND " +
+                "strftime('%Y-%m-%d',substr(BIRTHDATE ,7,10), 'unixepoch') = strftime('%Y-%m-%d','" + (birthdate/1000) + "','unixepoch')" +
+                " AND "+ SQLHandler.ChildColumns.GENDER+" = '" + gender + "' ";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-
         if (cursor.moveToFirst()) {
             cursor.close();
             return true;

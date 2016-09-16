@@ -365,7 +365,7 @@
                                 <LinearLayout
                                     android:orientation="horizontal"
                                     android:layout_width="match_parent"
-                                    android:layout_height="70dp">
+                                    android:layout_height="78dp">
 
                                     <com.rengwuxian.materialedittext.MaterialEditText
                                         android:layout_width="0dp"
@@ -451,7 +451,7 @@
                                 <LinearLayout
                                     android:orientation="horizontal"
                                     android:layout_width="match_parent"
-                                    android:layout_height="70dp"
+                                    android:layout_height="78dp"
                                     android:layout_marginTop="16dp">
 
                                     <com.rengwuxian.materialedittext.MaterialEditText
@@ -541,7 +541,7 @@
                                 <LinearLayout
                                     android:orientation="horizontal"
                                     android:layout_width="match_parent"
-                                    android:layout_height="70dp"
+                                    android:layout_height="78dp"
                                     android:layout_marginTop="16dp">
 
                                     <com.rengwuxian.materialedittext.MaterialEditText

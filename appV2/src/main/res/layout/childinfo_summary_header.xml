@@ -46,6 +46,7 @@
                             android:layout_width="350dp"
                             android:layout_height="wrap_content"
                             android:id="@+id/met_barcode_value"
+                            android:focusable="true"
                             android:hint="barcode"
                             android:textColor="@color/black"
                             android:inputType="number"
