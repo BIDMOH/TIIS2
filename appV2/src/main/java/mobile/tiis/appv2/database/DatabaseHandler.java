@@ -1872,17 +1872,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      */
     public ArrayList<Child> searchChild(String barcode, String firtsname, String firstname2,String motherFistname, String DobFrom, String DobTo, String tempId, String surname, String motherSurname,
                                         String placeID, String healthID, String villageId, String statusId, String beginIndex) {
-        //Query on Child Table
-//        String selectQuery = "SELECT  * FROM " + Tables.CHILD + " WHERE HEALTH_FACILITY_ID like '%" + healthID
-//                + "%' and  FIRSTNAME1 like '%" + firtsname +  "%' and FIRSTNAME2 like '%"+ firstname2 + "%' and MOTHER_FIRSTNAME like '%" + motherFistname +
-//                "%' and TEMP_ID like '%" + tempId + "%' and LASTNAME1 like '%" + surname + "%' and MOTHER_LASTNAME like '%" + motherSurname + "%' " +
-//                " and BIRTHPLACE_ID like '%" + placeID + "%' and DOMICILE_ID like '%" + villageId + "%' and STATUS_ID like '%" + statusId
-//                + "%' and BARCODE_ID like '%" + barcode + "%' " +
-//                ((!DobFrom.equals("")) ? " and datetime(substr(BIRTHDATE,7,10), 'unixepoch') >= datetime( '" + DobFrom + "','unixepoch')" : "") +
-//                ((!DobTo.equals("")) ? " and datetime(substr(BIRTHDATE,7,10), 'unixepoch') <= datetime( '" + DobTo + "','unixepoch')" : "")+
-//                " ORDER BY BIRTHDATE DESC "+
-//                " LIMIT "+beginIndex+", 10 ; ";
-
         boolean thereIsData = false;
 
         Log.d("PANDA", barcode);
@@ -1947,8 +1936,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             selectQuery+= ((!DobFrom.equals("")) ? " datetime(substr(BIRTHDATE,7,10), 'unixepoch') >= datetime( '" + DobFrom + "','unixepoch')" : "") +
                     ((!DobTo.equals("")) ? " and datetime(substr(BIRTHDATE,7,10), 'unixepoch') <= datetime( '" + DobTo + "','unixepoch')" : "");
         }else if(thereIsData){
-
-            Log.d("coze","before = "+selectQuery);
             int startIndex = selectQuery.length()-5;
             int endIndex = selectQuery.length()-1;
             String replacement = "";
@@ -1958,7 +1945,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             StringBuilder str = new StringBuilder(selectQuery);
             str.replace(startIndex, endIndex, "");
             selectQuery = str.toString();
-            Log.d("coze","after = "+selectQuery);
         }
 
 
@@ -2009,6 +1995,63 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor.close();
         return children;
     }
+
+
+    /**
+     * @param surname
+     * @param birthdate
+     * @param gender
+     * @return
+     * @Arinela This method check if in our db have another child with this properties,and special part is date that i use this method to convert only yyyy-MM-dd
+     */
+
+    public ArrayList<Child> searchIfChildIsRegisteredFromMaternityApp(String surname,String mothersfirstName, String mothersLastName, long birthdate, String gender) {
+        String selectQuery = "SELECT * FROM child" +
+                " WHERE " +
+                SQLHandler.ChildColumns.LASTNAME1+" = '"+surname+"' AND " +
+                SQLHandler.ChildColumns.MOTHER_FIRSTNAME+" = '"+mothersfirstName+"' AND " +
+                SQLHandler.ChildColumns.MOTHER_LASTNAME+" = '"+mothersLastName+"' AND " +
+                "strftime('%Y-%m-%d',substr(BIRTHDATE ,7,10), 'unixepoch') = strftime('%Y-%m-%d','" + (birthdate/1000) + "','unixepoch')" +
+                " AND "+ SQLHandler.ChildColumns.GENDER+" = '" + gender + "' ";
+
+        Log.d(TAG,"searchMaternity = "+selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        ArrayList<Child> children = null;
+        if (cursor.moveToFirst()) {
+            children = new ArrayList<>();
+            do {
+                Child child = new Child();
+                child.setMotherFirstname(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_FIRSTNAME)));
+                child.setMotherLastname(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_LASTNAME)));
+                child.setBirthdate(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.BIRTHDATE)).substring(6, 19));
+                child.setFirstname1(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME1)));
+                child.setFirstname2(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME2)));
+                child.setLastname1(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.LASTNAME1)));
+                child.setGender(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.GENDER)).equals("true") ? "Male" : "Female");
+                child.setMotherLastname(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_LASTNAME)));
+                child.setDomicileId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.DOMICILE_ID)));
+                child.setDomicile(getVillageName(child.getDomicileId()));
+                child.setHealthcenterId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.HEALTH_FACILITY_ID)));
+                child.setHealthcenter(getHealthCenterName(child.getHealthcenterId()));
+                child.setBarcodeID(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.BARCODE_ID)));
+                child.setId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.ID)));
+                child.setChildRegistryYear(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR)));
+                child.setMotherHivStatus(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_VVU_STS)));
+                child.setMotherTT2Status(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_TT2_STS)));
+                child.setChildCumulativeSn(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER)));
+                children.add(child);
+                Log.d(TAG,"child was registered from maternity app");
+            } while (cursor.moveToNext());
+
+            cursor.close();
+            return children;
+        }
+        cursor.close();
+        return children;
+    }
+
 
     /**
      * @param villageID
@@ -2070,35 +2113,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         } finally {
             sd.endTransaction();
             return result;
-        }
-    }
-
-    /**
-     * @param surname
-     * @param birthdate
-     * @param gender
-     * @return
-     * @Arinela This method check if in our db have another child with this properties,and special part is date that i use this method to convert only yyyy-MM-dd
-     */
-
-    public boolean isChildinDb(String firstname, String middlename,String surname,String mothersfirstName, String mothersLastName, long birthdate, String gender) {
-        String selectQuery = "SELECT * FROM child" +
-                " WHERE " +
-                SQLHandler.ChildColumns.FIRSTNAME1+" = '" + firstname + "' AND " +
-                SQLHandler.ChildColumns.FIRSTNAME2+" = '" + middlename + "' AND " +
-                SQLHandler.ChildColumns.LASTNAME1+" = '"+surname+"' AND " +
-                SQLHandler.ChildColumns.MOTHER_FIRSTNAME+" = '"+mothersfirstName+"' AND " +
-                SQLHandler.ChildColumns.MOTHER_LASTNAME+" = '"+mothersLastName+"' AND " +
-                "strftime('%Y-%m-%d',substr(BIRTHDATE ,7,10), 'unixepoch') = strftime('%Y-%m-%d','" + (birthdate/1000) + "','unixepoch')" +
-                " AND "+ SQLHandler.ChildColumns.GENDER+" = '" + gender + "' ";
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-        if (cursor.moveToFirst()) {
-            cursor.close();
-            return true;
-        } else {
-            cursor.close();
-            return false;
         }
     }
 

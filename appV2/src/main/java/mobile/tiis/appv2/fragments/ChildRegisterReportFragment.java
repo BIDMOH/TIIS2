@@ -302,96 +302,96 @@ public class ChildRegisterReportFragment extends RxFragment{
                         "\t\t(SELECT VACCINATION_DATE FROM vaccination_event \n" +
                         "\t\tINNER JOIN   dose  on  vaccination_event.DOSE_ID = dose.ID \n" +
                         "\t\tWHERE \n" +
-                        "\t\tdose.FULLNAME = 'BCG'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = \"true\") AS BCG,\n" +
+                        "\t\tdose.FULLNAME = 'BCG'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = 'true') AS BCG,\n" +
                         "\n" +
                         "\t\t(SELECT VACCINATION_DATE FROM vaccination_event \n" +
                         "\t\tINNER JOIN   dose  on  vaccination_event.DOSE_ID = dose.ID \n" +
                         "\t\tWHERE \n" +
-                        "\t\tdose.FULLNAME = 'OPV0'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = \"true\") AS OPV0,\n" +
+                        "\t\tdose.FULLNAME = 'OPV0'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = 'true') AS OPV0,\n" +
                         "\t\t\n" +
                         "\t\t(SELECT VACCINATION_DATE FROM vaccination_event \n" +
                         "\t\tINNER JOIN   dose  on  vaccination_event.DOSE_ID = dose.ID \n" +
                         "\t\tWHERE \n" +
-                        "\t\tdose.FULLNAME = 'OPV 1'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = \"true\") AS OPV1,\n" +
+                        "\t\tdose.FULLNAME = 'OPV 1'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = 'true') AS OPV1,\n" +
                         "\t\t\n" +
                         "\t\t(SELECT VACCINATION_DATE FROM vaccination_event \n" +
                         "\t\tINNER JOIN   dose  on  vaccination_event.DOSE_ID = dose.ID \n" +
                         "\t\tWHERE \n" +
-                        "\t\tdose.FULLNAME = 'OPV 2'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = \"true\") AS OPV2,\n" +
+                        "\t\tdose.FULLNAME = 'OPV 2'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = 'true') AS OPV2,\n" +
                         "\t\t\n" +
                         "\t\t(SELECT VACCINATION_DATE FROM vaccination_event \n" +
                         "\t\tINNER JOIN   dose  on  vaccination_event.DOSE_ID = dose.ID \n" +
                         "\t\tWHERE \n" +
-                        "\t\tdose.FULLNAME = 'OPV 3'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = \"true\") AS OPV3,\n" +
+                        "\t\tdose.FULLNAME = 'OPV 3'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = 'true') AS OPV3,\n" +
                         "\t\t\n" +
                         "\t\t(SELECT VACCINATION_DATE FROM vaccination_event \n" +
                         "\t\tINNER JOIN   dose  on  vaccination_event.DOSE_ID = dose.ID \n" +
                         "\t\tWHERE \n" +
-                        "\t\tdose.FULLNAME = 'DTP-HepB-Hib 1'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = \"true\") AS DTP1,\n" +
+                        "\t\tdose.FULLNAME = 'DTP-HepB-Hib 1'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = 'true') AS DTP1,\n" +
                         "\t\t\n" +
                         "\t\t(SELECT VACCINATION_DATE FROM vaccination_event \n" +
                         "\t\tINNER JOIN   dose  on  vaccination_event.DOSE_ID = dose.ID \n" +
                         "\t\tWHERE \n" +
-                        "\t\tdose.FULLNAME = 'DTP-HepB-Hib 2'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = \"true\") AS DTP2,\n" +
+                        "\t\tdose.FULLNAME = 'DTP-HepB-Hib 2'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = 'true') AS DTP2,\n" +
                         "\t\t\n" +
                         "\t\t(SELECT VACCINATION_DATE FROM vaccination_event \n" +
                         "\t\tINNER JOIN   dose  on  vaccination_event.DOSE_ID = dose.ID \n" +
                         "\t\tWHERE \n" +
-                        "\t\tdose.FULLNAME = 'DTP-HepB-Hib 3'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = \"true\") AS DTP3,\n" +
+                        "\t\tdose.FULLNAME = 'DTP-HepB-Hib 3'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = 'true') AS DTP3,\n" +
                         "\t\t\n" +
                         "\t\t(SELECT VACCINATION_DATE FROM vaccination_event \n" +
                         "\t\tINNER JOIN   dose  on  vaccination_event.DOSE_ID = dose.ID \n" +
                         "\t\tWHERE \n" +
-                        "\t\tdose.FULLNAME = 'Rota 1'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = \"true\") AS Rota1,\n" +
+                        "\t\tdose.FULLNAME = 'Rota 1'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = 'true') AS Rota1,\n" +
                         "\t\t\n" +
                         "\t\t(SELECT VACCINATION_DATE FROM vaccination_event \n" +
                         "\t\tINNER JOIN   dose  on  vaccination_event.DOSE_ID = dose.ID \n" +
                         "\t\tWHERE \n" +
-                        "\t\tdose.FULLNAME = 'Rota 2'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = \"true\") AS Rota2,\n" +
-                        "\t\t\n" +
-                        "\t\t\n" +
-                        "\t\t(SELECT VACCINATION_DATE FROM vaccination_event \n" +
-                        "\t\tINNER JOIN   dose  on  vaccination_event.DOSE_ID = dose.ID \n" +
-                        "\t\tWHERE \n" +
-                        "\t\tdose.FULLNAME = 'Measles 1'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = \"true\") AS Measles1,\n" +
+                        "\t\tdose.FULLNAME = 'Rota 2'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = 'true') AS Rota2,\n" +
                         "\t\t\n" +
                         "\t\t\n" +
                         "\t\t(SELECT VACCINATION_DATE FROM vaccination_event \n" +
                         "\t\tINNER JOIN   dose  on  vaccination_event.DOSE_ID = dose.ID \n" +
                         "\t\tWHERE \n" +
-                        "\t\tdose.FULLNAME = 'Measles 2'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = \"true\") AS Measles2,\n" +
-                        "\t\t\n" +
-                        "\t\t\n" +
-                        "\t\t\n" +
-                        "\t\t(SELECT VACCINATION_DATE FROM vaccination_event \n" +
-                        "\t\tINNER JOIN   dose  on  vaccination_event.DOSE_ID = dose.ID \n" +
-                        "\t\tWHERE \n" +
-                        "\t\tdose.FULLNAME = 'PCV 1'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = \"true\") AS PCV1,\n" +
+                        "\t\tdose.FULLNAME = 'Measles 1'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = 'true') AS Measles1,\n" +
                         "\t\t\n" +
                         "\t\t\n" +
                         "\t\t(SELECT VACCINATION_DATE FROM vaccination_event \n" +
                         "\t\tINNER JOIN   dose  on  vaccination_event.DOSE_ID = dose.ID \n" +
                         "\t\tWHERE \n" +
-                        "\t\tdose.FULLNAME = 'PCV 2'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = \"true\") AS PCV2,\n" +
-                        "\t\t\n" +
-                        "\t\t(SELECT VACCINATION_DATE FROM vaccination_event \n" +
-                        "\t\tINNER JOIN   dose  on  vaccination_event.DOSE_ID = dose.ID \n" +
-                        "\t\tWHERE \n" +
-                        "\t\tdose.FULLNAME = 'PCV 3'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = \"true\") AS PCV3,\n" +
+                        "\t\tdose.FULLNAME = 'Measles 2'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = 'true') AS Measles2,\n" +
                         "\t\t\n" +
                         "\t\t\n" +
                         "\t\t\n" +
                         "\t\t(SELECT VACCINATION_DATE FROM vaccination_event \n" +
                         "\t\tINNER JOIN   dose  on  vaccination_event.DOSE_ID = dose.ID \n" +
                         "\t\tWHERE \n" +
-                        "\t\tdose.FULLNAME = 'Measles Rubella 1'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = \"true\") AS MeaslesRubella1,\n" +
+                        "\t\tdose.FULLNAME = 'PCV 1'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = 'true') AS PCV1,\n" +
+                        "\t\t\n" +
+                        "\t\t\n" +
+                        "\t\t(SELECT VACCINATION_DATE FROM vaccination_event \n" +
+                        "\t\tINNER JOIN   dose  on  vaccination_event.DOSE_ID = dose.ID \n" +
+                        "\t\tWHERE \n" +
+                        "\t\tdose.FULLNAME = 'PCV 2'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = 'true') AS PCV2,\n" +
+                        "\t\t\n" +
+                        "\t\t(SELECT VACCINATION_DATE FROM vaccination_event \n" +
+                        "\t\tINNER JOIN   dose  on  vaccination_event.DOSE_ID = dose.ID \n" +
+                        "\t\tWHERE \n" +
+                        "\t\tdose.FULLNAME = 'PCV 3'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = 'true') AS PCV3,\n" +
                         "\t\t\n" +
                         "\t\t\n" +
                         "\t\t\n" +
                         "\t\t(SELECT VACCINATION_DATE FROM vaccination_event \n" +
                         "\t\tINNER JOIN   dose  on  vaccination_event.DOSE_ID = dose.ID \n" +
                         "\t\tWHERE \n" +
-                        "\t\tdose.FULLNAME = 'Measles Rubella 2'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = \"true\") AS MeaslesRubella2\n" +
+                        "\t\tdose.FULLNAME = 'Measles Rubella 1'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = 'true') AS MeaslesRubella1,\n" +
+                        "\t\t\n" +
+                        "\t\t\n" +
+                        "\t\t\n" +
+                        "\t\t(SELECT VACCINATION_DATE FROM vaccination_event \n" +
+                        "\t\tINNER JOIN   dose  on  vaccination_event.DOSE_ID = dose.ID \n" +
+                        "\t\tWHERE \n" +
+                        "\t\tdose.FULLNAME = 'Measles Rubella 2'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = 'true') AS MeaslesRubella2\n" +
                         "\t\t\n" +
                         "\t\n" +
                         "         FROM CHILD \n" +

@@ -2,14 +2,23 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="#e5e5e5">
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:background="#ccc"
+        android:textColor="@color/black"
+        android:text="@string/list_of_similar_children_title"/>
 
     <LinearLayout
+        android:layout_below="@id/title"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:gravity="center_vertical"
-        android:background="#e5e5e5">
+        android:gravity="center_vertical">
 
         <TextView
             android:paddingLeft="16dp"
