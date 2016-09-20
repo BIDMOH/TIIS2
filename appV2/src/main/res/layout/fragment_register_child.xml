@@ -614,6 +614,10 @@
                                         android:textColor="@color/white"
                                         android:text="Save"
                                         android:background="@color/light_blue_600"/>
+                                    <EditText
+                                        android:id="@+id/focus_request_view"
+                                        android:layout_width="1dp"
+                                        android:layout_height="1dp" />
 
                                 </LinearLayout>
 

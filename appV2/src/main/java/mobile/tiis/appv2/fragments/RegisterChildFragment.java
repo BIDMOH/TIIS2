@@ -21,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -126,7 +127,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
     private List<HealthFacility> healthFacilityList;
     private List<HealthFacility> districtCouncilsList;
-    private List<String> healthFacilities;
+    private List<String> healthFacilities,healthFacilitiesNames;
     private AutoCompleteTextView healthFacilitiesAutoSearch;
 
 
@@ -146,7 +147,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
     private String catchment="inside";
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_register_child, null);
+        final ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_register_child, null);
         setUpView(root);
 
         app = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
@@ -155,8 +156,10 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         healthFacilityList = mydb.getAllHealthFacility();
         districtCouncilsList = mydb.getAllDistrictCoucils();
         healthFacilities = new ArrayList<>();
+        healthFacilitiesNames = new ArrayList<>();
         for (HealthFacility healthFacility : healthFacilityList){
             healthFacilities.add(healthFacility.getName()+" >> "+getDistrictCouncilName(healthFacility.getParentId()));
+            healthFacilitiesNames.add(healthFacility.getName());
         }
 
 
@@ -166,10 +169,26 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         healthFacilitiesAutoSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                if (healthFacilities.indexOf(((TextView) v.findViewById(R.id.item)).getText().toString()) == -1) {
-                    ((AutoCompleteTextView) healthFacilitiesAutoSearch).setError("Error in selecting health facility");
+                int pos = healthFacilities.indexOf(((TextView) v.findViewById(R.id.item)).getText().toString());
+                if (pos == -1) {
+                    healthFacilitiesAutoSearch.setError("Error in selecting health facility");
                 } else {
-                    registerHealthFacilityId = "" + healthFacilityList.get(healthFacilities.indexOf(((TextView) v.findViewById(R.id.item)).getText().toString())).getId();
+
+                    registerHealthFacilityId = healthFacilityList.get(pos).getId();
+                    healthFacilitiesAutoSearch.setText(healthFacilitiesNames.get(pos));
+                    ((EditText)root.findViewById(R.id.focus_request_view)).requestFocus();
+                }
+            }
+        });
+        healthFacilitiesAutoSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus){
+                    int pos = healthFacilitiesNames.indexOf(healthFacilitiesAutoSearch.getText().toString());
+                    if (pos == -1) {
+                        healthFacilitiesAutoSearch.setError("Error in selecting health facility");
+                        registerHealthFacilityId="";
+                    }
                 }
             }
         });
