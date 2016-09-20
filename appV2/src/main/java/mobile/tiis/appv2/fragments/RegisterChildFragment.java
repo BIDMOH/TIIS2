@@ -18,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
@@ -73,7 +75,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
     PlacesOfBirthAdapter vvuAdapter, genderAdapter, tt2Adapter, yearSpinnerAdapter;
 
-    public MaterialSpinner placeOfBirthSpinner, genderSpinner, placeOfDomicileSpinner, motherVVUStatusSpinner, motherTT2StatusSpinner, registryYearSpinner;
+    public MaterialSpinner placeOfBirthSpinner, genderSpinner, placeOfDomicileSpinner, motherVVUStatusSpinner, motherTT2StatusSpinner, registryYearSpinner,catchmentAreaSpinner;
 
     public MaterialEditText etDateOfBirth;
 
@@ -120,8 +122,28 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         }
     };
     private  String genderValue="";
+    private  String registerHealthFacilityId="";
+
+    private List<HealthFacility> healthFacilityList;
+    private List<HealthFacility> districtCouncilsList;
+    private List<String> healthFacilities;
+    private AutoCompleteTextView healthFacilitiesAutoSearch;
 
 
+    private String getDistrictCouncilName(String id){
+        Log.d(TAG,"health facility id = "+id);
+        String name = "";
+        for (HealthFacility districtCouncil : districtCouncilsList){
+            Log.d(TAG,"district council ids = "+districtCouncil.getId());
+            if(districtCouncil.getId().equals(id)) {
+                name = districtCouncil.getName();
+            }
+
+        }
+        return name;
+    }
+
+    private String catchment="inside";
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_register_child, null);
@@ -129,6 +151,29 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
         app = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
         mydb = app.getDatabaseInstance();
+
+        healthFacilityList = mydb.getAllHealthFacility();
+        districtCouncilsList = mydb.getAllDistrictCoucils();
+        healthFacilities = new ArrayList<>();
+        for (HealthFacility healthFacility : healthFacilityList){
+            healthFacilities.add(healthFacility.getName()+" >> "+getDistrictCouncilName(healthFacility.getParentId()));
+        }
+
+
+
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item_layout,R.id.item,healthFacilities);
+        healthFacilitiesAutoSearch.setAdapter(adapter);
+        healthFacilitiesAutoSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                if (healthFacilities.indexOf(((TextView) v.findViewById(R.id.item)).getText().toString()) == -1) {
+                    ((AutoCompleteTextView) healthFacilitiesAutoSearch).setError("Error in selecting health facility");
+                } else {
+                    registerHealthFacilityId = "" + healthFacilityList.get(healthFacilities.indexOf(((TextView) v.findViewById(R.id.item)).getText().toString())).getId();
+                }
+            }
+        });
+
 
         app.saveNeeded = true;
 
@@ -229,6 +274,24 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
             }
         });
 
+        catchmentAreaSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position==0){
+                    catchment = "inside";
+                    healthFacilitiesAutoSearch.setVisibility(View.INVISIBLE);
+                }else{
+                    healthFacilitiesAutoSearch.setVisibility(View.VISIBLE);
+                    catchment = "outside";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         motherVVUStatusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -296,6 +359,8 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         etbarcode.setOnFocusChangeListener(localChildSearchTriggerfocusChangeListener);
         registerSectionFields.add(etbarcode);
 
+        healthFacilitiesAutoSearch = (AutoCompleteTextView)v.findViewById(R.id.health_facilities_lists);
+
         etFirstName         = (MaterialEditText) v. findViewById(R.id.reg_fname);
         etFirstName.setOnFocusChangeListener(localChildSearchTriggerfocusChangeListener);
         registerSectionFields.add(etFirstName);
@@ -331,6 +396,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         motherVVUStatusSpinner  = (MaterialSpinner) v.findViewById(R.id.reg_spin_mother_vvu_status);
         motherTT2StatusSpinner  = (MaterialSpinner) v.findViewById(R.id.reg_spin_mother_tt2_status);
         registryYearSpinner     = (MaterialSpinner) v.findViewById(R.id.reg_spin_register_year);
+        catchmentAreaSpinner     = (MaterialSpinner) v.findViewById(R.id.catchment_area);
 
         submitButton = (Button) v.findViewById(R.id.reg_submit_btn);
 
@@ -592,6 +658,20 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
             }
         }
 
+        if(!catchment.equals("inside") && registerHealthFacilityId.equals("")){
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity())
+                    .setTitle(getString(R.string.alert_empty_fields))
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            ((AlertDialog) dialog).dismiss();
+                        }
+                    });
+            alertDialogBuilder.setMessage("Please select the correct health facility");
+            alertDialogBuilder.show();
+            healthFacilitiesAutoSearch.setError("Please select the correct health facility");
+            return false;
+        }
+
 
 
 
@@ -633,7 +713,11 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
 
         BackboneApplication backboneApplication = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
-        contentValues.put(SQLHandler.ChildColumns.HEALTH_FACILITY_ID, backboneApplication.getLOGGED_IN_USER_HF_ID());
+        if(catchment.equals("inside")) {
+            contentValues.put(SQLHandler.ChildColumns.HEALTH_FACILITY_ID, backboneApplication.getLOGGED_IN_USER_HF_ID());
+        }else{
+            contentValues.put(SQLHandler.ChildColumns.HEALTH_FACILITY_ID, registerHealthFacilityId);
+        }
         contentValues.put(SQLHandler.ChildColumns.ADDRESS, "");
         contentValues.put(SQLHandler.ChildColumns.MODIFIED_ON, new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()));
 
@@ -692,12 +776,18 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
                 Calendar modifiedOn =Calendar.getInstance();
                 try {
+                    String hfid;
+                    if(catchment.equals("inside")) {
+                        hfid = app.getLOGGED_IN_USER_HF_ID();
+                    }else{
+                        hfid = registerHealthFacilityId;
+                    }
                     registerChildWithoutAppointments(removeWhiteSpaces(etbarcode.getText().toString()),
                             removeWhiteSpaces(etFirstName.getText().toString()),
                             removeWhiteSpaces(etSurname.getText().toString()),
                             bdate,
                             genderChildWithoutApp,
-                            app.getLOGGED_IN_USER_HF_ID(),
+                            hfid,
                             birthplaceList.get(placeOfBirthSpinner.getSelectedItemPosition() - 1).getId(),
                             placeList.get(placeOfDomicileSpinner.getSelectedItemPosition() - 1).getId(),
                             "",

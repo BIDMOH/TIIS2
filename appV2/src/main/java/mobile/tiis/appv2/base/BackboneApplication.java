@@ -134,6 +134,7 @@ public class BackboneApplication extends Application {
     public static final String PLACE_MANAGEMENT_SVC_GETTER_BY_ID = "GetPlaceById?id=";
     public static final String STOCK_MANAGEMENT_SVC_GETTER = "GetCurrentStockByLot?hfId=";
     public static final String HEALTH_FACILITY_SVC_GETTER = "GetHealthFacilityById?id=";
+    public static final String HEALTH_FACILITIES_SVC_GETTER = "GetHealthFacilities";
     public static final String HEALTH_FACILITY_SVC_GETTER_BY_LIST = "GetHealthFacilityByList?hList=";
     public static final String ITEM_MANAGEMENT_SVC_GETTER = "getitemlist";
     public static final String ITEM_LOT_MANAGEMENT_SVC_GETTER = "getitemlots";
@@ -156,6 +157,7 @@ public class BackboneApplication extends Application {
     public static final String GET_STOCK_ADJUSTMENT = "GetAdjustmentReasons";
     public static final String GET_ITEM_LOT_ID = "GET_ITEM_LOT_ID";
     public static final String GET_HEALTH_FACILITY = "GET_HEALTH_FACILITY";
+    public static final String GET_HEALTH_FACILITIES = "GET_HEALTH_FACILITIES";
     public static final String GET_HEALTH_FACILITY_LIST_ID = "GET_HEALTH_FACILITY_LIST_ID";
     public static final String GET_ITEM_LIST = "GET_ITEM_LIST";
     public static final String GET_DOSE_LIST = "GET_DOSE_LIST";
@@ -1706,8 +1708,8 @@ public class BackboneApplication extends Application {
             } else {
                 client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
             }
-            final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, GET_HEALTH_FACILITY);
-            Log.d("", webServiceUrl.toString());
+            final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, GET_HEALTH_FACILITIES);
+            Log.d(TAG, webServiceUrl.toString());
 
             RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
                 @Override
@@ -1737,6 +1739,7 @@ public class BackboneApplication extends Application {
                             values.put(SQLHandler.HealthFacilityColumns.ID, object.getId());
                             values.put(SQLHandler.SyncColumns.UPDATED, 1);
                             values.put(SQLHandler.HealthFacilityColumns.CODE, object.getCode());
+                            values.put(SQLHandler.HealthFacilityColumns.TYPE_ID, object.getTypeId());
                             values.put(SQLHandler.HealthFacilityColumns.PARENT_ID, object.getParentId());
                             values.put(SQLHandler.HealthFacilityColumns.NAME, object.getName());
                             DatabaseHandler db = getDatabaseInstance();
@@ -2560,6 +2563,9 @@ public class BackboneApplication extends Application {
             case GET_HEALTH_FACILITY:
                 webServiceURL = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC).append(HEALTH_FACILITY_SVC_GETTER).append(rec_id);
                 break;
+            case GET_HEALTH_FACILITIES:
+                webServiceURL = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC).append(HEALTH_FACILITIES_SVC_GETTER);
+                break;
             case GET_VACCINATION_QUEUE_BY_DATE_AND_USER:
                 webServiceURL = new StringBuilder(WCF_URL).append(VACCINATION_QUEUE_MANAGEMENT_SVC).append(GET_VACCINATION_QUEUE_BY_DATE_AND_USER);
                 break;
@@ -3349,7 +3355,7 @@ public class BackboneApplication extends Application {
         String url = WCF_URL + GET_HEALTH_FACILITY_CHILD_CUMULATIVE_REGISTRATION_NUMBER +"?healthFacilityId="+ getLOGGED_IN_USER_HF_ID();
         client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
 
-        Log.e("getHealthFacitliyCumulativeChildRegistrationNumber", url + "");
+        Log.e(TAG,"getHealthFacitliyCumulativeChildRegistrationNumber = " + url);
 
         RequestHandle message = client.get(url, new TextHttpResponseHandler() {
             @Override

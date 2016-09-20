@@ -41,6 +41,7 @@ public class GIISContract {
         String ID = "ID";
         String NAME = "NAME";
         String CODE = "CODE";
+        String TYPE_ID = "TYPE_ID";
         String PARENT_ID = "PARENT_ID";
         String MODIFIED_ON = "MODIFIED_ON";
     }

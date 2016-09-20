@@ -376,9 +376,10 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
                         .setPositiveButton("YES",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        onBackPressed();
+                                        finish();
                                         app.saveNeeded = false;
                                         navigationClickEventFlag = false;
+
                                     }
                                 })
                         .setNegativeButton("Cancel",

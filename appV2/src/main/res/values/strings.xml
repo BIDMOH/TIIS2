@@ -276,5 +276,9 @@
     <string name="similar_children_exist">Tafadhali hakiki kama mtoto huyu hayupo kwenye orodha ya watoto hawa waliopo kwenye mfumo</string>
     <string name="list_of_similar_children_title">Orodha ya watoto wanaofanana na huyu katika mfumo</string>
 
+    <array name="catchment_areas">
+        <item>Inside Catchment</item>
+        <item>Outside Catchment</item>
+    </array>
 
 </resources>

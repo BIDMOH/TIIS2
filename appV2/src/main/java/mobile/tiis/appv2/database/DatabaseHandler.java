@@ -76,7 +76,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String TAG = "DatabaseHandler";
 
     private static final String DATABASE_NAME = "giis_mobile.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     public static boolean dbPreinstalled = false;
 
     public DatabaseHandler(Context context) {
@@ -770,7 +770,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         List<HealthFacility> healthFacilityList = new ArrayList<HealthFacility>();
 
         //Query on HealthFacility Table
-        String selectQuery = "SELECT * FROM " + Tables.HEALTH_FACILITY;
+        String selectQuery = "SELECT * FROM " + Tables.HEALTH_FACILITY + " WHERE "+ SQLHandler.HealthFacilityColumns.TYPE_ID+" = '3'";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -782,6 +782,37 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 healthFacility.setId(cursor.getString(4));
                 healthFacility.setName(cursor.getString(5));
                 healthFacility.setCode(cursor.getString(6));
+                healthFacility.setTypeId(cursor.getString(cursor.getColumnIndex(SQLHandler.HealthFacilityColumns.TYPE_ID)));
+                healthFacility.setParentId(cursor.getString(cursor.getColumnIndex(SQLHandler.HealthFacilityColumns.PARENT_ID)));
+                healthFacilityList.add(healthFacility);
+            } while (cursor.moveToNext());
+        }
+
+        // return container
+        cursor.close();
+        return healthFacilityList;
+
+    }
+
+    public List<HealthFacility> getAllDistrictCoucils() {
+
+        //Container
+        List<HealthFacility> healthFacilityList = new ArrayList<HealthFacility>();
+
+        //Query on HealthFacility Table
+        String selectQuery = "SELECT * FROM " + Tables.HEALTH_FACILITY + " WHERE "+ SQLHandler.HealthFacilityColumns.TYPE_ID+" = '2'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                HealthFacility healthFacility = new HealthFacility();
+                healthFacility.setId(cursor.getString(4));
+                healthFacility.setName(cursor.getString(5));
+                healthFacility.setCode(cursor.getString(6));
+                healthFacility.setTypeId(cursor.getString(cursor.getColumnIndex(SQLHandler.HealthFacilityColumns.TYPE_ID)));
                 healthFacilityList.add(healthFacility);
             } while (cursor.moveToNext());
         }

@@ -491,6 +491,7 @@ public class SQLHandler {
                     + GIISContract.HealthFacilityColumns.ID + " TEXT,"
                     + GIISContract.HealthFacilityColumns.NAME + " TEXT,"
                     + GIISContract.HealthFacilityColumns.CODE + " TEXT,"
+                    + GIISContract.HealthFacilityColumns.TYPE_ID + " TEXT,"
                     + GIISContract.HealthFacilityColumns.PARENT_ID + " TEXT,"
                     + GIISContract.HealthFacilityColumns.MODIFIED_ON + " DATETIME);";
 
@@ -670,6 +671,7 @@ public class SQLHandler {
         String ID = "ID";
         String NAME = "NAME";
         String CODE = "CODE";
+        String TYPE_ID = "TYPE_ID";
         String PARENT_ID = "PARENT_ID";
         String MODIFIED_ON = "MODIFIED_ON";
     }
