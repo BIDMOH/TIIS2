@@ -735,7 +735,11 @@ public class MonthlyPlanFragment extends RxFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        subscription.unsubscribe();
+        try {
+            subscription.unsubscribe();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 }

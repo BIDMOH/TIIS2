@@ -3197,9 +3197,10 @@ public class BackboneApplication extends Application {
             vnotes = strNotes;
         }
         final StringBuilder VaccinationEventUpdateURL = new StringBuilder(WCF_URL + "VaccinationEvent.svc/UpdateVaccinationEventBarcodeAndDoseId?")
-                .append("barcode=").append(strBarcode)
-                .append("&doseId=").append(a.getDose_id())
-                .append("&vaccineLotId=").append(a.getVaccination_lot()).append("&healthFacilityId=").append(getLOGGED_IN_USER_HF_ID())
+                .append("barcode=").append(URLEncoder.encode(strBarcode))
+                .append("&doseId=").append(URLEncoder.encode(a.getDose_id()))
+                .append("&vaccineLotId=").append(URLEncoder.encode(a.getVaccination_lot()))
+                .append("&healthFacilityId=").append(URLEncoder.encode(getLOGGED_IN_USER_HF_ID()))
                 .append("&vaccinationDate=").append(URLEncoder.encode(formatted.format(a.getTime2())))
                 .append("&notes=").append(vnotes)
                 .append("&vaccinationStatus=").append(a.getStatus())

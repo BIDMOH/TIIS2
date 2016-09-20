@@ -216,7 +216,7 @@ public class BackboneActivity extends RxAppCompatActivity {
                     .append("?username=").append(URLEncoder.encode(username, "utf-8"))
                     .append("&password=").append(URLEncoder.encode(password, "utf-8"))
                     .append("&gcmID=").append(URLEncoder.encode(gcmId, "utf-8"));
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

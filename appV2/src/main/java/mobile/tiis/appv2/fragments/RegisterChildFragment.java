@@ -662,18 +662,24 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
 
         if (etChildCumulativeSn.length() > 0){
-            if(mydb.isChildRegistrationNoPresentInDb(spinnerYears.get(registryYearSpinner.getSelectedItemPosition() - 1),etChildCumulativeSn.getText().toString(),etbarcode.getText().toString())){
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity())
-                        .setTitle(getString(R.string.alert_empty_fields))
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                ((AlertDialog) dialog).dismiss();
-                            }
-                        });
-                alertDialogBuilder.setMessage("The entered Child Cumulative Sn and Year have already been used");
-                alertDialogBuilder.show();
-                etChildCumulativeSn.setError("Please fill a valid Child Cumulative Sn");
-                return false;
+            try {
+                if(registryYearSpinner.getSelectedItemPosition() - 1==0 && etChildCumulativeSn.length() > 0){
+                    registryYearSpinner.setError("Please Select the registration Year");
+                }else if(mydb.isChildRegistrationNoPresentInDb(spinnerYears.get(registryYearSpinner.getSelectedItemPosition() - 1), etChildCumulativeSn.getText().toString(), etbarcode.getText().toString())) {
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity())
+                            .setTitle(getString(R.string.alert_empty_fields))
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    ((AlertDialog) dialog).dismiss();
+                                }
+                            });
+                    alertDialogBuilder.setMessage("The entered Child Cumulative Sn and Year have already been used");
+                    alertDialogBuilder.show();
+                    etChildCumulativeSn.setError("Please fill a valid Child Cumulative Sn");
+                    return false;
+                }
+            }catch (Exception e ){
+                e.printStackTrace();
             }
         }
 
