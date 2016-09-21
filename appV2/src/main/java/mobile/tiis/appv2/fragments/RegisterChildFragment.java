@@ -9,8 +9,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -29,12 +29,12 @@ import android.widget.Toast;
 
 import com.github.aakira.expandablelayout.ExpandableWeightLayout;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.trello.rxlifecycle.components.support.RxFragment;
 import com.wang.avi.AVLoadingIndicatorView;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -54,14 +54,19 @@ import mobile.tiis.appv2.base.BackboneApplication;
 import mobile.tiis.appv2.database.DatabaseHandler;
 import mobile.tiis.appv2.database.SQLHandler;
 import mobile.tiis.appv2.entity.Birthplace;
-import mobile.tiis.appv2.entity.Place;
 import mobile.tiis.appv2.entity.Child;
 import mobile.tiis.appv2.entity.HealthFacility;
+import mobile.tiis.appv2.entity.Place;
+import mobile.tiis.appv2.util.BackgroundThread;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func0;
 
 /**
  * Created by issymac on 11/12/15.
  */
-public class RegisterChildFragment extends android.support.v4.app.Fragment implements DatePickerDialog.OnDateSetListener, View.OnClickListener, View.OnTouchListener {
+public class RegisterChildFragment extends RxFragment implements DatePickerDialog.OnDateSetListener, View.OnClickListener, View.OnTouchListener {
 
     private static final String TAG = RegisterChildFragment.class.getSimpleName();
     public List<String> motherVVU, gender, motherTT2, spinnerYears;
@@ -118,7 +123,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         public void onFocusChange(View view, boolean b) {
             if (!b) {
                 if(!etFirstName.getText().toString().isEmpty() && !etSurname.getText().toString().isEmpty() && !etMotherFirstName.getText().toString().isEmpty() && !etMotherSurname.getText().toString().isEmpty() && !etDateOfBirth.toString().isEmpty())
-                    new searchChildTask().execute();
+                    searchChildTask();
             }
         }
     };
@@ -145,6 +150,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
     }
 
     private String catchment="inside";
+    private Looper backgroundLooper;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         final ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_register_child, null);
@@ -152,6 +158,11 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
         app = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
         mydb = app.getDatabaseInstance();
+
+
+        BackgroundThread backgroundThread = new BackgroundThread();
+        backgroundThread.start();
+        backgroundLooper = backgroundThread.getLooper();
 
         healthFacilityList = mydb.getAllHealthFacility();
         districtCouncilsList = mydb.getAllDistrictCoucils();
@@ -539,7 +550,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
         etDateOfBirth.setText(ft.format(calendar.getTime()));
         if(!etMotherFirstName.getText().toString().isEmpty() && !etMotherSurname.getText().toString().isEmpty() && !etDateOfBirth.toString().isEmpty())
-            new searchChildTask().execute();
+            searchChildTask();
     }
 
     public String getMonth(int month){
@@ -663,7 +674,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
         if (etChildCumulativeSn.length() > 0){
             try {
-                if(registryYearSpinner.getSelectedItemPosition() - 1==0 && etChildCumulativeSn.length() > 0){
+                if(registryYearSpinner.getSelectedItemPosition() - 1==0){
                     registryYearSpinner.setError("Please Select the registration Year");
                 }else if(mydb.isChildRegistrationNoPresentInDb(spinnerYears.get(registryYearSpinner.getSelectedItemPosition() - 1), etChildCumulativeSn.getText().toString(), etbarcode.getText().toString())) {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity())
@@ -771,8 +782,13 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         contentValues.put("modfied_at", "/Date(" + Calendar.getInstance().getTime().getTime() + "-0500)/");
         contentValues.put(SQLHandler.ChildColumns.PHONE, removeWhiteSpaces(etPhone.getText().toString()));
         contentValues.put(SQLHandler.ChildColumns.NOTES, removeWhiteSpaces(etNotes.getText().toString()));
-        contentValues.put(SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER, removeWhiteSpaces(etChildCumulativeSn.getText().toString()));
-        contentValues.put(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR, removeWhiteSpaces(childRegistryYear));
+        if(etChildCumulativeSn.length()==0) {
+            contentValues.put(SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER, "");
+            contentValues.put(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR, "");
+        }else{
+            contentValues.put(SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER, removeWhiteSpaces(etChildCumulativeSn.getText().toString()));
+            contentValues.put(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR, removeWhiteSpaces(childRegistryYear));
+        }
         contentValues.put("updated", 1);
         contentValues.put("owners_username", "");
         contentValues.put("STATUS_ID", "");
@@ -825,43 +841,18 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                             uuid,
                             removeWhiteSpaces(etFirstname2.getText().toString()),
                             motherVVU.get(motherVVUStatusSpinner.getSelectedItemPosition() - 1),
-                            motherTT2.get(motherTT2StatusSpinner.getSelectedItemPosition() - 1),
-                            removeWhiteSpaces(etChildCumulativeSn.getText().toString()),
-                            childRegistryYear);
+                            motherTT2.get(motherTT2StatusSpinner.getSelectedItemPosition() - 1),etChildCumulativeSn.length() > 0?removeWhiteSpaces(etChildCumulativeSn.getText().toString()):"",
+                            etChildCumulativeSn.length() > 0? childRegistryYear : "");
                 }catch(Exception exception){
                     exception.printStackTrace();
                 }
             }else{
-//                progBar.setVisibility(View.GONE);
+                progressDialog.dismiss();
             }
             isSavingData =false;
 
         }
 
-    }
-
-    public Dialog createDialogAlertIsInChild() {
-
-        return new AlertDialog.Builder(RegisterChildFragment.this.getActivity())
-                .setTitle(getString(R.string.warning))
-                .setMessage(getString(R.string.child_with_this_data_exist))
-                .setPositiveButton("OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-
-                                registerChildInDB();
-                            }
-                        }
-                )
-                .setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                dialog.cancel();
-//                                progBar.setVisibility(View.GONE);
-                            }
-                        }
-                )
-                .create();
     }
 
     private String removeWhiteSpaces(String withWhiteSpace){
@@ -978,97 +969,99 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
         }.setData(barcode, fristname, lastname, bDate, gender, hfid, birthPlaceId, domId, addr, phone, motherFirstname, motherLastname, notes, userID, modOn, tempId,firstname2, threadMotherVVUStatus, threadMotherTT2Status, childCummulativeSn, childRegistryYear).start();
     }
 
-    private class searchChildTask extends AsyncTask<String, Void, Integer> {
+    private void searchChildTask(){
+        expandableResultLayout.expand();
+        avi.show();
+        infoText.setText("Searching within catchment");
+        resultTableLayout.removeAllViews();
+        Observable.defer(new Func0<Observable<List<Child>>>() {
+            @Override
+            public Observable<List<Child>> call() {
 
-        String num = "0";
+                String num = "0";
+                List<Child> children = null;
+                List<Child> childrenFromMaternityApp = null;
 
-        List<Child> children = new ArrayList<>();
-        List<Child> childrenFromMaternityApp = new ArrayList<>();
-
-        String searchBarcode, firstName, surName, motherFirstName, motherSurname;
-
-        @Override
-        protected void onPreExecute() {
-            expandableResultLayout.expand();
-            avi.show();
-            infoText.setText("Searching within catchment");
-            resultTableLayout.removeAllViews();
-
-            searchBarcode = "";
-            if (!etbarcode.getText().toString().isEmpty()){
-                searchBarcode = etbarcode.getText().toString();
-            }
-
-            firstName = "";
-            if (!etFirstName.getText().toString().isEmpty()){
-                firstName = etFirstName.getText().toString();
-            }
-
-            surName = "";
-            if (!etSurname.getText().toString().isEmpty()){
-                surName = etSurname.getText().toString();
-            }
-
-            motherFirstName = "";
-            if (!etMotherFirstName.getText().toString().isEmpty()){
-                motherFirstName = etMotherFirstName.getText().toString();
-            }
-
-            motherSurname = "";
-            if (!etMotherSurname.getText().toString().isEmpty()){
-                motherSurname = etMotherSurname.getText().toString();
-            }
-
-            if (gen.equals("M")) {
-                genderValue =  "true";
-            } else if (gen.equals("F")) {
-                genderValue =  "false";
-            }
-
-        }
-
-        @Override
-        protected Integer doInBackground(String... params) {
-            int responce = 0;
-            if(bdate!=null)
-                childrenFromMaternityApp = mydb.searchIfChildIsRegisteredFromMaternityApp(surName, motherFirstName,motherSurname,bdate.getTime(),genderValue);
-            children = mydb.searchChild(searchBarcode,
-                    firstName, "", motherFirstName, ((bdate != null) ? (bdate.getTime() / 1000) + "" : ""), ((bdate != null) ? (bdate.getTime() / 1000) + "" : ""),"", surName, motherSurname,
-                    "", "", "", "", num);
-
-            return responce;
-        }
-
-        @Override
-        protected void onPostExecute(Integer result) {
-            if((children == null && childrenFromMaternityApp==null)){
-                avi.hide();
-                infoText.setText("No Child was found with the given criteria, continue with registering");
-                searchOutsideFacility();
-            }else{
-                try {
-                    Toast.makeText(getActivity(), R.string.similar_children_exist, Toast.LENGTH_LONG).show();
-                }catch (Exception e){
-                    e.printStackTrace();
+                String searchBarcode, firstName, surName, motherFirstName, motherSurname;
+                searchBarcode = "";
+                if (!etbarcode.getText().toString().isEmpty()){
+                    searchBarcode = etbarcode.getText().toString();
                 }
-                avi.hide();
-                infoText.setText("");
-                childListFromOutsideFacility = false;
-                InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(etFirstName.getWindowToken(), 0);
-                if(childrenFromMaternityApp!=null) {
-                    fillSearchResultTable(childrenFromMaternityApp, true);
-                    Log.d(TAG,"size of children from maternity app  = "+childrenFromMaternityApp.size());
-                }else {
-                    fillSearchResultTable(children, true);
+
+                firstName = "";
+                if (!etFirstName.getText().toString().isEmpty()){
+                    firstName = etFirstName.getText().toString();
                 }
+
+                surName = "";
+                if (!etSurname.getText().toString().isEmpty()){
+                    surName = etSurname.getText().toString();
+                }
+
+                motherFirstName = "";
+                if (!etMotherFirstName.getText().toString().isEmpty()){
+                    motherFirstName = etMotherFirstName.getText().toString();
+                }
+
+                motherSurname = "";
+                if (!etMotherSurname.getText().toString().isEmpty()){
+                    motherSurname = etMotherSurname.getText().toString();
+                }
+
+                if (gen.equals("M")) {
+                    genderValue =  "true";
+                } else if (gen.equals("F")) {
+                    genderValue =  "false";
+                }
+
+                if(bdate!=null) {
+                    childrenFromMaternityApp = mydb.searchIfChildIsRegisteredFromMaternityApp(surName, motherFirstName, motherSurname, bdate.getTime(), genderValue);
+                }
+                children = mydb.searchChild(searchBarcode, firstName, "", motherFirstName, ((bdate != null) ? (bdate.getTime() / 1000) + "" : ""),
+                        ((bdate != null) ? (bdate.getTime() / 1000) + "" : ""),"", surName, motherSurname, "", "", "", "", num);
+
+
+                return Observable.just(children,childrenFromMaternityApp);
             }
-        }
+        })// Run on a background thread
+                .subscribeOn(AndroidSchedulers.from(backgroundLooper))
+                // Be notified on the main thread
+                .observeOn(AndroidSchedulers.mainThread()).compose(this.<List<Child>>bindToLifecycle())
+                .subscribe(new Subscriber<List<Child>>() {
+                    @Override
+                    public void onCompleted() {
+                        searchOutsideFacility();
+                    }
 
-        @Override
-        protected void onProgressUpdate(Void... values) {}
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
 
+                    @Override
+                    public void onNext(List<Child> children) {
+                        if(children == null){
+                            avi.hide();
+                            infoText.setText("No Child was found with the given criteria, continue with registering");
+                        }else{
+                            try {
+                                Toast.makeText(getActivity(), R.string.similar_children_exist, Toast.LENGTH_LONG).show();
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                            avi.hide();
+                            infoText.setText("");
+                            childListFromOutsideFacility = false;
+                            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(etFirstName.getWindowToken(), 0);
+                            fillSearchResultTable(children, true);
+                        }
+                    }
+                });
     }
+
+
+
 
     public void fillSearchResultTable(List<Child> children,boolean clearTable){
 
@@ -1125,8 +1118,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                     if (childListFromOutsideFacility) {
                         //Parse child first then view details
                         Log.d("PANDA", "Here at Outside Facility");
-                        ChildSynchronization task = new ChildSynchronization();
-                        task.execute(childOfInterest.getId());
+                        childSynchronization(childOfInterest.getId());
                     } else {
                         Intent childDetailsActivity = new Intent(RegisterChildFragment.this.getActivity(), ChildDetailsActivity.class);
                         childDetailsActivity.putExtra("barcode", item.getBarcodeID());
@@ -1253,7 +1245,7 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                     }else {
                         BackboneApplication backbone = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
 
-                        childrensrv = backbone.searchChild(childBarcode, childFName, null, motherFname, new SimpleDateFormat("yyyy-MM-dd").format(bdate), new SimpleDateFormat("yyyy-MM-dd").format(bdate), null, surname,
+                        childrensrv = backbone.searchChild(null, null, null, motherFname, new SimpleDateFormat("yyyy-MM-dd").format(bdate), new SimpleDateFormat("yyyy-MM-dd").format(bdate), null, surname,
                                 motherSName, placeOBId, healthFacility, villageName, status);
 
                         if (childrensrv == null || childrensrv.isEmpty()) {
@@ -1287,16 +1279,15 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
 
     }
 
+    private void childSynchronization(final String id){
+        Observable.defer(new Func0<Observable<Integer>>() {
+            @Override
+            public Observable<Integer> call() {
+                // Do some long running operation
+                BackboneApplication application = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
+                int parse_status = 0;
+                String village_id, hf_id;
 
-    private class ChildSynchronization extends AsyncTask<String, Void, Integer> {
-
-        @Override
-        protected Integer doInBackground(String... params) {
-            BackboneApplication application = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
-            int parse_status = 0;
-            String village_id, hf_id;
-
-            for (String id : params) {
                 parse_status = application.parseChildById(id);
                 Log.d("parseChildCollectorbyId", parse_status+"");
                 if (parse_status != 2 && parse_status != 3) {
@@ -1332,20 +1323,33 @@ public class RegisterChildFragment extends android.support.v4.app.Fragment imple
                         }
                     }
                 }
+                return Observable.just(parse_status);
             }
-            return parse_status;
-        }
+        })// Run on a background thread
+                .subscribeOn(AndroidSchedulers.from(backgroundLooper))
+                // Be notified on the main thread
+                .observeOn(AndroidSchedulers.mainThread()).compose(this.<Integer>bindToLifecycle())
+                .subscribe(new Subscriber<Integer>() {
+                    @Override
+                    public void onCompleted() {
+                        Intent childDetailsActivity = new Intent(RegisterChildFragment.this.getActivity(), ChildDetailsActivity.class);
+                        childDetailsActivity.putExtra("barcode", childOfInterest.getBarcodeID());
+                        childDetailsActivity.putExtra("myChild", childOfInterest);
+                        childDetailsActivity.putExtra(BackboneApplication.CHILD_ID, childOfInterest.getId());
+                        startActivity(childDetailsActivity);
+                    }
 
-        @Override
-        protected void onPostExecute(Integer result) {
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
 
-            Intent childDetailsActivity = new Intent(RegisterChildFragment.this.getActivity(), ChildDetailsActivity.class);
-            childDetailsActivity.putExtra("barcode", childOfInterest.getBarcodeID());
-            childDetailsActivity.putExtra("myChild", childOfInterest);
-            childDetailsActivity.putExtra(BackboneApplication.CHILD_ID, childOfInterest.getId());
-            startActivity(childDetailsActivity);
+                    @Override
+                    public void onNext(Integer integer) {
 
-        }
+                    }
+                });
+
     }
 
     private void parseHFIDWhenNotInDb(DatabaseHandler db, BackboneApplication app){
