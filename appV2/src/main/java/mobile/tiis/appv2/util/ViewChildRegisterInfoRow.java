@@ -18,12 +18,10 @@
 
 package mobile.tiis.appv2.util;
 
-import mobile.tiis.appv2.base.BackboneApplication;
-
 /**
  * Created by Teodor on 3/8/2015.
  */
-public class ViewChildRegisterInfoRow extends BackboneApplication{
+public class ViewChildRegisterInfoRow{
 
     public int sn;
     public String childFirstName;

@@ -2998,7 +2998,7 @@
             </LinearLayout>
 
 
-            <android.support.v7.widget.RecyclerView
+            <ListView
                 android:id="@+id/child_register_nested_listview"
                 android:scrollbars="vertical"
                 android:layout_width="match_parent"

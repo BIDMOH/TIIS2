@@ -11,7 +11,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,10 +56,8 @@ public class ChildRegisterReportFragment extends RxFragment{
 
     public String currentCount = "0";
     private BackboneApplication app;
-    private DatabaseHandler this_database;
-    private ArrayList<ViewChildRegisterInfoRow> var;
     private LayoutInflater inflater;
-    private RecyclerView childRegisterListView;
+    private ListView childRegisterListView;
     private ChildRegisterReportRecyclerAdapter adapter;
     private ProgressBar progressBar;
     private MaterialEditText metDOBFrom,metDOBTo,metStartChildCumulativeRegNo,metEndChildCumulativeRegNo;
@@ -68,7 +65,7 @@ public class ChildRegisterReportFragment extends RxFragment{
     private DatePickerDialog toDatePicker = new DatePickerDialog();
     private String toDateString = "", fromDateString = "", startChildCumulativeNo="", endChildCumulativeNo="";
     private Looper backgroundLooper;
-
+    private  ArrayList<ViewChildRegisterInfoRow> mVar = new ArrayList<>();
     public static ChildRegisterReportFragment newInstance(int position) {
         ChildRegisterReportFragment f = new ChildRegisterReportFragment();
         Bundle b = new Bundle();
@@ -79,7 +76,6 @@ public class ChildRegisterReportFragment extends RxFragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         final ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_child_register, null);
         app = (BackboneApplication) this.getActivity().getApplication();
-        this_database = app.getDatabaseInstance();
         this.inflater = inflater;
         setUpView(root);
 
@@ -211,7 +207,7 @@ public class ChildRegisterReportFragment extends RxFragment{
 //        progressBar             = (ProgressBar) v.findViewById(R.id.pbar);
 //        progressBar             .setVisibility(View.VISIBLE);
         childRegisterTable      = (TableLayout) v.findViewById(R.id.child_register_table);
-        childRegisterListView   = (RecyclerView) v.findViewById(R.id.child_register_nested_listview);
+        childRegisterListView   = (ListView) v.findViewById(R.id.child_register_nested_listview);
         childRegisterListView   .setVisibility(View.GONE);
     }
 
@@ -263,7 +259,6 @@ public class ChildRegisterReportFragment extends RxFragment{
                 try {
                     if (!fromDate.equals("") && !toDatee.equals("")) {
                         from_date = (Long.parseLong(fromDate)-(24*60*60))+"";
-                        Log.d("day13", "from picker : "+from_date);
                         to_date = toDatee;
                     }
                 } catch (Exception e) {
@@ -288,8 +283,6 @@ public class ChildRegisterReportFragment extends RxFragment{
 
 
                 Cursor cursor;
-                ArrayList<ViewChildRegisterInfoRow> mVar = new ArrayList<>();
-
                 DatabaseHandler mydb = app.getDatabaseInstance();
 
                 String SQLChildRegistry = "SELECT DISTINCT child.ID, FIRSTNAME1,FIRSTNAME2,LASTNAME1, BIRTHDATE,GENDER,MOTHER_FIRSTNAME,MOTHER_LASTNAME,MOTHER_VVU_STS,MOTHER_TT2_STS,CUMULATIVE_SERIAL_NUMBER,CHILD_REGISTRY_YEAR, \n" +
@@ -408,36 +401,17 @@ public class ChildRegisterReportFragment extends RxFragment{
                                 (endNumber.equals("")?"":"  AND  child.CUMULATIVE_SERIAL_NUMBER < "+endNumber+"  ") +
                                 (startNumber.equals("")?"":" AND child.CHILD_REGISTRY_YEAR = "+year+" ")
                                 +"ORDER BY OPV1 DESC " ;
-
-
                 SQLChildRegistry +=querry2;
-
-                Log.e("optimization", querry2);
                 long tStart = System.currentTimeMillis();
                 cursor = mydb.getReadableDatabase().rawQuery(SQLChildRegistry, null);
-
-
-
-                Log.e("optimization", "Querying time  = elapsed total time (milliseconds): " + (System.currentTimeMillis() - tStart));
-
-                Log.d("optimization", "Done with getting the Monthly plan data");
                 if (cursor != null) {
-                    tStart = System.currentTimeMillis();
-                    Log.d("optimization", "cursor not null SIZE IS : "+cursor.getCount());
-                    Log.e("optimization", "Getting total size time  = elapsed total time (milliseconds): " + (System.currentTimeMillis() - tStart));
-
-
-                    tStart = System.currentTimeMillis();
+                    mVar.clear();
                     if (cursor.moveToFirst()) {
-                        Log.d("optimization", "Moved to first item in the cursor");
-                        Log.e("optimization", "moving cursor to first time  = elapsed total time (milliseconds): " + (System.currentTimeMillis() - tStart));
-
                         tStart = System.currentTimeMillis();
                         int counter = 0;
                         do {
-                            Log.d("childregistry","BCG = "+cursor.getString(cursor.getColumnIndex("BCG")));
                             counter++;
-                            ViewChildRegisterInfoRow row = new ViewChildRegisterInfoRow();
+                            final ViewChildRegisterInfoRow row = new ViewChildRegisterInfoRow();
                             row.sn = counter;
                             row.childFirstName = cursor.getString(cursor.getColumnIndex("FIRSTNAME1"));
                             row.childMiddleName = cursor.getString(cursor.getColumnIndex("FIRSTNAME2"));
@@ -468,15 +442,12 @@ public class ChildRegisterReportFragment extends RxFragment{
                             row.childCumulativeSn = cursor.getString(cursor.getColumnIndex("CUMULATIVE_SERIAL_NUMBER"));
                             row.motherTT2Status = cursor.getString(cursor.getColumnIndex("MOTHER_TT2_STS"));
                             row.motherHivStatus = cursor.getString(cursor.getColumnIndex("MOTHER_VVU_STS"));
-
                             mVar.add(row);
+
                         } while (cursor.moveToNext());
-                        Log.e("optimization", "Looping to get data  = elapsed total time (milliseconds): " + (System.currentTimeMillis() - tStart));
-
-
                     }
                     cursor.close();
-                    adapter = new ChildRegisterReportRecyclerAdapter(mVar);
+                    adapter = new ChildRegisterReportRecyclerAdapter(mVar,getActivity());
                 }
                 return Observable.just(mVar);
             }
@@ -487,28 +458,18 @@ public class ChildRegisterReportFragment extends RxFragment{
                 .subscribe(new Subscriber<ArrayList<ViewChildRegisterInfoRow>>() {
                     @Override
                     public void onCompleted() {
-
-                        Log.e(TAG, "onComplete()");
+                        childRegisterListView   .setVisibility(View.VISIBLE);
+                        childRegisterListView.setAdapter(adapter);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "onError()", e);
+                        e.printStackTrace();
                     }
 
                     @Override
                     public void onNext(ArrayList<ViewChildRegisterInfoRow> mVar) {
-                        childRegisterListView   .setVisibility(View.VISIBLE);
-                        var                     = mVar;
 
-                        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
-
-                        childRegisterListView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
-
-                        childRegisterListView.setHasFixedSize(true);
-                        childRegisterListView.setLayoutManager(mLayoutManager);
-                        childRegisterListView.setItemAnimator(new DefaultItemAnimator());
-                        childRegisterListView.setAdapter(adapter);
                     }
                 });
 
