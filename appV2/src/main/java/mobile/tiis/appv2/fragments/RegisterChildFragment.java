@@ -808,6 +808,7 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
             contentValues.put("MODIFIED_BY", app.getLOGGED_IN_USER_ID());
             if (mydb.registerChild(contentValues) > -1) {
                 mydb.InsertVaccinationsForChild(uuid, app.getLOGGED_IN_USER_ID());
+                progressDialog.dismiss();
                 showDialogWhenRegisterIsDone();
                 if (gen.equals("M")) {
                     genderChildWithoutApp = "true";
