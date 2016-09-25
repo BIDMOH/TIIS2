@@ -31,7 +31,6 @@
                 android:paddingBottom="16dp"
                 android:paddingLeft="32dp"
                 android:paddingRight="32dp">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -396,27 +395,18 @@
                         android:layout_height="100dp"
                         android:layout_marginTop="16dp">
 
-                        <fr.ganfra.materialspinner.MaterialSpinner
+
+
+                        <AutoCompleteTextView
                             android:id="@+id/spin_health_facility"
                             android:layout_width="350dp"
-                            android:layout_marginLeft="32dp"
-                            android:layout_height="wrap_content"
+                            android:imeOptions="actionSearch"
                             android:layout_centerVertical="true"
-                            android:divider="@null"
-                            app_ms:ms_multiline="false"
-                            app_ms:ms_hint="Health Facility"
-                            app_ms:ms_enableFloatingLabel="true"
-                            app_ms:ms_enableErrorLabel="false"
-                            app_ms:ms_floatingLabelText="Health Facility"
-                            app_ms:ms_baseColor="@color/light_blue_600"
-                            app_ms:ms_highlightColor="@color/light_blue_700"
-                            app_ms:ms_errorColor="@color/red_500"
-                            app_ms:ms_typeface="Roboto-LightItalic.ttf"
-                            app_ms:ms_hintColor="@color/card_light_text"
-                            app_ms:ms_arrowColor="@color/light_blue_600"
-                            app_ms:ms_arrowSize="16dp"
-                            app_ms:ms_alignLabels="false"
-                            app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
+                            android:layout_marginLeft="32dp"
+                            android:dropDownWidth="400dp"
+                            android:hint="Enter the health facility name"
+                            android:maxLines="1"
+                            android:layout_height="48dp" />
 
                         <fr.ganfra.materialspinner.MaterialSpinner
                             android:id="@+id/spin_status"
@@ -461,6 +451,11 @@
                             android:layout_marginLeft="32dp"
                             android:textSize="18sp"
                             android:textColor="@color/light_blue_600"/>
+
+                        <EditText
+                            android:id="@+id/focus_request_view"
+                            android:layout_width="1dp"
+                            android:layout_height="1dp" />
 
                         <Button
                             android:visibility="gone"

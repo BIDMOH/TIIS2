@@ -16,7 +16,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -93,8 +96,6 @@ public class ChildSummaryPagerFragment extends RxFragment {
 
     private List<Birthplace> birthplaceList;
 
-    private List<HealthFacility> healthFacilityList;
-
     private List<Status> statusList;
 
     private String childId, childRegistryYear;
@@ -121,9 +122,12 @@ public class ChildSummaryPagerFragment extends RxFragment {
 
     private Button editButton, saveButton;
 
-    private MaterialSpinner ms, pobSpinner, villageSpinner, healthFacilitySpinner, statusSpinner, VVUSpinner, TT2Spinner, registryYearSpinner;
+    private MaterialSpinner ms, pobSpinner, villageSpinner, statusSpinner, VVUSpinner, TT2Spinner, registryYearSpinner;
 
+    private AutoCompleteTextView healthFacilitySpinner;
     private DatabaseHandler mydb;
+
+    private  String registerHealthFacilityId="";
 
     private BackboneApplication app;
 
@@ -147,6 +151,11 @@ public class ChildSummaryPagerFragment extends RxFragment {
     private Bundle saveBundle;
 
     private LayoutInflater inflator;
+
+
+    private List<HealthFacility> healthFacilityList;
+    private List<HealthFacility> districtCouncilsList;
+    private List<String> healthFacilities,healthFacilitiesNames;
 
     public static final long getDaysDifference(Date d1, Date d2) {
         long diff = d2.getTime() - d1.getTime();
@@ -236,7 +245,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
         ms                  = (MaterialSpinner) header.findViewById(R.id.spin_gender);
         pobSpinner          = (MaterialSpinner) header.findViewById(R.id.spin_pob);
         villageSpinner      = (MaterialSpinner) header.findViewById(R.id.spin_village);
-        healthFacilitySpinner=(MaterialSpinner) header.findViewById(R.id.spin_health_facility);
+        healthFacilitySpinner=(AutoCompleteTextView) header.findViewById(R.id.spin_health_facility);
         statusSpinner       = (MaterialSpinner) header.findViewById(R.id.spin_status);
         VVUSpinner          = (MaterialSpinner) header.findViewById(R.id.spin_vvu_status);
         TT2Spinner          = (MaterialSpinner) header.findViewById(R.id.spin_tt2_status);
@@ -374,6 +383,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
                 birthplaceList = mydb.getAllBirthplaces();
 
                 healthFacilityList = mydb.getAllHealthFacility();
+                districtCouncilsList = mydb.getAllDistrictCoucils();
 
                 statusList = mydb.getStatus();
                 return Observable.just(true);
@@ -578,6 +588,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
         metMiddleName   .setFocusableInTouchMode(fieldStatus);
         metLastName     .setFocusableInTouchMode(fieldStatus);
         metNotesValue     .setFocusableInTouchMode(fieldStatus);
+        healthFacilitySpinner.setEnabled(fieldStatus);
 
         metMothersFirstName     .setFocusableInTouchMode(fieldStatus);
         metMothersSurname       .setFocusableInTouchMode(fieldStatus);
@@ -588,7 +599,6 @@ public class ChildSummaryPagerFragment extends RxFragment {
         ms                      .setEnabled(fieldStatus);
         pobSpinner              .setEnabled(fieldStatus);
         villageSpinner          .setEnabled(fieldStatus);
-        healthFacilitySpinner   .setEnabled(fieldStatus);
         statusSpinner           .setEnabled(fieldStatus);
         VVUSpinner              .setEnabled(fieldStatus);
         TT2Spinner              .setEnabled(fieldStatus);
@@ -598,13 +608,11 @@ public class ChildSummaryPagerFragment extends RxFragment {
             ms.setBaseColor(R.color.card_light_text);
             pobSpinner.setBaseColor(R.color.card_light_text);
             villageSpinner.setBaseColor(R.color.card_light_text);
-            healthFacilitySpinner.setBaseColor(R.color.card_light_text);
             statusSpinner.setBaseColor(R.color.card_light_text);
         }else{
             ms.setBaseColor(R.color.black);
             pobSpinner.setBaseColor(R.color.black);
             villageSpinner.setBaseColor(R.color.black);
-            healthFacilitySpinner.setBaseColor(R.color.black);
             statusSpinner.setBaseColor(R.color.black);
         }
 
@@ -646,6 +654,19 @@ public class ChildSummaryPagerFragment extends RxFragment {
 
     public void setUpView(View v){
         summaryTableLayout      = (TableLayout) v.findViewById(R.id.child_summary_table_layout);
+    }
+
+    private String getDistrictCouncilName(String id){
+        Log.d(TAG,"health facility id = "+id);
+        String name = "";
+        for (HealthFacility districtCouncil : districtCouncilsList){
+            Log.d(TAG,"district council ids = "+districtCouncil.getId());
+            if(districtCouncil.getId().equals(id)) {
+                name = districtCouncil.getName();
+            }
+
+        }
+        return name;
     }
 
     private void fillUIElements(){
@@ -817,24 +838,57 @@ public class ChildSummaryPagerFragment extends RxFragment {
                 villageOrig = dataAdapter.getCount() - 1;
             }
 
-            List<String> facility_name = new ArrayList<String>();
-            for (HealthFacility element : healthFacilityList) {
-                facility_name.add(element.getName());
+            healthFacilities = new ArrayList<>();
+            healthFacilitiesNames = new ArrayList<>();
+            for (HealthFacility healthFacility : healthFacilityList){
+                healthFacilities.add(healthFacility.getName()+" >> "+getDistrictCouncilName(healthFacility.getParentId()));
+                healthFacilitiesNames.add(healthFacility.getName());
             }
-            facility_name.add("------");
 
-            SingleTextViewAdapter healthAdapter = new SingleTextViewAdapter(ChildSummaryPagerFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, facility_name);
+            final ArrayAdapter<String> healthAdapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item_layout,R.id.item,healthFacilities);
+
+
             healthFacilitySpinner.setAdapter(healthAdapter);
             healthFacilitySpinner.setEnabled(false);
 
-            int index =facility_name.indexOf(currentChild.getHealthcenter());
-            if (index != -1) {
-                healthFacilitySpinner.setSelection(index+1);
-                healthFacOrig = index+1;
+            healthFacilitySpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                    int pos = healthFacilities.indexOf(((TextView) v.findViewById(R.id.item)).getText().toString());
+                    if (pos == -1) {
+                        healthFacilitySpinner.setError("Error in selecting health facility");
+                    } else {
+                        healthFacOrig = pos;
+                        registerHealthFacilityId = healthFacilityList.get(pos).getId();
+                        healthFacilitySpinner.setText(healthFacilitiesNames.get(pos));
+                        ((EditText)header.findViewById(R.id.focus_request_view)).requestFocus();
+                    }
+                }
+            });
+            healthFacilitySpinner.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if(!hasFocus){
+                        int pos = healthFacilitiesNames.indexOf(healthFacilitySpinner.getText().toString());
+                        if (pos == -1) {
+                            healthFacilitySpinner.setError("Error in selecting health facility");
+                            registerHealthFacilityId="";
+                            healthFacOrig = -1;
+                        }
+                    }
+                }
+            });
 
+            Log.d(TAG,"current child health facility = "+currentChild.getHealthcenter());
+
+            int index =healthFacilitiesNames.indexOf(currentChild.getHealthcenter());
+
+            Log.d(TAG,"current child health facility index = "+index);
+            if (index != -1) {
+                healthFacilitySpinner.setText(healthFacilitiesNames.get(index));
+                healthFacOrig = index;
             } else {
-                healthFacilitySpinner.setSelection(healthAdapter.getCount()-1);
-                healthFacOrig = healthAdapter.getCount()-1;
+                healthFacOrig = -1;
             }
 
 
@@ -1094,11 +1148,12 @@ public class ChildSummaryPagerFragment extends RxFragment {
             alertDialogBuilder.show();
             return false;
         }
-        if (healthFacilitySpinner.getSelectedItemPosition() == healthFacilityList.size()+1) {
+        if (registerHealthFacilityId.equals("")) {
             alertDialogBuilder.setMessage(getString(R.string.empty_healthfacility));
             alertDialogBuilder.show();
             return false;
         }
+
         if (statusSpinner.getSelectedItemPosition() == statusList.size()) {
             alertDialogBuilder.setMessage(getString(R.string.empty_status));
             alertDialogBuilder.show();
@@ -1267,11 +1322,11 @@ public class ChildSummaryPagerFragment extends RxFragment {
             contentValues.put(SQLHandler.ChildColumns.DOMICILE, placeList.get(villageSpinner.getSelectedItemPosition()-1).getName());
             contentValues.put(SQLHandler.ChildColumns.DOMICILE_ID, placeList.get(villageSpinner.getSelectedItemPosition()-1).getId());
         }
-        if (!healthFacilityList.get(healthFacilitySpinner.getSelectedItemPosition()-1).getName().equalsIgnoreCase(currentChild.getHealthcenter())) {
-            currentChild.setHealthcenterId(healthFacilityList.get(healthFacilitySpinner.getSelectedItemPosition()-1).getId());
-            currentChild.setHealthcenter(healthFacilityList.get(healthFacilitySpinner.getSelectedItemPosition()-1).getName());
-            contentValues.put(SQLHandler.ChildColumns.HEALTH_FACILITY, healthFacilityList.get(healthFacilitySpinner.getSelectedItemPosition()-1).getName());
-            contentValues.put(SQLHandler.ChildColumns.HEALTH_FACILITY_ID, healthFacilityList.get(healthFacilitySpinner.getSelectedItemPosition()-1).getId());
+        if (!healthFacilityList.get(healthFacOrig).getName().equalsIgnoreCase(currentChild.getHealthcenter())) {
+            currentChild.setHealthcenterId(healthFacilityList.get(healthFacOrig).getId());
+            currentChild.setHealthcenter(healthFacilityList.get(healthFacOrig).getName());
+            contentValues.put(SQLHandler.ChildColumns.HEALTH_FACILITY, healthFacilityList.get(healthFacOrig).getName());
+            contentValues.put(SQLHandler.ChildColumns.HEALTH_FACILITY_ID, healthFacilityList.get(healthFacOrig).getId());
         }
         if (!statusList.get(statusSpinner.getSelectedItemPosition()-1).getName().equalsIgnoreCase(currentChild.getStatus())) {
             currentChild.setStatusId(statusList.get(statusSpinner.getSelectedItemPosition()-1).getId());
@@ -1430,7 +1485,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
             e.printStackTrace();
         }
         try {
-            webServiceUrl.append("&healthFacilityId=" + URLEncoder.encode(healthFacilityList.get(healthFacilitySpinner.getSelectedItemPosition()-1).getId(), "UTF-8"));
+            webServiceUrl.append("&healthFacilityId=" + URLEncoder.encode(healthFacilityList.get(healthFacOrig).getId(), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -1510,7 +1565,6 @@ public class ChildSummaryPagerFragment extends RxFragment {
         barcodeOrig = metBarcodeValue.getText().toString();
         birthplaceOrig = pobSpinner.getSelectedItemPosition();
         villageOrig = villageSpinner.getSelectedItemPosition();
-        healthFacOrig = healthFacilitySpinner.getSelectedItemPosition();
         statusOrig = statusSpinner.getSelectedItemPosition();
         genderOrig =   ms.getSelectedItemPosition();
 
