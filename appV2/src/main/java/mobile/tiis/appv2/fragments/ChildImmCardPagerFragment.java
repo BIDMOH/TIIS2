@@ -164,4 +164,9 @@ public class ChildImmCardPagerFragment extends RxFragment {
 
     }
 
+    public void updateData() {
+        Log.d(TAG,"updating the fragment");
+        renderViews();
+    }
+
 }

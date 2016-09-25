@@ -442,4 +442,9 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
         tabs.setDisabled(!status);
     }
 
+    public void updateadapters(){
+        Log.d(TAG,"notifying the adapter that the dataset has changed");
+        adapter.notifyDataSetChanged();
+    }
+
 }

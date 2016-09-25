@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 
 import mobile.tiis.appv2.entity.Child;
@@ -19,7 +20,7 @@ import mobile.tiis.appv2.fragments.ChildWeightPagerFragment;
  * Created by issymac on 25/01/16.
  */
 public class ChildDetailsViewPager extends FragmentPagerAdapter {
-
+    private static final String TAG = ChildDetailsViewPager.class.getSimpleName();
     private final String[] TITLES = { "Child Summary", "Weight", "Vaccinate Child" , "AEFI", "Immunization Card" };
     private FragmentManager fragmentManager;
     private FragmentTransaction tx;
@@ -78,5 +79,18 @@ public class ChildDetailsViewPager extends FragmentPagerAdapter {
             return ChildImmCardPagerFragment.newInstance(currentChild);
         }
     }
+
+    @Override
+    // To update fragment in ViewPager, we should override getItemPosition() method,
+    // in this method, we call the fragment's public updating method.
+    public int getItemPosition(Object object) {
+        Log.d(TAG, "getItemPosition(" + object.getClass().getSimpleName() + ")");
+        if (object instanceof ChildSummaryPagerFragment) {
+            ((ChildSummaryPagerFragment) object).updateData();
+        }else if (object instanceof ChildImmCardPagerFragment) {
+            ((ChildImmCardPagerFragment) object).updateData();
+        }
+        return super.getItemPosition(object);
+    };
 
 }

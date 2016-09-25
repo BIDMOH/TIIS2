@@ -131,6 +131,8 @@ public class ChildSummaryPagerFragment extends RxFragment {
 
     final DatePickerDialog doBDatePicker = new DatePickerDialog();
 
+    private  View header,appointmentTableHeader;
+
     /** childWithEditableChildCumulativeSnAndChildRegistryYear is a boolean value used to specify children whose child cumulative registration numbers should not be editable
      * these children include children from outside catchment whereby child cumulative number and child registration year should be left unchanged and
      * new registered children who have not been synched to the server, child cumulative number and child registration year should also be left unchaged
@@ -141,7 +143,10 @@ public class ChildSummaryPagerFragment extends RxFragment {
     private boolean registryYearChanged = false;
     private boolean cummulativeSnChanged = false;
 
-    LayoutInflater inflator;
+    private ViewGroup viewGroup;
+    private Bundle saveBundle;
+
+    private LayoutInflater inflator;
 
     public static final long getDaysDifference(Date d1, Date d2) {
         long diff = d2.getTime() - d1.getTime();
@@ -171,6 +176,8 @@ public class ChildSummaryPagerFragment extends RxFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup v;
         inflator = inflater;
+        viewGroup = container;
+        saveBundle = savedInstanceState;
         v = (ViewGroup) inflater.inflate(R.layout.fragment_child_summary, null);
         app = (BackboneApplication) ChildSummaryPagerFragment.this.getActivity().getApplication();
         mydb = app.getDatabaseInstance();
@@ -213,7 +220,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
         tt2SpinnerAdapter   = new PlacesOfBirthAdapter(ChildSummaryPagerFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, tt2StatusList);
         registryYearAdapter = new PlacesOfBirthAdapter(ChildSummaryPagerFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, registryYearList);
 
-        View header = (View) inflater.inflate(R.layout.childinfo_summary_header, null);
+        header = (View) inflater.inflate(R.layout.childinfo_summary_header, null);
 
         metBarcodeValue     = (MaterialEditText) header.findViewById(R.id.met_barcode_value);
         metFirstName        = (MaterialEditText) header.findViewById(R.id.met_fname_value);
@@ -349,7 +356,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
         });
 
         summaryTableLayout.addView(header);
-        View appointmentTableHeader = inflater.inflate(R.layout.appointment_table_header, null);
+        appointmentTableHeader = inflater.inflate(R.layout.appointment_table_header, null);
         summaryTableLayout.addView(appointmentTableHeader);
         mCursor = null;
         Observable.defer(new Func0<Observable<Boolean>>() {
@@ -496,9 +503,6 @@ public class ChildSummaryPagerFragment extends RxFragment {
     }
 
     private void fillAppointmentTableLayout(){
-        //Use the Froagment's inflater (stored in "inflator" instance)
-//        LayoutInflater inflator = (LayoutInflater) ChildSummaryPagerFragment.this.getActivity()
-//                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         for (ViewAppointmentRow va : var){
             View convertView = inflator.inflate(R.layout.vaccination_history_item, null);
 
@@ -1522,5 +1526,14 @@ public class ChildSummaryPagerFragment extends RxFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    public void updateData() {
+        Log.d(TAG,"updating the fragment");
+        updateAppointmentTable();
+        summaryTableLayout.removeAllViews();
+        summaryTableLayout.addView(header);
+        summaryTableLayout.addView(appointmentTableHeader);
+        fillAppointmentTableLayout();
     }
 }

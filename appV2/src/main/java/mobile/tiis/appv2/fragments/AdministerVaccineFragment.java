@@ -46,6 +46,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import mobile.tiis.appv2.ChildDetailsActivity;
 import mobile.tiis.appv2.R;
 import mobile.tiis.appv2.SubClassed.BackHandledFragment;
 import mobile.tiis.appv2.adapters.SingleTextViewAdapter;
@@ -823,6 +824,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                 }
             });
             ad2.show();
+            ((ChildDetailsActivity)getActivity()).updateadapters();
         }
 
         @Override
