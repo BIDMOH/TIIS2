@@ -668,8 +668,16 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
 
 
         if (gen.equals("")) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity())
+                    .setTitle(getString(R.string.alert_empty_fields))
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            ((AlertDialog) dialog).dismiss();
+                        }
+                    });
+            alertDialogBuilder.setMessage(getString(R.string.empty_gender));
+            alertDialogBuilder.show();
             genderSpinner.setError(getString(R.string.empty_gender));
-            genderSpinner.setErrorColor(Color.RED);
             return false;
         }
 
