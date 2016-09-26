@@ -1,4 +1,4 @@
-package mobile.tiis.staging;
+package mobile.tiis.appV2;
 
 import org.junit.Test;
 

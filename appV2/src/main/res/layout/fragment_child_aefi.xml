@@ -103,13 +103,13 @@
 
             </RelativeLayout>
 
-            <mobile.tiis.staging.CustomViews.NestedListView
+            <mobile.tiis.appV2.CustomViews.NestedListView
                 android:background="@color/white"
                 android:id="@+id/aefi_list_one"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1">
-            </mobile.tiis.staging.CustomViews.NestedListView>
+            </mobile.tiis.appV2.CustomViews.NestedListView>
 
         </LinearLayout>
 
@@ -312,13 +312,13 @@
 
         </RelativeLayout>
 
-        <mobile.tiis.staging.CustomViews.NestedListView
+        <mobile.tiis.appV2.CustomViews.NestedListView
             android:background="@color/white"
             android:id="@+id/aefi_list_two"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1">
-        </mobile.tiis.staging.CustomViews.NestedListView>
+        </mobile.tiis.appV2.CustomViews.NestedListView>
 
 
     </LinearLayout>
