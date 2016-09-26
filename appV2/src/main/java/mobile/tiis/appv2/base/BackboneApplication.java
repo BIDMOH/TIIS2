@@ -2702,12 +2702,12 @@ public class BackboneApplication extends Application {
     private int childId;
     public int registerChildWithAppoitments(String barcode, String fristname, String lastname, String bDate, String gender, String hfid, String birthPlaceId, String domId,
                                             String addr, String phone, String motherFirstname, String motherLastname, String notes, String userID, String modOn,
-                                            PostmanModel postmanModel, String firstname2,final String threadTempId, final String threadbarcode, String motherVVUStatus, String motherTT2Status, String childCummulativeSn, String childRegistryYear) {
+                                            PostmanModel postmanModel, String firstname2,final String threadTempId, final String threadbarcode, String motherVVUStatus, String motherTT2Status, String childCummulativeSn, String childRegistryYear,int catchment) {
         childId = -1;
         final StringBuilder webServiceUrl;
         if (postmanModel == null) {
             webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC);
-            webServiceUrl.append("RegisterChildWithAppoitmentsWithMothersHivStatusAndTT2VaccineStatus?barcodeid=").append(barcode).append("&firstname1=")
+            webServiceUrl.append("RegisterChildWithAppoitmentsWithMothersHivStatusAndTT2VaccineStatusAndCatchment?barcodeid=").append(barcode).append("&firstname1=")
                     .append(URLEncoder.encode(fristname)).append("&lastname1=").append(URLEncoder.encode(lastname))
                     .append("&birthdate=").append(bDate).append("&gender=").append(gender)
                     .append("&healthFacilityId=").append(hfid).append("&birthplaceId=").append(birthPlaceId).append("&domicileId=")
@@ -2721,7 +2721,8 @@ public class BackboneApplication extends Application {
                     .append("&userId=").append(userID).append("&modifiedOn=").append(modOn)
                     .append("&firstname2=").append((firstname2 != null) ? firstname2 : "")
                     .append("&childCumulativeSn=").append(childCummulativeSn)
-                    .append("&childRegistryYear=").append(childRegistryYear);
+                    .append("&childRegistryYear=").append(childRegistryYear)
+                    .append("&catchment=").append(catchment);
 
         } else {
             webServiceUrl = new StringBuilder(postmanModel.getUrl());

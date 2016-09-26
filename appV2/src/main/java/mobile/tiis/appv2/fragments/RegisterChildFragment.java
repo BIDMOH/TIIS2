@@ -362,6 +362,8 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
                         gen = "F";
                         Log.d("gender", gen);
                         break;
+                    default:
+                        gen="";
                 }
             }
 
@@ -665,7 +667,7 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
         }
 
 
-        if (genderSpinner.getSelectedItemPosition() == -1) {
+        if (gen.equals("")) {
             genderSpinner.setError(getString(R.string.empty_gender));
             genderSpinner.setErrorColor(Color.RED);
             return false;
@@ -754,6 +756,7 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
         }else{
             contentValues.put(SQLHandler.ChildColumns.HEALTH_FACILITY_ID, registerHealthFacilityId);
         }
+
         contentValues.put(SQLHandler.ChildColumns.ADDRESS, "");
         contentValues.put(SQLHandler.ChildColumns.MODIFIED_ON, new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()));
 
@@ -843,7 +846,7 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
                             removeWhiteSpaces(etFirstname2.getText().toString()),
                             motherVVU.get(motherVVUStatusSpinner.getSelectedItemPosition() - 1),
                             motherTT2.get(motherTT2StatusSpinner.getSelectedItemPosition() - 1),etChildCumulativeSn.length() > 0?removeWhiteSpaces(etChildCumulativeSn.getText().toString()):"",
-                            etChildCumulativeSn.length() > 0? childRegistryYear : "");
+                            etChildCumulativeSn.length() > 0? childRegistryYear : "",catchment.equals("inside")?1:-1);
                 }catch(Exception exception){
                     exception.printStackTrace();
                 }
@@ -867,8 +870,33 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
         }
     }
 
+    /**
+     *
+     * @param barcode
+     * @param fristname
+     * @param lastname
+     * @param bDate
+     * @param gender
+     * @param hfid
+     * @param birthPlaceId
+     * @param domId
+     * @param addr
+     * @param phone
+     * @param motherFirstname
+     * @param motherLastname
+     * @param notes
+     * @param userID
+     * @param modOn
+     * @param tempId
+     * @param firstname2
+     * @param threadMotherVVUStatus
+     * @param threadMotherTT2Status
+     * @param childCummulativeSn
+     * @param childRegistryYear
+     * @param catchment 1=inside 0=outside
+     */
     private synchronized void registerChildWithoutAppointments(String barcode, String fristname, String lastname, Date bDate, String gender, String  hfid, String birthPlaceId, String domId,
-                                                               String addr, String phone, String motherFirstname, String motherLastname, String notes, String userID, Date modOn, final String tempId,String firstname2, String threadMotherVVUStatus, String threadMotherTT2Status, String childCummulativeSn, String childRegistryYear) {
+                                                               String addr, String phone, String motherFirstname, String motherLastname, String notes, String userID, Date modOn, final String tempId, String firstname2, String threadMotherVVUStatus, String threadMotherTT2Status, String childCummulativeSn, String childRegistryYear, final int catchment) {
         new Thread() {
             String threadBDateString;
             String threadModOn;
@@ -904,7 +932,7 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
             String childRegistryYear;
 
             public Thread setData(String threadbarcode, String threadfristname, String threadLastname, Date threadBDate, String threadGender, String threadhfid, String threadBirthPlaceID, String threadDomID,
-                                  String threadAddr, String threadPhone, String threadMotherFirstname, String threadMotherLastname, String threadNotes, String threadUserID, Date threadModOn, String tempId,String threadFirstname2, String threadMotherVVUStatus, String threadMotherTT2Status, String threadCummulativeSn, String threadChildRegistryYear) {
+                                  String threadAddr, String threadPhone, String threadMotherFirstname, String threadMotherLastname, String threadNotes, String threadUserID, Date threadModOn, String tempId,String threadFirstname2, String threadMotherVVUStatus, String threadMotherTT2Status, String threadCummulativeSn, String threadChildRegistryYear, int catchment) {
 
                 try {
                     this.threadbarcode          = threadbarcode;
@@ -942,7 +970,7 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
                 BackboneApplication backbone = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
 
                 int results = backbone.registerChildWithAppoitments(threadbarcode, threadfristname, threadLastname, threadBDateString, threadGender, threadhfid, threadBirthPlaceID, threadDomID, threadAddr
-                        , threadPhone, threadMotherFirstname, threadMotherLastname, threadNotes, threadUserID, threadModOn, null,threadFirstname2, threadTempId, threadbarcode, threadMotherVVUStatus, threadMotherTT2Status, childCummulativeSn, childRegistryYear);
+                        , threadPhone, threadMotherFirstname, threadMotherLastname, threadNotes, threadUserID, threadModOn, null,threadFirstname2, threadTempId, threadbarcode, threadMotherVVUStatus, threadMotherTT2Status, childCummulativeSn, childRegistryYear,catchment);
                 Log.d("CSN", "Result from server is : "+results);
                 if(results!=-1) {
                     Intent childDetailsActivity = new Intent(getActivity(), ChildDetailsActivity.class);
@@ -967,7 +995,7 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
                 }
             }
 
-        }.setData(barcode, fristname, lastname, bDate, gender, hfid, birthPlaceId, domId, addr, phone, motherFirstname, motherLastname, notes, userID, modOn, tempId,firstname2, threadMotherVVUStatus, threadMotherTT2Status, childCummulativeSn, childRegistryYear).start();
+        }.setData(barcode, fristname, lastname, bDate, gender, hfid, birthPlaceId, domId, addr, phone, motherFirstname, motherLastname, notes, userID, modOn, tempId,firstname2, threadMotherVVUStatus, threadMotherTT2Status, childCummulativeSn, childRegistryYear,catchment).start();
     }
 
     private void searchChildTask(){
