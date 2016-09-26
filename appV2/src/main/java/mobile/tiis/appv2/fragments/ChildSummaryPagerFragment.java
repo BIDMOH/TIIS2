@@ -231,6 +231,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
 
         header = (View) inflater.inflate(R.layout.childinfo_summary_header, null);
 
+        lvImmunizationHistory = (ListView) v.findViewById(R.id.vaccination_history_list);
         metBarcodeValue     = (MaterialEditText) header.findViewById(R.id.met_barcode_value);
         metFirstName        = (MaterialEditText) header.findViewById(R.id.met_fname_value);
         metMiddleName       = (MaterialEditText) header.findViewById(R.id.met_mname_value);
@@ -887,8 +888,10 @@ public class ChildSummaryPagerFragment extends RxFragment {
             if (index != -1) {
                 healthFacilitySpinner.setText(healthFacilitiesNames.get(index));
                 healthFacOrig = index;
+                registerHealthFacilityId = healthFacilityList.get(index).getId();
             } else {
                 healthFacOrig = -1;
+                registerHealthFacilityId="";
             }
 
 
@@ -1055,6 +1058,9 @@ public class ChildSummaryPagerFragment extends RxFragment {
      * accepptable.
      */
     private boolean checkDataIntegrityBeforeSave() {
+
+        //removing focus from any edit texts
+        ((EditText)header.findViewById(R.id.focus_request_view)).requestFocus();
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ChildSummaryPagerFragment.this.getActivity())
                 .setTitle(getString(R.string.alert_empty_fields))
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
