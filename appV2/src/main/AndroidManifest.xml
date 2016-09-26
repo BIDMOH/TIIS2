@@ -19,7 +19,7 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="mobile.tiis.appv2"
+    package="mobile.tiis.staging"
     android:installLocation="auto"
     android:largeHeap="true">
 
@@ -44,7 +44,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <permission
-        android:name="mobile.tiis.appv2.permission.C2D_MESSAGE"
+        android:name="mobile.tiis.staging.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
     <uses-sdk android:minSdkVersion="15" android:targetSdkVersion="17"/>
@@ -72,14 +72,14 @@
         android:smallScreens="true"
         android:anyDensity="true"/>
 
-    <application android:name="mobile.tiis.appv2.base.BackboneApplication"
+    <application android:name="mobile.tiis.staging.base.BackboneApplication"
         android:icon="@drawable/newloginlogo"
         android:logo="@drawable/newloginlogo"
         android:theme="@style/TIISTheme"
         android:label="@string/app_name"
         android:allowBackup="true">
 
-        <activity android:name="mobile.tiis.appv2.LoginActivity"
+        <activity android:name="mobile.tiis.staging.LoginActivity"
             android:label="Tanzania ImR"
             android:stateNotNeeded="true"
             android:configChanges="keyboard|keyboardHidden|uiMode|screenSize|smallestScreenSize"
@@ -91,23 +91,23 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="mobile.tiis.appv2.HomeActivityRevised"
+        <activity android:name="mobile.tiis.staging.HomeActivityRevised"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
 
         //services
         <service
-            android:name="mobile.tiis.appv2.helpers.NetworkStatusService"
+            android:name="mobile.tiis.staging.helpers.NetworkStatusService"
             android:label="network_status_service">
         </service>
 
         <service
-            android:name="mobile.tiis.appv2.postman.SynchronizationService2">
+            android:name="mobile.tiis.staging.postman.SynchronizationService2">
         </service>
 
         <service
-            android:name="mobile.tiis.appv2.authentication.LoginAuthenticationService"
+            android:name="mobile.tiis.staging.authentication.LoginAuthenticationService"
             android:exported="true"
             android:process=":auth">
             <intent-filter>
@@ -119,50 +119,50 @@
                 android:resource="@xml/authenticator" />
         </service>
 
-        <receiver android:name="mobile.tiis.appv2.postman.RoutineAlarmReceiver" >
+        <receiver android:name="mobile.tiis.staging.postman.RoutineAlarmReceiver" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
         </receiver>
 
         <service
-            android:name="mobile.tiis.appv2.postman.SynchronisationService"
+            android:name="mobile.tiis.staging.postman.SynchronisationService"
             android:exported="false" >
         </service>
         <service
-            android:name="mobile.tiis.appv2.postman.CheckForChangesSynchronisationService"
+            android:name="mobile.tiis.staging.postman.CheckForChangesSynchronisationService"
             android:exported="false"
             >
         </service>
 
-        <activity android:name="mobile.tiis.appv2.ChildDetailsActivity"
-            android:parentActivityName="mobile.tiis.appv2.HomeActivityRevised"
+        <activity android:name="mobile.tiis.staging.ChildDetailsActivity"
+            android:parentActivityName="mobile.tiis.staging.HomeActivityRevised"
             android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
 
-        <activity android:name="mobile.tiis.appv2.StockActivityRevised"
+        <activity android:name="mobile.tiis.staging.StockActivityRevised"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:parentActivityName="mobile.tiis.appv2.HomeActivityRevised"
+            android:parentActivityName="mobile.tiis.staging.HomeActivityRevised"
             android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
 
-        <activity android:name="mobile.tiis.appv2.ReportsActivityRevised"
+        <activity android:name="mobile.tiis.staging.ReportsActivityRevised"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="stateAlwaysHidden"
-            android:parentActivityName="mobile.tiis.appv2.HomeActivityRevised">
+            android:parentActivityName="mobile.tiis.staging.HomeActivityRevised">
         </activity>
 
-        <activity android:name="mobile.tiis.appv2.AdministerVaccineOfflineRevisedActivity"
-            android:parentActivityName="mobile.tiis.appv2.HomeActivityRevised"
+        <activity android:name="mobile.tiis.staging.AdministerVaccineOfflineRevisedActivity"
+            android:parentActivityName="mobile.tiis.staging.HomeActivityRevised"
             android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
 
 
 
-        <service android:name="mobile.tiis.appv2.GCMCommunication.GCMService" />
+        <service android:name="mobile.tiis.staging.GCMCommunication.GCMService" />
 
         <receiver
-            android:name="mobile.tiis.appv2.GCMCommunication.GCMReceiver"
+            android:name="mobile.tiis.staging.GCMCommunication.GCMReceiver"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />

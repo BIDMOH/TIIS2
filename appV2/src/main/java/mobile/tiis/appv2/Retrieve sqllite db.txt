@@ -1,1 +1,0 @@
-./adb -d shell 'run-as mobile.tiis.appv2 cat /data/data/mobile.tiis.appv2/databases/giis_mobile.db > /sdcard/recovered_db.db';

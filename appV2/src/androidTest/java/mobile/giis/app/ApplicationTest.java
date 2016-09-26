@@ -1,4 +1,4 @@
-package mobile.tiis.appv2;
+package mobile.tiis.staging;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
