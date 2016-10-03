@@ -37,6 +37,7 @@ public class RoutineAlarmReceiver extends WakefulBroadcastReceiver {
     private static AlarmManager alarmMgr;
     // The pending intent that is triggered when the alarm fires.
     private static PendingIntent alarmIntent, checkForChangesInChildPI , weeklyUpdateBaseTables;
+    private static Intent postmanService;
 
     /**
      * Sets a repeating alarm that runs once every 5 minutes When the
@@ -98,7 +99,7 @@ public class RoutineAlarmReceiver extends WakefulBroadcastReceiver {
             if (Utils.isOnline(context)) {
                 Log.d("WOWHITS", "Broadcast Received Syncronization of the service starts.........");
                 Intent i = new Intent(context, SynchronisationService.class);
-                startWakefulService(context, i);
+                context.startService(i);
             }
         }
 

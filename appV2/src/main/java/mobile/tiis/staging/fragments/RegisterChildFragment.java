@@ -42,6 +42,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
@@ -446,7 +447,6 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
             if(!isSavingData) {
                 isSavingData = true;
                 progressDialog.show();
-                BackboneApplication app = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
                 DatabaseHandler mydb = app.getDatabaseInstance();
 
                 if (checkDataIntegrityBeforeSave()) {
@@ -758,9 +758,8 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
         }
 
 
-        BackboneApplication backboneApplication = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
         if(catchment.equals("inside")) {
-            contentValues.put(SQLHandler.ChildColumns.HEALTH_FACILITY_ID, backboneApplication.getLOGGED_IN_USER_HF_ID());
+            contentValues.put(SQLHandler.ChildColumns.HEALTH_FACILITY_ID, app.getLOGGED_IN_USER_HF_ID());
         }else{
             contentValues.put(SQLHandler.ChildColumns.HEALTH_FACILITY_ID, registerHealthFacilityId);
         }
@@ -815,7 +814,6 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
 
         if (contentValues.size() > 0) {
 
-            BackboneApplication app = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
             contentValues.put("MODIFIED_BY", app.getLOGGED_IN_USER_ID());
             if (mydb.registerChild(contentValues) > -1) {
                 mydb.InsertVaccinationsForChild(uuid, app.getLOGGED_IN_USER_ID());
@@ -975,9 +973,7 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
             public void run() {
                 super.run();
 
-                BackboneApplication backbone = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
-
-                int results = backbone.registerChildWithAppoitments(threadbarcode, threadfristname, threadLastname, threadBDateString, threadGender, threadhfid, threadBirthPlaceID, threadDomID, threadAddr
+                int results = app.registerChildWithAppoitments(threadbarcode, threadfristname, threadLastname, threadBDateString, threadGender, threadhfid, threadBirthPlaceID, threadDomID, threadAddr
                         , threadPhone, threadMotherFirstname, threadMotherLastname, threadNotes, threadUserID, threadModOn, null,threadFirstname2, threadTempId, threadbarcode, threadMotherVVUStatus, threadMotherTT2Status, childCummulativeSn, childRegistryYear,catchment);
                 Log.d("CSN", "Result from server is : "+results);
                 if(results!=-1) {
@@ -1079,7 +1075,7 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
                     public void onNext(List<Child> children) {
                         if(children == null){
                             avi.hide();
-                            infoText.setText("No Child was found with the given criteria, continue with registering");
+                            infoText.setText("");
                         }else{
                             try {
                                 Toast.makeText(getActivity(), R.string.similar_children_exist, Toast.LENGTH_LONG).show();
@@ -1087,7 +1083,7 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
                                 e.printStackTrace();
                             }
                             avi.hide();
-                            infoText.setText("");
+                            infoText.setText("The child you are trying to register was registered in Maternity ward. Please confirm on the above list");
                             childListFromOutsideFacility = false;
                             InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                             imm.hideSoftInputFromWindow(etFirstName.getWindowToken(), 0);
@@ -1280,34 +1276,36 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
                     if (emptyInputDetected == 6){
                         //wont be executed!
                     }else {
-                        BackboneApplication backbone = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
+                        try {
+                            childrensrv = app.searchChild(null, null, null, motherFname, new SimpleDateFormat("yyyy-MM-dd").format(bdate), new SimpleDateFormat("yyyy-MM-dd").format(bdate), null, surname,
+                                    motherSName, placeOBId, healthFacility, villageName, status);
 
-                        childrensrv = backbone.searchChild(null, null, null, motherFname, new SimpleDateFormat("yyyy-MM-dd").format(bdate), new SimpleDateFormat("yyyy-MM-dd").format(bdate), null, surname,
-                                motherSName, placeOBId, healthFacility, villageName, status);
-
-                        if (childrensrv == null || childrensrv.isEmpty()) {
-                            RegisterChildFragment.this.getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    avi.hide();
-                                    infoText.setText("Child not found, continue with registration");
-                                }
-                            });
-                        } else if (childrensrv.size() > 0) {
-                            RegisterChildFragment.this.getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    // Create and show the dialog.
-                                    if (childrensrv.size() > 0) {
-                                        childListFromOutsideFacility = true;
-                                        infoText.setText("");
+                            if (childrensrv == null || childrensrv.isEmpty()) {
+                                RegisterChildFragment.this.getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
                                         avi.hide();
-                                        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                                        imm.hideSoftInputFromWindow(etFirstName.getWindowToken(), 0);
-                                        fillSearchResultTable(childrensrv,true);
+                                        infoText.setText("");
                                     }
-                                }
-                            });
+                                });
+                            } else if (childrensrv.size() > 0) {
+                                RegisterChildFragment.this.getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        // Create and show the dialog.
+                                        if (childrensrv.size() > 0) {
+                                            childListFromOutsideFacility = true;
+                                            infoText.setText("The child you are trying to register was registered in Maternity ward. Please confirm on the above list");
+                                            avi.hide();
+                                            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                            imm.hideSoftInputFromWindow(etFirstName.getWindowToken(), 0);
+                                            fillSearchResultTable(childrensrv, true);
+                                        }
+                                    }
+                                });
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
                         }
                     }
                 }
@@ -1321,15 +1319,14 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
             @Override
             public Observable<Integer> call() {
                 // Do some long running operation
-                BackboneApplication application = (BackboneApplication) RegisterChildFragment.this.getActivity().getApplication();
                 int parse_status = 0;
                 String village_id, hf_id;
 
-                parse_status = application.parseChildById(id);
+                parse_status = app.parseChildById(id);
                 Log.d("parseChildCollectorbyId", parse_status+"");
                 if (parse_status != 2 && parse_status != 3) {
-                    DatabaseHandler db = application.getDatabaseInstance();
-                    parseHFIDWhenNotInDb(db, application);
+                    DatabaseHandler db = app.getDatabaseInstance();
+                    parseHFIDWhenNotInDb(db, app);
                     Cursor cursor = null;
                     Log.d("child id", id);
                     cursor = db.getReadableDatabase().rawQuery("SELECT * FROM child WHERE ID=?", new String[]{id});
@@ -1348,12 +1345,12 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
                         }
 
                         if (found == 0 && hf_id != null) {
-                            application.parseCustomHealthFacility(hf_id);
+                            app.parseCustomHealthFacility(hf_id);
                         }
 
                         try {
                             if (village_id != null || !village_id.equalsIgnoreCase("0")) {
-                                application.parsePlaceById(village_id);
+                                app.parsePlaceById(village_id);
                             }
                         } catch (NullPointerException e) {
                             e.printStackTrace();
