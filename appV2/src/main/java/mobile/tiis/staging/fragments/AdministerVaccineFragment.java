@@ -1109,7 +1109,11 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
     @Override
     public void onDestroy() {
         super.onDestroy();
-        subscription.unsubscribe();
+        try {
+            subscription.unsubscribe();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 }
