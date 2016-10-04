@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -38,6 +40,7 @@ public class WeightOflineFragment extends Fragment {
     MaterialEditText weight_input_dec, weight_input_comma, dateValue;
 
     private boolean isWeightSetForChild = false;
+    private BackboneApplication backbone;
 
 
 
@@ -59,6 +62,7 @@ public class WeightOflineFragment extends Fragment {
         ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.weight_offline_fragment, null);
         setupviews(rootview);
 
+        backbone = (BackboneApplication) getActivity().getApplication();
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -96,6 +100,53 @@ public class WeightOflineFragment extends Fragment {
             if (!isWeightSetForChild) {
                 isWeightSetForChild = true;
                 updateWeight((weight_input_dec.getText().toString()) + "." + (weight_input_comma.getText().toString().trim().equals("") ? "00" : weight_input_comma.getText().toString()));
+
+                String dateToday = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
+                String dateTodayTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(Calendar.getInstance().getTime());
+                new Thread() {
+                    String threadDateToday
+                            ,
+                            threadDateModON
+                            ,
+                            threadbarcode
+                            ,
+                            threadWeight
+                            , threadModBy;
+
+                    public Thread setData(String threadbarcode, String threadDateToday, String threadDateModON, String threadWeight, String threadModBy) {
+                        try {
+                            this.threadDateToday = URLEncoder.encode(threadDateToday, "utf-8");
+                            this.threadDateModON = URLEncoder.encode(threadDateModON, "utf-8");
+                            this.threadbarcode = threadbarcode;
+                            this.threadModBy = threadModBy;
+                            this.threadWeight = threadWeight;
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                        return this;
+                    }
+
+                    @Override
+                    public void run() {
+
+
+                        synchronized (this) {
+                            backbone.saveWeight(threadbarcode,
+                                    threadDateToday, threadDateModON, threadWeight,
+                                    threadModBy);
+                            //Register Audit
+                            backbone.registerAudit(BackboneApplication.CHILD_AUDIT, threadbarcode, threadDateModON,
+                                    backbone.getLOGGED_IN_USER_ID(), 6);
+
+                        }
+
+                    }
+                }.setData(barcode
+                        , dateToday
+                        , dateTodayTimestamp
+                        , weight_input_dec.getText().toString() + "." + (weight_input_comma.getText().toString().trim().equals("") ? "00" : weight_input_comma.getText().toString())
+                        , backbone.getLOGGED_IN_USER_ID()).start();
+
             }
 
         }
@@ -109,8 +160,7 @@ public class WeightOflineFragment extends Fragment {
     }
 
     public void updateWeight(String weight) {
-        BackboneApplication app = (BackboneApplication) WeightOflineFragment.this.getActivity().getApplication();
-        DatabaseHandler mydb = app.getDatabaseInstance();
+        DatabaseHandler mydb = backbone.getDatabaseInstance();
         ContentValues child = new ContentValues();
         child.put(SQLHandler.SyncColumns.UPDATED, 1);
         child.put(SQLHandler.ChildWeightColumns.WEIGHT, weight);

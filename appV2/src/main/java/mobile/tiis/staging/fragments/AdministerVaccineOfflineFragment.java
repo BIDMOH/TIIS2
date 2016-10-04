@@ -347,8 +347,6 @@ public class AdministerVaccineOfflineFragment extends RxFragment {
                     @Override
                     public Observable<Boolean> call() {
                         // Do some long running operation
-                        BackboneApplication application = (BackboneApplication) AdministerVaccineOfflineFragment.this.getActivity().getApplication();
-                        DatabaseHandler db = application.getDatabaseInstance();
                         StringBuilder updateUrl = new StringBuilder(BackboneActivity.WCF_URL + "VaccinationEvent.svc/UpdateVaccinationEventByBarcodeVaccine?")
                                 .append("barcodeId=").append(barcode)
                                 .append("&vaccineId=").append(a.getScheduled_vaccination_id())
@@ -396,6 +394,7 @@ public class AdministerVaccineOfflineFragment extends RxFragment {
             }
 
         }
+        application.broadcastChildUpdatesWithBarcodeId(barcode);
 
 
         final AlertDialog ad2 = new AlertDialog.Builder(this.getActivity()).create();
