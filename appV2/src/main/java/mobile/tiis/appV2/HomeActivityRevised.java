@@ -62,7 +62,7 @@ import mobile.tiis.appV2.postman.RoutineAlarmReceiver;
 import mobile.tiis.appV2.postman.SynchronisationService;
 import mobile.tiis.appV2.CustomViews.BadgeDrawable;
 
-import static mobile.tiis.staging.util.DatabaseUtil.copyDatabaseToExtStg;
+import static mobile.tiis.appV2.util.DatabaseUtil.copyDatabaseToExtStg;
 
 /**
  *  Created by issymac on 10/12/15.

@@ -271,7 +271,7 @@
     <string name="ok_text">Okay</string>
     <string name="error_editing_dob">Haiwezi Kubadilish</string>
     <string name="error_message_editing_dob">Haiwezi Kubadilisha, Mtoto amekwisha pewa chanjo</string>
-    <string name="version_no">TImR V 2.4.3-beta.4</string>
+    <string name="version_no">TImR V 2.4.3</string>
     <string name="name_contains_spaces">Jina haliruhusiwi kuwa na nafasi katikati</string>
     <string name="similar_children_exist">Tafadhali hakiki kama mtoto huyu hayupo kwenye orodha ya watoto hawa waliopo kwenye mfumo</string>
     <string name="list_of_similar_children_title">Orodha ya watoto wanaofanana na huyu katika mfumo</string>
