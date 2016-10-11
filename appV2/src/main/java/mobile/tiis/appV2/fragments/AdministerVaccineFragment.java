@@ -765,7 +765,8 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                         }
 
 
-                        if (a.getStatus().equalsIgnoreCase("true")) {
+                        if (a.getStatus().equalsIgnoreCase("true") && !a.getVaccination_lot().toLowerCase().contains("no lot")) {
+                            Log.d(TAG,"deducting stock");
                             Cursor cursor = db.getReadableDatabase().rawQuery("SELECT balance FROM health_facility_balance WHERE lot_id=?", new String[]{a.getVaccination_lot()});
                             //Cursor cursor = db.getReadableDatabase().rawQuery("UPDATE health_facility_balance SET balance = balance - 1 WHERE lot_id=?", new String[]{a.getVaccination_lot()});
                             if (cursor != null && cursor.getCount() > 0) {
@@ -778,6 +779,8 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                                 db.updateStockBalance(cv, a.getVaccination_lot());
                                 //cursor = db.getReadableDatabase().rawQuery("UPDATE health_facility_balance SET balance=? WHERE lot_id=?", new String[]{String.valueOf(bal), a.getVaccination_lot()});
                             }
+                        }else{
+                            Log.d(TAG,"not deducting stock");
                         }
 
                     } catch (Exception e) {
@@ -1109,7 +1112,11 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
     @Override
     public void onDestroy() {
         super.onDestroy();
-        subscription.unsubscribe();
+        try {
+            subscription.unsubscribe();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 }

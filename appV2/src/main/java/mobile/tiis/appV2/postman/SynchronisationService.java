@@ -47,10 +47,24 @@ public class SynchronisationService extends IntentService {
 
 
     public static final String SynchronisationService_MESSAGE = "mobile.giis.app.SynchronisationService.MSG";
-    private static final String TAG = "SynchronisationService";
+    private static final String TAG = SynchronisationService.class.getSimpleName();
 
     public SynchronisationService() {
         super(SynchronisationService.class.getName());
+    }
+
+    private DefaultHttpClient httpClient;
+    public void onCreate() {
+        super.onCreate();
+        httpClient = new DefaultHttpClient();
+        Log.d(TAG, ">>>onCreate()");
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent, startId, startId);
+        Log.i(TAG, "Received start id " + startId + ": " + intent);
+        return START_STICKY;
     }
 
     @Override
@@ -69,20 +83,28 @@ public class SynchronisationService extends IntentService {
             if (listPosts != null && app.getLOGGED_IN_USER_PASS() != null && app.getLOGGED_IN_USERNAME() != null) {
                 for (PostmanModel p : listPosts) {
                     sendResult(db.getAllPosts().size()+"",getApplicationContext());
-                    Log.d("POSTMAN PROCESSING","url = "+p.getUrl());
-                    if(p.getUrl() == null || p.getUrl().trim().equals(""))continue;
+                    Log.d(TAG,"url = "+p.getUrl());
+                    if(p.getUrl() == null || p.getUrl().trim().equals("")){
+                        try {
+                            Thread.sleep(5000);
+                            db.deletePostFromPostman(p.getPostId());
+                            Log.d("POSTMAN COMPLETE","url = "+p.getUrl());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        continue;
+                    }
                     try {
-                        DefaultHttpClient httpClient = new DefaultHttpClient();
                         HttpGet httpGet = new HttpGet(p.getUrl());
                         Utils.writeNetworkLogFileOnSD("SynchronisationService" + " "+ Utils.returnDeviceIdAndTimestamp(getApplicationContext())+p.getUrl() );
                         httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((app.getLOGGED_IN_USERNAME() + ":" + app.getLOGGED_IN_USER_PASS()).getBytes(), Base64.NO_WRAP));
                         HttpResponse httpResponse = httpClient.execute(httpGet);
                         if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                            Log.d("POSTMAN Processing","code not 200. Code = "+httpResponse.getStatusLine().getStatusCode());
+                            Log.d(TAG,"code not 200. Code = "+httpResponse.getStatusLine().getStatusCode());
                             InputStream inputStream = httpResponse.getEntity().getContent();
                             // the response as a string if needed
                             String response = Utils.getStringFromInputStream(inputStream);
-                            Log.d("POSTMAN Processing","code not 200. Responce = "+response);
+                            Log.d(TAG,"code not 200. Responce = "+response);
                             Utils.writeNetworkLogFileOnSD(
                                     Utils.returnDeviceIdAndTimestamp(getApplicationContext())
                                             + " StatusCode " + httpResponse.getStatusLine().getStatusCode()
@@ -103,7 +125,7 @@ public class SynchronisationService extends IntentService {
                             jobj = new JSONObject(response);
                             codeNeg99 = jobj.getInt("id");
 
-                            Log.d("POSTMAN Processing","received id = "+codeNeg99);
+                            Log.d(TAG,"received id = "+codeNeg99);
                         }catch(Exception e){
                             e.printStackTrace();
                         }

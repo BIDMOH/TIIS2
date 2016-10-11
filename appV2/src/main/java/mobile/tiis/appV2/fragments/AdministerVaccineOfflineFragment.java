@@ -347,8 +347,6 @@ public class AdministerVaccineOfflineFragment extends RxFragment {
                     @Override
                     public Observable<Boolean> call() {
                         // Do some long running operation
-                        BackboneApplication application = (BackboneApplication) AdministerVaccineOfflineFragment.this.getActivity().getApplication();
-                        DatabaseHandler db = application.getDatabaseInstance();
                         StringBuilder updateUrl = new StringBuilder(BackboneActivity.WCF_URL + "VaccinationEvent.svc/UpdateVaccinationEventByBarcodeVaccine?")
                                 .append("barcodeId=").append(barcode)
                                 .append("&vaccineId=").append(a.getScheduled_vaccination_id())
@@ -363,6 +361,8 @@ public class AdministerVaccineOfflineFragment extends RxFragment {
 
                         int status = application.updateVaccinationEventOnServer(updateUrl.toString());
                         Log.d("Saving offline status", status + "");
+
+                        application.broadcastChildUpdatesWithBarcodeId(barcode);
 
                         return Observable.just(true);
                         }
@@ -405,6 +405,7 @@ public class AdministerVaccineOfflineFragment extends RxFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 ad2.dismiss();
+                getActivity().finish();
             }
         });
         ad2.show();
@@ -544,7 +545,11 @@ public class AdministerVaccineOfflineFragment extends RxFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        subscription.unsubscribe();
+        try {
+            subscription.unsubscribe();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 }

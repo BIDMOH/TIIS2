@@ -62,6 +62,8 @@ import mobile.tiis.appV2.postman.RoutineAlarmReceiver;
 import mobile.tiis.appV2.postman.SynchronisationService;
 import mobile.tiis.appV2.CustomViews.BadgeDrawable;
 
+import static mobile.tiis.staging.util.DatabaseUtil.copyDatabaseToExtStg;
+
 /**
  *  Created by issymac on 10/12/15.
  */
@@ -191,6 +193,7 @@ public class HomeActivityRevised extends BackboneActivity {
     @Override
     protected void onCreate(Bundle starter) {
         super.onCreate(starter);
+        copyDatabaseToExtStg(this);
 
         setContentView(R.layout.homeactivity_redesigned);
         setupTypeface(HomeActivityRevised.this);

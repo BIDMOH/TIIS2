@@ -133,6 +133,13 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
                             if (getChildIdCursor != null && getChildIdCursor.getCount() > 0) {
                                 getChildIdCursor.moveToFirst();
                                 currentChild = getChildFromCursror(getChildIdCursor);
+
+                                try{
+                                    Integer.parseInt(currentChild.getId());
+                                }catch (NumberFormatException e){
+                                    e.printStackTrace();
+                                    isNewChild=true;
+                                }
                             }
                             return Observable.just(true);
                         }
@@ -209,6 +216,12 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
                         if (cursor.getCount() > 0) {
                             cursor.moveToFirst();
                             currentChild = getChildFromCursror(cursor);
+                            try{
+                                Integer.parseInt(currentChild.getId());
+                            }catch (NumberFormatException e){
+                                e.printStackTrace();
+                                isNewChild=true;
+                            }
                         }
                         return Observable.just(true);
                     }
