@@ -176,6 +176,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
         super.onCreate(savedInstanceState);
         position    = getArguments().getInt(ARG_POSITION);
         value     = getArguments().getString(VALUE);
+        Log.d(TAG,"childId = "+value);
         childWithEditableChildCumulativeSnAndChildRegistryYear = getArguments().getBoolean(NEW_REGISTERED_CHILD);
     }
 

@@ -1494,7 +1494,7 @@ public class BackboneApplication extends Application {
     }
 
     private static SyncHttpClient client = new SyncHttpClient();
-    final int DEFAULT_TIMEOUT = 60000;
+    final int DEFAULT_TIMEOUT = 2000000;
 
     @Override
     public void onCreate() {
@@ -1503,35 +1503,7 @@ public class BackboneApplication extends Application {
         client.setMaxRetriesAndTimeout(5,1000);
         client.setURLEncodingEnabled(false);
 
-
-//        // We load the KeyStore
-//        try {
-//            /// We initialize a default Keystore
-//            KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-//            trustStore.load(null, null);
-//            // We initialize a new SSLSocketFacrory
-//            MySSLSocketFactory socketFactory = new MySSLSocketFactory(trustStore);
-//            // We set that all host names are allowed in the socket factory
-//            socketFactory.setHostnameVerifier(MySSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-//            // We set the SSL Factory
-//            client.setSSLSocketFactory(socketFactory);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (NoSuchAlgorithmException e) {
-//            e.printStackTrace();
-//        } catch (CertificateException e) {
-//            e.printStackTrace();
-//        } catch (UnrecoverableKeyException e) {
-//            e.printStackTrace();
-//        } catch (KeyStoreException e) {
-//            e.printStackTrace();
-//        } catch (KeyManagementException e) {
-//            e.printStackTrace();
-//        }
-
-
         client.setTimeout(DEFAULT_TIMEOUT);
-        client.setMaxConnections(20);
 
 
         client.setMaxConnections(20);
