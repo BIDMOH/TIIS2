@@ -75,7 +75,7 @@ import mobile.tiis.staging.postman.PostmanModel;
 public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String TAG = "DatabaseHandler";
 
-    private static final String DATABASE_NAME = "giis_mobile.db";
+    public static final String DATABASE_NAME = "giis_mobile.db";
     private static final int DATABASE_VERSION = 3;
     public static boolean dbPreinstalled = false;
 
@@ -2029,17 +2029,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
     /**
-     * @param surname
      * @param birthdate
      * @param gender
      * @return
      * @Arinela This method check if in our db have another child with this properties,and special part is date that i use this method to convert only yyyy-MM-dd
      */
 
-    public ArrayList<Child> searchIfChildIsRegisteredFromMaternityApp(String surname,String mothersfirstName, String mothersLastName, long birthdate, String gender) {
+    public ArrayList<Child> searchIfChildIsRegisteredFromMaternityApp(String mothersfirstName, String mothersLastName, long birthdate, String gender) {
         String selectQuery = "SELECT * FROM child" +
                 " WHERE " +
-                SQLHandler.ChildColumns.LASTNAME1+" = '"+surname+"' AND " +
                 SQLHandler.ChildColumns.MOTHER_FIRSTNAME+" = '"+mothersfirstName+"' AND " +
                 SQLHandler.ChildColumns.MOTHER_LASTNAME+" = '"+mothersLastName+"' AND " +
                 "strftime('%Y-%m-%d',substr(BIRTHDATE ,7,10), 'unixepoch') = strftime('%Y-%m-%d','" + (birthdate/1000) + "','unixepoch')" +

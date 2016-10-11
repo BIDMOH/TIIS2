@@ -1000,6 +1000,8 @@ public class BackboneApplication extends Application {
             List<ChildCollector> objects = new ArrayList<ChildCollector>();
 
             UsePoolThreadResponseHandler poolThreadResponseHandler = new UsePoolThreadResponseHandler();
+            Log.d(TAG,"logged in username = "+LOGGED_IN_USERNAME);
+            Log.d(TAG,"logged in password = "+LOGGED_IN_USER_PASS);
             client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
             RequestHandle message = client.get(webServiceUrl.toString(), poolThreadResponseHandler);
         }catch (Exception e){

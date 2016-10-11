@@ -53,8 +53,10 @@ public class SynchronisationService extends IntentService {
         super(SynchronisationService.class.getName());
     }
 
+    private DefaultHttpClient httpClient;
     public void onCreate() {
         super.onCreate();
+        httpClient = new DefaultHttpClient();
         Log.d(TAG, ">>>onCreate()");
     }
 
@@ -82,9 +84,17 @@ public class SynchronisationService extends IntentService {
                 for (PostmanModel p : listPosts) {
                     sendResult(db.getAllPosts().size()+"",getApplicationContext());
                     Log.d(TAG,"url = "+p.getUrl());
-                    if(p.getUrl() == null || p.getUrl().trim().equals(""))continue;
+                    if(p.getUrl() == null || p.getUrl().trim().equals("")){
+                        try {
+                            Thread.sleep(5000);
+                            db.deletePostFromPostman(p.getPostId());
+                            Log.d("POSTMAN COMPLETE","url = "+p.getUrl());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        continue;
+                    }
                     try {
-                        DefaultHttpClient httpClient = new DefaultHttpClient();
                         HttpGet httpGet = new HttpGet(p.getUrl());
                         Utils.writeNetworkLogFileOnSD("SynchronisationService" + " "+ Utils.returnDeviceIdAndTimestamp(getApplicationContext())+p.getUrl() );
                         httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((app.getLOGGED_IN_USERNAME() + ":" + app.getLOGGED_IN_USER_PASS()).getBytes(), Base64.NO_WRAP));

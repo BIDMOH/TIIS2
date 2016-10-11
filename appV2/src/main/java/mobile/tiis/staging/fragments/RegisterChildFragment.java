@@ -123,7 +123,7 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
         @Override
         public void onFocusChange(View view, boolean b) {
             if (!b) {
-                if(!etFirstName.getText().toString().isEmpty() && !etSurname.getText().toString().isEmpty() && !etMotherFirstName.getText().toString().isEmpty() && !etMotherSurname.getText().toString().isEmpty() && !etDateOfBirth.toString().isEmpty())
+                if(!etMotherFirstName.getText().toString().isEmpty() && !etMotherSurname.getText().toString().isEmpty() && !etDateOfBirth.toString().isEmpty() && !gen.equals(""))
                     searchChildTask();
             }
         }
@@ -551,7 +551,7 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
         Date dNow = new Date();
 
         etDateOfBirth.setText(ft.format(calendar.getTime()));
-        if(!etMotherFirstName.getText().toString().isEmpty() && !etMotherSurname.getText().toString().isEmpty() && !etDateOfBirth.toString().isEmpty())
+        if(!etMotherFirstName.getText().toString().isEmpty() && !etMotherSurname.getText().toString().isEmpty() && !etDateOfBirth.toString().isEmpty() && !gen.equals(""));
             searchChildTask();
     }
 
@@ -1017,19 +1017,19 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
 
                 String searchBarcode, firstName, surName, motherFirstName, motherSurname;
                 searchBarcode = "";
-                if (!etbarcode.getText().toString().isEmpty()){
-                    searchBarcode = etbarcode.getText().toString();
-                }
-
-                firstName = "";
-                if (!etFirstName.getText().toString().isEmpty()){
-                    firstName = etFirstName.getText().toString();
-                }
-
-                surName = "";
-                if (!etSurname.getText().toString().isEmpty()){
-                    surName = etSurname.getText().toString();
-                }
+//                if (!etbarcode.getText().toString().isEmpty()){
+//                    searchBarcode = etbarcode.getText().toString();
+//                }
+//
+//                firstName = "";
+//                if (!etFirstName.getText().toString().isEmpty()){
+//                    firstName = etFirstName.getText().toString();
+//                }
+//
+//                surName = "";
+//                if (!etSurname.getText().toString().isEmpty()){
+//                    surName = etSurname.getText().toString();
+//                }
 
                 motherFirstName = "";
                 if (!etMotherFirstName.getText().toString().isEmpty()){
@@ -1047,11 +1047,7 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
                     genderValue =  "false";
                 }
 
-                if(bdate!=null) {
-                    childrenFromMaternityApp = mydb.searchIfChildIsRegisteredFromMaternityApp(surName, motherFirstName, motherSurname, bdate.getTime(), genderValue);
-                }
-                children = mydb.searchChild(searchBarcode, firstName, "", motherFirstName, ((bdate != null) ? (bdate.getTime() / 1000) + "" : ""),
-                        ((bdate != null) ? (bdate.getTime() / 1000) + "" : ""),"", surName, motherSurname, "", "", "", "", num);
+                childrenFromMaternityApp = mydb.searchIfChildIsRegisteredFromMaternityApp( motherFirstName, motherSurname, bdate.getTime(), genderValue);
 
 
                 return Observable.just(children,childrenFromMaternityApp);
@@ -1178,8 +1174,7 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
     }
 
     public boolean isThereCorrectNumberOfCriteria(){
-        if (etFirstName.getText().toString().isEmpty()
-                || etSurname.getText().toString().isEmpty()
+        if (etDateOfBirth.getText().toString().isEmpty()
                 || etMotherFirstName.getText().toString().isEmpty() || etMotherSurname.getText().toString().isEmpty()){
             return false;
         }else {
@@ -1277,8 +1272,8 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
                         //wont be executed!
                     }else {
                         try {
-                            childrensrv = app.searchChild(null, null, null, motherFname, new SimpleDateFormat("yyyy-MM-dd").format(bdate), new SimpleDateFormat("yyyy-MM-dd").format(bdate), null, surname,
-                                    motherSName, placeOBId, healthFacility, villageName, status);
+                            childrensrv = app.searchChild(null, null, null, motherFname, new SimpleDateFormat("yyyy-MM-dd").format(bdate), new SimpleDateFormat("yyyy-MM-dd").format(bdate), null, null,
+                                    motherSName, null, null, null, null);
 
                             if (childrensrv == null || childrensrv.isEmpty()) {
                                 RegisterChildFragment.this.getActivity().runOnUiThread(new Runnable() {

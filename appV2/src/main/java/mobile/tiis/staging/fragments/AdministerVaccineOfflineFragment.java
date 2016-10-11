@@ -362,6 +362,8 @@ public class AdministerVaccineOfflineFragment extends RxFragment {
                         int status = application.updateVaccinationEventOnServer(updateUrl.toString());
                         Log.d("Saving offline status", status + "");
 
+                        application.broadcastChildUpdatesWithBarcodeId(barcode);
+
                         return Observable.just(true);
                         }
                     }).subscribeOn(AndroidSchedulers.from(backgroundLooper))
@@ -394,7 +396,6 @@ public class AdministerVaccineOfflineFragment extends RxFragment {
             }
 
         }
-        application.broadcastChildUpdatesWithBarcodeId(barcode);
 
 
         final AlertDialog ad2 = new AlertDialog.Builder(this.getActivity()).create();
@@ -404,6 +405,7 @@ public class AdministerVaccineOfflineFragment extends RxFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 ad2.dismiss();
+                getActivity().finish();
             }
         });
         ad2.show();

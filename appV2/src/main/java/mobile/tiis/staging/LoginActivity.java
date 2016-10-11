@@ -464,7 +464,6 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
         Log.d(TAG,"clicked login");
         //get inserted username and password
         username = usernameEditText.getText().toString().trim();
-        username = username.toLowerCase();
         password = passwordEditText.getText().toString().trim();
 
         //check if required fields are not empty
@@ -504,6 +503,7 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
 
                             Intent intent = new Intent(LoginActivity.this, HomeActivityRevised.class);
 
+                            Log.d(TAG, "initiating offline for " + username + " password = " + password);
                             app.initializeOffline(username, password);
 
 
@@ -700,6 +700,7 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
                         values.put(SQLHandler.UserColumns.USERNAME, app.getLOGGED_IN_USERNAME());
                         databaseHandler.addUser(values);
 
+                        Log.d(TAG, "initiating offline for " + username + " password = " + password);
                         app.initializeOffline(username, password);
 
                         Intent intent;

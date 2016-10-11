@@ -24,6 +24,7 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -32,6 +33,7 @@ import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,7 +48,7 @@ import mobile.tiis.staging.helpers.Utils;
  * @author Melisa Aruci
  */
 public class BackboneActivity extends RxAppCompatActivity {
-
+    private static final String TAG = BackboneActivity.class.getSimpleName();
     public static final String WCF_URL = BackboneApplication.getWcfUrl(); //"http://142.222.45.61/svc/";
     public static final String USER_MANAGEMENT_SVC = "UserManagement.svc/";
     public static final String USER_MANAGEMENT_SVC_GETTER = "GetUser";
@@ -214,6 +216,7 @@ public class BackboneActivity extends RxAppCompatActivity {
                     .append("?username=").append(URLEncoder.encode(username, "utf-8"))
                     .append("&password=").append(URLEncoder.encode(password, "utf-8"))
                     .append("&gcmID=").append(URLEncoder.encode(gcmId, "utf-8"));
+            Log.d(TAG,"login url = "+webServiceLoginURL);
         } catch (Exception e) {
             e.printStackTrace();
         }
