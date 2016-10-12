@@ -1965,7 +1965,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if(!DobFrom.equals("") || !DobTo.equals("")){
             thereIsData=true;
             selectQuery+= ((!DobFrom.equals("")) ? " datetime(substr(BIRTHDATE,7,10), 'unixepoch') >= datetime( '" + DobFrom + "','unixepoch')" : "") +
-                    ((!DobTo.equals("")) ? " and datetime(substr(BIRTHDATE,7,10), 'unixepoch') <= datetime( '" + DobTo + "','unixepoch')" : "");
+                    ((!DobTo.equals("")) ? " datetime(substr(BIRTHDATE,7,10), 'unixepoch') <= datetime( '" + DobTo + "','unixepoch')" : "");
         }else if(thereIsData){
             int startIndex = selectQuery.length()-5;
             int endIndex = selectQuery.length()-1;
