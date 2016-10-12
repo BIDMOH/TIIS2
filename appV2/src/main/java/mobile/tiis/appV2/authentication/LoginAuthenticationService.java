@@ -16,7 +16,7 @@
  *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
  ******************************************************************************/
 
-package mobile.tiis.appV2.authentication;
+package mobile.tiis.appv2.authentication;
 
 import android.app.Service;
 import android.content.Intent;

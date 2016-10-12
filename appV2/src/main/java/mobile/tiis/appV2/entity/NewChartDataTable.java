@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.entity;
+package mobile.tiis.appv2.entity;
 
 /**
  * Created by issymac on 15/03/16.

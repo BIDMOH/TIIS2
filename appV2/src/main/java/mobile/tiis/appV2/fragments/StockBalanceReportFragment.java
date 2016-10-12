@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.fragments;
+package mobile.tiis.appv2.fragments;
 
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -16,10 +16,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.base.BackboneActivity;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.base.BackboneActivity;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
 
 /**
  * Created by issymac on 31/03/16.

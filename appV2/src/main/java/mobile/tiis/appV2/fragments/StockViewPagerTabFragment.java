@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.fragments;
+package mobile.tiis.appv2.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

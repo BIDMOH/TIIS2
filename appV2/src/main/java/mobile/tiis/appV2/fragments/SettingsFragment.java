@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.fragments;
+package mobile.tiis.appv2.fragments;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,9 +10,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import mobile.tiis.appV2.CustomViews.MaterialLoader;
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.base.BackboneApplication;
+import mobile.tiis.appv2.CustomViews.MaterialLoader;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.base.BackboneApplication;
 
 /**
  * Created by issymac on 16/12/15.

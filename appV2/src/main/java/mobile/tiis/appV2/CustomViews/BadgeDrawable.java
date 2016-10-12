@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.CustomViews;
+package mobile.tiis.appv2.CustomViews;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -11,7 +11,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 
-import mobile.tiis.appV2.R;
+import mobile.tiis.appv2.R;
 
 
 public class BadgeDrawable extends Drawable {

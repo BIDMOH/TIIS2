@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.SubClassed;
+package mobile.tiis.appv2.SubClassed;
 
 import android.os.Bundle;
 

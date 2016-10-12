@@ -17,7 +17,7 @@
  *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
  ******************************************************************************/
 
-package mobile.tiis.appV2.util;
+package mobile.tiis.appv2.util;
 
 import android.content.Context;
 import android.widget.TextView;
@@ -28,7 +28,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.Utils;
 
-import mobile.tiis.appV2.R;
+import mobile.tiis.appv2.R;
 
 /**
  * Custom implementation of the MarkerView.

@@ -16,7 +16,7 @@
  *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
  ******************************************************************************/
 
-package mobile.tiis.appV2.fragments;
+package mobile.tiis.appv2.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -33,11 +33,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.adapters.AdapterImmunizations;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.entity.ChartDataModel;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.adapters.AdapterImmunizations;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.entity.ChartDataModel;
 
 /**
  * Created by Rubin on 5/1/2015.

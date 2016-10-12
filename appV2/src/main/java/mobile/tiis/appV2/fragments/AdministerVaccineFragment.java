@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.fragments;
+package mobile.tiis.appv2.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -44,18 +44,18 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import mobile.tiis.appV2.ChildDetailsActivity;
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.SubClassed.BackHandledFragment;
-import mobile.tiis.appV2.adapters.SingleTextViewAdapter;
-import mobile.tiis.appV2.adapters.SingleTextViewAdapterForVaccineLot;
-import mobile.tiis.appV2.base.BackboneActivity;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.database.SQLHandler;
-import mobile.tiis.appV2.entity.AdministerVaccinesModel;
-import mobile.tiis.appV2.entity.NonVaccinationReason;
-import mobile.tiis.appV2.util.BackgroundThread;
+import mobile.tiis.appv2.ChildDetailsActivity;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.SubClassed.BackHandledFragment;
+import mobile.tiis.appv2.adapters.SingleTextViewAdapter;
+import mobile.tiis.appv2.adapters.SingleTextViewAdapterForVaccineLot;
+import mobile.tiis.appv2.base.BackboneActivity;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.database.SQLHandler;
+import mobile.tiis.appv2.entity.AdministerVaccinesModel;
+import mobile.tiis.appv2.entity.NonVaccinationReason;
+import mobile.tiis.appv2.util.BackgroundThread;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;

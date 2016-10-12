@@ -16,7 +16,7 @@
  *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
  ******************************************************************************/
 
-package mobile.tiis.appV2.helpers;
+package mobile.tiis.appv2.helpers;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;

@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.fragments;
+package mobile.tiis.appv2.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -31,16 +31,16 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import mobile.tiis.appV2.CustomViews.NestedListView;
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.SubClassed.mBarDataSet;
-import mobile.tiis.appV2.adapters.ImmunizationsListAdapter;
-import mobile.tiis.appV2.adapters.ImmunizedChildrenListAdapter;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.entity.ChartDataModel;
-import mobile.tiis.appV2.entity.ModelImmunizedChild;
-import mobile.tiis.appV2.entity.NewChartDataTable;
+import mobile.tiis.appv2.CustomViews.NestedListView;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.SubClassed.mBarDataSet;
+import mobile.tiis.appv2.adapters.ImmunizationsListAdapter;
+import mobile.tiis.appv2.adapters.ImmunizedChildrenListAdapter;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.entity.ChartDataModel;
+import mobile.tiis.appv2.entity.ModelImmunizedChild;
+import mobile.tiis.appv2.entity.NewChartDataTable;
 
 /**
  *  Created by issymac on 09/02/16.
@@ -267,7 +267,7 @@ public class ImmunizedChildrenFragment extends Fragment implements OnChartValueS
     }
 
 //    private void  renderChart(){
-//        List<ChartDataModel> listItems = mydb.getMonthlyPerformance(appV2);
+//        List<ChartDataModel> listItems = mydb.getMonthlyPerformance(appv2);
 //        ArrayList<String> xVals = new ArrayList<String>();
 //
 //        ArrayList<BarEntry> noVals = new ArrayList<BarEntry>();
@@ -282,11 +282,11 @@ public class ImmunizedChildrenFragment extends Fragment implements OnChartValueS
 //            cummNoVals.add(new BarEntry((float)summPreviousEntries(listItems, i), i));
 //        }
 //
-//        BarDataSet set1 = new BarDataSet(noVals, appV2.getString(R.string.no_of_children_immunized));
+//        BarDataSet set1 = new BarDataSet(noVals, appv2.getString(R.string.no_of_children_immunized));
 //        // set1.setColors(ColorTemplate.createColors(getApplicationContext(),
 //        // ColorTemplate.FRESH_COLORS));
 //        set1.setColor(Color.rgb(109, 164, 213));
-//        BarDataSet set2 = new BarDataSet(cummNoVals, appV2.getString(R.string.cumm_no_children_immunized));
+//        BarDataSet set2 = new BarDataSet(cummNoVals, appv2.getString(R.string.cumm_no_children_immunized));
 //        set2.setColor(Color.rgb(235, 139, 75));
 //
 //        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();

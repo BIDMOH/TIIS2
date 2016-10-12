@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.entity;
+package mobile.tiis.appv2.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

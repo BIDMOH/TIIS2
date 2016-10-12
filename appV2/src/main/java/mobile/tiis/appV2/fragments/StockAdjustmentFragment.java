@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.fragments;
+package mobile.tiis.appv2.fragments;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -26,14 +26,14 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.adapters.SingleTextViewAdapter;
-import mobile.tiis.appV2.adapters.StockAdjustmentListAdapter;
-import mobile.tiis.appV2.base.BackboneActivity;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.entity.AdjustmentReasons;
-import mobile.tiis.appV2.entity.HealthFacilityBalance;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.adapters.SingleTextViewAdapter;
+import mobile.tiis.appv2.adapters.StockAdjustmentListAdapter;
+import mobile.tiis.appv2.base.BackboneActivity;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.entity.AdjustmentReasons;
+import mobile.tiis.appv2.entity.HealthFacilityBalance;
 
 /**
  *  Created by issymac on 09/02/16.

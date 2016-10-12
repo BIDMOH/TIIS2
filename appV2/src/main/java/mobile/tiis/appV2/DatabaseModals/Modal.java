@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.DatabaseModals;
+package mobile.tiis.appv2.DatabaseModals;
 
 import android.database.Cursor;
 import android.util.Log;

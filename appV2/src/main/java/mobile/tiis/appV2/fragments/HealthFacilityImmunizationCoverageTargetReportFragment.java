@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.fragments;
+package mobile.tiis.appv2.fragments;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -23,13 +23,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import mobile.tiis.appV2.DatabaseModals.Dose;
-import mobile.tiis.appV2.DatabaseModals.Scheduled_Vaccination;
-import mobile.tiis.appV2.DatabaseModals.ViewChartData;
-import mobile.tiis.appV2.DatabaseModals.ViewRow;
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
+import mobile.tiis.appv2.DatabaseModals.Dose;
+import mobile.tiis.appv2.DatabaseModals.Scheduled_Vaccination;
+import mobile.tiis.appv2.DatabaseModals.ViewChartData;
+import mobile.tiis.appv2.DatabaseModals.ViewRow;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
 
 /**
  * Created by issymac on 22/04/16.
@@ -91,7 +91,7 @@ public class HealthFacilityImmunizationCoverageTargetReportFragment extends Frag
         prepareUIElements(rowview);
         mydb = app.getDatabaseInstance();
         healthFacility.setText(mydb.getHealthCenterName(app.getLOGGED_IN_USER_HF_ID()));
-//        reportingPeriod.setText(mydb.getUserHFIDByUserId(appV2.getLOGGED_IN_USER_ID()));
+//        reportingPeriod.setText(mydb.getUserHFIDByUserId(appv2.getLOGGED_IN_USER_ID()));
 
 
 

@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.adapters;
+package mobile.tiis.appv2.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,8 +11,8 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.entity.AefiListItem;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.entity.AefiListItem;
 
 /**
  * Created by issymac on 09/03/16.

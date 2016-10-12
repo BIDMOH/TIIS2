@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.GCMCommunication;
+package mobile.tiis.appv2.GCMCommunication;
 
 import android.content.Context;
 
@@ -8,6 +8,6 @@ public class GCMReceiver extends GCMBroadcastReceiver {
 
 	@Override
 	protected String getGCMIntentServiceClassName(Context context) {
-		return "mobile.tiis.appV2.GCMCommunication.GCMService";
+		return "mobile.tiis.appv2.GCMCommunication.GCMService";
 	}
 }

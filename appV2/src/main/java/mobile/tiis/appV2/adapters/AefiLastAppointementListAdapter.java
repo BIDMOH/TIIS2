@@ -16,7 +16,7 @@
  *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
  ******************************************************************************/
 
-package mobile.tiis.appV2.adapters;
+package mobile.tiis.appv2.adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -31,8 +31,8 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.entity.AefiListItem;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.entity.AefiListItem;
 
 /**
  * Created by Olsi on 24/03/2015.

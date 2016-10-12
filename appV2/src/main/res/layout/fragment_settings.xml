@@ -102,7 +102,7 @@
                         android:textColor="@color/white"
                         android:text="Save"/>
 
-                    <mobile.tiis.appV2.CustomViews.MaterialLoader
+                    <mobile.tiis.appv2.CustomViews.MaterialLoader
                         android:id="@+id/progress"
                         android:visibility="gone"
                         android:layout_width="36dp"

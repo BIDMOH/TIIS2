@@ -16,7 +16,7 @@
  *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
  ******************************************************************************/
 
-package mobile.tiis.appV2.postman;
+package mobile.tiis.appv2.postman;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -27,13 +27,13 @@ import android.util.Log;
 
 import java.util.Calendar;
 
-import mobile.tiis.appV2.helpers.Utils;
+import mobile.tiis.appv2.helpers.Utils;
 
 /**
  * Created by Rubin on 3/18/2015.
  */
 public class RoutineAlarmReceiver extends WakefulBroadcastReceiver {
-    // The appV2's AlarmManager, which provides access to the system alarm services.
+    // The appv2's AlarmManager, which provides access to the system alarm services.
     private static AlarmManager alarmMgr;
     // The pending intent that is triggered when the alarm fires.
     private static PendingIntent alarmIntent, checkForChangesInChildPI , weeklyUpdateBaseTables;
@@ -41,7 +41,7 @@ public class RoutineAlarmReceiver extends WakefulBroadcastReceiver {
 
     /**
      * Sets a repeating alarm that runs once every 5 minutes When the
-     * alarm fires, the appV2 broadcasts an Intent to this WakefulBroadcastReceiver.
+     * alarm fires, the appv2 broadcasts an Intent to this WakefulBroadcastReceiver.
      *
      * @param context
      */

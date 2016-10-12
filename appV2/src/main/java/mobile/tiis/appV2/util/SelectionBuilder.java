@@ -22,7 +22,7 @@
  * -Changed package name
  */
 
-package mobile.tiis.appV2.util;
+package mobile.tiis.appv2.util;
 
 import android.content.ContentValues;
 import android.database.Cursor;

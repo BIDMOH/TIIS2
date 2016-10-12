@@ -16,7 +16,7 @@
  *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
  ******************************************************************************/
 
-package mobile.tiis.appV2.base;
+package mobile.tiis.appv2.base;
 
 import android.content.Context;
 import android.content.Intent;
@@ -33,12 +33,11 @@ import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import mobile.tiis.appV2.HomeActivityRevised;
-import mobile.tiis.appV2.helpers.Utils;
+import mobile.tiis.appv2.HomeActivityRevised;
+import mobile.tiis.appv2.helpers.Utils;
 
 /**
  * This activity will be the backbone activity to be implemented by the

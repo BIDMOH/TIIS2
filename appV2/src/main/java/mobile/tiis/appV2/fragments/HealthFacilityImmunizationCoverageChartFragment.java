@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.fragments;
+package mobile.tiis.appv2.fragments;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -38,17 +38,17 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
-import mobile.tiis.appV2.DatabaseModals.Dose;
-import mobile.tiis.appV2.DatabaseModals.RadarData0;
-import mobile.tiis.appV2.DatabaseModals.RadarData1;
-import mobile.tiis.appV2.DatabaseModals.RadarData2;
-import mobile.tiis.appV2.DatabaseModals.RadarData3;
-import mobile.tiis.appV2.DatabaseModals.Scheduled_Vaccination;
-import mobile.tiis.appV2.DatabaseModals.ViewChartData;
-import mobile.tiis.appV2.DatabaseModals.ViewRow;
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
+import mobile.tiis.appv2.DatabaseModals.Dose;
+import mobile.tiis.appv2.DatabaseModals.RadarData0;
+import mobile.tiis.appv2.DatabaseModals.RadarData1;
+import mobile.tiis.appv2.DatabaseModals.RadarData2;
+import mobile.tiis.appv2.DatabaseModals.RadarData3;
+import mobile.tiis.appv2.DatabaseModals.Scheduled_Vaccination;
+import mobile.tiis.appv2.DatabaseModals.ViewChartData;
+import mobile.tiis.appv2.DatabaseModals.ViewRow;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
 
 /**
  * Created by issymac on 30/03/16.

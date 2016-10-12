@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.fragments;
+package mobile.tiis.appv2.fragments;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -15,14 +15,14 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
-import mobile.tiis.appV2.CustomViews.NestedListView;
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.SubClassed.BackHandledFragment;
-import mobile.tiis.appV2.adapters.ChildAppointmentListAdapter;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.database.SQLHandler;
-import mobile.tiis.appV2.util.ViewAppointmentRow;
+import mobile.tiis.appv2.CustomViews.NestedListView;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.SubClassed.BackHandledFragment;
+import mobile.tiis.appv2.adapters.ChildAppointmentListAdapter;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.database.SQLHandler;
+import mobile.tiis.appv2.util.ViewAppointmentRow;
 
 /**
  * Created by issymac on 03/03/16.

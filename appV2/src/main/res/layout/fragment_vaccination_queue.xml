@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <mobile.tiis.appV2.CustomViews.ButteryProgressBar
+        <mobile.tiis.appv2.CustomViews.ButteryProgressBar
             android:layout_width="match_parent"
             android:layout_height="5dp"
             materialdesign:barColor="@color/orange_700"
@@ -215,7 +215,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <mobile.tiis.appV2.CustomViews.NestedListView
+            <mobile.tiis.appv2.CustomViews.NestedListView
                 android:background="@color/white"
                 android:id="@+id/lv_vacc_queue"
                 android:layout_width="match_parent"
@@ -223,7 +223,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginBottom="2dp"
                 android:layout_weight="1">
-            </mobile.tiis.appV2.CustomViews.NestedListView>
+            </mobile.tiis.appv2.CustomViews.NestedListView>
 
             <RelativeLayout
                 android:layout_width="match_parent"

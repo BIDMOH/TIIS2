@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.fragments;
+package mobile.tiis.appv2.fragments;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -20,16 +20,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import mobile.tiis.appV2.CustomViews.NestedListView;
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.base.BackboneActivity;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.database.SQLHandler;
-import mobile.tiis.appV2.entity.AdministerVaccinesModel;
-import mobile.tiis.appV2.entity.Child;
-import mobile.tiis.appV2.mObjects.RowCollector;
-import mobile.tiis.appV2.util.ViewAppointmentRow;
+import mobile.tiis.appv2.CustomViews.NestedListView;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.base.BackboneActivity;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.database.SQLHandler;
+import mobile.tiis.appv2.entity.AdministerVaccinesModel;
+import mobile.tiis.appv2.entity.Child;
+import mobile.tiis.appv2.mObjects.RowCollector;
+import mobile.tiis.appv2.util.ViewAppointmentRow;
 
 /**
  *  Created by issymac on 27/01/16.
@@ -205,7 +205,7 @@ public class ChildVaccinatePagerFragment extends Fragment {
 //
 //        //add the Fragment to display a list of current child's appointments
 //        fm = new FragmentStackManager(this.getActivity());
-//        appV2.setCurrentFragment(appV2.APPOINTMENT_LIST_FRAGMENT);
+//        appv2.setCurrentFragment(appv2.APPOINTMENT_LIST_FRAGMENT);
 //        fm.addFragment(appointmentsListFragment, R.id.vacc_fragment_frame, true, FragmentTransaction.TRANSIT_FRAGMENT_FADE, false);
 
             app.setCurrentFragment(app.APPOINTMENT_LIST_FRAGMENT);

@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.fragments;
+package mobile.tiis.appv2.fragments;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -35,19 +35,19 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import java.util.ArrayList;
 import java.util.List;
 
-import mobile.tiis.appV2.AdministerVaccineOfflineRevisedActivity;
-import mobile.tiis.appV2.ChildDetailsActivity;
-import mobile.tiis.appV2.ChildSynchronizationListener;
-import mobile.tiis.appV2.HomeActivityRevised;
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.SubClassed.mBarDataSet;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.database.SQLHandler;
-import mobile.tiis.appV2.entity.HealthFacility;
-import mobile.tiis.appV2.entity.Stock;
-import mobile.tiis.appV2.helpers.Utils;
-import mobile.tiis.appV2.util.MyMarkerView;
+import mobile.tiis.appv2.AdministerVaccineOfflineRevisedActivity;
+import mobile.tiis.appv2.ChildDetailsActivity;
+import mobile.tiis.appv2.ChildSynchronizationListener;
+import mobile.tiis.appv2.HomeActivityRevised;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.SubClassed.mBarDataSet;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.database.SQLHandler;
+import mobile.tiis.appv2.entity.HealthFacility;
+import mobile.tiis.appv2.entity.Stock;
+import mobile.tiis.appv2.helpers.Utils;
+import mobile.tiis.appv2.util.MyMarkerView;
 
 /**
  *  Created by issymac on 26/01/16.
@@ -444,14 +444,14 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
 //                                } catch (UnsupportedEncodingException e) {
 //                                    e.printStackTrace();
 //                                }
-//                                DatabaseHandler db = appV2.getDatabaseInstance();
+//                                DatabaseHandler db = appv2.getDatabaseInstance();
 //                                // check if child is in DB , if not than get child data from server
 //                                if (!db.isChildInDB(barcode)) {
-//                                    appV2.updateVaccinationQueue(barcode, appV2.getLOGGED_IN_USER_HF_ID(), dateNow, appV2.getLOGGED_IN_USER_ID());
+//                                    appv2.updateVaccinationQueue(barcode, appv2.getLOGGED_IN_USER_HF_ID(), dateNow, appv2.getLOGGED_IN_USER_ID());
 //
-//                                    appV2.registerAudit(BackboneApplication.CHILD_AUDIT, barcode, dateNow, appV2.getLOGGED_IN_USER_ID(), BackboneApplication.ACTION_CHECKIN);
+//                                    appv2.registerAudit(BackboneApplication.CHILD_AUDIT, barcode, dateNow, appv2.getLOGGED_IN_USER_ID(), BackboneApplication.ACTION_CHECKIN);
 //
-//                                    int parseResult = appV2.parseChildCollectorSearchByBarcode(barcode);
+//                                    int parseResult = appv2.parseChildCollectorSearchByBarcode(barcode);
 //                                    if (parseResult == 2) {
 //                                        HomeFragment.this.getActivity().runOnUiThread(new Runnable() {
 //                                            @Override
@@ -472,11 +472,11 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
 //                                        return;
 //                                    }
 //
-//                                    parseHFIDWhenNotInDb(db, appV2);
+//                                    parseHFIDWhenNotInDb(db, appv2);
 //
 //
 //                                }
-//                                // this should never be null in this part of the appV2 according to the lines of code above
+//                                // this should never be null in this part of the appv2 according to the lines of code above
 //                                String childId = db.getChildIdByBarcode(barcode);
 //                                if (db.isChildToBeAddedInVaccinationQueue(childId)) {
 //
@@ -485,7 +485,7 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
 //                                    cv.put(SQLHandler.VaccinationQueueColumns.DATE, dateNow);
 //
 //                                    if (db.addChildToVaccinationQueue(cv) > -1) {
-//                                        appV2.updateVaccinationQueue(barcode, appV2.getLOGGED_IN_USER_HF_ID(), dateNow, appV2.getLOGGED_IN_USER_ID());
+//                                        appv2.updateVaccinationQueue(barcode, appv2.getLOGGED_IN_USER_HF_ID(), dateNow, appv2.getLOGGED_IN_USER_ID());
 //                                    }
 //                                } else {
 //                                    HomeFragment.this.getActivity().runOnUiThread(new Runnable() {
@@ -500,7 +500,7 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
 //
 //                                //
 //
-//                                appV2.registerAudit(BackboneApplication.CHILD_AUDIT, barcode, dateNow, appV2.getLOGGED_IN_USER_ID(), BackboneApplication.ACTION_CHECKIN);
+//                                appv2.registerAudit(BackboneApplication.CHILD_AUDIT, barcode, dateNow, appv2.getLOGGED_IN_USER_ID(), BackboneApplication.ACTION_CHECKIN);
 //
 //                                HomeFragment.this.getActivity().runOnUiThread(new Runnable() {
 //                                    @Override
@@ -517,7 +517,7 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
 //
 //                    thread.start();
 //
-//                    //Do the backgroud appV2 logic
+//                    //Do the backgroud appv2 logic
 //                    break;
 //                case BackboneActivity.ACTIVITY_REGISTER_CHILD_SCAN:
 //                    Intent register_child_scan = new Intent(getContext(), RegisterChildActivity.class);

@@ -16,7 +16,7 @@
  *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
  ******************************************************************************/
 
-package mobile.tiis.appV2.adapters;
+package mobile.tiis.appv2.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -31,10 +31,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.entity.Child;
-import mobile.tiis.appV2.fragments.SearchChildFragment;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.entity.Child;
+import mobile.tiis.appv2.fragments.SearchChildFragment;
 
 /**
  * Created by Arinela on 13/3/2015.

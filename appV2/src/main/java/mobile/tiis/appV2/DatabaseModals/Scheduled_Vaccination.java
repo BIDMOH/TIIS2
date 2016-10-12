@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.DatabaseModals;
+package mobile.tiis.appv2.DatabaseModals;
 
 /**
  * Created by Ilakoze on 5/21/2015.

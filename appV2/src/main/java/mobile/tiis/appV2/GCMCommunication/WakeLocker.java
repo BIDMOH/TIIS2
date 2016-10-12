@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.GCMCommunication;
+package mobile.tiis.appv2.GCMCommunication;
 
 import android.content.Context;
 import android.os.PowerManager;

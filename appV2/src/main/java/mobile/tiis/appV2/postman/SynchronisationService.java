@@ -16,7 +16,7 @@
  *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
  ******************************************************************************/
 
-package mobile.tiis.appV2.postman;
+package mobile.tiis.appv2.postman;
 
 import android.app.IntentService;
 import android.content.Context;
@@ -34,10 +34,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.helpers.Utils;
-import mobile.tiis.appV2.GCMCommunication.CommonUtilities;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.helpers.Utils;
+import mobile.tiis.appv2.GCMCommunication.CommonUtilities;
 /**
  * Created by Rubin on 3/18/2015.
  * subclass for handling asynchronous task requests in

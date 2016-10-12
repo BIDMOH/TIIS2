@@ -16,9 +16,9 @@
  *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
  ******************************************************************************/
 
-package mobile.tiis.appV2.util;
+package mobile.tiis.appv2.util;
 
-import mobile.tiis.appV2.base.BackboneApplication;
+import mobile.tiis.appv2.base.BackboneApplication;
 
 import java.util.ArrayList;
 

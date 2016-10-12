@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.adapters;
+package mobile.tiis.appv2.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,8 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import mobile.tiis.appV2.HomeActivityRevised;
-import mobile.tiis.appV2.R;
+import mobile.tiis.appv2.HomeActivityRevised;
+import mobile.tiis.appv2.R;
 
 /**
  * Created by issymac on 11/12/15.

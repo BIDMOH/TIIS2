@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.SubClassed;
+package mobile.tiis.appv2.SubClassed;
 
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;

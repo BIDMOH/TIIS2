@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.adapters;
+package mobile.tiis.appv2.adapters;
 /*******************************************************************************
  * <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *   ~ Copyright (C)AIRIS Solutions 2015 TIIS App - Tanzania Immunization Information System App
@@ -43,13 +43,13 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.base.BackboneActivity;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.entity.AdministerVaccinesModel;
-import mobile.tiis.appV2.entity.NonVaccinationReason;
-import mobile.tiis.appV2.fragments.AdministerVaccineFragment;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.base.BackboneActivity;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.entity.AdministerVaccinesModel;
+import mobile.tiis.appv2.entity.NonVaccinationReason;
+import mobile.tiis.appv2.fragments.AdministerVaccineFragment;
 
 /**
  *  ReCreated by issymac on 03/03/16.

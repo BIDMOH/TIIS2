@@ -12,7 +12,7 @@ android {
     buildToolsVersion '23.0.1'
 
     defaultConfig {
-        applicationId "mobile.tiis.appV2"
+        applicationId "mobile.tiis.appv2"
         minSdkVersion 15
         targetSdkVersion 21
         versionCode 138

@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.adapters;
+package mobile.tiis.appv2.adapters;
 
 import android.content.Context;
 import android.text.Editable;
@@ -15,10 +15,10 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import java.util.List;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.base.BackboneActivity;
-import mobile.tiis.appV2.entity.HealthFacilityBalance;
-import mobile.tiis.appV2.fragments.StockAdjustmentFragment;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.base.BackboneActivity;
+import mobile.tiis.appv2.entity.HealthFacilityBalance;
+import mobile.tiis.appv2.fragments.StockAdjustmentFragment;
 
 /**
  * Created by issymac on 09/02/16.

@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.fragments;
+package mobile.tiis.appv2.fragments;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -30,14 +30,14 @@ import java.util.List;
 import java.util.Map;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.adapters.SingleTextViewAdapter;
-import mobile.tiis.appV2.adapters.vaccinateOfflineListAdapter;
-import mobile.tiis.appV2.base.BackboneActivity;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.entity.NonVaccinationReason;
-import mobile.tiis.appV2.util.BackgroundThread;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.adapters.SingleTextViewAdapter;
+import mobile.tiis.appv2.adapters.vaccinateOfflineListAdapter;
+import mobile.tiis.appv2.base.BackboneActivity;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.entity.NonVaccinationReason;
+import mobile.tiis.appv2.util.BackgroundThread;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;

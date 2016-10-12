@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.fragments;
+package mobile.tiis.appv2.fragments;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -42,19 +42,19 @@ import java.util.List;
 import java.util.Timer;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
-import mobile.tiis.appV2.ChildDetailsActivity;
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.adapters.AdapterGridDataSearchResult;
-import mobile.tiis.appV2.adapters.SingleTextViewAdapter;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.database.SQLHandler;
-import mobile.tiis.appV2.entity.Birthplace;
-import mobile.tiis.appV2.entity.Child;
-import mobile.tiis.appV2.entity.HealthFacility;
-import mobile.tiis.appV2.entity.Place;
-import mobile.tiis.appV2.entity.Status;
-import mobile.tiis.appV2.util.BackgroundThread;
+import mobile.tiis.appv2.ChildDetailsActivity;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.adapters.AdapterGridDataSearchResult;
+import mobile.tiis.appv2.adapters.SingleTextViewAdapter;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.database.SQLHandler;
+import mobile.tiis.appv2.entity.Birthplace;
+import mobile.tiis.appv2.entity.Child;
+import mobile.tiis.appv2.entity.HealthFacility;
+import mobile.tiis.appv2.entity.Place;
+import mobile.tiis.appv2.entity.Status;
+import mobile.tiis.appv2.util.BackgroundThread;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;

@@ -16,12 +16,12 @@
  *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
  ******************************************************************************/
 
-package mobile.tiis.appV2.postman;
+package mobile.tiis.appv2.postman;
 
 import android.app.IntentService;
 import android.content.Intent;
 
-import mobile.tiis.appV2.base.BackboneApplication;
+import mobile.tiis.appv2.base.BackboneApplication;
 
 /**
  * Created by Rubin on 6/4/2015.

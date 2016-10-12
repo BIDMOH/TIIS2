@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.adapters;
+package mobile.tiis.appv2.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -12,12 +12,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import mobile.tiis.appV2.HomeActivityRevised;
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.base.BackboneActivity;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.util.ViewAppointmentRow;
+import mobile.tiis.appv2.HomeActivityRevised;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.base.BackboneActivity;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.util.ViewAppointmentRow;
 
 /**
  * Created by issymac on 16/12/15.

@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.CustomViews;
+package mobile.tiis.appv2.CustomViews;
 
 /**
  * Created by Coze on 11/13/2014.

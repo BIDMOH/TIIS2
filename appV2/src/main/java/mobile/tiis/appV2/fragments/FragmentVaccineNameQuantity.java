@@ -16,7 +16,7 @@
  *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
  ******************************************************************************/
 
-package mobile.tiis.appV2.fragments;
+package mobile.tiis.appv2.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -29,8 +29,8 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.adapters.AdapterVaccineNameQuantity;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.adapters.AdapterVaccineNameQuantity;
 
 /**
  * Created by Rubin on 3/29/2015.

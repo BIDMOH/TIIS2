@@ -16,7 +16,7 @@
  *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
  ******************************************************************************/
 
-package mobile.tiis.appV2.adapters;
+package mobile.tiis.appv2.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -28,8 +28,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.entity.ChartDataModel;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.entity.ChartDataModel;
 
 /**
  * Created by Rubin on 5/3/2015.

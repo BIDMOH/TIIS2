@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.util;
+package mobile.tiis.appv2.util;
 
 import android.content.Context;
 import android.os.Environment;
@@ -7,9 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
 
-import mobile.tiis.appV2.database.DatabaseHandler;
-
-import static mobile.tiis.appV2.database.DatabaseHandler.DATABASE_NAME;
+import static mobile.tiis.appv2.database.DatabaseHandler.DATABASE_NAME;
 
 /**
  * Shayan Rais (http://shanraisshan.com)

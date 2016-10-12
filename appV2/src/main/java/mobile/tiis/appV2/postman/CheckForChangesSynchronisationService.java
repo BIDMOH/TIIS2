@@ -16,21 +16,21 @@
  *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
  ******************************************************************************/
 
-package mobile.tiis.appV2.postman;
+package mobile.tiis.appv2.postman;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
-import mobile.tiis.appV2.base.BackboneApplication;
+import mobile.tiis.appv2.base.BackboneApplication;
 
 /**
  * Created by utente1 on 4/8/2015.
  */
 public class CheckForChangesSynchronisationService  extends IntentService {
     private LocalBroadcastManager broadcaster;
-    static final public String SynchronisationService_RESULT = "mobile,giis.appV2.CheckForChangesSynchronisationService.REQUEST_PROCESSED";
-    static final public String SynchronisationService_MESSAGE = "mobile,giis.appV2.CheckForChangesSynchronisationService..MSG";
+    static final public String SynchronisationService_RESULT = "mobile,giis.appv2.CheckForChangesSynchronisationService.REQUEST_PROCESSED";
+    static final public String SynchronisationService_MESSAGE = "mobile,giis.appv2.CheckForChangesSynchronisationService..MSG";
 
 
     public CheckForChangesSynchronisationService() {
@@ -44,7 +44,7 @@ public class CheckForChangesSynchronisationService  extends IntentService {
         synchronized (app) {
             app.parseConfiguration();
             if(app.getLOGGED_IN_USER_ID()!=null && !app.getLOGGED_IN_USER_ID().equals("0")) {
-//                appV2.continuousModificationParser();
+//                appv2.continuousModificationParser();
                 app.getVaccinationQueueByDateAndUser();
             }
 

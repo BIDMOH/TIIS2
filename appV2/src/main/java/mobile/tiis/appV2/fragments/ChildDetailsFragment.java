@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.fragments;
+package mobile.tiis.appv2.fragments;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -11,12 +11,12 @@ import android.view.ViewGroup;
 
 import com.astuetz.PagerSlidingTabStrip;
 
-import mobile.tiis.appV2.HomeActivityRevised;
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.adapters.ChildDetailsViewPager;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.database.SQLHandler;
+import mobile.tiis.appv2.HomeActivityRevised;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.adapters.ChildDetailsViewPager;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.database.SQLHandler;
 
 /**
  * Created by issymac on 25/01/16.

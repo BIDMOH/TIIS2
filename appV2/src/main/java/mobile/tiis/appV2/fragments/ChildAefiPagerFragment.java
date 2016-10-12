@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.fragments;
+package mobile.tiis.appv2.fragments;
 
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -31,18 +31,18 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-import mobile.tiis.appV2.CustomViews.NestedListView;
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.adapters.AefiBottomListAdapter;
-import mobile.tiis.appV2.adapters.AefiLastAppointementListAdapter;
-import mobile.tiis.appV2.adapters.AefiTopListAdapter;
-import mobile.tiis.appV2.base.BackboneActivity;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.database.SQLHandler;
-import mobile.tiis.appV2.entity.AefiListItem;
-import mobile.tiis.appV2.entity.Child;
-import mobile.tiis.appV2.util.BackgroundThread;
+import mobile.tiis.appv2.CustomViews.NestedListView;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.adapters.AefiBottomListAdapter;
+import mobile.tiis.appv2.adapters.AefiLastAppointementListAdapter;
+import mobile.tiis.appv2.adapters.AefiTopListAdapter;
+import mobile.tiis.appv2.base.BackboneActivity;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.database.SQLHandler;
+import mobile.tiis.appv2.entity.AefiListItem;
+import mobile.tiis.appv2.entity.Child;
+import mobile.tiis.appv2.util.BackgroundThread;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;

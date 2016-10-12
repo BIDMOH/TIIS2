@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.GCMCommunication;
+package mobile.tiis.appv2.GCMCommunication;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -15,14 +15,14 @@ import com.google.android.gcm.GCMBaseIntentService;
 
 import java.util.Random;
 
-import mobile.tiis.appV2.HomeActivityRevised;
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.base.BackboneApplication;
+import mobile.tiis.appv2.HomeActivityRevised;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.base.BackboneApplication;
 
 public class GCMService extends GCMBaseIntentService {
     private String tone;
-    static final public String SynchronisationService_RESULT = "mobile,giis.appV2.CheckForChangesSynchronisationService.REQUEST_PROCESSED";
-    static final public String SynchronisationService_MESSAGE = "mobile,giis.appV2.CheckForChangesSynchronisationService..MSG";
+    static final public String SynchronisationService_RESULT = "mobile,giis.appv2.CheckForChangesSynchronisationService.REQUEST_PROCESSED";
+    static final public String SynchronisationService_MESSAGE = "mobile,giis.appv2.CheckForChangesSynchronisationService..MSG";
 
 
     private static final String TAG = "GCMService";

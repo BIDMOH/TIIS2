@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.fragments;
+package mobile.tiis.appv2.fragments;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -23,16 +23,16 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import mobile.tiis.appV2.util.BackgroundThread;
+import mobile.tiis.appv2.util.BackgroundThread;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func0;
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.adapters.ChildRegisterReportRecyclerAdapter;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.util.ViewChildRegisterInfoRow;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.adapters.ChildRegisterReportRecyclerAdapter;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.util.ViewChildRegisterInfoRow;
 
 /**
  * Created by issy on 7/7/16.

@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.adapters;
+package mobile.tiis.appv2.adapters;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
@@ -9,12 +9,12 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 
-import mobile.tiis.appV2.entity.Child;
-import mobile.tiis.appV2.fragments.ChildAefiPagerFragment;
-import mobile.tiis.appV2.fragments.ChildImmCardPagerFragment;
-import mobile.tiis.appV2.fragments.ChildSummaryPagerFragment;
-import mobile.tiis.appV2.fragments.ChildVaccinatePagerFragment;
-import mobile.tiis.appV2.fragments.ChildWeightPagerFragment;
+import mobile.tiis.appv2.entity.Child;
+import mobile.tiis.appv2.fragments.ChildAefiPagerFragment;
+import mobile.tiis.appv2.fragments.ChildImmCardPagerFragment;
+import mobile.tiis.appv2.fragments.ChildSummaryPagerFragment;
+import mobile.tiis.appv2.fragments.ChildVaccinatePagerFragment;
+import mobile.tiis.appv2.fragments.ChildWeightPagerFragment;
 
 /**
  * Created by issymac on 25/01/16.

@@ -16,7 +16,7 @@
  *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
  ******************************************************************************/
 
-package mobile.tiis.appV2.fragments;
+package mobile.tiis.appv2.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -41,11 +41,11 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.entity.ChartDataModel;
-import mobile.tiis.appV2.util.MyMarkerView;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.entity.ChartDataModel;
+import mobile.tiis.appv2.util.MyMarkerView;
 
 public class MonthlyPerformanceFragment extends DialogFragment implements OnChartValueSelectedListener {
 

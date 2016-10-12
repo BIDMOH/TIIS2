@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.fragments;
+package mobile.tiis.appv2.fragments;
 
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -34,22 +34,22 @@ import java.util.Calendar;
 import java.util.List;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
-import mobile.tiis.appV2.ChildDetailsActivity;
-import mobile.tiis.appV2.CustomViews.ButteryProgressBar;
-import mobile.tiis.appV2.CustomViews.NestedListView;
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.adapters.AdapterVaccineNameQuantity;
-import mobile.tiis.appV2.adapters.SingleTextViewAdapter;
-import mobile.tiis.appV2.adapters.VaccinationQueueListAdapter;
-import mobile.tiis.appV2.base.BackboneActivity;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.database.GIISContract;
-import mobile.tiis.appV2.database.SQLHandler;
-import mobile.tiis.appV2.entity.Child;
-import mobile.tiis.appV2.helpers.Utils;
-import mobile.tiis.appV2.util.Constants;
-import mobile.tiis.appV2.util.ViewAppointmentRow;
+import mobile.tiis.appv2.ChildDetailsActivity;
+import mobile.tiis.appv2.CustomViews.ButteryProgressBar;
+import mobile.tiis.appv2.CustomViews.NestedListView;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.adapters.AdapterVaccineNameQuantity;
+import mobile.tiis.appv2.adapters.SingleTextViewAdapter;
+import mobile.tiis.appv2.adapters.VaccinationQueueListAdapter;
+import mobile.tiis.appv2.base.BackboneActivity;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.database.GIISContract;
+import mobile.tiis.appv2.database.SQLHandler;
+import mobile.tiis.appv2.entity.Child;
+import mobile.tiis.appv2.helpers.Utils;
+import mobile.tiis.appv2.util.Constants;
+import mobile.tiis.appv2.util.ViewAppointmentRow;
 
 /**
  * Created by issymac on 16/12/15.
@@ -305,8 +305,8 @@ public class VaccinationQueueFragment extends android.support.v4.app.DialogFragm
 //            IntentIntegrator scanIntegrator = new IntentIntegrator(this);
 //            if (origine != null) {
 //                if (origine.equalsIgnoreCase(ACTIVITY_CHECK_IN)) {
-//                    BackboneApplication appV2 = (BackboneApplication) getApplication();
-//                    appV2.setCurrentActivity(ACTIVITY_CHECK_IN);
+//                    BackboneApplication appv2 = (BackboneApplication) getApplication();
+//                    appv2.setCurrentActivity(ACTIVITY_CHECK_IN);
 //                }
 //            }
             //TODO modified by coze
@@ -380,7 +380,7 @@ public class VaccinationQueueFragment extends android.support.v4.app.DialogFragm
                         parseHFIDWhenNotInDb(db, app);
 
                     }
-                    // this should never be null in this part of the appV2 according to the lines of code above
+                    // this should never be null in this part of the appv2 according to the lines of code above
                     String childId = db.getChildIdByBarcode(barcode);
                     if (db.isChildToBeAddedInVaccinationQueue(childId)) {
 

@@ -16,7 +16,7 @@
  *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
  ******************************************************************************/
 
-package mobile.tiis.appV2.database;
+package mobile.tiis.appv2.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -41,33 +41,33 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.base.BackboneActivity;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.SQLHandler.Tables;
-import mobile.tiis.appV2.entity.AdjustmentReasons;
-import mobile.tiis.appV2.entity.AdministerVaccinesModel;
-import mobile.tiis.appV2.entity.AefiListItem;
-import mobile.tiis.appV2.entity.Birthplace;
-import mobile.tiis.appV2.entity.ChartDataModel;
-import mobile.tiis.appV2.entity.Child;
-import mobile.tiis.appV2.entity.Dose;
-import mobile.tiis.appV2.entity.HealthFacility;
-import mobile.tiis.appV2.entity.HealthFacilityBalance;
-import mobile.tiis.appV2.entity.ImmunizationCardItem;
-import mobile.tiis.appV2.entity.ModelImmunizedChild;
-import mobile.tiis.appV2.entity.NewChartDataTable;
-import mobile.tiis.appV2.entity.NonVaccinationReason;
-import mobile.tiis.appV2.entity.Place;
-import mobile.tiis.appV2.entity.ScheduledVaccination;
-import mobile.tiis.appV2.entity.Status;
-import mobile.tiis.appV2.entity.Stock;
-import mobile.tiis.appV2.entity.User;
-import mobile.tiis.appV2.entity.VaccinationAppointment;
-import mobile.tiis.appV2.entity.VaccinationEvent;
-import mobile.tiis.appV2.entity.VaccinationQueueObject;
-import mobile.tiis.appV2.fragments.FragmentVaccineNameQuantity;
-import mobile.tiis.appV2.postman.PostmanModel;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.base.BackboneActivity;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.SQLHandler.Tables;
+import mobile.tiis.appv2.entity.AdjustmentReasons;
+import mobile.tiis.appv2.entity.AdministerVaccinesModel;
+import mobile.tiis.appv2.entity.AefiListItem;
+import mobile.tiis.appv2.entity.Birthplace;
+import mobile.tiis.appv2.entity.ChartDataModel;
+import mobile.tiis.appv2.entity.Child;
+import mobile.tiis.appv2.entity.Dose;
+import mobile.tiis.appv2.entity.HealthFacility;
+import mobile.tiis.appv2.entity.HealthFacilityBalance;
+import mobile.tiis.appv2.entity.ImmunizationCardItem;
+import mobile.tiis.appv2.entity.ModelImmunizedChild;
+import mobile.tiis.appv2.entity.NewChartDataTable;
+import mobile.tiis.appv2.entity.NonVaccinationReason;
+import mobile.tiis.appv2.entity.Place;
+import mobile.tiis.appv2.entity.ScheduledVaccination;
+import mobile.tiis.appv2.entity.Status;
+import mobile.tiis.appv2.entity.Stock;
+import mobile.tiis.appv2.entity.User;
+import mobile.tiis.appv2.entity.VaccinationAppointment;
+import mobile.tiis.appv2.entity.VaccinationEvent;
+import mobile.tiis.appv2.entity.VaccinationQueueObject;
+import mobile.tiis.appv2.fragments.FragmentVaccineNameQuantity;
+import mobile.tiis.appv2.postman.PostmanModel;
 
 /**
  * Created by Melisa on 02/02/2015.
@@ -181,7 +181,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
                 + newVersion + ", which will destroy all old data");
         // TODO remove this when we want to use Upgrade database and also test how the upgrade
-        // TODO function affects the case where the device will hav a DB preinstalled before even installing the appV2
+        // TODO function affects the case where the device will hav a DB preinstalled before even installing the appv2
         if (!dbPreinstalled) {
             // KILL PREVIOUS TABLES IF UPGRADED
             db.execSQL("DROP TABLE IF EXISTS " + Tables.HEALTH_FACILITY);
@@ -3356,7 +3356,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 " WHERE strftime('%Y-%m-%d',substr(VACCINATION_DATE ,7,10), 'unixepoch') = strftime('%Y-%m-%d','"+dateVar+"')" +
                 " AND VACCINATION_STATUS = 'true' " +
                 " GROUP BY APPOINTMENT_ID, CHILD.FIRSTNAME1 || ' ' || CHILD.LASTNAME1";
-// " AND v."+SQLHandler.VaccinationEventColumns.HEALTH_FACILITY_ID+" = '"+appV2.getLOGGED_IN_USER_HF_ID()+"'"+
+// " AND v."+SQLHandler.VaccinationEventColumns.HEALTH_FACILITY_ID+" = '"+appv2.getLOGGED_IN_USER_HF_ID()+"'"+
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -3525,7 +3525,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     /**
      * method intended for internal usage to get January from 01 , etc.
      * @param monthNrAsString rapresentation of month ex: "01"
-     * @param app needed to get access to appV2 resources (in this case strings.xml)
+     * @param app needed to get access to appv2 resources (in this case strings.xml)
      * @return
      */
     private String getMonthNameFromNumber(String monthNrAsString, BackboneApplication app){

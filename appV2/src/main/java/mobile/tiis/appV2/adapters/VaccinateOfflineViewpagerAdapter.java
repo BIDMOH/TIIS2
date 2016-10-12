@@ -1,11 +1,11 @@
-package mobile.tiis.appV2.adapters;
+package mobile.tiis.appv2.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import mobile.tiis.appV2.fragments.AdministerVaccineOfflineFragment;
-import mobile.tiis.appV2.fragments.WeightOflineFragment;
+import mobile.tiis.appv2.fragments.AdministerVaccineOfflineFragment;
+import mobile.tiis.appv2.fragments.WeightOflineFragment;
 
 /**
  * Created by issymac on 14/03/16.

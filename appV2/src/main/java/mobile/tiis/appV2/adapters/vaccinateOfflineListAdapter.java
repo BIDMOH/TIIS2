@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.adapters;
+package mobile.tiis.appv2.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -16,11 +16,11 @@ import java.util.Date;
 import java.util.List;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.entity.NonVaccinationReason;
-import mobile.tiis.appV2.fragments.AdministerVaccineOfflineFragment.RowCollector;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.entity.NonVaccinationReason;
+import mobile.tiis.appv2.fragments.AdministerVaccineOfflineFragment.RowCollector;
 
 /**
  * Created by issymac on 14/03/16.

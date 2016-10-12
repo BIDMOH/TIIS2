@@ -16,14 +16,14 @@
  *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
  ******************************************************************************/
 
-package mobile.tiis.appV2.postman;
+package mobile.tiis.appv2.postman;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
 
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
 
 /**
  * Created by Rubin on 3/18/2015.

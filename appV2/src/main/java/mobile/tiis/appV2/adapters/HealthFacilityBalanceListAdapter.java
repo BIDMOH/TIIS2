@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.adapters;
+package mobile.tiis.appv2.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -14,10 +14,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.base.BackboneActivity;
-import mobile.tiis.appV2.entity.HealthFacilityBalance;
-import mobile.tiis.appV2.util.Constants;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.base.BackboneActivity;
+import mobile.tiis.appv2.entity.HealthFacilityBalance;
+import mobile.tiis.appv2.util.Constants;
 
 /**
  * Created by issymac on 09/02/16.

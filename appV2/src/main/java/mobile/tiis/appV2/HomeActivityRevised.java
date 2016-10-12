@@ -1,4 +1,4 @@
-package mobile.tiis.appV2;
+package mobile.tiis.appv2;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -49,20 +49,20 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import mobile.tiis.appV2.GCMCommunication.CommonUtilities;
-import mobile.tiis.appV2.GCMCommunication.WakeLocker;
-import mobile.tiis.appV2.adapters.DrawerListItemsAdapter;
-import mobile.tiis.appV2.base.BackboneActivity;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.fragments.FragmentStackManager;
-import mobile.tiis.appV2.fragments.VaccinationQueueFragment;
-import mobile.tiis.appV2.helpers.Utils;
-import mobile.tiis.appV2.postman.RoutineAlarmReceiver;
-import mobile.tiis.appV2.postman.SynchronisationService;
-import mobile.tiis.appV2.CustomViews.BadgeDrawable;
+import mobile.tiis.appv2.GCMCommunication.CommonUtilities;
+import mobile.tiis.appv2.GCMCommunication.WakeLocker;
+import mobile.tiis.appv2.adapters.DrawerListItemsAdapter;
+import mobile.tiis.appv2.base.BackboneActivity;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.fragments.FragmentStackManager;
+import mobile.tiis.appv2.fragments.VaccinationQueueFragment;
+import mobile.tiis.appv2.helpers.Utils;
+import mobile.tiis.appv2.postman.RoutineAlarmReceiver;
+import mobile.tiis.appv2.postman.SynchronisationService;
+import mobile.tiis.appv2.CustomViews.BadgeDrawable;
 
-import static mobile.tiis.appV2.util.DatabaseUtil.copyDatabaseToExtStg;
+import static mobile.tiis.appv2.util.DatabaseUtil.copyDatabaseToExtStg;
 
 /**
  *  Created by issymac on 10/12/15.
@@ -88,25 +88,25 @@ public class HomeActivityRevised extends BackboneActivity {
     FragmentStackManager fm;
 
     public final String[] mFragments = {
-            "mobile.tiis.appV2.fragments.HomeFragment",
-            "mobile.tiis.appV2.fragments.HomeFragment",
-            "mobile.tiis.appV2.fragments.RegisterChildFragment",
-            "mobile.tiis.appV2.fragments.SearchChildFragment",
-            "mobile.tiis.appV2.fragments.VaccinationQueueFragment",
-            "mobile.tiis.appV2.fragments.ReportsFragment",
-            "mobile.tiis.appV2.fragments.MonthlyPlanFragment",
-            "mobile.tiis.appV2.fragments.StockFragment",
-            "mobile.tiis.appV2.fragments.RegisterChildFragment"
+            "mobile.tiis.appv2.fragments.HomeFragment",
+            "mobile.tiis.appv2.fragments.HomeFragment",
+            "mobile.tiis.appv2.fragments.RegisterChildFragment",
+            "mobile.tiis.appv2.fragments.SearchChildFragment",
+            "mobile.tiis.appv2.fragments.VaccinationQueueFragment",
+            "mobile.tiis.appv2.fragments.ReportsFragment",
+            "mobile.tiis.appv2.fragments.MonthlyPlanFragment",
+            "mobile.tiis.appv2.fragments.StockFragment",
+            "mobile.tiis.appv2.fragments.RegisterChildFragment"
     };
 
-    public final String HOME_FRAGMENT = "mobile.tiis.appV2.fragments.HomeFragment";
-    public final String REGISTER_CHILD_FRAGMENT = "mobile.tiis.appV2.fragments.RegisterChildFragment";
-    public final String SEARCH_CHILD_FRAGMENT = "mobile.tiis.appV2.fragments.SearchChildFragment";
-    public final String VACCINATION_QUEUE_FRAGMENT = "mobile.tiis.appV2.fragments.VaccinationQueueFragment";
-    public final String REPORTS_FRAGMENT = "mobile.tiis.appV2.fragments.ReportsFragment";
-    public final String MONTHLY_PLAN_FRAGMENT = "mobile.tiis.appV2.fragments.MonthlyPlanFragment";
-    public final String SETTINGS_FRAGMENT = "mobile.tiis.appV2.fragments.SettingsFragment";
-    public final String STOCK_FRAGMENT = "mobile.tiis.appV2.fragments.StockFragment";
+    public final String HOME_FRAGMENT = "mobile.tiis.appv2.fragments.HomeFragment";
+    public final String REGISTER_CHILD_FRAGMENT = "mobile.tiis.appv2.fragments.RegisterChildFragment";
+    public final String SEARCH_CHILD_FRAGMENT = "mobile.tiis.appv2.fragments.SearchChildFragment";
+    public final String VACCINATION_QUEUE_FRAGMENT = "mobile.tiis.appv2.fragments.VaccinationQueueFragment";
+    public final String REPORTS_FRAGMENT = "mobile.tiis.appv2.fragments.ReportsFragment";
+    public final String MONTHLY_PLAN_FRAGMENT = "mobile.tiis.appv2.fragments.MonthlyPlanFragment";
+    public final String SETTINGS_FRAGMENT = "mobile.tiis.appv2.fragments.SettingsFragment";
+    public final String STOCK_FRAGMENT = "mobile.tiis.appv2.fragments.StockFragment";
 
     public final String LOGOUT = "logout";
 
@@ -898,7 +898,7 @@ public class HomeActivityRevised extends BackboneActivity {
         tx.replace(R.id.content_frame, Fragment.instantiate(HomeActivityRevised.this, fragment));
         tx.addToBackStack(fragment);
         toolbarTitle.setText(title);
-        //appV2.setCurrentFragment("HOME");
+        //appv2.setCurrentFragment("HOME");
         currentFragment = fragment;
         tx.commit();
     }
@@ -1037,7 +1037,7 @@ public class HomeActivityRevised extends BackboneActivity {
     /**
      * Gets the current registration ID for application on GCM service.
      * <p/>
-     * If result is empty, the appV2 needs to register.
+     * If result is empty, the appv2 needs to register.
      *
      * @return registration ID, or empty string if there is no existing
      * registration ID.

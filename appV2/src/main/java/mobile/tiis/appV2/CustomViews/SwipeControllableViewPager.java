@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.CustomViews;
+package mobile.tiis.appv2.CustomViews;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;

@@ -1,4 +1,4 @@
-package mobile.tiis.appV2;
+package mobile.tiis.appv2;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -21,17 +21,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import mobile.tiis.appV2.CustomViews.CustomTabStrip;
-import mobile.tiis.appV2.CustomViews.SwipeControllableViewPager;
-import mobile.tiis.appV2.SubClassed.BackHandledFragment;
-import mobile.tiis.appV2.adapters.ChildDetailsViewPager;
-import mobile.tiis.appV2.base.BackboneActivity;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.database.SQLHandler;
-import mobile.tiis.appV2.entity.Child;
-import mobile.tiis.appV2.helpers.Utils;
-import mobile.tiis.appV2.util.BackgroundThread;
+import mobile.tiis.appv2.CustomViews.CustomTabStrip;
+import mobile.tiis.appv2.CustomViews.SwipeControllableViewPager;
+import mobile.tiis.appv2.SubClassed.BackHandledFragment;
+import mobile.tiis.appv2.adapters.ChildDetailsViewPager;
+import mobile.tiis.appv2.base.BackboneActivity;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.database.SQLHandler;
+import mobile.tiis.appv2.entity.Child;
+import mobile.tiis.appv2.helpers.Utils;
+import mobile.tiis.appv2.util.BackgroundThread;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;

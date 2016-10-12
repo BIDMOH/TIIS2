@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.fragments;
+package mobile.tiis.appv2.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -18,13 +18,13 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.SubClassed.mBarDataSet;
-import mobile.tiis.appV2.SubClassed.nBarDataSet;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.entity.ScheduledVaccination;
-import mobile.tiis.appV2.util.MyMarkerView;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.SubClassed.mBarDataSet;
+import mobile.tiis.appv2.SubClassed.nBarDataSet;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.entity.ScheduledVaccination;
+import mobile.tiis.appv2.util.MyMarkerView;
 
 /**
  *  Created by issymac::.. on 10/02/16 .

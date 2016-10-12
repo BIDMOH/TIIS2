@@ -16,7 +16,7 @@
  *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
  ******************************************************************************/
 
-package mobile.tiis.appV2;
+package mobile.tiis.appv2;
 
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;
@@ -77,15 +77,15 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
-import mobile.tiis.appV2.GCMCommunication.CommonUtilities;
-import mobile.tiis.appV2.GCMCommunication.ServerUtilities;
-import mobile.tiis.appV2.adapters.SingleTextViewAdapter;
-import mobile.tiis.appV2.base.BackboneActivity;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.database.SQLHandler;
-import mobile.tiis.appV2.helpers.Utils;
-import mobile.tiis.appV2.util.Constants;
+import mobile.tiis.appv2.GCMCommunication.CommonUtilities;
+import mobile.tiis.appv2.GCMCommunication.ServerUtilities;
+import mobile.tiis.appv2.adapters.SingleTextViewAdapter;
+import mobile.tiis.appv2.base.BackboneActivity;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.database.SQLHandler;
+import mobile.tiis.appv2.helpers.Utils;
+import mobile.tiis.appv2.util.Constants;
 
 
 /**
@@ -159,7 +159,7 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
     /**
      * Gets the current registration ID for application on GCM service.
      * <p/>
-     * If result is empty, the appV2 needs to register.
+     * If result is empty, the appv2 needs to register.
      *
      * @return registration ID, or empty string if there is no existing
      * registration ID.
@@ -171,9 +171,9 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
             Log.i(TAG, "Registration not found.");
             return "";
         }
-        // Check if appV2 was updated; if so, it must clear the registration ID
+        // Check if appv2 was updated; if so, it must clear the registration ID
         // since the existing regID is not guaranteed to work with the new
-        // appV2 version.
+        // appv2 version.
         int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
         int currentVersion = getAppVersion(context);
         if (registeredVersion != currentVersion) {
@@ -219,8 +219,8 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
                     msg = "Device registered,sender ID= " + CommonUtilities.SENDER_ID + "| registration ID=" + regId;
 
                     // You should send the registration ID to your server over HTTP,
-                    // so it can use GCM/HTTP or CCS to send messages to your appV2.
-                    // The request to your server should be authenticated if your appV2
+                    // so it can use GCM/HTTP or CCS to send messages to your appv2.
+                    // The request to your server should be authenticated if your appv2
                     // is using accounts.
 //                    sendRegistrationIdToBackend();
 
@@ -259,14 +259,14 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
             @Override
             protected void onPostExecute(Void result) {
                 mRegisterTask = null;
-                Log.d(TAG, "The appV2 has been registered on ADR Hakiki dawa Server");
+                Log.d(TAG, "The appv2 has been registered on ADR Hakiki dawa Server");
             }
         };
         mRegisterTask.execute();
     }
 
     /**
-     * Stores the registration ID and appV2 versionCode in the application's
+     * Stores the registration ID and appv2 versionCode in the application's
      * {@code SharedPreferences}.
      *
      * @param context application's context.
@@ -275,7 +275,7 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
     private void storeRegistrationId(Context context, String regId) {
         final SharedPreferences prefs = getGCMPreferences(context);
         int appVersion = getAppVersion(context);
-        Log.d(TAG, "Saving regId on appV2 version " + appVersion);
+        Log.d(TAG, "Saving regId on appv2 version " + appVersion);
         Log.d(TAG, "Saving reg ID  " + regId);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(PROPERTY_REG_ID, regId);
@@ -350,7 +350,7 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
             GCMRegistrar.checkManifest(this);
             if (isInternetAvailable()) {
                 /**
-                 * registering the appV2 to Google Cloud Messaging
+                 * registering the appv2 to Google Cloud Messaging
                  */
                 regId = getRegistrationId(getApplicationContext());
                 Log.d(TAG,"regID = "+regId);
@@ -379,7 +379,7 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
         String dateNow = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
         databaseHandler.deleteVaccinationQueueEntriesOfOtherDays(dateNow);
 
-        app.LAST_FRAGMENT = "mobile.tiis.appV2.fragments.HomeFragment";
+        app.LAST_FRAGMENT = "mobile.tiis.appv2.fragments.HomeFragment";
         app.LAST_FRAGMENT_TITLE = getString(R.string.home);
 
         //Starting the repeating synchronisation procedure that happens every 5 minutes

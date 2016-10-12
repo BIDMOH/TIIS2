@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.fragments;
+package mobile.tiis.appv2.fragments;
 
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 
 import com.astuetz.PagerSlidingTabStrip;
 
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.adapters.StockViewPagerAdapter;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.adapters.StockViewPagerAdapter;
 
 /**
  * Created by issymac on 16/12/15.

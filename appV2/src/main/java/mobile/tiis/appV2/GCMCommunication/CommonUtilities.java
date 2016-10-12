@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.GCMCommunication;
+package mobile.tiis.appv2.GCMCommunication;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,8 +18,8 @@ public final class CommonUtilities {
      */
     static final String TAG = CommonUtilities.class.getSimpleName();
 
-    public static final String DISPLAY_MESSAGE_ACTION ="mobile.tiis.appV2.DISPLAY_MESSAGE";
-    public static final String DISPLAY_POSTMAN_COUNT_ACTION ="mobile.tiis.appV2.POSTMAN_COUNT";
+    public static final String DISPLAY_MESSAGE_ACTION ="mobile.tiis.appv2.DISPLAY_MESSAGE";
+    public static final String DISPLAY_POSTMAN_COUNT_ACTION ="mobile.tiis.appv2.POSTMAN_COUNT";
 
     public static final String EXTRA_MESSAGE = "message";
 

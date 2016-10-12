@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.fragments;
+package mobile.tiis.appv2.fragments;
 
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -29,11 +29,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.entity.ChartDataModel;
-import mobile.tiis.appV2.util.MyMarkerView;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.entity.ChartDataModel;
+import mobile.tiis.appv2.util.MyMarkerView;
 
 /**
  * Created by issymac on 15/04/16.

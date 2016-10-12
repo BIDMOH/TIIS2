@@ -1,20 +1,20 @@
-package mobile.tiis.appV2.adapters;
+package mobile.tiis.appv2.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
 
-import mobile.tiis.appV2.fragments.ChildRegisterReportFragment;
-import mobile.tiis.appV2.fragments.DefaultersReportFragment;
-import mobile.tiis.appV2.fragments.HealthFacilityImmunizationCoverageScheduledReportFragment;
-import mobile.tiis.appV2.fragments.HealthFacilityImmunizationCoverageTargetReportFragment;
-import mobile.tiis.appV2.fragments.HealthFacilityVisitsAndVaccinationSummaryFragment;
-import mobile.tiis.appV2.fragments.DropoutReportFragment;
-import mobile.tiis.appV2.fragments.ImmunizationChartFragment;
-import mobile.tiis.appV2.fragments.ImmunizedChildrenFragment;
-import mobile.tiis.appV2.fragments.StockTabFragment;
-import mobile.tiis.appV2.fragments.TabFragment;
+import mobile.tiis.appv2.fragments.ChildRegisterReportFragment;
+import mobile.tiis.appv2.fragments.DefaultersReportFragment;
+import mobile.tiis.appv2.fragments.HealthFacilityImmunizationCoverageScheduledReportFragment;
+import mobile.tiis.appv2.fragments.HealthFacilityImmunizationCoverageTargetReportFragment;
+import mobile.tiis.appv2.fragments.HealthFacilityVisitsAndVaccinationSummaryFragment;
+import mobile.tiis.appv2.fragments.DropoutReportFragment;
+import mobile.tiis.appv2.fragments.ImmunizationChartFragment;
+import mobile.tiis.appv2.fragments.ImmunizedChildrenFragment;
+import mobile.tiis.appv2.fragments.StockTabFragment;
+import mobile.tiis.appv2.fragments.TabFragment;
 
 /**
  *  Created by issymac on 14/12/15.

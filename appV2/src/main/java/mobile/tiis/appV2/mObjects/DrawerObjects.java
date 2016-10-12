@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.mObjects;
+package mobile.tiis.appv2.mObjects;
 
 /**
  * Created by issymac on 11/12/15.

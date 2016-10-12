@@ -16,7 +16,7 @@
  *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
  ******************************************************************************/
 
-package mobile.tiis.appV2.database;
+package mobile.tiis.appv2.database;
 
 import android.content.*;
 import android.database.Cursor;
@@ -24,9 +24,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
-import mobile.tiis.appV2.database.GIISContract.*;
-import mobile.tiis.appV2.database.SQLHandler.Tables;
-import mobile.tiis.appV2.util.SelectionBuilder;
+import mobile.tiis.appv2.database.GIISContract.*;
+import mobile.tiis.appv2.database.SQLHandler.Tables;
+import mobile.tiis.appv2.util.SelectionBuilder;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;

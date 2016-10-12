@@ -1,4 +1,4 @@
-package mobile.tiis.appV2;
+package mobile.tiis.appv2;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -19,11 +19,11 @@ import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
 
-import mobile.tiis.appV2.adapters.VaccinateOfflineViewpagerAdapter;
-import mobile.tiis.appV2.base.BackboneActivity;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.helpers.Utils;
+import mobile.tiis.appv2.adapters.VaccinateOfflineViewpagerAdapter;
+import mobile.tiis.appv2.base.BackboneActivity;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.helpers.Utils;
 
 /**
  * Created by issymac on 14/03/16.

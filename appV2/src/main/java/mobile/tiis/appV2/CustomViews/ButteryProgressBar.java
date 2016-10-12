@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.CustomViews;
+package mobile.tiis.appv2.CustomViews;
 
 /**
  * Created by issymac on 10/13/15.
@@ -30,7 +30,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.Interpolator;
 
-import mobile.tiis.appV2.R;
+import mobile.tiis.appv2.R;
 
 
 /**

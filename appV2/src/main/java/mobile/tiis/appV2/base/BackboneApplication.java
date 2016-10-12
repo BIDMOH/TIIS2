@@ -16,7 +16,7 @@
  *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
  ******************************************************************************/
 
-package mobile.tiis.appV2.base;
+package mobile.tiis.appv2.base;
 
 import android.app.Application;
 import android.content.ContentValues;
@@ -64,30 +64,30 @@ import java.util.Date;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.database.SQLHandler;
-import mobile.tiis.appV2.entity.AdjustmentReasons;
-import mobile.tiis.appV2.entity.AdministerVaccinesModel;
-import mobile.tiis.appV2.entity.AgeDefinitions;
-import mobile.tiis.appV2.entity.Child;
-import mobile.tiis.appV2.entity.ChildCollector;
-import mobile.tiis.appV2.entity.ChildCollector2;
-import mobile.tiis.appV2.entity.Dose;
-import mobile.tiis.appV2.entity.HealthFacility;
-import mobile.tiis.appV2.entity.Item;
-import mobile.tiis.appV2.entity.ItemLot;
-import mobile.tiis.appV2.entity.NonVaccinationReason;
-import mobile.tiis.appV2.entity.Place;
-import mobile.tiis.appV2.entity.ScheduledVaccination;
-import mobile.tiis.appV2.entity.Status;
-import mobile.tiis.appV2.entity.Stock;
-import mobile.tiis.appV2.entity.User;
-import mobile.tiis.appV2.entity.VaccinationAppointment;
-import mobile.tiis.appV2.entity.VaccinationEvent;
-import mobile.tiis.appV2.entity.Weight;
-import mobile.tiis.appV2.helpers.Utils;
-import mobile.tiis.appV2.postman.PostmanModel;
-import mobile.tiis.appV2.util.Constants;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.database.SQLHandler;
+import mobile.tiis.appv2.entity.AdjustmentReasons;
+import mobile.tiis.appv2.entity.AdministerVaccinesModel;
+import mobile.tiis.appv2.entity.AgeDefinitions;
+import mobile.tiis.appv2.entity.Child;
+import mobile.tiis.appv2.entity.ChildCollector;
+import mobile.tiis.appv2.entity.ChildCollector2;
+import mobile.tiis.appv2.entity.Dose;
+import mobile.tiis.appv2.entity.HealthFacility;
+import mobile.tiis.appv2.entity.Item;
+import mobile.tiis.appv2.entity.ItemLot;
+import mobile.tiis.appv2.entity.NonVaccinationReason;
+import mobile.tiis.appv2.entity.Place;
+import mobile.tiis.appv2.entity.ScheduledVaccination;
+import mobile.tiis.appv2.entity.Status;
+import mobile.tiis.appv2.entity.Stock;
+import mobile.tiis.appv2.entity.User;
+import mobile.tiis.appv2.entity.VaccinationAppointment;
+import mobile.tiis.appv2.entity.VaccinationEvent;
+import mobile.tiis.appv2.entity.Weight;
+import mobile.tiis.appv2.helpers.Utils;
+import mobile.tiis.appv2.postman.PostmanModel;
+import mobile.tiis.appv2.util.Constants;
 
 /**
  * Created by Teodor on 2/3/2015.
@@ -202,7 +202,7 @@ public class BackboneApplication extends Application {
     private boolean administerVaccineHidden = false;
     public static final String AUDIT_MANAGEMENT_GET_CONFIGURATION = "AuditManagement.svc/GetConfiguration";
 
-    public String LAST_FRAGMENT = "mobile.tiis.appV2.fragments.HomeFragment";
+    public String LAST_FRAGMENT = "mobile.tiis.appv2.fragments.HomeFragment";
     public String LAST_FRAGMENT_TITLE = "Home";
     private String CURRENT_FRAGMENT = "HOME";
 
@@ -3014,7 +3014,7 @@ public class BackboneApplication extends Application {
 //
 //    /**
 //     * Parsing data from Server GetChildByIdListSince to get children or update
-//     * before using this method we need to check if there is a logged in user in the appV2
+//     * before using this method we need to check if there is a logged in user in the appv2
 //     */
 //    public void getGetChildByIdListSince() {
 //        String childIds = getDatabaseInstance().getChildrenFromOtherHFIDThanLoggedUser(getLOGGED_IN_USER_HF_ID());
@@ -3056,7 +3056,7 @@ public class BackboneApplication extends Application {
 
     /**
      * Parsing data from Server GetChildByIdListSince to get children or update
-     * before using this method we need to check if there is a logged in user in the appV2
+     * before using this method we need to check if there is a logged in user in the appv2
      */
     public void getGetChildByIdListSince() {
         String childIds = getDatabaseInstance().getChildrenFromOtherHFIDThanLoggedUser(getLOGGED_IN_USER_HF_ID());
@@ -3099,7 +3099,7 @@ public class BackboneApplication extends Application {
 
     /**
      * Parsing data from Server GetChildByIdList to get children or update
-     * before using this method we need to check if there is a logged in user in the appV2
+     * before using this method we need to check if there is a logged in user in the appv2
      */
     public void getGetChildByIdList() {
         String childIds = getDatabaseInstance().getChildrenFromOtherHFIDThanLoggedUser(getLOGGED_IN_USER_HF_ID());

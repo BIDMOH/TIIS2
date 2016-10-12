@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.adapters;
+package mobile.tiis.appv2.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,8 +10,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.entity.NewChartDataTable;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.entity.NewChartDataTable;
 
 /**
  * Created by issymac on 10/02/16.

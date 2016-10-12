@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.fragments;
+package mobile.tiis.appv2.fragments;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -23,12 +23,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.base.BackboneActivity;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.database.SQLHandler;
-import mobile.tiis.appV2.entity.Child;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.base.BackboneActivity;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.database.SQLHandler;
+import mobile.tiis.appv2.entity.Child;
 
 /**
  * Created by issymac on 30/03/16.
@@ -107,7 +107,7 @@ public class DefaultersReportFragment extends Fragment {
                             dataView.setVisibility(View.VISIBLE);
                             new getDefaultersList().execute(fromDateString, toDateString);
 //                                chart_view.setVisibility(View.VISIBLE);
-//                                new FilterList().execute(appV2.getLOGGED_IN_USER_HF_ID(), fromDateString, toDateString);
+//                                new FilterList().execute(appv2.getLOGGED_IN_USER_HF_ID(), fromDateString, toDateString);
                         } else {
                             final Snackbar snackbar = Snackbar.make(dataView, "Please select a start date to view the chart", Snackbar.LENGTH_LONG);
                             snackbar.setAction("OK", new View.OnClickListener() {
@@ -141,7 +141,7 @@ public class DefaultersReportFragment extends Fragment {
 
                         if(!toDateString.equals("")){
                             dataView.setVisibility(View.VISIBLE);
-//                                new FilterList().execute(appV2.getLOGGED_IN_USER_HF_ID(), fromDateString, toDateString);
+//                                new FilterList().execute(appv2.getLOGGED_IN_USER_HF_ID(), fromDateString, toDateString);
                             new getDefaultersList().execute(fromDateString, toDateString);
                         }else{
                             final Snackbar snackbar=Snackbar.make(dataView,"Please select an end date to view the report",Snackbar.LENGTH_LONG);

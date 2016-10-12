@@ -16,7 +16,7 @@
  *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
  ******************************************************************************/
 
-package mobile.tiis.appV2.helpers;
+package mobile.tiis.appv2.helpers;
 
 /**
  * Created by Teodor on 1/31/2015.
@@ -51,7 +51,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Pattern;
 
-import mobile.tiis.appV2.base.BackboneApplication;
+import mobile.tiis.appv2.base.BackboneApplication;
 
 public final class Utils {
 

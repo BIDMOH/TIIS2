@@ -16,12 +16,12 @@
  *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
  ******************************************************************************/
 
-package mobile.tiis.appV2.authentication;
+package mobile.tiis.appv2.authentication;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import mobile.tiis.appV2.LoginActivity;
+import mobile.tiis.appv2.LoginActivity;
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;

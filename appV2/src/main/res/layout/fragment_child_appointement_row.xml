@@ -47,7 +47,7 @@
                 android:textColor="@color/black"
                 android:id="@+id/click_tp_vaccinate_title"/>
 
-            <mobile.tiis.appV2.CustomViews.NestedListView
+            <mobile.tiis.appv2.CustomViews.NestedListView
                 android:layout_below="@id/click_tp_vaccinate_title"
                 android:background="@color/white"
                 android:id="@+id/lv_appointments_list"
@@ -57,7 +57,7 @@
                 android:layout_marginTop="32dp"
                 android:layout_marginLeft="32dp"
                 android:layout_marginRight="32dp">
-            </mobile.tiis.appV2.CustomViews.NestedListView>
+            </mobile.tiis.appv2.CustomViews.NestedListView>
 
         </LinearLayout>
 

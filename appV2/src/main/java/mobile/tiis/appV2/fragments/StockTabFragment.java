@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.fragments;
+package mobile.tiis.appv2.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -19,12 +19,12 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.SubClassed.mBarDataSet;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
-import mobile.tiis.appV2.entity.Stock;
-import mobile.tiis.appV2.util.MyMarkerView;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.SubClassed.mBarDataSet;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.entity.Stock;
+import mobile.tiis.appv2.util.MyMarkerView;
 
 /**
  * Created by issymac on 22/12/15.
@@ -165,7 +165,7 @@ public class StockTabFragment extends Fragment {
         // set1.setColors(ColorTemplate.createColors(getApplicationContext(),
         // ColorTemplate.FRESH_COLORS));
         set1.setColors(new int[]{this.getActivity().getResources().getColor(R.color.red_500), this.getActivity().getResources().getColor(R.color.yellow_500), this.getActivity().getResources().getColor(R.color.green_500)});
-//        BarDataSet set2 = new BarDataSet(reorderVals, appV2.getString(R.string.reorder_qty));
+//        BarDataSet set2 = new BarDataSet(reorderVals, appv2.getString(R.string.reorder_qty));
 //        set2.setColor(Color.rgb(235, 139, 75));
 
         ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();

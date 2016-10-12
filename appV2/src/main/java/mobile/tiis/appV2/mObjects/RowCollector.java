@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.mObjects;
+package mobile.tiis.appv2.mObjects;
 
 import java.util.Date;
 import java.util.List;

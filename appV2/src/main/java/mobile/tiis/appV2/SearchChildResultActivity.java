@@ -16,7 +16,7 @@
  *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
  ******************************************************************************/
 
-package mobile.tiis.appV2;
+package mobile.tiis.appv2;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -25,9 +25,9 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.widget.ImageView;
 
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.base.BackboneTableActivity;
-import mobile.tiis.appV2.helpers.Utils;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.base.BackboneTableActivity;
+import mobile.tiis.appv2.helpers.Utils;
 
 /**
  * Created by Teodor on 2/8/2015.

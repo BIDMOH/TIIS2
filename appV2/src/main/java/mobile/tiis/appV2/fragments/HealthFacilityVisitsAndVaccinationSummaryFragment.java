@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.fragments;
+package mobile.tiis.appv2.fragments;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -20,9 +20,9 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.util.Calendar;
 
-import mobile.tiis.appV2.R;
-import mobile.tiis.appV2.base.BackboneApplication;
-import mobile.tiis.appV2.database.DatabaseHandler;
+import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.base.BackboneApplication;
+import mobile.tiis.appv2.database.DatabaseHandler;
 
 /**
  * Created by issymac on 30/03/16.
@@ -77,7 +77,7 @@ public class HealthFacilityVisitsAndVaccinationSummaryFragment extends Fragment 
         prepareUIElements(rowview);
         mydb = app.getDatabaseInstance();
         healthFacility.setText(mydb.getHealthCenterName(app.getLOGGED_IN_USER_HF_ID()));
-//        reportingPeriod.setText(mydb.getUserHFIDByUserId(appV2.getLOGGED_IN_USER_ID()));
+//        reportingPeriod.setText(mydb.getUserHFIDByUserId(appv2.getLOGGED_IN_USER_ID()));
 
         return rowview;
     }

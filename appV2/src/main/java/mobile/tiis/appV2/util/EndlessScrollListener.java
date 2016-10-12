@@ -1,4 +1,4 @@
-package mobile.tiis.appV2.util;
+package mobile.tiis.appv2.util;
 
 import android.widget.AbsListView;
 
