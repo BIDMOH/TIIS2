@@ -1,0 +1,1 @@
+./adb -d shell 'run-as staging cat /data/data/staging/databases/giis_mobile.db > /sdcard/recovered_db.db';

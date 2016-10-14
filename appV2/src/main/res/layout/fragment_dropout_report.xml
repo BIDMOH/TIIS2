@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app_ms="http://schemas.android.com/apk/res-auto"
+    android:background="#e5e5e5">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_margin="16dp"
+            android:layout_marginBottom="-2dp"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:background="@color/card_light_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp"
+                    android:text="Dropout Report"
+                    android:textStyle="bold"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp">
+
+                    <ImageView
+                        android:layout_width="90dp"
+                        android:layout_height="90dp"
+                        android:id="@+id/national_logo"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/launcher_icon"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/reports_title"
+                        android:layout_centerInParent="true"
+                        android:gravity="center|center_vertical"
+                        android:text="@string/reports_title"
+                        android:textStyle="bold"
+                        android:textSize="18sp"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:paddingLeft="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="16dp"
+                    android:paddingTop="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/region_title"
+                                android:text="Region"
+                                android:gravity="right"
+                                android:paddingTop="4dp"
+                                android:textStyle="italic|bold"
+                                android:paddingBottom="4dp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="|"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginRight="16dp"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/region_value"
+                                android:text="Arusha"
+                                android:paddingTop="4dp"
+                                android:paddingBottom="4dp"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:gravity="center_vertical"
+                            android:visibility="gone"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
+                                android:textStyle="italic|bold"
+                                android:layout_height="wrap_content"
+                                android:gravity="right"
+                                android:id="@+id/district_title"
+                                android:text="District"
+                                android:paddingTop="4dp"
+                                android:paddingBottom="4dp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="|"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginRight="16dp"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/district_value"
+                                android:text="Arusha City"
+                                android:paddingTop="4dp"
+                                android:paddingBottom="4dp"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_marginTop="16dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
+                                android:gravity="right"
+                                android:layout_height="wrap_content"
+                                android:textStyle="italic|bold"
+                                android:text="Health Facility"
+                                android:paddingTop="4dp"
+                                android:paddingBottom="4dp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="|"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginRight="16dp"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/hf_value"
+                                android:text="Baraa RC Dispensary"
+                                android:paddingTop="4dp"
+                                android:paddingBottom="4dp"/>
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="16dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
+                                android:gravity="right"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/the_title"
+                                android:textStyle="italic|bold"
+                                android:text="Title"
+                                android:paddingTop="4dp"
+                                android:paddingBottom="4dp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="|"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginRight="16dp"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/the_title_value"
+                                android:text="Dropout Report"
+                                android:paddingTop="4dp"
+                                android:paddingBottom="4dp"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="16dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:gravity="right"
+                                android:layout_weight="0.8"
+                                android:layout_height="wrap_content"
+                                android:textStyle="italic|bold"
+                                android:text="Period"
+                                android:paddingTop="4dp"
+                                android:paddingBottom="4dp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="|"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginRight="16dp"/>
+
+
+                                <RelativeLayout
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.8"
+                                    android:layout_height="wrap_content">
+
+
+                                    <fr.ganfra.materialspinner.MaterialSpinner
+                                        android:id="@+id/spin_date"
+                                        android:layout_width="150dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerVertical="true"
+                                        android:divider="@null"
+                                        app_ms:ms_multiline="false"
+                                        app_ms:ms_hint="Select Date"
+                                        app_ms:ms_enableFloatingLabel="true"
+                                        app_ms:ms_enableErrorLabel="false"
+                                        app_ms:ms_floatingLabelText="Select Date"
+                                        app_ms:ms_baseColor="@color/light_blue_600"
+                                        app_ms:ms_highlightColor="@color/light_blue_700"
+                                        app_ms:ms_errorColor="@color/red_500"
+                                        app_ms:ms_typeface="Roboto-LightItalic.ttf"
+                                        app_ms:ms_hintColor="@color/card_light_text"
+                                        app_ms:ms_arrowColor="@color/light_blue_600"
+                                        app_ms:ms_arrowSize="16dp"
+                                        app_ms:ms_alignLabels="false"
+                                        app_ms:ms_floatingLabelColor="@color/light_blue_600"/>
+
+                                </RelativeLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="32dp"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/black"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:id="@+id/linear_title"
+                        android:background="@color/card_light_text">
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/black"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.2"
+                            android:layout_marginLeft="16dp"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/month_title"
+                            android:text="Month"/>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/black"/>
+
+                        <RelativeLayout
+                            android:layout_marginRight="4dp"
+                            android:layout_width="0dp"
+                            android:layout_weight="0.4"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:text=" BCG - MR 1 "
+                                android:layout_marginTop="8dp"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:id="@+id/bcg_mri"/>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_below="@id/bcg_mri"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.5"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/bcg_mri_number_title"
+                                    android:gravity="center_horizontal"
+                                    android:text="Number"/>
+
+                                <View
+                                    android:layout_width="1dp"
+                                    android:layout_marginTop="8dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/black"/>
+
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.5"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/bcg_mri_percent_title"
+                                    android:gravity="center_horizontal"
+                                    android:text="Percent (%) "/>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/black"/>
+
+
+                        <RelativeLayout
+                            android:layout_marginLeft="4dp"
+                            android:layout_width="0dp"
+                            android:layout_weight="0.4"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:text=" PENTA 1 - PENTA 3 "
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:layout_marginTop="8dp"
+                                android:id="@+id/penta1_penta3"/>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_below="@id/penta1_penta3"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.5"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/penta1_penta3_number_title"
+                                    android:gravity="center_horizontal"
+                                    android:text="Number"/>
+
+                                <View
+                                    android:layout_width="1dp"
+                                    android:layout_marginTop="8dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/black"/>
+
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.5"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/penta1_penta3_percent_title"
+                                    android:gravity="center_horizontal"
+                                    android:text="Percent (%)"/>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/black"/>
+
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/black"/>
+
+                    <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/dropout_table"
+                        android:layout_below="@id/linear_title"
+                        android:background="@color/card_grid_tex">
+
+
+                    </TableLayout>
+
+                    <ProgressBar
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:id="@+id/progres_bar"
+                        android:layout_centerHorizontal="true"
+                        android:layout_alignParentBottom="true"
+                        android:indeterminate="true"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </ScrollView>
+
+</RelativeLayout>
