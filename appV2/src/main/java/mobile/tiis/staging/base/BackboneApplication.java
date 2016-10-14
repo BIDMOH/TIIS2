@@ -876,7 +876,10 @@ public class BackboneApplication extends Application {
 
 
     /**
-     * method to be used internaly since there were two other methods that needed this code to execute
+     * method to be used  to update or insert child information after child updates are received
+     * taking into consideration of the following issues
+     * if a childId is already available, update or insert the new child
+     * If the childId is not available check if the child's barcode is available if so update or inserth the child
      * @param childCollector
      */
     public void addChildVaccinationEventVaccinationAppointmentUnOptimisedForSmallAmountsOfData(ChildCollector childCollector){
@@ -889,6 +892,12 @@ public class BackboneApplication extends Application {
         DatabaseHandler db = getDatabaseInstance();
 
         long tStart = System.currentTimeMillis();
+
+        boolean childIdInDB=false;      //variable used to specify if the childId is in db
+        boolean childBarcodeInDB=false; //variable used to specity if the child's barcode is in db
+        String orgChildId="";           //variable used to store the original child's Id  found in db just incase the child used a temporaly id before reveiving these updates, the temp child id in all vaccination appointments and vaccination events needs to be updated
+
+
 
         Log.e("TIMING LOG","start insert/update child in DB");
         childCV.put(SQLHandler.SyncColumns.UPDATED, 1);
@@ -918,15 +927,26 @@ public class BackboneApplication extends Application {
 
 
         if(!db.isChildIDInChildTable(child.getId())) {
+            childIdInDB= false;
             if(!db.isChildBarcodeIDInChildTable(child.getBarcodeID())){
+                childBarcodeInDB=false;
+                Log.d(TAG,"inserting child with barcode = "+child.getBarcodeID());
                 db.addChild(childCV);
             }else{
+                childBarcodeInDB=true;
+                Log.d(TAG,"updating child with barcode = "+child.getBarcodeID());
+
+                //obtaining the previous tempId used by the child inorder to use it in updating child's vaccination events and vaccination appointments
+                orgChildId = db.getChildIdByBarcode(child.getBarcodeID());
                 db.updateChildWithBarcode(childCV,child.getBarcodeID());
             }
 
         }else{
+            childIdInDB= true;
+            Log.d(TAG,"updating child with barcode = "+child.getBarcodeID());
             db.updateChild(childCV,child.getId());
         }
+
 
 
         Log.e("TIMING LOG","elapsed time insert/update child in DB (milliseconds): " + (System.currentTimeMillis() - tStart));
@@ -948,11 +968,37 @@ public class BackboneApplication extends Application {
             vaccEventCV.put(SQLHandler.VaccinationEventColumns.VACCINATION_DATE, vaccinationEvent.getVaccinationDate());
             vaccEventCV.put(SQLHandler.VaccinationEventColumns.VACCINATION_STATUS, vaccinationEvent.getVaccinationStatus());
             vaccEventCV.put(SQLHandler.VaccinationEventColumns.VACCINE_LOT_ID, vaccinationEvent.getVaccineLotId());
-            if(!db.isVaccinationEventInDb(vaccinationEvent.getChildId(), vaccinationEvent.getDoseId())) {
-                db.addVaccinationEvent(vaccEventCV);
+            if(childIdInDB){
+                if(!db.isVaccinationEventInDb(vaccinationEvent.getChildId(), vaccinationEvent.getDoseId())) {
+                    Log.d(TAG,"inserting vaccination event with childId = "+vaccinationEvent.getChildId());
+                    db.addVaccinationEvent(vaccEventCV);
+                }else{
+                    Log.d(TAG,"updating vaccination event with childId = "+vaccinationEvent.getChildId());
+                    db.updateVaccinationEvent(vaccEventCV,vaccinationEvent.getId());
+                }
+            }else if(childBarcodeInDB){
+                //child's barcode is available in the db so update the original child's temporally id to the new childId from the server
+                if(!db.isVaccinationEventInDb(orgChildId, vaccinationEvent.getDoseId())) {
+                    db.addVaccinationEvent(vaccEventCV);
+                    Log.d(TAG,"inserting vaccination event with barcode-childId = "+orgChildId);
+                }else{
+                    Log.d(TAG,"updating vaccination event with dose-id and barcode-childId = "+orgChildId);
+                    //assuming the vaccination event was originally added by the same user on this tablet with a temporarily childId
+                    // only modify the vaccination event id and foreign keys ids without overiding the vaccination status
+                    // since the vaccination event may have updates that are  still in postman and has not yet been synched to the server
+                    ContentValues ve = new ContentValues();
+                    ve.put(SQLHandler.SyncColumns.UPDATED, 1);
+                    ve.put(SQLHandler.VaccinationEventColumns.APPOINTMENT_ID, vaccinationEvent.getAppointmentId());
+                    ve.put(SQLHandler.VaccinationEventColumns.CHILD_ID, vaccinationEvent.getChildId());
+                    ve.put(SQLHandler.VaccinationEventColumns.ID, vaccinationEvent.getId());
+                    ve.put(SQLHandler.VaccinationEventColumns.IS_ACTIVE, vaccinationEvent.getIsActive());
+                    db.updateVaccinationEvent(ve,orgChildId,vaccinationEvent.getDoseId());
+                }
             }else{
-                db.updateVaccinationEvent(vaccEventCV,vaccinationEvent.getId());
+                Log.d(TAG,"inserting vaccination event with childId = "+vaccinationEvent.getChildId());
+                db.addVaccinationEvent(vaccEventCV);
             }
+
         }
 
         Log.e("TIMING LOG","elapsed time insert/update Vaccination Event list in DB (milliseconds): " + (System.currentTimeMillis() - tStart));
@@ -971,10 +1017,20 @@ public class BackboneApplication extends Application {
             vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.SCHEDULED_DATE, vaccinationAppointment.getScheduledDate());
             vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.SCHEDULED_FACILITY_ID, vaccinationAppointment.getScheduledFacilityId());
 
-            if(!db.isVaccinationAppointmentInDb(vaccinationAppointment.getChildId(), vaccinationAppointment.getScheduledDate())) {
-                db.addVaccinationAppointment(vaccAppointmentCV);
+            if(childIdInDB){
+                if(!db.isVaccinationAppointmentInDb(vaccinationAppointment.getChildId(), vaccinationAppointment.getScheduledDate())) {
+                    db.addVaccinationAppointment(vaccAppointmentCV);
+                }else{
+                    db.updateVaccinationAppointment(vaccAppointmentCV, vaccinationAppointment.getId());
+                }
+            }else if(childBarcodeInDB){
+                if(!db.isVaccinationAppointmentInDb(orgChildId, vaccinationAppointment.getScheduledDate())) {
+                    db.addVaccinationAppointment(vaccAppointmentCV);
+                }else{
+                    db.updateVaccinationAppointmentByScheduledDate(vaccAppointmentCV, vaccinationAppointment.getScheduledDate());
+                }
             }else{
-                db.updateVaccinationAppointment(vaccAppointmentCV, vaccinationAppointment.getId());
+                db.addVaccinationAppointment(vaccAppointmentCV);
             }
 
         }
@@ -1511,17 +1567,15 @@ public class BackboneApplication extends Application {
 
     }
 
-    /**
-     * method to be used internaly since there were two other methods that needed this code to execute
-     *
-     * @param childCollector
-     */
-    public void addChildVaccinationEventVaccinationAppointment(ChildCollector childCollector) {
+    public void updateChildVaccinationEventVaccinationAppointment(ChildCollector childCollector) {
         Child child = childCollector.getChildEntity();
         List<VaccinationEvent> vaccinationEvents = childCollector.getVeList();
         List<VaccinationAppointment> vaccinationAppointments = childCollector.getVaList();
         ContentValues childCV = new ContentValues();
         DatabaseHandler db = getDatabaseInstance();
+
+
+
 
         SQLiteDatabase db1 = db.getWritableDatabase();
         db1.beginTransactionNonExclusive();
@@ -1659,6 +1713,113 @@ public class BackboneApplication extends Application {
         }
     }
 
+
+
+    /**
+     * method used to add child, vaccination appointments and vaccination events into the database
+     *
+     * @param childCollector
+     */
+    public void addChildVaccinationEventVaccinationAppointment(ChildCollector childCollector) {
+        Child child = childCollector.getChildEntity();
+        List<VaccinationEvent> vaccinationEvents = childCollector.getVeList();
+        List<VaccinationAppointment> vaccinationAppointments = childCollector.getVaList();
+        ContentValues childCV = new ContentValues();
+        ContentValues vaccEventCV = new ContentValues();
+        ContentValues vaccAppointmentCV = new ContentValues();
+        DatabaseHandler db = getDatabaseInstance();
+
+        long tStart = System.currentTimeMillis();
+
+        Log.e("TIMING LOG","start insert/update child in DB");
+        childCV.put(SQLHandler.SyncColumns.UPDATED, 1);
+        childCV.put(SQLHandler.ChildColumns.ID, child.getId());
+        childCV.put(SQLHandler.ChildColumns.BARCODE_ID, child.getBarcodeID());
+        childCV.put(SQLHandler.ChildColumns.FIRSTNAME1, child.getFirstname1());
+        childCV.put(SQLHandler.ChildColumns.FIRSTNAME2, child.getFirstname2());
+        childCV.put(SQLHandler.ChildColumns.LASTNAME1, child.getLastname1());
+        childCV.put(SQLHandler.ChildColumns.BIRTHDATE, child.getBirthdate());
+        childCV.put(SQLHandler.ChildColumns.GENDER, child.getGender());
+        childCV.put(SQLHandler.ChildColumns.TEMP_ID, child.getTempId());
+        childCV.put(SQLHandler.ChildColumns.HEALTH_FACILITY, child.getHealthcenter());
+        childCV.put(SQLHandler.ChildColumns.DOMICILE, child.getDomicile());
+        childCV.put(SQLHandler.ChildColumns.DOMICILE_ID, child.getDomicileId());
+        childCV.put(SQLHandler.ChildColumns.HEALTH_FACILITY_ID, child.getHealthcenterId());
+        childCV.put(SQLHandler.ChildColumns.STATUS_ID, child.getStatusId());
+        childCV.put(SQLHandler.ChildColumns.BIRTHPLACE_ID, child.getBirthplaceId());
+        childCV.put(SQLHandler.ChildColumns.NOTES, child.getNotes());
+        childCV.put(SQLHandler.ChildColumns.STATUS, child.getDomicile());
+        childCV.put(SQLHandler.ChildColumns.MOTHER_FIRSTNAME, child.getMotherFirstname());
+        childCV.put(SQLHandler.ChildColumns.MOTHER_LASTNAME, child.getMotherLastname());
+
+        childCV.put(SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER, child.getChildCumulativeSn());
+        childCV.put(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR, child.getChildRegistryYear());
+        childCV.put(SQLHandler.ChildColumns.MOTHER_TT2_STS, child.getMotherTT2Status());
+        childCV.put(SQLHandler.ChildColumns.MOTHER_VVU_STS, child.getMotherHivStatus());
+
+        childCV.put(SQLHandler.ChildColumns.PHONE, child.getPhone());
+
+        if(!db.isChildIDInChildTable(child.getId())) {
+            db.addChild(childCV);
+        }else{
+            db.updateChild(childCV,child.getId());
+        }
+
+
+        Log.e("TIMING LOG","elapsed time insert/update child in DB (milliseconds): " + (System.currentTimeMillis() - tStart));
+        tStart = System.currentTimeMillis();
+
+        Log.e("TIMING LOG","start insert/update Vaccination Event list in DB");
+        for(VaccinationEvent vaccinationEvent : vaccinationEvents){
+            vaccEventCV.put(SQLHandler.SyncColumns.UPDATED, 1);
+            vaccEventCV.put(SQLHandler.VaccinationEventColumns.APPOINTMENT_ID, vaccinationEvent.getAppointmentId());
+            vaccEventCV.put(SQLHandler.VaccinationEventColumns.CHILD_ID, vaccinationEvent.getChildId());
+            vaccEventCV.put(SQLHandler.VaccinationEventColumns.DOSE_ID, vaccinationEvent.getDoseId());
+            vaccEventCV.put(SQLHandler.VaccinationEventColumns.HEALTH_FACILITY_ID, vaccinationEvent.getHealthFacilityId());
+            vaccEventCV.put(SQLHandler.VaccinationEventColumns.ID, vaccinationEvent.getId());
+            vaccEventCV.put(SQLHandler.VaccinationEventColumns.IS_ACTIVE, vaccinationEvent.getIsActive());
+            vaccEventCV.put(SQLHandler.VaccinationEventColumns.MODIFIED_BY, vaccinationEvent.getModifiedBy());
+            vaccEventCV.put(SQLHandler.VaccinationEventColumns.MODIFIED_ON, vaccinationEvent.getModifiedOn());
+            vaccEventCV.put(SQLHandler.VaccinationEventColumns.NONVACCINATION_REASON_ID, vaccinationEvent.getNonvaccinationReasonId());
+            vaccEventCV.put(SQLHandler.VaccinationEventColumns.SCHEDULED_DATE, vaccinationEvent.getScheduledDate());
+            vaccEventCV.put(SQLHandler.VaccinationEventColumns.VACCINATION_DATE, vaccinationEvent.getVaccinationDate());
+            vaccEventCV.put(SQLHandler.VaccinationEventColumns.VACCINATION_STATUS, vaccinationEvent.getVaccinationStatus());
+            vaccEventCV.put(SQLHandler.VaccinationEventColumns.VACCINE_LOT_ID, vaccinationEvent.getVaccineLotId());
+            if(!db.isVaccinationEventInDb(vaccinationEvent.getChildId(), vaccinationEvent.getDoseId())) {
+                db.addVaccinationEvent(vaccEventCV);
+            }else{
+                db.updateVaccinationEvent(vaccEventCV,vaccinationEvent.getId());
+            }
+        }
+
+        Log.e("TIMING LOG","elapsed time insert/update Vaccination Event list in DB (milliseconds): " + (System.currentTimeMillis() - tStart));
+        tStart = System.currentTimeMillis();
+
+        Log.e("TIMING LOG","start insert/update Vaccination Appointment list in DB");
+
+        for(VaccinationAppointment vaccinationAppointment : vaccinationAppointments){
+            vaccAppointmentCV.put(SQLHandler.SyncColumns.UPDATED, 1);
+            vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.CHILD_ID, vaccinationAppointment.getChildId());
+            vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.ID, vaccinationAppointment.getId());
+            vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.IS_ACTIVE, vaccinationAppointment.getIsActive());
+            vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.MODIFIED_BY, vaccinationAppointment.getModifiedBy());
+            vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.MODIFIED_ON, vaccinationAppointment.getModifiedOn());
+            vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.NOTES, vaccinationAppointment.getNotes());
+            vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.SCHEDULED_DATE, vaccinationAppointment.getScheduledDate());
+            vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.OUTREACH, vaccinationAppointment.getOutreach());
+            vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.SCHEDULED_FACILITY_ID, vaccinationAppointment.getScheduledFacilityId());
+
+            if(!db.isVaccinationAppointmentInDb(vaccinationAppointment.getChildId(), vaccinationAppointment.getScheduledDate())) {
+                db.addVaccinationAppointment(vaccAppointmentCV);
+            }else{
+                db.updateVaccinationAppointment(vaccAppointmentCV, vaccinationAppointment.getId());
+            }
+
+        }
+
+        Log.e("TIMING LOG","elapsed time insert/update Vaccination Appointment list in DB (milliseconds): " + (System.currentTimeMillis() - tStart));
+
+    }
 
 
 
@@ -2695,51 +2856,7 @@ public class BackboneApplication extends Application {
             webServiceUrl = new StringBuilder(postmanModel.getUrl());
         }
 
-//        getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
-        childId = -1;
-        Log.e("service weight", webServiceUrl + "");
-
-        //TODO this should be fully tested if it has no impact on the application.
-        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
-        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                throwable.printStackTrace();
-                Log.e("coze", "adding a post to send data when the connection is available");
-                getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
-                childId = -1;
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String result) {
-                try {
-                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
-                    JSONObject jobj = new JSONObject(result);
-                    childId = jobj.getInt("id");
-                    if (childId != -1) {
-
-                        Log.e("coze","data stored successfully");
-                        ContentValues contentValues = new ContentValues();
-                        contentValues.put(SQLHandler.ChildColumns.ID, childId);
-                        DatabaseHandler mydb = getDatabaseInstance();
-
-                        mydb.updateChildTableWithChildID(contentValues, threadTempId);
-                        mydb.updateVaccinationAppointementChildId(threadTempId, childId + "");
-                        mydb.updateVaccinationEventChildId(threadTempId, childId + "");
-
-                    } else {
-                        Log.e("coze","data stored failed");
-                        Log.e("coze","adding a post to send data when the connection is available");
-                        getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
-                    }
-
-
-                } catch (Exception e) {
-                    getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
-                    childId = -1;
-                }
-            }
-        });
+        getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
         return childId;
     }
 
@@ -2753,48 +2870,11 @@ public class BackboneApplication extends Application {
     private int updatingVaccinationAppOutreachResult=-1;
 
     public int updateVaccinationAppOutreach(String childBarcode, String doseId) {
-
-//TODO remove hardcoding of userID
         final StringBuilder webServiceUrl;
         webServiceUrl = new StringBuilder(WCF_URL).append("VaccinationAppointmentManagement.svc/UpdateVaccinationApp?outreach=true&userId=")
-                .append("12832")
+                .append(LOGGED_IN_USER_ID)
                 .append("&barcode=").append(childBarcode)
                 .append("&doseId=").append(doseId);
-
-
-        Log.e("day13", webServiceUrl + "");
-
-//        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
-//        client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
-//            @Override
-//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-//                updatingVaccinationAppOutreachResult=-1;
-//                throwable.printStackTrace();
-//                if (webServiceUrl != null) {
-//                    getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
-//                }
-//            }
-//
-//
-//            @Override
-//            public void onSuccess(int statusCode, Header[] headers, String result) {
-//                try {
-//                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
-//                    JSONObject jobj = new JSONObject(result);
-//                    int idReturned = jobj.getInt("id");
-//                    // if any check is needed to be performed after communicating here you have the result parsed into this int
-//                    updatingVaccinationAppOutreachResult = idReturned;
-//
-//                }catch (JSONException e) {
-//                    e.printStackTrace();
-//                    updatingVaccinationAppOutreachResult = -1;
-//                } catch (NullPointerException e) {
-//                    e.printStackTrace();
-//                    updatingVaccinationAppOutreachResult = -1;
-//                }
-//            }
-//        });
-
         getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
 
         return updatingVaccinationAppOutreachResult;

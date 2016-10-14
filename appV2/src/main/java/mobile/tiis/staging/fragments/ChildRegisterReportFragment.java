@@ -433,9 +433,10 @@ public class ChildRegisterReportFragment extends RxFragment{
                             mVar.add(row);
 
                         } while (cursor.moveToNext());
+
+                        adapter = new ChildRegisterReportRecyclerAdapter(mVar,getActivity());
                     }
                     cursor.close();
-                    adapter = new ChildRegisterReportRecyclerAdapter(mVar,getActivity());
                 }
                 return Observable.just(mVar);
             }

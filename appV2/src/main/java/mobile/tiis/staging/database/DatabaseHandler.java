@@ -1736,6 +1736,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
 
+    public long updateVaccinationEvent(ContentValues cv, String childId , String doseId) {
+        SQLiteDatabase sd = getWritableDatabase();
+        long result = -1;
+        sd.beginTransaction();
+        try {
+            result = sd.update(Tables.VACCINATION_EVENT, cv, SQLHandler.VaccinationEventColumns.CHILD_ID + "=? AND "+ SQLHandler.VaccinationEventColumns.DOSE_ID +"=? ",
+                    new String[]{
+                            childId,doseId
+                    });
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+    }
+
+
     public long updateVaccinationAppointment(ContentValues cv, String id) {
         SQLiteDatabase sd = getWritableDatabase();
         long result = -1;
@@ -1744,6 +1764,25 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             result = sd.update(Tables.VACCINATION_APPOINTMENT, cv, SQLHandler.VaccinationAppointmentColumns.ID + "=?",
                     new String[]{
                             id
+                    });
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+    }
+
+    public long updateVaccinationAppointmentByScheduledDate(ContentValues cv, String date) {
+        SQLiteDatabase sd = getWritableDatabase();
+        long result = -1;
+        sd.beginTransaction();
+        try {
+            result = sd.update(Tables.VACCINATION_APPOINTMENT, cv, SQLHandler.VaccinationAppointmentColumns.SCHEDULED_DATE + "=?",
+                    new String[]{
+                            date
                     });
             sd.setTransactionSuccessful();
         } catch (Exception e) {
@@ -2671,6 +2710,31 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return null;
     }
 
+
+    /**
+     * @param barcode
+     * @return the child
+     * @Arinela method used to get partial child data by passing the child id of the child
+     */
+    public Child getChildByBarcode(String barcode) {
+        //Query on Child Table
+        String selectQuery = "SELECT * FROM " + Tables.CHILD + " WHERE "+ SQLHandler.ChildColumns.BARCODE_ID+"= '" + barcode + "'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+
+            Child child = new Child();
+            child.setBirthdate(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.BIRTHDATE)));
+            child.setHealthcenterId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.HEALTH_FACILITY_ID)));
+            child.setDomicileId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.DOMICILE_ID)));
+            cursor.close();
+
+            return child;
+        }
+        cursor.close();
+        return null;
+    }
 
     public int getDayesInAgeDefinitions(String ageDefinitionsID) {
         //Query on Child Table

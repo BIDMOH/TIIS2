@@ -170,7 +170,7 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
                                     if (currentChild.getHealthcenterId().equals(app.getLOGGED_IN_USER_HF_ID())) {
                                         Log.d("currentpage", "equal");
                                         try {
-                                            if (currentChild.getChildCumulativeSn().equals("") || currentChild.getChildRegistryYear().equals("") || currentChild.getMotherHivStatus().equals("") || currentChild.getMotherTT2Status().equals("")) {
+                                            if (currentChild.getMotherHivStatus().equals("") || currentChild.getMotherTT2Status().equals("")) {
                                                 enableViewPagerPaging(false);
                                                 Log.d("currentpage", "disabling viewpager");
                                                 Toast.makeText(ChildDetailsActivity.this, "Please edit and fill all relevant fields before continuing", Toast.LENGTH_LONG).show();
@@ -245,7 +245,7 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
                                     Log.d("currentpage", "equal");
                                     try {
                                         if (!isNewChild) {
-                                            if (currentChild.getChildCumulativeSn().equals("") || currentChild.getChildRegistryYear().equals("") || currentChild.getMotherHivStatus().equals("") || currentChild.getMotherTT2Status().equals("")) {
+                                            if (currentChild.getMotherHivStatus().equals("") || currentChild.getMotherTT2Status().equals("")) {
                                                 enableViewPagerPaging(false);
                                                 Log.d("currentpage", "disabling viewpager");
                                                 Toast.makeText(ChildDetailsActivity.this, "Please edit and fill all relevant fields before continuing", Toast.LENGTH_LONG).show();

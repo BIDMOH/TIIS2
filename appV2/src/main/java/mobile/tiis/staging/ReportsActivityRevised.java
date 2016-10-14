@@ -55,7 +55,7 @@ public class ReportsActivityRevised extends BackboneActivity {
 
         tabs.setTextColor(Color.WHITE);
 
-        new stallRendering().execute();
+        new stallRendering().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
     }
 

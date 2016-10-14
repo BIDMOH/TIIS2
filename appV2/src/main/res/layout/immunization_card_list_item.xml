@@ -12,7 +12,6 @@
             android:layout_width="0dp"
             android:layout_weight=".25"
             android:layout_height="wrap_content"
-            android:text="Rota 2"
             android:textSize="16sp"
             android:layout_marginLeft="32dp"
             android:id="@+id/imm_card_vacc_dose_txt"
@@ -22,7 +21,6 @@
             android:layout_width="0dp"
             android:layout_weight=".15"
             android:layout_height="wrap_content"
-            android:text="Vaccine Lot"
             android:textSize="16sp"
             android:id="@+id/imm_card_vacc_lot_txt"
             android:textColor="@color/black"/>
@@ -31,7 +29,6 @@
             android:layout_width="0dp"
             android:layout_weight=".15"
             android:layout_height="wrap_content"
-            android:text="Kaloleni Health Cent"
             android:textSize="16sp"
             android:id="@+id/imm_card_health_facilty_txt"
             android:textColor="@color/black"/>
@@ -40,7 +37,6 @@
             android:layout_width="0dp"
             android:layout_weight=".15"
             android:layout_height="wrap_content"
-            android:text="16-Feb-2015"
             android:textSize="16sp"
             android:id="@+id/imm_card_vacc_date_txt"
             android:textColor="@color/black"/>
@@ -48,8 +44,6 @@
         <CheckBox
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:checked="true"
-
             android:id="@+id/imm_card_done_chk"/>
 
         <TextView

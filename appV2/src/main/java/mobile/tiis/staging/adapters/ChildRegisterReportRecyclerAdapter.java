@@ -106,147 +106,151 @@ public class ChildRegisterReportRecyclerAdapter extends BaseAdapter {
            holder = (ViewHolder)convertView.getTag();
         }
 
-        final ViewChildRegisterInfoRow a = items.get(position);
+        try {
+            final ViewChildRegisterInfoRow a = items.get(position);
 
-        holder.sn.setText(a.sn+"");
+            holder.sn.setText(a.sn + "");
 
-        if(a.OPV0!=null && !a.OPV0.equals("null")) {
-            Date scheduled_date = BackboneActivity.dateParser(a.OPV0);
-            holder.date.setText(ft2.format(scheduled_date));
-        }else if(a.OPV1!=null && !a.OPV1.equals("null")){
-            Date date = BackboneActivity.dateParser(a.OPV1);
-            holder.date.setText(ft2.format(date));
-        }else{
-            holder.date.setText("");
-        }
-        if(a.birthdate!=null) {
-            Date birth_date = BackboneActivity.dateParser(a.birthdate);
-            holder.dateOfBirth.setText(ft2.format(birth_date));
-        }
+            if (a.OPV0 != null && !a.OPV0.equals("null")) {
+                Date scheduled_date = BackboneActivity.dateParser(a.OPV0);
+                holder.date.setText(ft2.format(scheduled_date));
+            } else if (a.OPV1 != null && !a.OPV1.equals("null")) {
+                Date date = BackboneActivity.dateParser(a.OPV1);
+                holder.date.setText(ft2.format(date));
+            } else {
+                holder.date.setText("");
+            }
+            if (a.birthdate != null) {
+                Date birth_date = BackboneActivity.dateParser(a.birthdate);
+                holder.dateOfBirth.setText(ft2.format(birth_date));
+            }
 
-        String name = "";
-        if(a.childFirstName!=null){
-            name+=a.childFirstName;
-        }
-        if(a.childMiddleName!=null){
-            name+=" "+a.childMiddleName;
-        }
-        if(a.childSurname!=null){
-            name+=" "+a.childSurname;
-        }
+            String name = "";
+            if (a.childFirstName != null) {
+                name += a.childFirstName;
+            }
+            if (a.childMiddleName != null) {
+                name += " " + a.childMiddleName;
+            }
+            if (a.childSurname != null) {
+                name += " " + a.childSurname;
+            }
 
-        holder.childsName.setText(name);
-        holder.domicile.setText(a.domicile);
-        holder.gender.setText(a.gender.equals("true")?"ME":"KE");
-        holder.mothersName.setText(a.motherFirstName+" "+a.motherLastName);
-        holder.mothers_hiv_status.setText(a.motherHivStatus);
-        holder.mothers_tt2_status.setText(a.motherTT2Status);
+            holder.childsName.setText(name);
+            holder.domicile.setText(a.domicile);
+            holder.gender.setText(a.gender.equals("true") ? "ME" : "KE");
+            holder.mothersName.setText(a.motherFirstName + " " + a.motherLastName);
+            holder.mothers_hiv_status.setText(a.motherHivStatus);
+            holder.mothers_tt2_status.setText(a.motherTT2Status);
 
-        holder.childCumulativeSn.setText(a.childCumulativeSn.equals("0")?"":a.childCumulativeSn);
-        holder.childRegistrationYear.setText(a.childRegistrationYear.equals("0")?"":a.childRegistrationYear);
+            holder.childCumulativeSn.setText(a.childCumulativeSn.equals("0") ? "" : a.childCumulativeSn);
+            holder.childRegistrationYear.setText(a.childRegistrationYear.equals("0") ? "" : a.childRegistrationYear);
 
-        if(a.bcg!=null && !a.bcg.equals("null")) {
-            Date date = BackboneActivity.dateParser(a.bcg);
-            holder.bcg.setText(ft.format(date));
-        }else{
-            holder.bcg.setText("");
-        }
+            if (a.bcg != null && !a.bcg.equals("null")) {
+                Date date = BackboneActivity.dateParser(a.bcg);
+                holder.bcg.setText(ft.format(date));
+            } else {
+                holder.bcg.setText("");
+            }
 
-        if(a.OPV0!=null && !a.OPV0.equals("null")) {
-            Date date = BackboneActivity.dateParser(a.OPV0);
-            holder.opv0.setText(ft.format(date));
-        }else{
-            holder.opv0.setText("");
-        }
-        if(a.OPV1!=null && !a.OPV1.equals("null")) {
-            Date date = BackboneActivity.dateParser(a.OPV1);
-            holder.opv1.setText(ft.format(date));
-        }else{
-            holder.opv1.setText("");
-        }
+            if (a.OPV0 != null && !a.OPV0.equals("null")) {
+                Date date = BackboneActivity.dateParser(a.OPV0);
+                holder.opv0.setText(ft.format(date));
+            } else {
+                holder.opv0.setText("");
+            }
+            if (a.OPV1 != null && !a.OPV1.equals("null")) {
+                Date date = BackboneActivity.dateParser(a.OPV1);
+                holder.opv1.setText(ft.format(date));
+            } else {
+                holder.opv1.setText("");
+            }
 
-        if(a.OPV2!=null && !a.OPV2.equals("null")) {
-            Date date = BackboneActivity.dateParser(a.OPV2);
-            holder.opv2.setText(ft.format(date));
-        }else{
-            holder.opv2.setText("");
-        }
+            if (a.OPV2 != null && !a.OPV2.equals("null")) {
+                Date date = BackboneActivity.dateParser(a.OPV2);
+                holder.opv2.setText(ft.format(date));
+            } else {
+                holder.opv2.setText("");
+            }
 
-        if(a.OPV3!=null && !a.OPV3.equals("null")) {
-            Date date = BackboneActivity.dateParser(a.OPV3);
-            holder.opv3.setText(ft.format(date));
-        }else{
-            holder.opv3.setText("");
-        }
+            if (a.OPV3 != null && !a.OPV3.equals("null")) {
+                Date date = BackboneActivity.dateParser(a.OPV3);
+                holder.opv3.setText(ft.format(date));
+            } else {
+                holder.opv3.setText("");
+            }
 
-        if(a.DTP1!=null && !a.DTP1.equals("null")) {
-            Date date = BackboneActivity.dateParser(a.DTP1);
-            holder.dtp1.setText(ft.format(date));
-        }else{
-            holder.dtp1.setText("");
-        }
+            if (a.DTP1 != null && !a.DTP1.equals("null")) {
+                Date date = BackboneActivity.dateParser(a.DTP1);
+                holder.dtp1.setText(ft.format(date));
+            } else {
+                holder.dtp1.setText("");
+            }
 
-        if(a.DTP2!=null && !a.DTP2.equals("null")) {
-            Date date = BackboneActivity.dateParser(a.DTP2);
-            holder.dtp2.setText(ft.format(date));
-        }else{
-            holder.dtp2.setText("");
-        }
+            if (a.DTP2 != null && !a.DTP2.equals("null")) {
+                Date date = BackboneActivity.dateParser(a.DTP2);
+                holder.dtp2.setText(ft.format(date));
+            } else {
+                holder.dtp2.setText("");
+            }
 
-        if(a.DTP3!=null && !a.DTP3.equals("null")) {
-            Date date = BackboneActivity.dateParser(a.DTP3);
-            holder.dtp3.setText(ft.format(date));
-        }else{
-            holder.dtp3.setText("");
-        }
+            if (a.DTP3 != null && !a.DTP3.equals("null")) {
+                Date date = BackboneActivity.dateParser(a.DTP3);
+                holder.dtp3.setText(ft.format(date));
+            } else {
+                holder.dtp3.setText("");
+            }
 
-        if(a.PCV1!=null && !a.PCV1.equals("null")) {
-            Date date = BackboneActivity.dateParser(a.PCV1);
-            holder.pcv1.setText(ft.format(date));
-        }else{
-            holder.pcv1.setText("");
-        }
+            if (a.PCV1 != null && !a.PCV1.equals("null")) {
+                Date date = BackboneActivity.dateParser(a.PCV1);
+                holder.pcv1.setText(ft.format(date));
+            } else {
+                holder.pcv1.setText("");
+            }
 
-        if(a.PCV2!=null && !a.PCV2.equals("null")) {
-            Date date = BackboneActivity.dateParser(a.PCV2);
-            holder.pcv2.setText(ft.format(date));
-        }else{
-            holder.pcv2.setText("");
-        }
+            if (a.PCV2 != null && !a.PCV2.equals("null")) {
+                Date date = BackboneActivity.dateParser(a.PCV2);
+                holder.pcv2.setText(ft.format(date));
+            } else {
+                holder.pcv2.setText("");
+            }
 
-        if(a.PCV3!=null && !a.PCV3.equals("null")) {
-            Date date = BackboneActivity.dateParser(a.PCV3);
-            holder.pcv3.setText(ft.format(date));
-        }else{
-            holder.pcv3.setText("");
-        }
+            if (a.PCV3 != null && !a.PCV3.equals("null")) {
+                Date date = BackboneActivity.dateParser(a.PCV3);
+                holder.pcv3.setText(ft.format(date));
+            } else {
+                holder.pcv3.setText("");
+            }
 
-        if(a.Rota1!=null && !a.Rota1.equals("null")) {
-            Date date = BackboneActivity.dateParser(a.Rota1);
-            holder.rota1.setText(ft.format(date));
-        }else{
-            holder.rota1.setText("");
-        }
+            if (a.Rota1 != null && !a.Rota1.equals("null")) {
+                Date date = BackboneActivity.dateParser(a.Rota1);
+                holder.rota1.setText(ft.format(date));
+            } else {
+                holder.rota1.setText("");
+            }
 
 
-        if(a.Rota2!=null &&  !a.Rota2.equals("null")) {
-            Date date = BackboneActivity.dateParser(a.Rota2);
-            holder.rota2.setText(ft.format(date));
-        }else{
-            holder.rota2.setText("");
-        }
+            if (a.Rota2 != null && !a.Rota2.equals("null")) {
+                Date date = BackboneActivity.dateParser(a.Rota2);
+                holder.rota2.setText(ft.format(date));
+            } else {
+                holder.rota2.setText("");
+            }
 
-        if(a.measlesRubella1!=null && !a.measlesRubella1.equals("null")) {
-            Date date = BackboneActivity.dateParser(a.measlesRubella1);
-            holder.rubella1.setText(ft.format(date));
-        }else{
-            holder.rubella1.setText("");
-        }
-        if(a.measlesRubella2!=null && !a.measlesRubella2.equals("null")) {
-            Date date = BackboneActivity.dateParser(a.measlesRubella2);
-            holder.rubella2.setText(ft.format(date));
-        }else {
-            holder.rubella2.setText("");
+            if (a.measlesRubella1 != null && !a.measlesRubella1.equals("null")) {
+                Date date = BackboneActivity.dateParser(a.measlesRubella1);
+                holder.rubella1.setText(ft.format(date));
+            } else {
+                holder.rubella1.setText("");
+            }
+            if (a.measlesRubella2 != null && !a.measlesRubella2.equals("null")) {
+                Date date = BackboneActivity.dateParser(a.measlesRubella2);
+                holder.rubella2.setText(ft.format(date));
+            } else {
+                holder.rubella2.setText("");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
         return convertView;
