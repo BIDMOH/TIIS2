@@ -15,13 +15,11 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="32dp"
                 android:background="@color/white">
-
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="70dp"
                     android:layout_marginTop="32dp"
                     android:id="@+id/title_rl">
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

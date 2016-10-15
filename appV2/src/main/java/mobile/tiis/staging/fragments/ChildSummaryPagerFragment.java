@@ -1432,6 +1432,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
                     initListeners();
                 }
                 alertDialogBuilder.show();
+                ((ChildDetailsActivity) getActivity()).updateadapters();
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
