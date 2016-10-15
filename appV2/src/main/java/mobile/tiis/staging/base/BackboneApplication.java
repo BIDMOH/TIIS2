@@ -930,11 +930,11 @@ public class BackboneApplication extends Application {
             childIdInDB= false;
             if(!db.isChildBarcodeIDInChildTable(child.getBarcodeID())){
                 childBarcodeInDB=false;
-                Log.d(TAG,"inserting child with barcode = "+child.getBarcodeID());
+                Log.d("delay","inserting child with barcode = "+child.getBarcodeID());
                 db.addChild(childCV);
             }else{
                 childBarcodeInDB=true;
-                Log.d(TAG,"updating child with barcode = "+child.getBarcodeID());
+                Log.d("delay","updating child with barcode = "+child.getBarcodeID()+" to childId = "+ child.getId());
 
                 //obtaining the previous tempId used by the child inorder to use it in updating child's vaccination events and vaccination appointments
                 orgChildId = db.getChildIdByBarcode(child.getBarcodeID());
@@ -943,7 +943,7 @@ public class BackboneApplication extends Application {
 
         }else{
             childIdInDB= true;
-            Log.d(TAG,"updating child with barcode = "+child.getBarcodeID());
+            Log.d("delay","updating child with barcode = "+child.getBarcodeID());
             db.updateChild(childCV,child.getId());
         }
 
@@ -970,32 +970,32 @@ public class BackboneApplication extends Application {
             vaccEventCV.put(SQLHandler.VaccinationEventColumns.VACCINE_LOT_ID, vaccinationEvent.getVaccineLotId());
             if(childIdInDB){
                 if(!db.isVaccinationEventInDb(vaccinationEvent.getChildId(), vaccinationEvent.getDoseId())) {
-                    Log.d(TAG,"inserting vaccination event with childId = "+vaccinationEvent.getChildId());
+                    Log.d("delay","inserting vaccination event with childId = "+vaccinationEvent.getChildId());
                     db.addVaccinationEvent(vaccEventCV);
                 }else{
-                    Log.d(TAG,"updating vaccination event with childId = "+vaccinationEvent.getChildId());
+                    Log.d("delay","updating vaccination event with childId = "+vaccinationEvent.getChildId());
                     db.updateVaccinationEvent(vaccEventCV,vaccinationEvent.getId());
                 }
             }else if(childBarcodeInDB){
                 //child's barcode is available in the db so update the original child's temporally id to the new childId from the server
                 if(!db.isVaccinationEventInDb(orgChildId, vaccinationEvent.getDoseId())) {
                     db.addVaccinationEvent(vaccEventCV);
-                    Log.d(TAG,"inserting vaccination event with barcode-childId = "+orgChildId);
+                    Log.d("delay","inserting vaccination event with barcode-childId = "+orgChildId);
                 }else{
-                    Log.d(TAG,"updating vaccination event with dose-id and barcode-childId = "+orgChildId);
+                    Log.d("delay","updating vaccination event with dose-id and barcode-childId = "+orgChildId+" with child ID = "+vaccinationEvent.getChildId());
                     //assuming the vaccination event was originally added by the same user on this tablet with a temporarily childId
                     // only modify the vaccination event id and foreign keys ids without overiding the vaccination status
                     // since the vaccination event may have updates that are  still in postman and has not yet been synched to the server
                     ContentValues ve = new ContentValues();
-                    ve.put(SQLHandler.SyncColumns.UPDATED, 1);
                     ve.put(SQLHandler.VaccinationEventColumns.APPOINTMENT_ID, vaccinationEvent.getAppointmentId());
                     ve.put(SQLHandler.VaccinationEventColumns.CHILD_ID, vaccinationEvent.getChildId());
                     ve.put(SQLHandler.VaccinationEventColumns.ID, vaccinationEvent.getId());
                     ve.put(SQLHandler.VaccinationEventColumns.IS_ACTIVE, vaccinationEvent.getIsActive());
-                    db.updateVaccinationEvent(ve,orgChildId,vaccinationEvent.getDoseId());
+                    long i = db.updateVaccinationEvent(ve,orgChildId,vaccinationEvent.getDoseId());
+                    Log.d("delay","updating vaccination event results = "+i);
                 }
             }else{
-                Log.d(TAG,"inserting vaccination event with childId = "+vaccinationEvent.getChildId());
+                Log.d("delay","inserting vaccination event with childId = "+vaccinationEvent.getChildId());
                 db.addVaccinationEvent(vaccEventCV);
             }
 
@@ -1027,7 +1027,8 @@ public class BackboneApplication extends Application {
                 if(!db.isVaccinationAppointmentInDb(orgChildId, vaccinationAppointment.getScheduledDate())) {
                     db.addVaccinationAppointment(vaccAppointmentCV);
                 }else{
-                    db.updateVaccinationAppointmentByScheduledDate(vaccAppointmentCV, vaccinationAppointment.getScheduledDate());
+                    Log.d(TAG,"updating vaccination appointment with oldID= "+orgChildId+" with child ID = "+vaccinationAppointment.getChildId());
+                    db.updateVaccinationAppointmentByScheduledDateAndChildId(vaccAppointmentCV, orgChildId,vaccinationAppointment.getScheduledDate());
                 }
             }else{
                 db.addVaccinationAppointment(vaccAppointmentCV);

@@ -1794,6 +1794,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
 
+
+    public long updateVaccinationAppointmentByScheduledDateAndChildId(ContentValues cv,String childId ,String date) {
+        SQLiteDatabase sd = getWritableDatabase();
+        long result = -1;
+        sd.beginTransaction();
+        try {
+            result = sd.update(Tables.VACCINATION_APPOINTMENT, cv, SQLHandler.VaccinationAppointmentColumns.CHILD_ID + "=? AND "+SQLHandler.VaccinationAppointmentColumns.SCHEDULED_DATE+"=?",
+                    new String[]{
+                            childId,date
+                    });
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+    }
+
     public List<VaccinationQueueObject> getAllVaccinationQueueObjects() {
         //Container
         List<VaccinationQueueObject> vaccinationQueueObjectList = new ArrayList<VaccinationQueueObject>();
@@ -2986,7 +3006,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
 
-    private ArrayList<VaccinationAppointment> getVaccinationAppointmentForList(String childId, String scheduledDate) {
+    public ArrayList<VaccinationAppointment> getVaccinationAppointmentForList(String childId, String scheduledDate) {
         ArrayList<VaccinationAppointment> list = new ArrayList<>();
         //Query on Child Table
         String selectQuery = "SELECT * FROM " + Tables.VACCINATION_APPOINTMENT + " WHERE " + GIISContract.VaccinationAppointmentColumns.CHILD_ID + " = '" + childId +
@@ -3010,6 +3030,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         cursor.close();
         return list;
+    }
+
+
+    public VaccinationAppointment getVaccinationAppointmentById(String id) {
+        VaccinationAppointment vac = new VaccinationAppointment();
+        String selectQuery = "SELECT * FROM " + Tables.VACCINATION_APPOINTMENT + " WHERE " + GIISContract.VaccinationAppointmentColumns.ID + " = '"+id+"'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            vac.setId(cursor.getString(cursor.getColumnIndex(GIISContract.VaccinationAppointmentColumns.ID)));
+            vac.setChildId(cursor.getString(cursor.getColumnIndex(GIISContract.VaccinationAppointmentColumns.CHILD_ID)));
+            vac.setScheduledFacilityId(cursor.getString(cursor.getColumnIndex(GIISContract.VaccinationAppointmentColumns.SCHEDULED_FACILITY_ID)));
+            vac.setScheduledDate(cursor.getString(cursor.getColumnIndex(GIISContract.VaccinationAppointmentColumns.SCHEDULED_DATE)));
+            vac.setIsActive(cursor.getString(cursor.getColumnIndex(GIISContract.VaccinationAppointmentColumns.IS_ACTIVE)));
+            vac.setNotes(cursor.getString(cursor.getColumnIndex(GIISContract.VaccinationAppointmentColumns.NOTES)));
+            vac.setModifiedOn(cursor.getString(cursor.getColumnIndex(GIISContract.VaccinationAppointmentColumns.MODIFIED_ON)));
+            vac.setModifiedBy(cursor.getString(cursor.getColumnIndex(GIISContract.VaccinationAppointmentColumns.MODIFIED_BY)));
+        }
+        cursor.close();
+        return vac;
     }
 
     /**

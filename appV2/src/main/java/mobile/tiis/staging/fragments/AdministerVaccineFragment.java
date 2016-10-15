@@ -55,6 +55,7 @@ import mobile.tiis.staging.database.DatabaseHandler;
 import mobile.tiis.staging.database.SQLHandler;
 import mobile.tiis.staging.entity.AdministerVaccinesModel;
 import mobile.tiis.staging.entity.NonVaccinationReason;
+import mobile.tiis.staging.entity.VaccinationAppointment;
 import mobile.tiis.staging.util.BackgroundThread;
 import rx.Observable;
 import rx.Subscriber;
@@ -145,6 +146,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
     private AppCompatActivity parent;
 
     private android.support.v7.app.ActionBar actionBar;
+    private VaccinationAppointment appointment;
 
     Toolbar toolbar;
 
@@ -165,11 +167,13 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         fm  = new FragmentStackManager(this.getActivity());
 
         app.saveNeeded = true;
-
         appointment_id  = getArguments().getString("appointment_id");
         birthdate       = getArguments().getString("birthdate");
         barcode         = getArguments().getString("barcode");
         SimpleDateFormat ft1 = new SimpleDateFormat("dd-MMM-yyyy");
+
+        appointment = dbh.getVaccinationAppointmentById(appointment_id);
+
         Log.d("EBENSEARCH", "Birth date is : "+ft1.format(BackboneActivity.dateParser(birthdate)));
 
         try {
@@ -709,10 +713,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
             childId = getChildIdCursor.getString(getChildIdCursor.getColumnIndex(SQLHandler.ChildColumns.ID));
             getChildIdCursor.close();
         } else {
-//          toastMessage(getString(R.string.empty_child_id));
             getChildIdCursor.close();
-            //TODO: Call the fragmentStackManager to replace the current fragment (if it was the activity its supposed to be finished)
-//            finish();
         }
     }
 
@@ -768,7 +769,15 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         Observable.defer(new Func0<Observable<Boolean>>() {
         @Override
         public Observable<Boolean> call() {
-            // Do some long running operation
+
+
+            //refreshing the required appointmentId, childId incase they were updated in the database after receiving a push notification update
+            //it was noted that in some cases the values in the database was updated after receiving a push notification from the server before the uses clicked save vaccination
+            // so it is relevant to reattain appointmentId, childId  to capture such scenarios.
+            getChildId();
+            Log.d("delay","saving vaccines for childId = "+childId);
+            appointment_id = (dbh.getVaccinationAppointmentForList(childId,appointment.getScheduledDate()).get(0)).getId();
+            //Administering the vaccines
             administerVaccineSaveButtonClicked();
             if (SavedState) {
                 BackboneApplication application = (BackboneApplication) AdministerVaccineFragment.this.getActivity().getApplication();
@@ -795,7 +804,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                         if (a.getStatus().equalsIgnoreCase("true") && !a.getVaccination_lot().toLowerCase().contains("no lot")) {
                             Log.d(TAG,"deducting stock");
                             Cursor cursor = db.getReadableDatabase().rawQuery("SELECT balance FROM health_facility_balance WHERE lot_id=?", new String[]{a.getVaccination_lot()});
-                            //Cursor cursor = db.getReadableDatabase().rawQuery("UPDATE health_facility_balance SET balance = balance - 1 WHERE lot_id=?", new String[]{a.getVaccination_lot()});
                             if (cursor != null && cursor.getCount() > 0) {
                                 cursor.moveToFirst();
                                 int bal = cursor.getInt(cursor.getColumnIndex("balance"));
@@ -804,7 +812,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                                 ContentValues cv = new ContentValues();
                                 cv.put(SQLHandler.HealthFacilityBalanceColumns.BALANCE, bal);
                                 db.updateStockBalance(cv, a.getVaccination_lot());
-                                //cursor = db.getReadableDatabase().rawQuery("UPDATE health_facility_balance SET balance=? WHERE lot_id=?", new String[]{String.valueOf(bal), a.getVaccination_lot()});
                             }
                         }else{
                             Log.d(TAG,"not deducting stock");

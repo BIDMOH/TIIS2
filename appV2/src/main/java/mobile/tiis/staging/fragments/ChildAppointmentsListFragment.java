@@ -66,7 +66,11 @@ public class ChildAppointmentsListFragment extends BackHandledFragment{
             Cursor mCursor = null;
             mCursor = this_database.getReadableDatabase().rawQuery(handler.SQLVaccinations, new String[]{child_id, child_id});
             if (mCursor != null) {
-                if (mCursor.moveToFirst()) {
+                if (mCursor.getCount()==0) {
+                    child_id = this_database.getChildIdByBarcode(childBarcode);
+                    mCursor = this_database.getReadableDatabase().rawQuery(handler.SQLVaccinations, new String[]{child_id, child_id});
+                }
+                if(mCursor.moveToFirst()){
                     do {
                         ViewAppointmentRow row = new ViewAppointmentRow();
                         row.setAppointment_id(mCursor.getString(mCursor.getColumnIndex("APPOINTMENT_ID")));

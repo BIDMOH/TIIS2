@@ -447,7 +447,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
     }
 
     public void updateAppointmentTable(){
-        Log.d(TAG,"updating appointment table");
+        Log.d("delay","updating appointment table");
         var = new ArrayList<ViewAppointmentRow>();
         Observable.defer(new Func0<Observable<Boolean>>() {
             @Override
@@ -456,11 +456,11 @@ public class ChildSummaryPagerFragment extends RxFragment {
                 Cursor mCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",
                         new String[]{String.valueOf(value)});
                 if (mCursor.getCount() > 0) {
-                    Log.d(TAG,"updating appointment table with child id = "+value);
+                    Log.d("delay","updating appointment table with child id = "+value);
                     mCursor.moveToFirst();
                     currentChild = getChildFromCursror(mCursor);
                 }else{
-                    Log.d(TAG,"updating appointment table with barcode id = "+barcodeOrig);
+
                     //at times when the child has just been registered on the tablet, he/she is assigned a temp id which is later by the id received from the server
                     //to ensure updating of appointment information of child we reobtain the child from the database by his/her barcode inorder to show his/her appointments.
                     Cursor c = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.BARCODE_ID + "=?",
@@ -468,6 +468,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
                     if (c.getCount() > 0) {
                         c.moveToFirst();
                         currentChild = getChildFromCursror(c);
+                        Log.d("delay","updating appointment table with barcode id = "+barcodeOrig+" AND childID = "+currentChild.getId());
                     }
 
                 }
@@ -482,6 +483,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
 
                     if (cursor != null) {
                         if (cursor.moveToFirst()) {
+                            Log.d("delay","adding vaccination appointments = "+barcodeOrig);
                             do {
                                 ViewAppointmentRow row = new ViewAppointmentRow();
                                 row.setAppointment_id(cursor.getString(cursor.getColumnIndex("APPOINTMENT_ID")));
