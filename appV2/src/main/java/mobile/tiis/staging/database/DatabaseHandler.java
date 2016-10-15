@@ -2756,6 +2756,32 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return null;
     }
 
+    /**
+     * @param id
+     * @return the child
+     * @Arinela method used to get partial child data by passing the child id of the child
+     */
+    public Child getChildById(String id) {
+        //Query on Child Table
+        String selectQuery = "SELECT * FROM " + Tables.CHILD + " WHERE "+ SQLHandler.ChildColumns.ID+"= '" + id + "'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+
+            Child child = new Child();
+            child.setBirthdate(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.BIRTHDATE)));
+            child.setHealthcenterId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.HEALTH_FACILITY_ID)));
+            child.setDomicileId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.DOMICILE_ID)));
+            child.setBarcodeID(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.BARCODE_ID)));
+            cursor.close();
+
+            return child;
+        }
+        cursor.close();
+        return null;
+    }
+
     public int getDayesInAgeDefinitions(String ageDefinitionsID) {
         //Query on Child Table
         String selectQuery = "SELECT " + SQLHandler.AgeDefinitionsColumns.DAYS + " FROM " + Tables.AGE_DEFINITIONS + " WHERE ID = '" + ageDefinitionsID + "'";

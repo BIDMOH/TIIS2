@@ -22,6 +22,7 @@ import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.os.Handler;
@@ -88,6 +89,8 @@ import mobile.tiis.staging.entity.Weight;
 import mobile.tiis.staging.helpers.Utils;
 import mobile.tiis.staging.postman.PostmanModel;
 import mobile.tiis.staging.util.Constants;
+
+import static mobile.tiis.staging.database.SQLHandler.Tables.POSTMAN;
 
 /**
  * Created by Teodor on 2/3/2015.
@@ -2469,41 +2472,46 @@ public class BackboneApplication extends Application {
                 final String childId = childIds.get(i);
 
                 Log.d(TAG, "passing child " + childId);
-                final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC).append("GetChildByIdV1?childId=").append(childId);
-                client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        parsedChildResults = 3;
-                    }
-
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, String response) {
-                        Log.d(TAG, "parseChildCollectorbyId = " + webServiceUrl.toString());
-                        ChildCollector childCollector = new ChildCollector();
-                        try {
-                            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-                            ObjectMapper mapper = new ObjectMapper();
-                            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-                            childCollector = mapper.readValue(new JSONArray(response).getJSONObject(0).toString(), ChildCollector.class);
-
-                            addChildVaccinationEventVaccinationAppointmentUnOptimisedForSmallAmountsOfData(childCollector);
-                            parsedChildResults = 1;
-                            databaseInstance.removeChildFromChildUpdateQueue(childId);
-                        } catch (JsonGenerationException e) {
-                            e.printStackTrace();
-                            parsedChildResults = 2;
-                        } catch (JsonMappingException e) {
-                            e.printStackTrace();
-                            parsedChildResults = 2;
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                Cursor c = databaseInstance.getReadableDatabase().rawQuery("SELECT * FROM " +POSTMAN+
+                        " WHERE "+ SQLHandler.PostmanColumns.URL+" LIKE '%"+databaseInstance.getChildById(childId).getBarcodeID()+"%'",null);
+                if(c.getCount()==0){
+                    final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC).append("GetChildByIdV1?childId=").append(childId);
+                    client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                             parsedChildResults = 3;
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            parsedChildResults = 2;
                         }
-                    }
-                });
+
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, String response) {
+                            Log.d(TAG, "parseChildCollectorbyId = " + webServiceUrl.toString());
+                            ChildCollector childCollector = new ChildCollector();
+                            try {
+                                Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                                ObjectMapper mapper = new ObjectMapper();
+                                mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                                childCollector = mapper.readValue(new JSONArray(response).getJSONObject(0).toString(), ChildCollector.class);
+                                addChildVaccinationEventVaccinationAppointmentUnOptimisedForSmallAmountsOfData(childCollector);
+                                parsedChildResults = 1;
+                                databaseInstance.removeChildFromChildUpdateQueue(childId);
+                            } catch (JsonGenerationException e) {
+                                e.printStackTrace();
+                                parsedChildResults = 2;
+                            } catch (JsonMappingException e) {
+                                e.printStackTrace();
+                                parsedChildResults = 2;
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                parsedChildResults = 3;
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                parsedChildResults = 2;
+                            }
+                        }
+                    });
+                }else{
+                    Log.d(TAG,"postponing updates for a child in postman until the details are synchronized to the server");
+                }
             }
         }catch (Exception e){
             e.printStackTrace();

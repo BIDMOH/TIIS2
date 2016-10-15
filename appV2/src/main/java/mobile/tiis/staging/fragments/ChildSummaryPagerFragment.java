@@ -1259,17 +1259,22 @@ public class ChildSummaryPagerFragment extends RxFragment {
         ContentValues contentValues = new ContentValues();
 
         if(!childWithEditableChildCumulativeSnAndChildRegistryYear) {
-            if (!registryYearList.get(registryYearSpinner.getSelectedItemPosition() - 1).equalsIgnoreCase(currentChild.getChildRegistryYear())) {
-                currentChild.setChildRegistryYear(registryYearList.get(registryYearSpinner.getSelectedItemPosition() - 1));
-                contentValues.put(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR, registryYearList.get(registryYearSpinner.getSelectedItemPosition() - 1));
+
+            if(registryYearSpinner.getSelectedItemPosition()!=0) {
+                if (!registryYearList.get(registryYearSpinner.getSelectedItemPosition() - 1).equalsIgnoreCase(currentChild.getChildRegistryYear())) {
+                    currentChild.setChildRegistryYear(registryYearList.get(registryYearSpinner.getSelectedItemPosition() - 1));
+                    contentValues.put(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR, registryYearList.get(registryYearSpinner.getSelectedItemPosition() - 1));
+                }
+
+                if (!metCummulativeSn.getText().toString().equalsIgnoreCase(currentChild.getChildCumulativeSn())) {
+                    currentChild.setChildCumulativeSn(metCummulativeSn.getText().toString());
+                    Log.d("CSN", "cummulative saved" + currentChild.getChildCumulativeSn());
+                    contentValues.put(SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER, metCummulativeSn.getText().toString());
+                }
             }
 
 
-            if (!metCummulativeSn.getText().toString().equalsIgnoreCase(currentChild.getChildCumulativeSn())) {
-                currentChild.setChildCumulativeSn(metCummulativeSn.getText().toString());
-                Log.d("CSN", "cummulative saved" + currentChild.getChildCumulativeSn());
-                contentValues.put(SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER, metCummulativeSn.getText().toString());
-            }
+
         }
 
         if (!vvuStatusList.get(VVUSpinner.getSelectedItemPosition()-1).equalsIgnoreCase(currentChild.getMotherHivStatus())){
