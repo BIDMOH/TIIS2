@@ -332,6 +332,9 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         for (final AdministerVaccinesModel item : arr){
             View rowView = li.inflate(R.layout.vaccine_dose_quantity_item, null);
 
+            SimpleDateFormat ftD = new SimpleDateFormat("dd-MMM-yyyy");
+//            Date schedulddate = BackboneActivity.dateParser(item.getScheduled_Date_field());
+
             TextView tvDose                 = (TextView) rowView.findViewById(R.id.dose);
             final TextView tvVaccineDate    = (TextView)rowView.findViewById(R.id.vaccine_date);
             final Spinner spVaccLot         = (Spinner)rowView.findViewById(R.id.lot_spinner);
@@ -363,7 +366,8 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
             String timeLong = tLong[0];
 
-            Date scheduledDate = new Date(Long.parseLong(timeLong));
+            Date scheduledDate  = new Date(Long.parseLong(timeLong));
+
             Calendar now = Calendar.getInstance();
 
             Date compDateOne = getZeroTimeDate(now.getTime());
@@ -449,20 +453,43 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
             SingleTextViewAdapterForVaccineLot statusAdapter = new SingleTextViewAdapterForVaccineLot(AdministerVaccineFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, item.getVaccine_lot_list());
             spVaccLot.setAdapter(statusAdapter);
-            if (item.getVaccine_lot_list().size() > 2) {
-                spVaccLot.setSelection(2);
-                item.setVaccination_lot_pos(2);
-                //setting the id of vaccine lot
-                item.setVaccination_lot(item.getVaccine_lot_map().get(item.getVaccine_lot_list().get(2)).toString());
-                Log.d("RowCollId", item.getVaccination_lot());
-            } else {
-                thereIsNoVaccinesInLot  = true;
-                emptyVaccineLotsVaccines += item.getDoseName()+", ";
-                Log.d("TIMR_LOG", "size is less than 2");
+
+            Date today          = new Date();
+
+
+            Log.d("SOMA", "date is before comparizon is "+scheduledDate+" and today is "+today);
+
+            Log.d("SOMA", "date is before comparizon is "+scheduledDate.compareTo(today));
+            Calendar cl = Calendar.getInstance();
+            cl.setTime(scheduledDate);
+
+            int scheduledday     = cl.get(Calendar.DAY_OF_MONTH);
+
+            cl.setTime(today);
+            int todayDay    = cl.get(Calendar.DAY_OF_MONTH);
+
+            if (scheduledDate.compareTo(today)<0 && (scheduledday<todayDay)){
                 spVaccLot.setSelection(1);
                 item.setVaccination_lot_pos(1);
                 item.setVaccination_lot(item.getVaccine_lot_map().get(item.getVaccine_lot_list().get(1)).toString());
                 Log.d("RowCollId", item.getVaccination_lot());
+
+                //Disable spinner and done checkbox
+                spVaccLot.setEnabled(false);
+                chDone.setEnabled(false);
+            }else {
+                if (item.getVaccine_lot_list().size() > 2) {
+                    spVaccLot.setSelection(2);
+                    item.setVaccination_lot_pos(2);
+                    //setting the id of vaccine lot
+                    item.setVaccination_lot(item.getVaccine_lot_map().get(item.getVaccine_lot_list().get(2)).toString());
+                    Log.d("RowCollId", item.getVaccination_lot());
+                } else {
+                    spVaccLot.setSelection(1);
+                    item.setVaccination_lot_pos(1);
+                    item.setVaccination_lot(item.getVaccine_lot_map().get(item.getVaccine_lot_list().get(1)).toString());
+                    Log.d("RowCollId", item.getVaccination_lot());
+                }
             }
 
             //rowCollector.setVaccination_lot_pos(1);
