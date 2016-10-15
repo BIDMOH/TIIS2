@@ -233,10 +233,14 @@ public class DropoutReportFragment extends Fragment {
         protected void onPostExecute(Integer result) {
 
 //            adapter.updateData(mVar);
-            if (result!=0){
-                dropoutTable.removeAllViews();
-                FillDroupoutTable(mVar, inflator);
-                progressBar.setVisibility(View.GONE);
+            try {
+                if (result != 0) {
+                    dropoutTable.removeAllViews();
+                    FillDroupoutTable(mVar, inflator);
+                    progressBar.setVisibility(View.GONE);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
 
         }
