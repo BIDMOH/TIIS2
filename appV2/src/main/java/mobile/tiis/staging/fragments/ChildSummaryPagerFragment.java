@@ -1184,12 +1184,12 @@ public class ChildSummaryPagerFragment extends RxFragment {
             return false;
         }
 
-        if (registryYearSpinner.getSelectedItemPosition()==0 && !childWithEditableChildCumulativeSnAndChildRegistryYear) {
-            alertDialogBuilder.setMessage("Please select Child Registration Year");
-            alertDialogBuilder.show();
-            registryYearSpinner.setError("Please select Child Registration Year");
-            return false;
-        }
+//        if (registryYearSpinner.getSelectedItemPosition()==0 && !childWithEditableChildCumulativeSnAndChildRegistryYear) {
+//            alertDialogBuilder.setMessage("Please select Child Registration Year");
+//            alertDialogBuilder.show();
+//            registryYearSpinner.setError("Please select Child Registration Year");
+//            return false;
+//        }
 
 //        if (metCummulativeSn.getText().toString().equals("") && !childWithEditableChildCumulativeSnAndChildRegistryYear) {
 //            alertDialogBuilder.setMessage("Please fill Child Cumulative Sn");

@@ -22,8 +22,8 @@ import mobile.tiis.staging.fragments.TabFragment;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
-//    private final String[] TITLES = {"Immunization Coverage Report (Scheduled)", "Immunization Coverage Report (Target)", "Defaulters List", "Dropout Report", "Immunized Children", "Immunization Chart", "Stock","Vaccination Summary"};
-    private final String[] TITLES = {"Immunization Coverage Report (Scheduled)", "Immunization Coverage Report (Target)", "Defaulters List", "Dropout Report", "Immunized Children", "Immunization Chart","Vaccination Summary"};
+    private final String[] TITLES = {"Child Register Report (MTUHA)","Immunization Coverage Report (Scheduled)", "Immunization Coverage Report (Target)", "Defaulters List", "Dropout Report", "Immunized Children", "Immunization Chart","Vaccination Summary"};
+
 
     public ViewPagerAdapter(FragmentManager fm) {
         super(fm);
