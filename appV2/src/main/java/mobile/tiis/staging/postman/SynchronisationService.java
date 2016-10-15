@@ -141,6 +141,13 @@ public class SynchronisationService extends IntentService {
                                     e.printStackTrace();
                                 }
                             }while(!res);
+                        }else{
+                            //check if this was a duplicate barcode registered in the server. if so delete the child
+                            if(p.getUrl().contains("RegisterChildWithAppoitmentsWithMothersHivStatusAndTT2VaccineStatusAndCatchment")){
+                               String barcode =  p.getUrl().split("=")[1].substring(0,10);
+                                Log.d(TAG,"barcode = "+barcode);
+                                db.removeChildFromChildTable(db.getChildIdByBarcode(barcode));
+                            }
                         }
                     } catch (IOException e) {
                         e.printStackTrace();

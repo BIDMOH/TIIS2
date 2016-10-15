@@ -209,10 +209,6 @@ public class BackboneApplication extends Application {
     public String LAST_FRAGMENT_TITLE = "Home";
     private String CURRENT_FRAGMENT = "HOME";
 
-    //Added Admin Username and Password variables
-//    private String LOGGED_IN_USERNAME = "admin";
-//    private String LOGGED_IN_USER_PASS = "Tanzania12";
-
     public static String getWcfUrl() {
         return WCF_URL;
     }
@@ -2453,7 +2449,6 @@ public class BackboneApplication extends Application {
     }
 
     public void parseGCMChildrenInQueueById() {
-        Log.d(TAG, "passing children in childupdates queue");
         final List<String> childIds = databaseInstance.getChildIdsFromChildUpdatesQueue();
         int size = childIds.size();
 
@@ -2473,9 +2468,8 @@ public class BackboneApplication extends Application {
                 final String childId = childIds.get(i);
 
                 Log.d(TAG, "passing child " + childId);
-                Cursor c = getDatabaseInstance().getReadableDatabase().rawQuery("SELECT * FROM " +POSTMAN+
-                        " WHERE "+ SQLHandler.PostmanColumns.URL+" LIKE '%"+databaseInstance.getChildById(childId).getBarcodeID()+"%'",null);
-                if(c.getCount()==0){
+
+                if(getDatabaseInstance().checkIfChildUpdatesAreInPostman(childId)){
                     final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC).append("GetChildByIdV1?childId=").append(childId);
                     client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
                         @Override
@@ -2513,7 +2507,6 @@ public class BackboneApplication extends Application {
                 }else{
                     Log.d(TAG,"postponing updates for a child in postman until the details are synchronized to the server");
                 }
-                c.close();
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -2604,50 +2597,6 @@ public class BackboneApplication extends Application {
         });
     }
 
-    public void parsePlaceByCustomHfId(String hf_id) {
-        final StringBuilder webServiceUrl = createWebServiceURL(hf_id, GET_PLACE);
-        Log.d("", webServiceUrl.toString());
-
-
-        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
-        client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                throwable.printStackTrace();
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String response) {
-                List<Place> objects = new ArrayList<Place>();
-
-                try {
-                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-                    ObjectMapper mapper = new ObjectMapper();
-                    objects = mapper.readValue(response, new TypeReference<List<Place>>() {
-                    });
-
-                } catch (JsonGenerationException e) {
-                    e.printStackTrace();
-                } catch (JsonMappingException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    for (Place object : objects) {
-                        ContentValues values = new ContentValues();
-                        //Log.d("Place ID", object.getId());
-                        values.put(SQLHandler.PlaceColumns.ID, object.getId());
-                        values.put(SQLHandler.SyncColumns.UPDATED, 1);
-                        values.put(SQLHandler.PlaceColumns.NAME, object.getName());
-                        //Log.d("Place NAME", object.getName());
-                        values.put(SQLHandler.PlaceColumns.CODE, object.getCode());
-                        DatabaseHandler db = getDatabaseInstance();
-                        db.addPlacesThatWereNotInDB(values, object.getId());
-                    }
-                }
-            }
-        });
-    }
 
     //needs to be merged with createWebServiceLoginURL and used with usr/pass as null in case not Login, hf as null in case of Login
     public StringBuilder createWebServiceURL(String rec_id, String service) {
@@ -2778,34 +2727,6 @@ public class BackboneApplication extends Application {
     public int updateVaccinationEventOnServer(final String url) {
         Log.e("Updating vaccin", url);
         Log.d("day4", "Vaccination Update URL : " + url);
-
-//        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
-//        client.get(url, new TextHttpResponseHandler() {
-//            @Override
-//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-//                updatingVaccineOnTheServerResult = -1;
-//                getDatabaseInstance().addPost(url, 1);
-//            }
-//
-//            @Override
-//            public void onSuccess(int statusCode, Header[] headers, String result) {
-//                try {
-//                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
-//                    JSONObject jobj = new JSONObject(result);
-//                    int childID = jobj.getInt("id");
-//                    if (childID == 1) {
-//                        updatingVaccineOnTheServerResult = childID;
-//                    } else {
-//                        getDatabaseInstance().addPost(url, 1);
-//                        updatingVaccineOnTheServerResult = -1;
-//                    }
-//
-//                } catch (Exception e) {
-//                    getDatabaseInstance().addPost(url, 1);
-//                    updatingVaccineOnTheServerResult = -1;
-//                }
-//            }
-//        });
         getDatabaseInstance().addPost(url, 1);
         return updatingVaccineOnTheServerResult;
     }
@@ -2813,30 +2734,28 @@ public class BackboneApplication extends Application {
 
     public void broadcastChildUpdates(int childId) {
         final StringBuilder webServiceUrl;
-        Log.d(TAG,"broadcasting child updates for childID = "+childId);
+        Log.i(TAG,"broadcasting child updates for childID = "+childId);
 
         webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC);
         webServiceUrl.append("BroadcastChildUpdates?childId=").append(childId);
 
         getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
-        Log.e("service broadcast", webServiceUrl + "");
     }
 
     public void broadcastChildUpdatesWithBarcodeId(String barcodeId) {
         final StringBuilder webServiceUrl;
-        Log.d(TAG,"broadcasting child updates for childTempID = "+barcodeId);
+        Log.i(TAG,"broadcasting child updates for childTempID = "+barcodeId);
 
         webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC);
         webServiceUrl.append("BroadcastChildUpdatesWithBarcodeId?barcodeId=").append(barcodeId);
 
         getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
-        Log.e("service broadcast", webServiceUrl + "");
     }
 
 
     /**
      * @return child ID
-     * @Arinela
+     * @Coze
      */
     private int childId;
     public int registerChildWithAppoitments(String barcode, String fristname, String lastname, String bDate, String gender, String hfid, String birthPlaceId, String domId,

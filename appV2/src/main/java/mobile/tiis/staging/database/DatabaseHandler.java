@@ -69,6 +69,8 @@ import mobile.tiis.staging.entity.VaccinationQueueObject;
 import mobile.tiis.staging.fragments.FragmentVaccineNameQuantity;
 import mobile.tiis.staging.postman.PostmanModel;
 
+import static mobile.tiis.staging.database.SQLHandler.Tables.POSTMAN;
+
 /**
  * Created by Melisa on 02/02/2015.
  */
@@ -3185,6 +3187,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             result = sd.delete(Tables.CHILD, GIISContract.ChildColumns.ID
                     + "= ? ", whereArgs);
             sd.setTransactionSuccessful();
+            deleteChildFromVaccApp(childId);
         } catch (Exception e) {
             //Error in between database transaction
             result = -1;
@@ -4008,4 +4011,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
+    //method used to check if there are any unsynchronized child details in postman table
+    public boolean checkIfChildUpdatesAreInPostman(String childId){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM " +Tables.POSTMAN+
+                " WHERE "+ SQLHandler.PostmanColumns.URL+" LIKE '%"+getChildById(childId).getBarcodeID()+"%'",null);
+        if(c.getCount()>0){
+            c.close();
+            return true;
+        }else{
+            c.close();return false;
+        }
+
+    }
 }

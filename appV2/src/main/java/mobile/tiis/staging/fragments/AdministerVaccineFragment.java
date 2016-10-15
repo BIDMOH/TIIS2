@@ -881,8 +881,12 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
                 }
             });
-            ad2.show();
-            ((ChildDetailsActivity)getActivity()).updateadapters();
+            try {
+                ad2.show();
+                ((ChildDetailsActivity) getActivity()).updateadapters();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
 
         @Override
