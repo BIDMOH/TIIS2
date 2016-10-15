@@ -92,6 +92,16 @@
 
 
         </LinearLayout>
+
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/avi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="visible"
+            app:indicatorName="BallPulseIndicator"
+            app:indicatorColor="@color/light_blue_600"
+            />
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
