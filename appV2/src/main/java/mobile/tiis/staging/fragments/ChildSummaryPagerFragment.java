@@ -1191,12 +1191,12 @@ public class ChildSummaryPagerFragment extends RxFragment {
             return false;
         }
 
-        if (metCummulativeSn.getText().toString().equals("") && !childWithEditableChildCumulativeSnAndChildRegistryYear) {
-            alertDialogBuilder.setMessage("Please fill Child Cumulative Sn");
-            alertDialogBuilder.show();
-            metCummulativeSn.setError("Please fill Child Cumulative Sn");
-            return false;
-        }
+//        if (metCummulativeSn.getText().toString().equals("") && !childWithEditableChildCumulativeSnAndChildRegistryYear) {
+//            alertDialogBuilder.setMessage("Please fill Child Cumulative Sn");
+//            alertDialogBuilder.show();
+//            metCummulativeSn.setError("Please fill Child Cumulative Sn");
+//            return false;
+//        }
 
         if(!childWithEditableChildCumulativeSnAndChildRegistryYear){
             if (cummulativeSnChanged || registryYearChanged){

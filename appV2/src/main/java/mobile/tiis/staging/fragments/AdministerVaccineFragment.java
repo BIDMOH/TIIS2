@@ -95,6 +95,10 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
     private int pos;
 
     private boolean thereIsNoVaccinesInLot = false;
+    private boolean isChildBackEntered = false;
+    private Date backEnteredDate = new Date();
+    private Date selectedDate = new Date();
+
     private String emptyVaccineLotsVaccines = "";
 
     AlertDialog.Builder alertDialogBuilder;
@@ -339,7 +343,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
             final TextView tvVaccineDate    = (TextView)rowView.findViewById(R.id.vaccine_date);
             final Spinner spVaccLot         = (Spinner)rowView.findViewById(R.id.lot_spinner);
             final Spinner spReason          = (Spinner)rowView.findViewById(R.id.non_vacc_reason_spinner);
-            CheckBox chDone                 = (CheckBox)rowView.findViewById(R.id.vaccine_administered_done_checkbox);
+            final CheckBox chDone           = (CheckBox)rowView.findViewById(R.id.vaccine_administered_done_checkbox);
             final View view                 = (View) rowView.findViewById(R.id.split_dose);
 
             tvDose.setText(item.getDoseName());
@@ -456,19 +460,18 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
             Date today          = new Date();
 
-
-            Log.d("SOMA", "date is before comparizon is "+scheduledDate+" and today is "+today);
-
-            Log.d("SOMA", "date is before comparizon is "+scheduledDate.compareTo(today));
             Calendar cl = Calendar.getInstance();
             cl.setTime(scheduledDate);
 
-            int scheduledday     = cl.get(Calendar.DAY_OF_MONTH);
-
             cl.setTime(today);
-            int todayDay    = cl.get(Calendar.DAY_OF_MONTH);
+            Date compareDateOne = getZeroTimeDate(backEnteredDate);
+            Date compareDateTwo = getZeroTimeDate(today);
 
-            if (scheduledDate.compareTo(today)<0 && (scheduledday<todayDay)){
+            Log.d("SOMA", "selected Date "+compareDateOne);
+            Log.d("SOMA", "today is "+compareDateTwo);
+            Log.d("SOMA", "is Child Backentered "+isChildBackEntered);
+
+            if (compareDateOne.compareTo(compareDateTwo)<0 && (isChildBackEntered)){
                 spVaccLot.setSelection(1);
                 item.setVaccination_lot_pos(1);
                 item.setVaccination_lot(item.getVaccine_lot_map().get(item.getVaccine_lot_list().get(1)).toString());
@@ -476,7 +479,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
                 //Disable spinner and done checkbox
                 spVaccLot.setEnabled(false);
-                chDone.setEnabled(false);
             }else {
                 if (item.getVaccine_lot_list().size() > 2) {
                     spVaccLot.setSelection(2);
@@ -574,6 +576,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
         Date compareDateOne = getZeroTimeDate(new_date);
         Date compareDateTwo = getZeroTimeDate(scheduledDate);
+        selectedDate = compareDateOne;
 
         if (compareDateOne.before(compareDateTwo)){
             correnctDateSelected = false;
@@ -661,10 +664,22 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
             }
         }
-        vaccinesListTableLayout.removeAllViews();
-        fillVaccineTableLayout(arrayListAdminVacc);
-//        vaccinesListTableLayout.invalidate();
-//        vaccinesListTableLayout.refreshDrawableState();
+
+        Date today = new Date();
+        Date compareToday = getZeroTimeDate(today);
+
+        //check to see if the child is being backentered so as to default to No Lot
+        if (selectedDate.before(compareToday)){
+            Log.d("SOMA", "The child is being back entered");
+            backEnteredDate = selectedDate;
+            isChildBackEntered = true;
+            vaccinesListTableLayout.removeAllViews();
+            fillVaccineTableLayout(arrayListAdminVacc);
+        }else {
+            isChildBackEntered = false;
+            vaccinesListTableLayout.removeAllViews();
+            fillVaccineTableLayout(arrayListAdminVacc);
+        }
 
         return new_date;
     }
