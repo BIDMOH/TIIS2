@@ -1239,28 +1239,29 @@ public class BackboneApplication extends Application {
                 .append("&modifiedon=").append(dateTodayTimestamp).append("&modifiedby=").append(modBy);
 
 
-        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
-        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                weightSaved = false;
-                getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                try {
-                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + responseString);
-                    weightSaved = true;
-
-                } catch (Exception e) {
-                    getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
-                    weightSaved = false;
-                }
-            }
-        });
-
-        Log.e("service weight", webServiceUrl + "");
+        getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
+//        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+//        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                weightSaved = false;
+//                getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
+//            }
+//
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+//                try {
+//                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + responseString);
+//                    weightSaved = true;
+//
+//                } catch (Exception e) {
+//                    getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
+//                    weightSaved = false;
+//                }
+//            }
+//        });
+//
+//        Log.e("service weight", webServiceUrl + "");
         return weightSaved;
 
 

@@ -2773,7 +2773,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             child.setBirthdate(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.BIRTHDATE)));
             child.setHealthcenterId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.HEALTH_FACILITY_ID)));
             child.setDomicileId(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.DOMICILE_ID)));
-            child.setBarcodeID(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.BARCODE_ID)));
+            child.setBarcodeID(cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.Ba)));
             cursor.close();
 
             return child;

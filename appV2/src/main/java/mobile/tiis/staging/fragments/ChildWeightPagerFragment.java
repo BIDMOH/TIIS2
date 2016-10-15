@@ -35,6 +35,8 @@ import mobile.tiis.staging.database.SQLHandler;
 import mobile.tiis.staging.entity.Child;
 import mobile.tiis.staging.helpers.Utils;
 
+import static mobile.tiis.staging.ChildDetailsActivity.childId;
+
 /**
  * Created by issymac on 26/01/16.
  */
@@ -169,6 +171,8 @@ public class ChildWeightPagerFragment extends Fragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                currentChild = mydb.getChildById(childId);
+
                 if (Utils.isStringBlank((metWeightValue.getText().toString())) || metWeightValue.getText().toString().substring(0, 1).equals("0")) {
 
                     String message = getString(R.string.weight_not_correct);
