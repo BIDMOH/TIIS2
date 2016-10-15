@@ -704,6 +704,7 @@ public class HomeActivityRevised extends BackboneActivity {
                     application.parseHealthFacilityThatAreInVaccEventButNotInHealthFac(hfidFoundInVaccEvOnlyAndNotInHealthFac);
                 }
 
+                application.parseItemLots();
                 application.parseStock();
 
                 //Starting the service to upload all postman data
@@ -768,6 +769,7 @@ public class HomeActivityRevised extends BackboneActivity {
                 application.parseHealthFacilityThatAreInVaccEventButNotInHealthFac(hfidFoundInVaccEvOnlyAndNotInHealthFac);
             }
 
+            application.parseItemLots();
             application.parseStock();
 
             SharedPreferences.Editor editor = sync_preferences.edit();
