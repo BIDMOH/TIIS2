@@ -49,6 +49,7 @@ import rx.functions.Func0;
 public class ChildDetailsActivity extends BackboneActivity implements BackHandledFragment.BackHandlerInterface {
     private static final String TAG = ChildDetailsActivity.class.getSimpleName();
     public static TextView toolbarTitle;
+    public static String childId = "";
     public static String age = "";
     public String handlerBarcode = "";
     public Toolbar toolbar;
@@ -113,6 +114,7 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
             appointmentId = extras.getString("appointmentId");
             isNewChild = extras.getBoolean("isNewChild", false);
             currentChild = (Child) getIntent().getSerializableExtra("myChild");
+            childId = currentChild.getId();
 
             Log.d("currentpage", "extras not null");
             if (value == null || value.equalsIgnoreCase("")) {

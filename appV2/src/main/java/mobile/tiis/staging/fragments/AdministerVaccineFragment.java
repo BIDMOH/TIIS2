@@ -63,12 +63,14 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func0;
 
+import static mobile.tiis.staging.ChildDetailsActivity.childId;
+
 /**
  * Created by issymac on 27/01/16.
  */
 public class AdministerVaccineFragment extends BackHandledFragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener{
     private static final String TAG = AdministerVaccineFragment.class.getSimpleName();
-    private String appointment_id, birthdate, barcode, childId;
+    private String appointment_id, birthdate, barcode;
     private BackboneApplication app;
     private DatabaseHandler dbh;
     private Boolean SavedState = false;

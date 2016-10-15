@@ -58,6 +58,8 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func0;
 
+import static mobile.tiis.staging.ChildDetailsActivity.childId;
+
 /**
  *  Created by issymac on 25/01/16.
  */
@@ -96,7 +98,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
 
     private List<Status> statusList;
 
-    private String childId, childRegistryYear;
+    private String  childRegistryYear;
 
     private ArrayList<ViewAppointmentRow> var;
 
@@ -475,7 +477,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
                 mCursor.close();
 
                 if (currentChild.getId() != null && !currentChild.getId().isEmpty()) {
-                    String child_id = currentChild.getId();
+                    childId = currentChild.getId();
 
                     DatabaseHandler this_database = app.getDatabaseInstance();
                     SQLHandler handler = new SQLHandler();
