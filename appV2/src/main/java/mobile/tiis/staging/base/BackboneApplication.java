@@ -2473,7 +2473,7 @@ public class BackboneApplication extends Application {
                 final String childId = childIds.get(i);
 
                 Log.d(TAG, "passing child " + childId);
-                Cursor c = databaseInstance.getReadableDatabase().rawQuery("SELECT * FROM " +POSTMAN+
+                Cursor c = getDatabaseInstance().getReadableDatabase().rawQuery("SELECT * FROM " +POSTMAN+
                         " WHERE "+ SQLHandler.PostmanColumns.URL+" LIKE '%"+databaseInstance.getChildById(childId).getBarcodeID()+"%'",null);
                 if(c.getCount()==0){
                     final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC).append("GetChildByIdV1?childId=").append(childId);
@@ -2513,6 +2513,7 @@ public class BackboneApplication extends Application {
                 }else{
                     Log.d(TAG,"postponing updates for a child in postman until the details are synchronized to the server");
                 }
+                c.close();
             }
         }catch (Exception e){
             e.printStackTrace();
