@@ -80,7 +80,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
 
     public Child currentChild;
 
-    private String hf_id, child_id, birthplacestr, villagestr, hfstr, statusstr, gender_val, birthdate_val;
+    private String hf_id, birthplacestr, villagestr, hfstr, statusstr, gender_val, birthdate_val;
 
     private ArrayList<String> gender, vvuStatusList, tt2StatusList, registryYearList;
 
@@ -481,7 +481,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
 
                     DatabaseHandler this_database = app.getDatabaseInstance();
                     SQLHandler handler = new SQLHandler();
-                    Cursor cursor = this_database.getReadableDatabase().rawQuery(handler.SQLVaccinations, new String[]{child_id, child_id});
+                    Cursor cursor = this_database.getReadableDatabase().rawQuery(handler.SQLVaccinations, new String[]{childId, childId});
 
                     if (cursor != null) {
                         if (cursor.moveToFirst()) {
@@ -641,10 +641,10 @@ public class ChildSummaryPagerFragment extends RxFragment {
 
 
         if (currentChild.getId() != null && !currentChild.getId().isEmpty()) {
-            child_id = currentChild.getId();
+            childId = currentChild.getId();
 
             Cursor cursor = null;
-            cursor = this_database.getReadableDatabase().rawQuery(handler.SQLVaccinations, new String[]{child_id, child_id});
+            cursor = this_database.getReadableDatabase().rawQuery(handler.SQLVaccinations, new String[]{childId, childId});
 
             if (cursor != null) {
                 if (cursor.moveToFirst()) {

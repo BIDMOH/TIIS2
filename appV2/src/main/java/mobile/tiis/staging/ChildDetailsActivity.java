@@ -114,7 +114,6 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
             appointmentId = extras.getString("appointmentId");
             isNewChild = extras.getBoolean("isNewChild", false);
             currentChild = (Child) getIntent().getSerializableExtra("myChild");
-            childId = currentChild.getId();
 
             Log.d("currentpage", "extras not null");
             if (value == null || value.equalsIgnoreCase("")) {

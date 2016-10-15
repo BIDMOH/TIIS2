@@ -798,6 +798,12 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
             administerVaccineSaveButtonClicked();
             if (SavedState) {
                 BackboneApplication application = (BackboneApplication) AdministerVaccineFragment.this.getActivity().getApplication();
+                try {
+                    application.broadcastChildUpdates(Integer.parseInt(childId));
+                }catch (NumberFormatException e){
+                    e.printStackTrace();
+                    application.broadcastChildUpdatesWithBarcodeId(barcode);
+                }
                 for (AdministerVaccinesModel a : arrayListAdminVacc) {
                     try {
                         DatabaseHandler db = application.getDatabaseInstance();
