@@ -663,7 +663,7 @@ public class BackboneApplication extends Application {
     public void parseStock() {
         if (LOGGED_IN_USER_HF_ID == null || LOGGED_IN_USER_HF_ID.equals("0")) return;
         final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, GET_STOCK);
-        Log.d("", webServiceUrl.toString());
+        Log.d("SOMA", "Parsing Stock Periodically : "+webServiceUrl.toString());
 
         client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
         RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
