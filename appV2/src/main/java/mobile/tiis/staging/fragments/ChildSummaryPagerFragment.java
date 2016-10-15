@@ -375,6 +375,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
                 if (mCursor.getCount() > 0) {
                     mCursor.moveToFirst();
                     currentChild = getChildFromCursror(mCursor);
+                    childId = currentChild.getId();
                 }
                 mCursor.close();
                 placeList = mydb.getAllPlaces();
@@ -456,7 +457,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
             public Observable<Boolean> call() {
                 // Do some long running operation
                 Cursor mCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",
-                        new String[]{String.valueOf(value)});
+                        new String[]{String.valueOf(childId)});
                 if (mCursor.getCount() > 0) {
                     Log.d("delay","updating appointment table with child id = "+value);
                     mCursor.moveToFirst();

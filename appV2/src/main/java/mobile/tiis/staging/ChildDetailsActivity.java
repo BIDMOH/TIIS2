@@ -139,7 +139,7 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
                             if (getChildIdCursor != null && getChildIdCursor.getCount() > 0) {
                                 getChildIdCursor.moveToFirst();
                                 currentChild = getChildFromCursror(getChildIdCursor);
-
+                                childId = currentChild.getId();
                                 try{
                                     Integer.parseInt(currentChild.getId());
                                 }catch (NumberFormatException e){
@@ -227,6 +227,7 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
                             cursor.moveToFirst();
                             currentChild = getChildFromCursror(cursor);
                             try{
+                                childId=currentChild.getId();
                                 Integer.parseInt(currentChild.getId());
                             }catch (NumberFormatException e){
                                 e.printStackTrace();
