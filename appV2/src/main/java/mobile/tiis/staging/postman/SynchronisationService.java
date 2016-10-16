@@ -156,6 +156,18 @@ public class SynchronisationService extends IntentService {
 
                                 //TODO create a custome method for broadcasting child updates to only this specific device and not all other devices with this  child's data
                                 app.broadcastChildUpdatesWithBarcodeId(barcode);
+
+                                boolean res1 = false;
+                                do {
+                                    try {
+                                        Thread.sleep(10000);
+                                        res1 = db.deletePostFromPostman(p.getPostId());
+                                        Log.d("POSTMAN COMPLETE","url = "+p.getUrl());
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }while(!res1);
+
                             }
                         }
                     } catch (IOException e) {
