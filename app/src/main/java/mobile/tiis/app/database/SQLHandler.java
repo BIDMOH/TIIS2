@@ -25,7 +25,7 @@ public class SQLHandler {
 
 
     public static final String SQLScheduledVaccinationTable =
-            "CREATE TABLE " + Tables.SCHEDULED_VACCINATION + " ("
+            "CREATE TABLE IF NOT EXISTS " + Tables.SCHEDULED_VACCINATION + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
                     + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
@@ -37,7 +37,7 @@ public class SQLHandler {
                     + GIISContract.ScheduledVaccinationColumns.ENTRY_DATE + " DATE,"
                     + GIISContract.ScheduledVaccinationColumns.EXIT_DATE + " DATE);";
     public static final String SQLDoseTable =
-            "CREATE TABLE " + Tables.DOSE + " ("
+            "CREATE TABLE IF NOT EXISTS " + Tables.DOSE + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
                     + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
@@ -52,7 +52,7 @@ public class SQLHandler {
                     + GIISContract.DoseColumns.TO_AGE_DEFINITON_ID + " TEXT);";
 
     public static final String SQLVaccinationAppointmentTable =
-            "CREATE TABLE " + Tables.VACCINATION_APPOINTMENT + " ("
+            "CREATE TABLE IF NOT EXISTS " + Tables.VACCINATION_APPOINTMENT + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
                     + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
@@ -70,7 +70,7 @@ public class SQLHandler {
                     + GIISContract.VaccinationAppointmentColumns.OUTREACH + " TEXT);";
 
     public static final String SQLVaccinationEventTable =
-            "CREATE TABLE " + Tables.VACCINATION_EVENT + " ("
+            "CREATE TABLE IF NOT EXISTS " + Tables.VACCINATION_EVENT + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
                     + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
@@ -90,7 +90,7 @@ public class SQLHandler {
                     + GIISContract.VaccinationEventColumns.MODIFIED_BY + " TEXT,"
                     + GIISContract.VaccinationEventColumns.NOTES + " TEXT);";
     public static final String SQLWeightTable =
-            "CREATE TABLE " + Tables.WEIGHT + " ("
+            "CREATE TABLE IF NOT EXISTS " + Tables.WEIGHT + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
                     + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
@@ -108,7 +108,7 @@ public class SQLHandler {
                     + GIISContract.WeightColumns.SD4 + " TEXT,"
                     + GIISContract.WeightColumns.GENDER + " TEXT);";
     public static final String SQLChildSupplements =
-            "CREATE TABLE " + Tables.CHILD_SUPPLEMENTS + " ("
+            "CREATE TABLE IF NOT EXISTS " + Tables.CHILD_SUPPLEMENTS + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + GIISContract.ChildSupplementsColumns.ID + " INTEGER,"
                     + GIISContract.ChildSupplementsColumns.CHILD_ID + " TEXT,"
@@ -118,7 +118,7 @@ public class SQLHandler {
                     + GIISContract.ChildSupplementsColumns.MODIFIED_ON + " DATE, "
                     + GIISContract.VaccinationEventColumns.MODIFIED_BY + " TEXT);";
     public static final String SQLItemLot =
-            "CREATE TABLE " + Tables.ITEM_LOT + " ("
+            "CREATE TABLE IF NOT EXISTS " + Tables.ITEM_LOT + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + GIISContract.ItemLotColumns.ID + " INTEGER,"
                     + GIISContract.ItemLotColumns.GTIN + " TEXT,"
@@ -127,7 +127,7 @@ public class SQLHandler {
                     + GIISContract.ItemLotColumns.ITEM_ID + " INTEGER NOT NULL,"
                     + GIISContract.ItemLotColumns.EXPIRE_DATE + " DATE); ";
     public static final String SQLHealthFacilityBalance =
-            "CREATE TABLE " + Tables.HEALTH_FACILITY_BALANCE + " ("
+            "CREATE TABLE IF NOT EXISTS " + Tables.HEALTH_FACILITY_BALANCE + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + GIISContract.HealthFacilityBalanceColumns.LOT_ID + " TEXT,"
                     + GIISContract.HealthFacilityBalanceColumns.GTIN + " TEXT,"
@@ -139,7 +139,7 @@ public class SQLHandler {
                     + HealthFacilityBalanceColumns.LOT_ISACTIVE + " TEXT,"
                     + GIISContract.HealthFacilityBalanceColumns.REORDER_QTY + " INTEGER); ";
     public static final String SQLUIValuesTable =
-            "CREATE TABLE " + Tables.UIVALUES + " ("
+            "CREATE TABLE IF NOT EXISTS " + Tables.UIVALUES + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + UIValuesColumns.LANGUAGE_ID + " INTEGER NOT NULL,"
                     + UIValuesColumns.CODE + " TEXT NOT NULL,"
@@ -413,24 +413,24 @@ public class SQLHandler {
                     " JOIN DOSE ON v.DOSE_ID = DOSE.ID  JOIN AGE_DEFINITIONS a ON DOSE.AGE_DEFINITON_ID = a.ID" +
                     " WHERE c.STATUS_ID = 1 AND  v.IS_ACTIVE = 'true' AND v.VACCINATION_STATUS = 'false' AND  (v.NONVACCINATION_REASON_ID=0  OR v.NONVACCINATION_REASON_ID in (Select ID from nonvaccination_reason where KEEP_CHILD_DUE = 'true'));";
     public static final String SQLVaccinationQueueTable =
-            "CREATE TABLE " + Tables.VACCINATION_QUEUE + " ("
+            "CREATE TABLE IF NOT EXISTS " + Tables.VACCINATION_QUEUE + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + VaccinationQueueColumns.CHILD_ID + " TEXT,"
                     + VaccinationQueueColumns.DATE + " TEXT);";
     public static final String SQLBirthplaceTable =
-            "CREATE TABLE " + Tables.BIRTHPLACE + " ("
+            "CREATE TABLE IF NOT EXISTS " + Tables.BIRTHPLACE + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + PlaceColumns.ID + " TEXT,"
                     + PlaceColumns.NAME + " TEXT);";
     public static final String SQLAdjustmentTable =
-            "CREATE TABLE " + Tables.ADJUSTMENT_REASONS + " ("
+            "CREATE TABLE IF NOT EXISTS " + Tables.ADJUSTMENT_REASONS + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + AdjustmentColumns.ID + " TEXT,"
                     + AdjustmentColumns.NAME + " TEXT,"
                     + AdjustmentColumns.POSITIVE + " TEXT,"
                     + AdjustmentColumns.IS_ACTIVE + " TEXT);";
         public static final String SQLConfigTable =
-                "CREATE TABLE " + Tables.CONFIG + " ("
+                "CREATE TABLE IF NOT EXISTS " + Tables.CONFIG + " ("
                         + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                         + ConfigColumns.NAME + " TEXT,"
                         + ConfigColumns.VALUE + " TEXT);";
@@ -464,14 +464,14 @@ public class SQLHandler {
                     "GROUP BY APPOINTMENT_ID " +
                     "ORDER BY SCHEDULED_DATE";
     public static final String SQLPostmanTable =
-            "CREATE TABLE " + Tables.POSTMAN + " ("
+            "CREATE TABLE IF NOT EXISTS " + Tables.POSTMAN + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + PostmanColumns.URL + " TEXT,"
                     + PostmanColumns.RESPONSE_TYPE_ID + " INTEGER,"
                     + PostmanColumns.TEMPORARY_ID + " TEXT,"
                     + " FOREIGN KEY ("+PostmanColumns.RESPONSE_TYPE_ID+") REFERENCES "+Tables.RESPONSE_TYPE+" ("+BaseColumns._ID+"));";
     public static final String SQLResponseTypeTable =
-            "CREATE TABLE " + Tables.RESPONSE_TYPE + " ("
+            "CREATE TABLE IF NOT EXISTS " + Tables.RESPONSE_TYPE + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + ResponseTypeColumns.RESPONSE_DESCRIPTION + " TEXT )";
     public static final String SQLFillResponseTypeTable = "INSERT INTO '" + Tables.RESPONSE_TYPE + "' " +
@@ -479,11 +479,11 @@ public class SQLHandler {
             " UNION SELECT '2', 'something has to be done' " +
             " UNION SELECT '3', 'Registration call that returns ID of child and that needs to replace the temporary id' ";
     public static final String ApplicationStateTable =
-            "CREATE TABLE " + Tables.APP_STATE + " ("
+            "CREATE TABLE IF NOT EXISTS " + Tables.APP_STATE + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + "main_sync_needed" + " INTEGER NOT NULL);";
     public static final String SQLHealthFacilityTable =
-            "CREATE TABLE " + Tables.HEALTH_FACILITY + " ("
+            "CREATE TABLE IF NOT EXISTS " + Tables.HEALTH_FACILITY + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
                     + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
@@ -494,7 +494,7 @@ public class SQLHandler {
                     + GIISContract.HealthFacilityColumns.PARENT_ID + " TEXT,"
                     + GIISContract.HealthFacilityColumns.MODIFIED_ON + " DATETIME);";
     public static final String SQLPlaceTable =
-            "CREATE TABLE " + Tables.PLACE + " ("
+            "CREATE TABLE IF NOT EXISTS " + Tables.PLACE + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
                     + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
@@ -506,7 +506,7 @@ public class SQLHandler {
                     + GIISContract.PlaceColumns.MODIFIED_ON + " DATETIME, "
                     + GIISContract.PlaceColumns.HEALTH_FACILITY_ID + " TEXT);";
     public static final String SQLUserTable =
-            "CREATE TABLE " + Tables.USER + " ("
+            "CREATE TABLE IF NOT EXISTS " + Tables.USER + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
                     + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
@@ -525,7 +525,7 @@ public class SQLHandler {
                     + GIISContract.UserColumns.USER_ROLE_ID + " TEXT,"
                     + GIISContract.UserColumns.HEALTH_FACILITY_ID + " TEXT);";
     public static final String SQLChildTable =
-            "CREATE TABLE " + Tables.CHILD + " ("
+            "CREATE TABLE IF NOT EXISTS " + Tables.CHILD + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
                     + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
@@ -558,7 +558,7 @@ public class SQLHandler {
                     + GIISContract.ChildColumns.STATUS_ID + " TEXT,"
                     + GIISContract.ChildColumns.HEALTH_FACILITY_ID + " TEXT);";
     public static final String SQLStatusTable =
-            "CREATE TABLE " + Tables.STATUS + " ("
+            "CREATE TABLE IF NOT EXISTS " + Tables.STATUS + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
                     + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
@@ -568,7 +568,7 @@ public class SQLHandler {
                     + GIISContract.StatusColumns.PARENT_ID + " TEXT,"
                     + GIISContract.StatusColumns.NAME + " TEXT);";
     public static final String SQLCommunityTable =
-            "CREATE TABLE " + Tables.COMMUNITY + " ("
+            "CREATE TABLE IF NOT EXISTS " + Tables.COMMUNITY + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
                     + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
@@ -576,7 +576,7 @@ public class SQLHandler {
                     + GIISContract.CommunityColumns.ID + " TEXT,"
                     + GIISContract.CommunityColumns.NAME + " TEXT);";
     public static final String SQLChildWeightTable =
-            "CREATE TABLE " + Tables.CHILD_WEIGHT + " ("
+            "CREATE TABLE IF NOT EXISTS " + Tables.CHILD_WEIGHT + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
                     + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
@@ -590,7 +590,7 @@ public class SQLHandler {
                     + GIISContract.ChildWeightColumns.MODIFIED_ON + " DATETIME, "
                     + GIISContract.ChildWeightColumns.MODIFIED_BY + " TEXT);";
     public static final String SQLNonvaccinationReasonTable =
-            "CREATE TABLE " + Tables.NONVACCINATION_REASON + " ("
+            "CREATE TABLE IF NOT EXISTS " + Tables.NONVACCINATION_REASON + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
                     + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
@@ -599,7 +599,7 @@ public class SQLHandler {
                     + GIISContract.NonVaccinationReasonColumns.ID + " TEXT,"
                     + GIISContract.NonVaccinationReasonColumns.NAME + " TEXT);";
     public static final String SQLAgeDefinitionsTable =
-            "CREATE TABLE " + Tables.AGE_DEFINITIONS + " ("
+            "CREATE TABLE IF NOT EXISTS " + Tables.AGE_DEFINITIONS + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
                     + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
@@ -609,7 +609,7 @@ public class SQLHandler {
                     + GIISContract.AgeDefinitionsColumns.NAME + " TEXT,"
                     + GIISContract.AgeDefinitionsColumns.DAYS + " TEXT);";
     public static final String SQLItemTable =
-            "CREATE TABLE " + Tables.ITEM + " ("
+            "CREATE TABLE IF NOT EXISTS  " + Tables.ITEM + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
                     + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
@@ -801,8 +801,16 @@ public class SQLHandler {
         String OUTREACH = "OUTREACH";
     }
 
+    public static final String SQLChildUpdatesQueueTable =
+            "CREATE TABLE IF NOT EXISTS " + Tables.CHILD_UPDATES_QUEUE + " ("
+                    + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + ChildUpdatesQueueColumns.CHILD_ID + " TEXT NOT NULL UNIQUE,"
+                    + ChildUpdatesQueueColumns.RESPONSE_TYPE_ID + " INTEGER,"
+                    + " FOREIGN KEY ("+ChildUpdatesQueueColumns.RESPONSE_TYPE_ID+") REFERENCES "+Tables.RESPONSE_TYPE+" ("+BaseColumns._ID+"));";
+
+
 //    public static final String SQLScheduledVaccinationTable =
-//            "CREATE TABLE " + Tables.SCHEDULED_VACCINATION + " ("
+//            "CREATE TABLE IF NOT EXISTS " + Tables.SCHEDULED_VACCINATION + " ("
 //                    + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
 //                    + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
 //                    + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
@@ -872,6 +880,11 @@ public class SQLHandler {
 
     }
 
+    public interface ChildUpdatesQueueColumns {
+        String CHILD_ID = "CHILD_ID";
+        String RESPONSE_TYPE_ID = "response_type_id";
+    }
+
     public interface ItemLotColumns {
         String GTIN = "gtin";
         String LOT_NUMBER = "lot_number";
@@ -904,6 +917,7 @@ public class SQLHandler {
     public interface Tables {
         String APP_STATE = "app_state";
         String HEALTH_FACILITY = "health_facility";
+        String CHILD_UPDATES_QUEUE = "child_updates_queue";
         String PLACE = "place";
         String USER = "user";
         String CHILD = "child";

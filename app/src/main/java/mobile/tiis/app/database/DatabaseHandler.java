@@ -78,7 +78,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String TAG = "DatabaseHandler";
 
     private static final String DATABASE_NAME = "giis_mobile.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     public static boolean dbPreinstalled = false;
 
     public DatabaseHandler(Context context) {
@@ -180,38 +180,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
                 + newVersion + ", which will destroy all old data");
-        // TODO remove this when we want to use Upgrade database and also test how the upgrade
-        // TODO function affects the case where the device will hav a DB preinstalled before even installing the app
-        if (!dbPreinstalled) {
-            // KILL PREVIOUS TABLES IF UPGRADED
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.HEALTH_FACILITY);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.PLACE);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.ADJUSTMENT_REASONS);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.USER);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.CHILD);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.STATUS);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.COMMUNITY);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.CHILD_WEIGHT);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.NONVACCINATION_REASON);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.AGE_DEFINITIONS);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.ITEM);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.SCHEDULED_VACCINATION);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.DOSE);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.VACCINATION_APPOINTMENT);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.VACCINATION_EVENT);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.VACCINATION_QUEUE);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.POSTMAN);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.RESPONSE_TYPE);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.CHILD_SUPPLEMENTS);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.ITEM_LOT);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.HEALTH_FACILITY_BALANCE);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.BIRTHPLACE);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.CONFIG);
-            db.execSQL("DROP VIEW IF EXISTS " + SQLHandler.Views.MONTHLY_PLAN);
 
-            // CREATE NEW INSTANCE OF SCHEMA
-            onCreate(db);
-        }
+        db.execSQL(SQLHandler.SQLChildUpdatesQueueTable);
     }
 
     public void insert(ContentValues cv, String object) {
@@ -3728,5 +3698,62 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return listAdjustmentReasons;
     }
 
+    public boolean removeChildFromChildUpdateQueue(String childId) {
+        SQLiteDatabase sd = getWritableDatabase();
+        String[] whereArgs = new String[]{String.valueOf(childId)};
+        int result = sd.delete(Tables.CHILD_UPDATES_QUEUE, SQLHandler.ChildUpdatesQueueColumns.CHILD_ID
+                + "= ? ", whereArgs);
+
+        return (result > 0);
+    }
+
+    /**
+     * This method select all child id from the childupdates queue to be used to pull child updates uponreceiving a push tickle message
+     *
+     * @return List<ChildIds>
+     */
+    public List<String> getChildIdsFromChildUpdatesQueue() {
+        String selectQuery = "SELECT CHILD_ID FROM " + Tables.CHILD_UPDATES_QUEUE;
+        List<String> childIds = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        int size = cursor.getCount();
+
+        for(int i=0;i<size;i++) {
+            cursor.moveToPosition(i);
+            childIds.add(cursor.getString(0));
+
+        }
+        cursor.close();
+        return childIds;
+    }
+
+    /**
+     * This method adds a child id to the childupdates queue to be used to pull child updates incase of network failure
+     *
+     * @param childId            the url to be posted later
+     * @param responseTypeId the response type id
+     * @return
+     */
+    public long addChildToChildUpdatesQueue(String childId, int responseTypeId) {
+        // RETRIEVE WRITEABLE DATABASE AND INSERT
+        SQLiteDatabase sd = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(SQLHandler.ChildUpdatesQueueColumns.CHILD_ID, childId);
+        cv.put(SQLHandler.ChildUpdatesQueueColumns.RESPONSE_TYPE_ID, responseTypeId);
+        long result = -1;
+        sd.beginTransaction();
+        try {
+            result = sd.insert(Tables.CHILD_UPDATES_QUEUE, null, cv);
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+    }
 
 }

@@ -33,14 +33,15 @@ import mobile.tiis.app.helpers.Utils;
  * Created by Rubin on 3/18/2015.
  */
 public class RoutineAlarmReceiver extends WakefulBroadcastReceiver {
-    // The app's AlarmManager, which provides access to the system alarm services.
+    // The staging's AlarmManager, which provides access to the system alarm services.
     private static AlarmManager alarmMgr;
     // The pending intent that is triggered when the alarm fires.
     private static PendingIntent alarmIntent, checkForChangesInChildPI , weeklyUpdateBaseTables;
+    private static Intent postmanService;
 
     /**
      * Sets a repeating alarm that runs once every 5 minutes When the
-     * alarm fires, the app broadcasts an Intent to this WakefulBroadcastReceiver.
+     * alarm fires, the staging broadcasts an Intent to this WakefulBroadcastReceiver.
      *
      * @param context
      */
@@ -50,7 +51,7 @@ public class RoutineAlarmReceiver extends WakefulBroadcastReceiver {
         Intent intent = new Intent(context, RoutineAlarmReceiver.class);
         intent.putExtra("setPostmanAlarm", true);
         alarmIntent = PendingIntent.getBroadcast(context, 111, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + 30000, 120000, alarmIntent);
+        alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + 30000, 30000, alarmIntent);
     }
 
     // BEGIN_INCLUDE(set_alarm)
@@ -98,7 +99,7 @@ public class RoutineAlarmReceiver extends WakefulBroadcastReceiver {
             if (Utils.isOnline(context)) {
                 Log.d("WOWHITS", "Broadcast Received Syncronization of the service starts.........");
                 Intent i = new Intent(context, SynchronisationService.class);
-                startWakefulService(context, i);
+                context.startService(i);
             }
         }
 

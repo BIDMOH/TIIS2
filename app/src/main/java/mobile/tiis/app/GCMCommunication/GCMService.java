@@ -28,20 +28,20 @@ import mobile.tiis.app.base.BackboneApplication;
 
 public class GCMService extends GCMBaseIntentService {
     private String tone;
-    static final public String SynchronisationService_RESULT = "mobile,giis.app.CheckForChangesSynchronisationService.REQUEST_PROCESSED";
-    static final public String SynchronisationService_MESSAGE = "mobile,giis.app.CheckForChangesSynchronisationService..MSG";
+    static final public String SynchronisationService_RESULT = "mobile,giis.staging.CheckForChangesSynchronisationService.REQUEST_PROCESSED";
+    static final public String SynchronisationService_MESSAGE = "mobile,giis.staging.CheckForChangesSynchronisationService..MSG";
 
 
     private static final String TAG = "GCMService";
-	public GCMService() {
+    public GCMService() {
         super(CommonUtilities.SENDER_ID);
         this.tone="";
-	}
-	
-	@Override
-	protected void onRegistered(Context context, String regId) {
-		Log.d(TAG, "Sending Registration Id to TIIS server = "+regId);
-	}
+    }
+
+    @Override
+    protected void onRegistered(Context context, String regId) {
+        Log.d(TAG, "Sending Registration Id to TIIS server = "+regId);
+    }
     private static int getAppVersion(Context context) {
         try {
             PackageInfo packageInfo = context.getPackageManager()
@@ -53,27 +53,28 @@ public class GCMService extends GCMBaseIntentService {
         }
     }
 
-	@Override
-	protected void onUnregistered(Context context, String regId) {
-		Log.d(TAG, "Device unregistered");
+    @Override
+    protected void onUnregistered(Context context, String regId) {
+        Log.d(TAG, "Device unregistered");
         ServerUtilities.unregister(context, regId);
-	}
+    }
 
-	@Override
-	protected void onMessage(Context context, Intent intent) {
+    @Override
+    protected void onMessage(Context context, Intent intent) {
         Log.d(TAG, "message received");
 
         BackboneApplication application = (BackboneApplication) getApplication();
         String childId = intent.getStringExtra("message");
+        application.getDatabaseInstance().addChildToChildUpdatesQueue(childId,3);
         synchronized (application) {
-            application.parseGCMChildById(childId);
+            application.parseGCMChildrenInQueueById();
         }
 
-        createNotification(context,"updates received");
+//        createNotification(context,"updates received");
         sendResult(childId,context);
 
 
-	}
+    }
 
     public void sendResult(String message,Context context) {
         try {
@@ -86,21 +87,21 @@ public class GCMService extends GCMBaseIntentService {
         }
     }
 
-	@Override
-	protected void onDeletedMessages(Context context, int total) {
-		Log.d(TAG, "Received deleted messages notification, count: " + total);
-	}
+    @Override
+    protected void onDeletedMessages(Context context, int total) {
+        Log.d(TAG, "Received deleted messages notification, count: " + total);
+    }
 
-	@Override
-	public void onError(Context context, String errorId) {
-		Log.d(TAG, "Received error: " + errorId);
-	}
+    @Override
+    public void onError(Context context, String errorId) {
+        Log.d(TAG, "Received error: " + errorId);
+    }
 
-	@Override
-	protected boolean onRecoverableError(Context context, String errorId) {
-		Log.d(TAG, "Received recoverable error: " + errorId);
-		return super.onRecoverableError(context, errorId);
-	}
+    @Override
+    protected boolean onRecoverableError(Context context, String errorId) {
+        Log.d(TAG, "Received recoverable error: " + errorId);
+        return super.onRecoverableError(context, errorId);
+    }
 
     /**
      * Issues a notification to inform the user that server has sent a message.

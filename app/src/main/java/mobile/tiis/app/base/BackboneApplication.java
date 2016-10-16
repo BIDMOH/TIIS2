@@ -108,12 +108,12 @@ public class BackboneApplication extends Application {
     /**
      * Testing WCF
      */
-//    public static final String WCF_URL = "https://ec2-54-187-21-117.us-west-2.compute.amazonaws.com/SVC/";
+    public static final String WCF_URL = "https://ec2-54-187-21-117.us-west-2.compute.amazonaws.com/SVC/";
 
     /**
      * Live WCF
      */
-    public static final String WCF_URL = "https://ec2-52-11-215-89.us-west-2.compute.amazonaws.com/SVC/";
+//    public static final String WCF_URL = "https://ec2-52-11-215-89.us-west-2.compute.amazonaws.com/SVC/";
 
     public static final String USER_MANAGEMENT_SVC = "UserManagement.svc/";
     public static final String PLACE_MANAGEMENT_SVC = "PlaceManagement.svc/";
@@ -416,6 +416,60 @@ public class BackboneApplication extends Application {
         });
 
 
+    }
+
+    public void parseGCMChildrenInQueueById() {
+        final List<String> childIds = databaseInstance.getChildIdsFromChildUpdatesQueue();
+        int size = childIds.size();
+
+        try {
+            client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+
+
+            Log.d(TAG, "child updates queue size  = " + size);
+            for (int i = 0; i < size; i++) {
+                final String childId = childIds.get(i);
+
+                Log.d(TAG, "passing child " + childId);
+
+                final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC).append("GetChildByIdV1?childId=").append(childId);
+                client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        parsedChildResults = 3;
+                    }
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, String response) {
+                        Log.d(TAG, "parseChildCollectorbyId = " + webServiceUrl.toString());
+                        ChildCollector childCollector = new ChildCollector();
+                        try {
+                            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                            ObjectMapper mapper = new ObjectMapper();
+                            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                            childCollector = mapper.readValue(new JSONArray(response).getJSONObject(0).toString(), ChildCollector.class);
+                            addChildVaccinationEventVaccinationAppointmentUnOptimisedForSmallAmountsOfData(childCollector);
+                            parsedChildResults = 1;
+                            databaseInstance.removeChildFromChildUpdateQueue(childId);
+                        } catch (JsonGenerationException e) {
+                            e.printStackTrace();
+                            parsedChildResults = 2;
+                        } catch (JsonMappingException e) {
+                            e.printStackTrace();
+                            parsedChildResults = 2;
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            parsedChildResults = 3;
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            parsedChildResults = 2;
+                        }
+                    }
+                });
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void parseBirthplace() {
