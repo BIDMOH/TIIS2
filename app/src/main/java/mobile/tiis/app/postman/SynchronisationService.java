@@ -155,7 +155,19 @@ public class SynchronisationService extends IntentService {
                                 //To fix such issues after deletion of a dublicate registration entry from the postman and the database it is important to synch that childs details from the server into the device
                                 //by using the child's barcode.
 
-                                //TODO create a custome method for broadcasting child updates to only this specific device and not all other devices with this  child's data
+
+                                boolean res1 = false;
+                                do {
+                                    try {
+                                        Thread.sleep(10000);
+                                        res1 = db.deletePostFromPostman(p.getPostId());
+                                        Log.d("POSTMAN COMPLETE","url = "+p.getUrl());
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }while(!res1);
+
+                                //TODO create a custom method for broadcasting child updates to only this specific device and not all other devices with this  child's data
                                 app.broadcastChildUpdatesWithBarcodeId(barcode);
                             }
                         }
