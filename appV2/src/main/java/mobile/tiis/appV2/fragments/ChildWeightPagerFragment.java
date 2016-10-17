@@ -35,6 +35,8 @@ import mobile.tiis.appv2.database.SQLHandler;
 import mobile.tiis.appv2.entity.Child;
 import mobile.tiis.appv2.helpers.Utils;
 
+import static mobile.tiis.appv2.ChildDetailsActivity.childId;
+
 /**
  * Created by issymac on 26/01/16.
  */
@@ -113,62 +115,13 @@ public class ChildWeightPagerFragment extends Fragment {
         metDOB.setText(ft.format(dNow));
         today = ft.format(dNow);
 
-        new AsyncTask<Void, Void, Void>(){
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-            }
-
-            @Override
-            protected Void doInBackground(Void... voids) {
-
-                childWeightCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child_weight WHERE CHILD_BARCODE=? " +
-                        " AND datetime(DATE, 'unixepoch') <= datetime('now')", new String[]{currentChild.getBarcodeID()});
-
-                dateAndWeight = mydb.getPreviousDateAndWeight(currentChild.getBarcodeID());
-
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                if (childWeightCursor.getCount() > 0) {
-                    isWeightSetForChild = true;
-                    childWeightCursor.moveToFirst();
-                    String weight = childWeightCursor.getString(childWeightCursor.getColumnIndex(SQLHandler.ChildWeightColumns.WEIGHT));;
-                    prevWeightValue.setText(weight);
-                    metWeightValue.setText(weight.split("\\.")[0]);
-                    metWeightDecimalValue.setText(weight.split("\\.")[1]);
-                } else {
-                    if (app.getAdministerVaccineHidden()) {
-//                    modify.setVisibility(View.GONE);
-//                    supplements.setVisibility(View.GONE);
-                    }
-
-                }
-
-
-                if(dateAndWeight!=null){
-                    SimpleDateFormat myFormat = new SimpleDateFormat("dd-MMM-yyyy");
-                    Date date = new Date(Long.parseLong(dateAndWeight.get("Date"))*1000);
-                    String previousDate = myFormat.format(date);
-                    prevWeightDate.setText(previousDate);
-                    prevWeightValue.setText(dateAndWeight.get("Weight"));
-                }
-                else{
-
-                    lnPreviousDateAndWeight.setVisibility(View.GONE);
-                }
-
-
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
+        updateChildsWeight();
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                currentChild = mydb.getChildById(childId);
+
                 if (Utils.isStringBlank((metWeightValue.getText().toString())) || metWeightValue.getText().toString().substring(0, 1).equals("0")) {
 
                     String message = getString(R.string.weight_not_correct);
@@ -356,6 +309,28 @@ public class ChildWeightPagerFragment extends Fragment {
         });
 
         return v;
+    }
+
+    public void updateChildsWeight(){
+        Log.e("delay","updating weight called");
+
+        if(currentChild.getBarcodeID().isEmpty()) {
+            currentChild = mydb.getChildById(childId);
+            prevWeightValue.setText("");
+            metWeightValue.setText("");
+            metWeightDecimalValue.setText("");
+            isWeightSetForChild = false;
+            if (dateAndWeight != null) {
+                SimpleDateFormat myFormat = new SimpleDateFormat("dd-MMM-yyyy");
+                Date date = new Date(Long.parseLong(dateAndWeight.get("Date")) * 1000);
+                String previousDate = myFormat.format(date);
+                prevWeightDate.setText(previousDate);
+                prevWeightValue.setText(dateAndWeight.get("Weight"));
+            } else {
+                lnPreviousDateAndWeight.setVisibility(View.GONE);
+            }
+        }
+
     }
 
     public void showWarningDialogue(String message, String str){
@@ -552,5 +527,7 @@ public class ChildWeightPagerFragment extends Fragment {
         dialog.show();
 
     }
+
+
 
 }

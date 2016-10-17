@@ -450,6 +450,7 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
 
                 if (checkDataIntegrityBeforeSave()) {
                     if (mydb.isBarcodeInChildTable(etbarcode.getText().toString())) {
+                        //TODO Check if barcode has been used somewhere else in another facility
                         progressDialog.dismiss();
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(RegisterChildFragment.this.getActivity())
                                 .setTitle(getString(R.string.same_barcode))

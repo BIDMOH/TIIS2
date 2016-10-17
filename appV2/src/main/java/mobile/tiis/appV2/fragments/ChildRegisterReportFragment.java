@@ -60,6 +60,7 @@ public class ChildRegisterReportFragment extends RxFragment{
         f.setArguments(b);
         return f;
     }
+    private View loader;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         final ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_child_register, null);
@@ -78,7 +79,7 @@ public class ChildRegisterReportFragment extends RxFragment{
 
         metStartChildCumulativeRegNo = (MaterialEditText) root.findViewById(R.id.from_registration_number);
         metEndChildCumulativeRegNo = (MaterialEditText) root.findViewById(R.id.to_registration_number);
-
+        loader = root.findViewById(R.id.avi);
 
         metStartChildCumulativeRegNo.addTextChangedListener(new TextWatcher() {
             @Override
@@ -225,6 +226,7 @@ public class ChildRegisterReportFragment extends RxFragment{
     }
 
     private void backgroundTasks(final String fromDate,final String toDatee,final String startNo,final String endNo){
+        loader.setVisibility(View.VISIBLE);
         Observable.defer(new Func0<Observable<ArrayList<ViewChildRegisterInfoRow>>>() {
             @Override
             public Observable<ArrayList<ViewChildRegisterInfoRow>> call() {
@@ -433,9 +435,10 @@ public class ChildRegisterReportFragment extends RxFragment{
                             mVar.add(row);
 
                         } while (cursor.moveToNext());
+
+                        adapter = new ChildRegisterReportRecyclerAdapter(mVar,getActivity());
                     }
                     cursor.close();
-                    adapter = new ChildRegisterReportRecyclerAdapter(mVar,getActivity());
                 }
                 return Observable.just(mVar);
             }
@@ -448,6 +451,7 @@ public class ChildRegisterReportFragment extends RxFragment{
                     public void onCompleted() {
                         childRegisterListView   .setVisibility(View.VISIBLE);
                         childRegisterListView.setAdapter(adapter);
+                        loader.setVisibility(View.GONE);
                     }
 
                     @Override

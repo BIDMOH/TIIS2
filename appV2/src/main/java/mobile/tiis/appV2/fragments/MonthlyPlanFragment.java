@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.util.Log;
@@ -54,11 +55,12 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func0;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by issymac on 16/12/15.
  */
-public class MonthlyPlanFragment extends RxFragment {
+public class MonthlyPlanFragment extends Fragment {
     private static final String TAG = MonthlyPlanFragment.class.getSimpleName();
     private List<String> ages;
 
@@ -509,11 +511,8 @@ public class MonthlyPlanFragment extends RxFragment {
                 }
                 return Observable.just(mVar);
             }
-        })// Run on a background thread
-                .subscribeOn(AndroidSchedulers.from(backgroundLooper))
-                // Be notified on the main thread
+        }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(bindToLifecycle())
                 .subscribe(new Subscriber<Object>() {
                     @Override
                     public void onCompleted() {

@@ -1,5 +1,6 @@
 package mobile.tiis.appv2;
 
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,7 +8,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v7.app.ActionBar;
@@ -16,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -44,6 +48,7 @@ import rx.functions.Func0;
 public class ChildDetailsActivity extends BackboneActivity implements BackHandledFragment.BackHandlerInterface {
     private static final String TAG = ChildDetailsActivity.class.getSimpleName();
     public static TextView toolbarTitle;
+    public static String childId = "";
     public static String age = "";
     public String handlerBarcode = "";
     public Toolbar toolbar;
@@ -133,7 +138,7 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
                             if (getChildIdCursor != null && getChildIdCursor.getCount() > 0) {
                                 getChildIdCursor.moveToFirst();
                                 currentChild = getChildFromCursror(getChildIdCursor);
-
+                                childId = currentChild.getId();
                                 try{
                                     Integer.parseInt(currentChild.getId());
                                 }catch (NumberFormatException e){
@@ -170,10 +175,12 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
                                     if (currentChild.getHealthcenterId().equals(app.getLOGGED_IN_USER_HF_ID())) {
                                         Log.d("currentpage", "equal");
                                         try {
-                                            if (currentChild.getChildCumulativeSn().equals("") || currentChild.getChildRegistryYear().equals("") || currentChild.getMotherHivStatus().equals("") || currentChild.getMotherTT2Status().equals("")) {
+                                            if (currentChild.getMotherHivStatus().equals("") || currentChild.getMotherTT2Status().equals("")) {
                                                 enableViewPagerPaging(false);
                                                 Log.d("currentpage", "disabling viewpager");
-                                                Toast.makeText(ChildDetailsActivity.this, "Please edit and fill all relevant fields before continuing", Toast.LENGTH_LONG).show();
+                                                FlashDialogue flashDialogue = new FlashDialogue();
+                                                flashDialogue.execute();
+//                                                Toast.makeText(ChildDetailsActivity.this, "Please edit and fill all relevant fields before continuing", Toast.LENGTH_LONG).show();
                                             } else {
                                                 Log.d("currentpage", "all is well");
                                             }
@@ -182,7 +189,9 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
                                             Log.d(TAG, "disabling viewpager due to null pointer exception");
                                             pager.setPagingEnabled(false);
                                             tabs.setDisabled(true);
-                                            Toast.makeText(ChildDetailsActivity.this, "Please edit and fill all relevant fields before continuing", Toast.LENGTH_LONG).show();
+                                            FlashDialogue flashDialogue = new FlashDialogue();
+                                            flashDialogue.execute();
+//                                            Toast.makeText(ChildDetailsActivity.this, "Please edit and fill all relevant fields before continuing", Toast.LENGTH_LONG).show();
                                         }
                                     }
                                 }
@@ -217,6 +226,7 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
                             cursor.moveToFirst();
                             currentChild = getChildFromCursror(cursor);
                             try{
+                                childId=currentChild.getId();
                                 Integer.parseInt(currentChild.getId());
                             }catch (NumberFormatException e){
                                 e.printStackTrace();
@@ -245,10 +255,12 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
                                     Log.d("currentpage", "equal");
                                     try {
                                         if (!isNewChild) {
-                                            if (currentChild.getChildCumulativeSn().equals("") || currentChild.getChildRegistryYear().equals("") || currentChild.getMotherHivStatus().equals("") || currentChild.getMotherTT2Status().equals("")) {
+                                            if (currentChild.getMotherHivStatus().equals("") || currentChild.getMotherTT2Status().equals("")) {
                                                 enableViewPagerPaging(false);
                                                 Log.d("currentpage", "disabling viewpager");
-                                                Toast.makeText(ChildDetailsActivity.this, "Please edit and fill all relevant fields before continuing", Toast.LENGTH_LONG).show();
+                                                FlashDialogue flashDialogue = new FlashDialogue();
+                                                flashDialogue.execute();
+//                                                Toast.makeText(ChildDetailsActivity.this, "Please edit and fill all relevant fields before continuing", Toast.LENGTH_LONG).show();
                                             } else {
                                                 Log.d("currentpage", "all is well");
                                             }
@@ -258,7 +270,9 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
                                         Log.d(TAG, "disabling viewpager due to null pointer exception");
                                         pager.setPagingEnabled(false);
                                         tabs.setDisabled(true);
-                                        Toast.makeText(ChildDetailsActivity.this, "Please edit and fill all relevant fields before continuing", Toast.LENGTH_LONG).show();
+                                        FlashDialogue flashDialogue = new FlashDialogue();
+                                        flashDialogue.execute();
+//                                        Toast.makeText(ChildDetailsActivity.this, "Please edit and fill all relevant fields before continuing", Toast.LENGTH_LONG).show();
                                     }
                                 }
                             }
@@ -457,6 +471,40 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
     public void updateadapters(){
         Log.d(TAG,"notifying the adapter that the dataset has changed");
         adapter.notifyDataSetChanged();
+    }
+
+    class FlashDialogue extends AsyncTask<Void,Void,Void> {
+
+        Dialog dialog = new Dialog(ChildDetailsActivity.this);
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            View view = View.inflate(ChildDetailsActivity.this, R.layout.custom_info_dialogue, null);
+            TextView info = (TextView) view.findViewById(R.id.inform);
+            info.setTypeface(HomeActivityRevised.Rosario_Regular);
+            dialog.setContentView(view);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            dialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            dialog.hide();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 
 }

@@ -44,17 +44,19 @@ import mobile.tiis.appv2.SubClassed.mBarDataSet;
 import mobile.tiis.appv2.base.BackboneApplication;
 import mobile.tiis.appv2.database.DatabaseHandler;
 import mobile.tiis.appv2.database.SQLHandler;
+import mobile.tiis.appv2.entity.Child;
 import mobile.tiis.appv2.entity.HealthFacility;
 import mobile.tiis.appv2.entity.Stock;
 import mobile.tiis.appv2.helpers.Utils;
 import mobile.tiis.appv2.util.MyMarkerView;
+
 
 /**
  *  Created by issymac on 26/01/16.
  */
 
 public class HomeFragment extends android.support.v4.app.Fragment implements View.OnClickListener, ChildSynchronizationListener{
-
+    private static final String TAG = HomeFragment.class.getSimpleName();
     protected BarChart mChart;
     protected ArrayList<BarEntry> entries;
     protected ArrayList<String> labels;
@@ -350,180 +352,46 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
         Log.d("PATH", "And This : "+barcode+" is the barcode");
 
         if (barcodeCheck(barcode)) {
-            Log.d("PATH", "Passed the barcode Check");
+            Log.d(TAG, "Passed the barcode Check");
             handleBarcode = barcode;
             final BackboneApplication app = (BackboneApplication) HomeFragment.this.getActivity().getApplication();
+            Intent childDetailsActivity = new Intent(getContext(), ChildDetailsActivity.class);
+            childDetailsActivity.putExtra("barcode", barcode);
 
-//                    ChildDetailsFragment childDetailsFragment = new ChildDetailsFragment();
-//                    Bundle args = new Bundle();
-//                    args.putString("barcode", barcode);
-//                    childDetailsFragment.setArguments(args);
+            //check database for current barcode
+            DatabaseHandler mydb = app.getDatabaseInstance();
+            Child c = mydb.getChildByBarcode(barcode);
 
-                    Intent childDetailsActivity = new Intent(getContext(), ChildDetailsActivity.class);
-                    childDetailsActivity.putExtra("barcode", barcode);
-
-                    //check database for current barcode
-                    DatabaseHandler mydb = app.getDatabaseInstance();
-                    Cursor cursor = null;
-                    cursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE BARCODE_ID=?", new String[]{barcode});
-                    //Child found locally
-                    if (cursor.getCount() > 0 && cursor != null) {
+            if (c!=null) {
+                Log.d(TAG, "child found locally");
+                String village_id = c.getDomicileId();
 
 
-                        cursor.moveToFirst();
-                        String[] columnNames = cursor.getColumnNames();
-                        Log.d("BAKTRAK", columnNames[1]+"  ########### ");
+                Cursor cursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM place WHERE ID=?", new String[]{village_id});
+                if (!(cursor.getCount() > 0)) {
+                    pullPlaceFromServer task = new pullPlaceFromServer();
+                    task.execute(village_id);
+                }
+                cursor.close();
+                startActivity(childDetailsActivity);
+            } else {
+                if (Utils.isOnline(getContext())) {
+                    add = new ProgressDialog(getContext());
+                    add.setTitle(getString(R.string.searching_online));
+                    add.setMessage("Barcode not found locally.\nPlease wait for server results ...");
+                    add.setCanceledOnTouchOutside(false);
+                    add.setCancelable(false);
 
-                        String village_id = cursor.getString(cursor.getColumnIndex(SQLHandler.ChildColumns.DOMICILE_ID));
-
-                        cursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM place WHERE ID=?", new String[]{village_id});
-                        if (!(cursor.getCount() > 0)) {
-                            pullPlaceFromServer task = new pullPlaceFromServer();
-                            task.execute(village_id);
-                        }
-
-                        startActivity(childDetailsActivity);
-//                        final FragmentTransaction ft = getFragmentManager().beginTransaction();
-//                        ft.replace(R.id.content_frame, childDetailsFragment, "detailsFrag");
-//                        ft.addToBackStack(homeActivityRevised.CHILD_DETAILS_FRAGMENT);
-//                        homeActivityRevised.currentFragment = homeActivityRevised.CHILD_DETAILS_FRAGMENT;
-//                        ft.commit();
-
-                    } else {
-                        if (Utils.isOnline(getContext())) {
-                            add = new ProgressDialog(getContext());
-                            add.setTitle(getString(R.string.searching_online));
-                            add.setMessage("Barcode not found locally.\nPlease wait for server results ...");
-                            add.setCanceledOnTouchOutside(false);
-                            add.setCancelable(false);
-
-                            myHandler.sendEmptyMessage(10);
-                            //Parse child from server.
-                            ChildSynchronization task = new ChildSynchronization(HomeFragment.this);
-                            task.execute(barcode);
-                        } else {
-                            Intent intent = new Intent(HomeFragment.this.getActivity(), AdministerVaccineOfflineRevisedActivity.class);
-                            intent.putExtra("barcode", barcode);
-                            startActivity(intent);
-//                            final AlertDialog ad = new AlertDialog.Builder(this).create();
-//                            ad.setTitle("Not Found");
-//                            ad.setMessage("The inserted barcode does not belong to any child on the local database.\nPlease try scanning while" +
-//                                    " device is online.");
-//                            ad.setButton("OK", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    ad.dismiss();
-//                                }
-//                            });
-//                            ad.show();
-                            //TODO: These are the new changes that are commented
-//                            Toast.makeText(getContext(), "Barcode not Found, Connect to Internet", Toast.LENGTH_LONG).show();
-//                            txtBarcode.setErrorColor(Color.RED);
-//                            txtBarcode.setError("Barcode not Found");
-//                            txtBarcode.requestFocus();
-
-                        }
-                    }
-//                case BackboneActivity.ACTIVITY_CHECK_IN:
-//                    //Do foreground processp
-////                    overlay.setVisibility(View.VISIBLE);
-//                    thread = new Thread() {
-//                        @Override
-//                        public void run() {
-//
-//                            synchronized (this) {
-//                                try {
-//                                    wait(2000);
-//                                } catch (InterruptedException e) {
-//                                    e.printStackTrace();
-//                                }
-//                                String dateNow = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(Calendar.getInstance().getTime());
-//
-//                                try {
-//                                    dateNow = URLEncoder.encode(dateNow, "utf-8");
-//                                } catch (UnsupportedEncodingException e) {
-//                                    e.printStackTrace();
-//                                }
-//                                DatabaseHandler db = appv2.getDatabaseInstance();
-//                                // check if child is in DB , if not than get child data from server
-//                                if (!db.isChildInDB(barcode)) {
-//                                    appv2.updateVaccinationQueue(barcode, appv2.getLOGGED_IN_USER_HF_ID(), dateNow, appv2.getLOGGED_IN_USER_ID());
-//
-//                                    appv2.registerAudit(BackboneApplication.CHILD_AUDIT, barcode, dateNow, appv2.getLOGGED_IN_USER_ID(), BackboneApplication.ACTION_CHECKIN);
-//
-//                                    int parseResult = appv2.parseChildCollectorSearchByBarcode(barcode);
-//                                    if (parseResult == 2) {
-//                                        HomeFragment.this.getActivity().runOnUiThread(new Runnable() {
-//                                            @Override
-//                                            public void run() {
-//                                                delayVisibilityGoneChange(2000, R.drawable.on_check_in_failed, ivCheckIn, overlay, getString(R.string.not_found), getString(R.string.barcode_does_not_exist));
-//                                                txtBarcode.setText("");
-//                                            }
-//                                        });
-//                                        return;
-//                                    } else if (parseResult == 3) {
-//                                        HomeFragment.this.getActivity().runOnUiThread(new Runnable() {
-//                                            @Override
-//                                            public void run() {
-//                                                delayVisibilityGoneChange(2000, R.drawable.on_check_in_failed, ivCheckIn, overlay, getString(R.string.msg_error), getString(R.string.error_retrieving_child_data));
-//                                                txtBarcode.setText("");
-//                                            }
-//                                        });
-//                                        return;
-//                                    }
-//
-//                                    parseHFIDWhenNotInDb(db, appv2);
-//
-//
-//                                }
-//                                // this should never be null in this part of the appv2 according to the lines of code above
-//                                String childId = db.getChildIdByBarcode(barcode);
-//                                if (db.isChildToBeAddedInVaccinationQueue(childId)) {
-//
-//                                    ContentValues cv = new ContentValues();
-//                                    cv.put(SQLHandler.VaccinationQueueColumns.CHILD_ID, childId);
-//                                    cv.put(SQLHandler.VaccinationQueueColumns.DATE, dateNow);
-//
-//                                    if (db.addChildToVaccinationQueue(cv) > -1) {
-//                                        appv2.updateVaccinationQueue(barcode, appv2.getLOGGED_IN_USER_HF_ID(), dateNow, appv2.getLOGGED_IN_USER_ID());
-//                                    }
-//                                } else {
-//                                    HomeFragment.this.getActivity().runOnUiThread(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-//                                            Toast.makeText(getContext(), "Child was not to be added to queue", Toast.LENGTH_LONG).show();
-//                                            overlay.setVisibility(View.GONE);
-//                                            txtBarcode.setText("");
-//                                        }
-//                                    });
-//                                }
-//
-//                                //
-//
-//                                appv2.registerAudit(BackboneApplication.CHILD_AUDIT, barcode, dateNow, appv2.getLOGGED_IN_USER_ID(), BackboneApplication.ACTION_CHECKIN);
-//
-//                                HomeFragment.this.getActivity().runOnUiThread(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        Toast.makeText(getContext(), "Child checkin finished", Toast.LENGTH_LONG).show();
-////                                        overlay.setVisibility(View.GONE);
-//                                        txtBarcode.setText("");
-//                                    }
-//                                });
-//
-//                            }
-//                        }
-//                    };
-//
-//                    thread.start();
-//
-//                    //Do the backgroud appv2 logic
-//                    break;
-//                case BackboneActivity.ACTIVITY_REGISTER_CHILD_SCAN:
-//                    Intent register_child_scan = new Intent(getContext(), RegisterChildActivity.class);
-//                    register_child_scan.putExtra("result", barcode);
-//                    startActivity(register_child_scan);
-//                    break;
+                    myHandler.sendEmptyMessage(10);
+                    //Parse child from server.
+                    ChildSynchronization task = new ChildSynchronization(HomeFragment.this);
+                    task.execute(barcode);
+                } else {
+                    Intent intent = new Intent(HomeFragment.this.getActivity(), AdministerVaccineOfflineRevisedActivity.class);
+                    intent.putExtra("barcode", barcode);
+                    startActivity(intent);
+                }
+            }
         } else {
             Toast.makeText(getContext(), "Wrong barcode format", Toast.LENGTH_LONG).show();
         }
@@ -590,6 +458,7 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
 
         @Override
         protected Integer doInBackground(String... params) {
+            Log.d(TAG,"passing child from server");
             BackboneApplication application = (BackboneApplication) HomeFragment.this.getActivity().getApplication();
             int parseChildByBarcode = 0;
             String village_id, hf_id;

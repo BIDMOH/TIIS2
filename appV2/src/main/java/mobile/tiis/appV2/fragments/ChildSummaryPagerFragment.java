@@ -58,6 +58,8 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func0;
 
+import static mobile.tiis.appv2.ChildDetailsActivity.childId;
+
 /**
  *  Created by issymac on 25/01/16.
  */
@@ -78,7 +80,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
 
     public Child currentChild;
 
-    private String hf_id, child_id, birthplacestr, villagestr, hfstr, statusstr, gender_val, birthdate_val;
+    private String hf_id, birthplacestr, villagestr, hfstr, statusstr, gender_val, birthdate_val;
 
     private ArrayList<String> gender, vvuStatusList, tt2StatusList, registryYearList;
 
@@ -96,7 +98,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
 
     private List<Status> statusList;
 
-    private String childId, childRegistryYear;
+    private String  childRegistryYear;
 
     private ArrayList<ViewAppointmentRow> var;
 
@@ -115,8 +117,6 @@ public class ChildSummaryPagerFragment extends RxFragment {
     private ListView lvImmunizationHistory;
 
     private TableLayout summaryTableLayout;
-
-    private Cursor mCursor;
 
     private Button editButton, saveButton;
 
@@ -176,7 +176,6 @@ public class ChildSummaryPagerFragment extends RxFragment {
         super.onCreate(savedInstanceState);
         position    = getArguments().getInt(ARG_POSITION);
         value     = getArguments().getString(VALUE);
-        Log.d(TAG,"childId = "+value);
         childWithEditableChildCumulativeSnAndChildRegistryYear = getArguments().getBoolean(NEW_REGISTERED_CHILD);
     }
 
@@ -367,17 +366,18 @@ public class ChildSummaryPagerFragment extends RxFragment {
         summaryTableLayout.addView(header);
         appointmentTableHeader = inflater.inflate(R.layout.appointment_table_header, null);
         summaryTableLayout.addView(appointmentTableHeader);
-        mCursor = null;
         Observable.defer(new Func0<Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call() {
                 // Do some long running operation
-                mCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",
+                Cursor mCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",
                         new String[]{String.valueOf(value)});
                 if (mCursor.getCount() > 0) {
                     mCursor.moveToFirst();
                     currentChild = getChildFromCursror(mCursor);
+                    childId = currentChild.getId();
                 }
+                mCursor.close();
                 placeList = mydb.getAllPlaces();
 
                 birthplaceList = mydb.getAllBirthplaces();
@@ -450,29 +450,43 @@ public class ChildSummaryPagerFragment extends RxFragment {
     }
 
     public void updateAppointmentTable(){
+        Log.d("delay","updating appointment table");
         var = new ArrayList<ViewAppointmentRow>();
         Observable.defer(new Func0<Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call() {
                 // Do some long running operation
-                mCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",
-                        new String[]{String.valueOf(value)});
+                Cursor mCursor = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.ID + "=?",
+                        new String[]{String.valueOf(childId)});
                 if (mCursor.getCount() > 0) {
+                    Log.d("delay","updating appointment table with child id = "+value);
                     mCursor.moveToFirst();
                     currentChild = getChildFromCursror(mCursor);
+                }else{
+
+                    //at times when the child has just been registered on the tablet, he/she is assigned a temp id which is later by the id received from the server
+                    //to ensure updating of appointment information of child we reobtain the child from the database by his/her barcode inorder to show his/her appointments.
+                    Cursor c = mydb.getReadableDatabase().rawQuery("SELECT * FROM child WHERE " + SQLHandler.ChildColumns.BARCODE_ID + "=?",
+                            new String[]{String.valueOf(barcodeOrig)});
+                    if (c.getCount() > 0) {
+                        c.moveToFirst();
+                        currentChild = getChildFromCursror(c);
+                        Log.d("delay","updating appointment table with barcode id = "+barcodeOrig+" AND childID = "+currentChild.getId());
+                    }
+
                 }
+                mCursor.close();
 
                 if (currentChild.getId() != null && !currentChild.getId().isEmpty()) {
-                    String child_id = currentChild.getId();
-
-                    Cursor cursor = null;
+                    childId = currentChild.getId();
 
                     DatabaseHandler this_database = app.getDatabaseInstance();
                     SQLHandler handler = new SQLHandler();
-                    cursor = this_database.getReadableDatabase().rawQuery(handler.SQLVaccinations, new String[]{child_id, child_id});
+                    Cursor cursor = this_database.getReadableDatabase().rawQuery(handler.SQLVaccinations, new String[]{childId, childId});
 
                     if (cursor != null) {
                         if (cursor.moveToFirst()) {
+                            Log.d("delay","adding vaccination appointments = "+barcodeOrig);
                             do {
                                 ViewAppointmentRow row = new ViewAppointmentRow();
                                 row.setAppointment_id(cursor.getString(cursor.getColumnIndex("APPOINTMENT_ID")));
@@ -483,6 +497,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
                             } while (cursor.moveToNext());
                         }
                     }
+                    cursor.close();
 
                 }
 
@@ -627,10 +642,10 @@ public class ChildSummaryPagerFragment extends RxFragment {
 
 
         if (currentChild.getId() != null && !currentChild.getId().isEmpty()) {
-            child_id = currentChild.getId();
+            childId = currentChild.getId();
 
             Cursor cursor = null;
-            cursor = this_database.getReadableDatabase().rawQuery(handler.SQLVaccinations, new String[]{child_id, child_id});
+            cursor = this_database.getReadableDatabase().rawQuery(handler.SQLVaccinations, new String[]{childId, childId});
 
             if (cursor != null) {
                 if (cursor.moveToFirst()) {
@@ -657,10 +672,8 @@ public class ChildSummaryPagerFragment extends RxFragment {
     }
 
     private String getDistrictCouncilName(String id){
-        Log.d(TAG,"health facility id = "+id);
         String name = "";
         for (HealthFacility districtCouncil : districtCouncilsList){
-            Log.d(TAG,"district council ids = "+districtCouncil.getId());
             if(districtCouncil.getId().equals(id)) {
                 name = districtCouncil.getName();
             }
@@ -670,12 +683,10 @@ public class ChildSummaryPagerFragment extends RxFragment {
     }
 
     private void fillUIElements(){
-
         if (currentChild!=null){
-
             Log.d("issy", "child gotten "+currentChild.getFirstname1());
             if (currentChild.getBarcodeID() == null || currentChild.getBarcodeID().isEmpty()) {
-                Toast.makeText(ChildSummaryPagerFragment.this.getActivity(), getString(R.string.empty_barcode), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChildSummaryPagerFragment.this.getActivity(), getString(R.string.empty_barcode), Toast.LENGTH_LONG).show();
             }
 
             localBarcode = currentChild.getBarcodeID();
@@ -699,39 +710,38 @@ public class ChildSummaryPagerFragment extends RxFragment {
 
             metBarcodeValue     .setText(currentChild.getBarcodeID());
             barcodeOrig         = currentChild.getBarcodeID();
-            tempIdOrig          = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.TEMP_ID));
+            tempIdOrig          =currentChild.getTempId();
 
-            childId = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.ID));
+            childId = currentChild.getId();
 
-            metFirstName.setText(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME1)));
-            metNotesValue.setText(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.NOTES)));
-            metMiddleName.setText(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME2)));
-            metLastName.setText(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.LASTNAME1)));
+            metFirstName.setText(currentChild.getFirstname1());
+            metNotesValue.setText(currentChild.getNotes());
+            metMiddleName.setText(currentChild.getFirstname2());
+            metLastName.setText(currentChild.getLastname1());
 
-            firstnameOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME1));
-            firstname2Orig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.FIRSTNAME2));
-            lastnameOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.LASTNAME1));
+            firstnameOrig = currentChild.getFirstname1();
+            firstname2Orig = currentChild.getFirstname2();
+            lastnameOrig = currentChild.getLastname1();
 
-            Log.d(TAG,"birthdate = "+mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.BIRTHDATE)));
-            bdate = BackboneActivity.dateParser(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.BIRTHDATE)));
+            bdate = BackboneActivity.dateParser(currentChild.getBirthdate());
             SimpleDateFormat ft = new SimpleDateFormat("dd/MM/yyyy");
             metDOB.setText(ft.format(bdate));
             birthdateOrig = ft.format(bdate);
             birthdate_val = ft.format(bdate);
 
-            metMothersFirstName.setText(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_FIRSTNAME)));
-            metMothersSurname.setText(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_LASTNAME)));
+            metMothersFirstName.setText(currentChild.getMotherFirstname());
+            metMothersSurname.setText(currentChild.getMotherLastname());
 
-            motherFirOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_FIRSTNAME));
-            motherLastOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_LASTNAME));
+            motherFirOrig = currentChild.getMotherFirstname();
+            motherLastOrig = currentChild.getMotherLastname();
 
-            phoneOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.PHONE));
-            metPhoneNumber.setText(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.PHONE)));
+            phoneOrig = currentChild.getPhone();
+            metPhoneNumber.setText(currentChild.getPhone());
 
-            notesOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.NOTES));
+            notesOrig = currentChild.getNotes();
 
-            if (mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR))!= null){
-                childRegistryYearOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR));
+            if (currentChild.getChildRegistryYear()!= null){
+                childRegistryYearOrig = currentChild.getChildRegistryYear();
 
                 registryYearSpinner.setAdapter(registryYearAdapter);
                 registryYearSpinner.setSelection(registryYearList.indexOf(childRegistryYearOrig)+1);
@@ -742,8 +752,8 @@ public class ChildSummaryPagerFragment extends RxFragment {
             }
 
 
-            if (mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_VVU_STS))!= null){
-                vvuStatusOrig = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_VVU_STS));
+            if (currentChild.getMotherHivStatus()!= null){
+                vvuStatusOrig = currentChild.getMotherHivStatus();
 
                 VVUSpinner.setAdapter(vvuSpinnerAdapter);
                 switch (vvuStatusOrig){
@@ -762,8 +772,8 @@ public class ChildSummaryPagerFragment extends RxFragment {
                 VVUSpinner.setError("Please select mothers HIV status");
             }
 
-            if (mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_TT2_STS)) != null){
-                tt2StatusOrig   = mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.MOTHER_TT2_STS));
+            if (currentChild.getMotherTT2Status() != null){
+                tt2StatusOrig   = currentChild.getMotherTT2Status() ;
 
                 TT2Spinner.setAdapter(tt2SpinnerAdapter);
                 switch (tt2StatusOrig){
@@ -782,7 +792,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
                 TT2Spinner.setError("Please select mothers TT2 status");
             }
 
-            if (Boolean.parseBoolean(mCursor.getString(mCursor.getColumnIndex(SQLHandler.ChildColumns.GENDER)))) {
+            if (Boolean.parseBoolean(currentChild.getGender())) {
                 ms.setAdapter(spinnerAdapter);
                 ms.setSelection(1);
                 //                gender.setText("Male");
@@ -1179,19 +1189,19 @@ public class ChildSummaryPagerFragment extends RxFragment {
             return false;
         }
 
-        if (registryYearSpinner.getSelectedItemPosition()==0 && !childWithEditableChildCumulativeSnAndChildRegistryYear) {
-            alertDialogBuilder.setMessage("Please select Child Registration Year");
-            alertDialogBuilder.show();
-            registryYearSpinner.setError("Please select Child Registration Year");
-            return false;
-        }
+//        if (registryYearSpinner.getSelectedItemPosition()==0 && !childWithEditableChildCumulativeSnAndChildRegistryYear) {
+//            alertDialogBuilder.setMessage("Please select Child Registration Year");
+//            alertDialogBuilder.show();
+//            registryYearSpinner.setError("Please select Child Registration Year");
+//            return false;
+//        }
 
-        if (metCummulativeSn.getText().toString().equals("") && !childWithEditableChildCumulativeSnAndChildRegistryYear) {
-            alertDialogBuilder.setMessage("Please fill Child Cumulative Sn");
-            alertDialogBuilder.show();
-            metCummulativeSn.setError("Please fill Child Cumulative Sn");
-            return false;
-        }
+//        if (metCummulativeSn.getText().toString().equals("") && !childWithEditableChildCumulativeSnAndChildRegistryYear) {
+//            alertDialogBuilder.setMessage("Please fill Child Cumulative Sn");
+//            alertDialogBuilder.show();
+//            metCummulativeSn.setError("Please fill Child Cumulative Sn");
+//            return false;
+//        }
 
         if(!childWithEditableChildCumulativeSnAndChildRegistryYear){
             if (cummulativeSnChanged || registryYearChanged){
@@ -1249,17 +1259,22 @@ public class ChildSummaryPagerFragment extends RxFragment {
         ContentValues contentValues = new ContentValues();
 
         if(!childWithEditableChildCumulativeSnAndChildRegistryYear) {
-            if (!registryYearList.get(registryYearSpinner.getSelectedItemPosition() - 1).equalsIgnoreCase(currentChild.getChildRegistryYear())) {
-                currentChild.setChildRegistryYear(registryYearList.get(registryYearSpinner.getSelectedItemPosition() - 1));
-                contentValues.put(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR, registryYearList.get(registryYearSpinner.getSelectedItemPosition() - 1));
+
+            if(registryYearSpinner.getSelectedItemPosition()!=0) {
+                if (!registryYearList.get(registryYearSpinner.getSelectedItemPosition() - 1).equalsIgnoreCase(currentChild.getChildRegistryYear())) {
+                    currentChild.setChildRegistryYear(registryYearList.get(registryYearSpinner.getSelectedItemPosition() - 1));
+                    contentValues.put(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR, registryYearList.get(registryYearSpinner.getSelectedItemPosition() - 1));
+                }
+
+                if (!metCummulativeSn.getText().toString().equalsIgnoreCase(currentChild.getChildCumulativeSn())) {
+                    currentChild.setChildCumulativeSn(metCummulativeSn.getText().toString());
+                    Log.d("CSN", "cummulative saved" + currentChild.getChildCumulativeSn());
+                    contentValues.put(SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER, metCummulativeSn.getText().toString());
+                }
             }
 
 
-            if (!metCummulativeSn.getText().toString().equalsIgnoreCase(currentChild.getChildCumulativeSn())) {
-                currentChild.setChildCumulativeSn(metCummulativeSn.getText().toString());
-                Log.d("CSN", "cummulative saved" + currentChild.getChildCumulativeSn());
-                contentValues.put(SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER, metCummulativeSn.getText().toString());
-            }
+
         }
 
         if (!vvuStatusList.get(VVUSpinner.getSelectedItemPosition()-1).equalsIgnoreCase(currentChild.getMotherHivStatus())){
@@ -1417,10 +1432,11 @@ public class ChildSummaryPagerFragment extends RxFragment {
                     initListeners();
                 }
                 alertDialogBuilder.show();
+                ((ChildDetailsActivity) getActivity()).updateadapters();
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
-            Toast.makeText(ChildSummaryPagerFragment.this.getActivity(), "Save failed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ChildSummaryPagerFragment.this.getActivity(), "Save failed", Toast.LENGTH_LONG).show();
             app.saveNeeded = false;
             enableUserInputs(false);
         }

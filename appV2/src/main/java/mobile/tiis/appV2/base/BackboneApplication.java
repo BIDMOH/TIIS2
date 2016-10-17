@@ -22,6 +22,7 @@ import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.os.Handler;
@@ -88,6 +89,7 @@ import mobile.tiis.appv2.entity.Weight;
 import mobile.tiis.appv2.helpers.Utils;
 import mobile.tiis.appv2.postman.PostmanModel;
 import mobile.tiis.appv2.util.Constants;
+
 
 /**
  * Created by Teodor on 2/3/2015.
@@ -205,10 +207,6 @@ public class BackboneApplication extends Application {
     public String LAST_FRAGMENT = "mobile.tiis.appv2.fragments.HomeFragment";
     public String LAST_FRAGMENT_TITLE = "Home";
     private String CURRENT_FRAGMENT = "HOME";
-
-    //Added Admin Username and Password variables
-//    private String LOGGED_IN_USERNAME = "admin";
-//    private String LOGGED_IN_USER_PASS = "Tanzania12";
 
     public static String getWcfUrl() {
         return WCF_URL;
@@ -663,7 +661,7 @@ public class BackboneApplication extends Application {
     public void parseStock() {
         if (LOGGED_IN_USER_HF_ID == null || LOGGED_IN_USER_HF_ID.equals("0")) return;
         final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, GET_STOCK);
-        Log.d("", webServiceUrl.toString());
+        Log.d("SOMA", "Parsing Stock Periodically : "+webServiceUrl.toString());
 
         client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
         RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
@@ -876,7 +874,10 @@ public class BackboneApplication extends Application {
 
 
     /**
-     * method to be used internaly since there were two other methods that needed this code to execute
+     * method to be used  to update or insert child information after child updates are received
+     * taking into consideration of the following issues
+     * if a childId is already available, update or insert the new child
+     * If the childId is not available check if the child's barcode is available if so update or inserth the child
      * @param childCollector
      */
     public void addChildVaccinationEventVaccinationAppointmentUnOptimisedForSmallAmountsOfData(ChildCollector childCollector){
@@ -889,6 +890,12 @@ public class BackboneApplication extends Application {
         DatabaseHandler db = getDatabaseInstance();
 
         long tStart = System.currentTimeMillis();
+
+        boolean childIdInDB=false;      //variable used to specify if the childId is in db
+        boolean childBarcodeInDB=false; //variable used to specity if the child's barcode is in db
+        String orgChildId="";           //variable used to store the original child's Id  found in db just incase the child used a temporaly id before reveiving these updates, the temp child id in all vaccination appointments and vaccination events needs to be updated
+
+
 
         Log.e("TIMING LOG","start insert/update child in DB");
         childCV.put(SQLHandler.SyncColumns.UPDATED, 1);
@@ -918,15 +925,26 @@ public class BackboneApplication extends Application {
 
 
         if(!db.isChildIDInChildTable(child.getId())) {
+            childIdInDB= false;
             if(!db.isChildBarcodeIDInChildTable(child.getBarcodeID())){
+                childBarcodeInDB=false;
+                Log.d("delay","inserting child with barcode = "+child.getBarcodeID());
                 db.addChild(childCV);
             }else{
+                childBarcodeInDB=true;
+                Log.d("delay","updating child with barcode = "+child.getBarcodeID()+" to childId = "+ child.getId());
+
+                //obtaining the previous tempId used by the child inorder to use it in updating child's vaccination events and vaccination appointments
+                orgChildId = db.getChildIdByBarcode(child.getBarcodeID());
                 db.updateChildWithBarcode(childCV,child.getBarcodeID());
             }
 
         }else{
+            childIdInDB= true;
+            Log.d("delay","updating child with barcode = "+child.getBarcodeID());
             db.updateChild(childCV,child.getId());
         }
+
 
 
         Log.e("TIMING LOG","elapsed time insert/update child in DB (milliseconds): " + (System.currentTimeMillis() - tStart));
@@ -948,11 +966,37 @@ public class BackboneApplication extends Application {
             vaccEventCV.put(SQLHandler.VaccinationEventColumns.VACCINATION_DATE, vaccinationEvent.getVaccinationDate());
             vaccEventCV.put(SQLHandler.VaccinationEventColumns.VACCINATION_STATUS, vaccinationEvent.getVaccinationStatus());
             vaccEventCV.put(SQLHandler.VaccinationEventColumns.VACCINE_LOT_ID, vaccinationEvent.getVaccineLotId());
-            if(!db.isVaccinationEventInDb(vaccinationEvent.getChildId(), vaccinationEvent.getDoseId())) {
-                db.addVaccinationEvent(vaccEventCV);
+            if(childIdInDB){
+                if(!db.isVaccinationEventInDb(vaccinationEvent.getChildId(), vaccinationEvent.getDoseId())) {
+                    Log.d("delay","inserting vaccination event with childId = "+vaccinationEvent.getChildId());
+                    db.addVaccinationEvent(vaccEventCV);
+                }else{
+                    Log.d("delay","updating vaccination event with childId = "+vaccinationEvent.getChildId());
+                    db.updateVaccinationEvent(vaccEventCV,vaccinationEvent.getId());
+                }
+            }else if(childBarcodeInDB){
+                //child's barcode is available in the db so update the original child's temporally id to the new childId from the server
+                if(!db.isVaccinationEventInDb(orgChildId, vaccinationEvent.getDoseId())) {
+                    db.addVaccinationEvent(vaccEventCV);
+                    Log.d("delay","inserting vaccination event with barcode-childId = "+orgChildId);
+                }else{
+                    Log.d("delay","updating vaccination event with dose-id and barcode-childId = "+orgChildId+" with child ID = "+vaccinationEvent.getChildId());
+                    //assuming the vaccination event was originally added by the same user on this tablet with a temporarily childId
+                    // only modify the vaccination event id and foreign keys ids without overiding the vaccination status
+                    // since the vaccination event may have updates that are  still in postman and has not yet been synched to the server
+                    ContentValues ve = new ContentValues();
+                    ve.put(SQLHandler.VaccinationEventColumns.APPOINTMENT_ID, vaccinationEvent.getAppointmentId());
+                    ve.put(SQLHandler.VaccinationEventColumns.CHILD_ID, vaccinationEvent.getChildId());
+                    ve.put(SQLHandler.VaccinationEventColumns.ID, vaccinationEvent.getId());
+                    ve.put(SQLHandler.VaccinationEventColumns.IS_ACTIVE, vaccinationEvent.getIsActive());
+                    long i = db.updateVaccinationEvent(ve,orgChildId,vaccinationEvent.getDoseId());
+                    Log.d("delay","updating vaccination event results = "+i);
+                }
             }else{
-                db.updateVaccinationEvent(vaccEventCV,vaccinationEvent.getId());
+                Log.d("delay","inserting vaccination event with childId = "+vaccinationEvent.getChildId());
+                db.addVaccinationEvent(vaccEventCV);
             }
+
         }
 
         Log.e("TIMING LOG","elapsed time insert/update Vaccination Event list in DB (milliseconds): " + (System.currentTimeMillis() - tStart));
@@ -971,10 +1015,21 @@ public class BackboneApplication extends Application {
             vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.SCHEDULED_DATE, vaccinationAppointment.getScheduledDate());
             vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.SCHEDULED_FACILITY_ID, vaccinationAppointment.getScheduledFacilityId());
 
-            if(!db.isVaccinationAppointmentInDb(vaccinationAppointment.getChildId(), vaccinationAppointment.getScheduledDate())) {
-                db.addVaccinationAppointment(vaccAppointmentCV);
+            if(childIdInDB){
+                if(!db.isVaccinationAppointmentInDb(vaccinationAppointment.getChildId(), vaccinationAppointment.getScheduledDate())) {
+                    db.addVaccinationAppointment(vaccAppointmentCV);
+                }else{
+                    db.updateVaccinationAppointment(vaccAppointmentCV, vaccinationAppointment.getId());
+                }
+            }else if(childBarcodeInDB){
+                if(!db.isVaccinationAppointmentInDb(orgChildId, vaccinationAppointment.getScheduledDate())) {
+                    db.addVaccinationAppointment(vaccAppointmentCV);
+                }else{
+                    Log.d(TAG,"updating vaccination appointment with oldID= "+orgChildId+" with child ID = "+vaccinationAppointment.getChildId());
+                    db.updateVaccinationAppointmentByScheduledDateAndChildId(vaccAppointmentCV, orgChildId,vaccinationAppointment.getScheduledDate());
+                }
             }else{
-                db.updateVaccinationAppointment(vaccAppointmentCV, vaccinationAppointment.getId());
+                db.addVaccinationAppointment(vaccAppointmentCV);
             }
 
         }
@@ -1179,28 +1234,29 @@ public class BackboneApplication extends Application {
                 .append("&modifiedon=").append(dateTodayTimestamp).append("&modifiedby=").append(modBy);
 
 
-        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
-        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                weightSaved = false;
-                getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                try {
-                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + responseString);
-                    weightSaved = true;
-
-                } catch (Exception e) {
-                    getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
-                    weightSaved = false;
-                }
-            }
-        });
-
-        Log.e("service weight", webServiceUrl + "");
+        getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
+//        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+//        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                weightSaved = false;
+//                getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
+//            }
+//
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+//                try {
+//                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + responseString);
+//                    weightSaved = true;
+//
+//                } catch (Exception e) {
+//                    getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
+//                    weightSaved = false;
+//                }
+//            }
+//        });
+//
+//        Log.e("service weight", webServiceUrl + "");
         return weightSaved;
 
 
@@ -1511,8 +1567,156 @@ public class BackboneApplication extends Application {
 
     }
 
+    public void updateChildVaccinationEventVaccinationAppointment(ChildCollector childCollector) {
+        Child child = childCollector.getChildEntity();
+        List<VaccinationEvent> vaccinationEvents = childCollector.getVeList();
+        List<VaccinationAppointment> vaccinationAppointments = childCollector.getVaList();
+        ContentValues childCV = new ContentValues();
+        DatabaseHandler db = getDatabaseInstance();
+
+
+
+
+        SQLiteDatabase db1 = db.getWritableDatabase();
+        db1.beginTransactionNonExclusive();
+        try {
+            String sql0 = "INSERT OR REPLACE INTO " + SQLHandler.Tables.CHILD + " ( "+
+                    SQLHandler.SyncColumns.UPDATED+", "+
+                    SQLHandler.ChildColumns.ID+","+
+                    SQLHandler.ChildColumns.BARCODE_ID+","+
+                    SQLHandler.ChildColumns.FIRSTNAME1+","+
+                    SQLHandler.ChildColumns.FIRSTNAME2+","+
+                    SQLHandler.ChildColumns.LASTNAME1+","+
+                    SQLHandler.ChildColumns.BIRTHDATE+","+
+                    SQLHandler.ChildColumns.GENDER+","+
+                    SQLHandler.ChildColumns.TEMP_ID+","+
+                    SQLHandler.ChildColumns.HEALTH_FACILITY+","+
+                    SQLHandler.ChildColumns.DOMICILE+","+
+                    SQLHandler.ChildColumns.DOMICILE_ID+","+
+                    SQLHandler.ChildColumns.HEALTH_FACILITY_ID+","+
+                    SQLHandler.ChildColumns.STATUS_ID+","+
+                    SQLHandler.ChildColumns.BIRTHPLACE_ID+","+
+                    SQLHandler.ChildColumns.NOTES+","+
+                    SQLHandler.ChildColumns.STATUS+","+
+                    SQLHandler.ChildColumns.MOTHER_FIRSTNAME+","+
+                    SQLHandler.ChildColumns.MOTHER_LASTNAME+","+
+                    SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER+","+
+                    SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR+","+
+                    SQLHandler.ChildColumns.MOTHER_TT2_STS+","+
+                    SQLHandler.ChildColumns.MOTHER_VVU_STS+","+
+                    SQLHandler.ChildColumns.PHONE+
+                    " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            SQLiteStatement stmt0 = db1.compileStatement(sql0);
+            stmt0.bindString(1, "1");
+            stmt0.bindString(2, child.getId()==null?"":child.getId());
+            stmt0.bindString(3, child.getBarcodeID()==null?"":child.getBarcodeID());
+            stmt0.bindString(4, child.getFirstname1()==null?"":child.getFirstname1());
+            stmt0.bindString(5, child.getFirstname2()==null?"":child.getFirstname2());
+            stmt0.bindString(6, child.getLastname1()==null?"":child.getLastname1());
+            stmt0.bindString(7, child.getBirthdate()==null?"":child.getBirthdate());
+            stmt0.bindString(8, child.getGender()==null?"":child.getGender());
+            stmt0.bindString(9, child.getTempId()==null?"":child.getTempId());
+            stmt0.bindString(10, child.getHealthcenter()==null?"":child.getHealthcenter());
+            stmt0.bindString(11, child.getDomicile()==null?"":child.getDomicile());
+            stmt0.bindString(12, child.getDomicileId()==null?"":child.getDomicileId());
+            stmt0.bindString(13, child.getHealthcenterId()==null?"":child.getHealthcenterId());
+            stmt0.bindString(14, child.getStatusId()==null?"":child.getStatusId());
+            stmt0.bindString(15, child.getBirthplaceId()==null?"":child.getBirthplaceId());
+            stmt0.bindString(16, child.getNotes()==null?"":child.getNotes());
+            stmt0.bindString(17, child.getStatus()==null?"":child.getStatus());
+            stmt0.bindString(18, child.getMotherFirstname()==null?"":child.getMotherFirstname());
+            stmt0.bindString(19, child.getMotherLastname()==null?"":child.getMotherLastname());
+            stmt0.bindString(20, child.getChildCumulativeSn()==null?"":child.getChildCumulativeSn());
+            stmt0.bindString(21, child.getChildRegistryYear()==null?"":child.getChildRegistryYear());
+            stmt0.bindString(22, child.getMotherTT2Status()==null?"":child.getMotherTT2Status());
+            stmt0.bindString(23, child.getMotherHivStatus()==null?"":child.getMotherHivStatus());
+            stmt0.bindString(24, child.getPhone()==null?"":child.getPhone());
+            stmt0.execute();
+            stmt0.clearBindings();
+
+            String sql = "INSERT OR REPLACE INTO " + SQLHandler.Tables.VACCINATION_EVENT + " ( "+
+                    SQLHandler.SyncColumns.UPDATED+", "+
+                    SQLHandler.VaccinationEventColumns.APPOINTMENT_ID+","+
+                    SQLHandler.VaccinationEventColumns.CHILD_ID+","+
+                    SQLHandler.VaccinationEventColumns.DOSE_ID+","+
+                    SQLHandler.VaccinationEventColumns.HEALTH_FACILITY_ID+","+
+                    SQLHandler.VaccinationEventColumns.ID+","+
+                    SQLHandler.VaccinationEventColumns.IS_ACTIVE+","+
+                    SQLHandler.VaccinationEventColumns.MODIFIED_BY+","+
+                    SQLHandler.VaccinationEventColumns.MODIFIED_ON+","+
+                    SQLHandler.VaccinationEventColumns.NONVACCINATION_REASON_ID+","+
+                    SQLHandler.VaccinationEventColumns.SCHEDULED_DATE+","+
+                    SQLHandler.VaccinationEventColumns.VACCINATION_DATE+","+
+                    SQLHandler.VaccinationEventColumns.VACCINATION_STATUS+","+
+                    SQLHandler.VaccinationEventColumns.VACCINE_LOT_ID+
+                    " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            SQLiteStatement stmt = db1.compileStatement(sql);
+
+            for (VaccinationEvent vaccinationEvent : vaccinationEvents) {
+                stmt.bindString(1, "1");
+                stmt.bindString(2, vaccinationEvent.getAppointmentId());
+                stmt.bindString(3, vaccinationEvent.getChildId());
+                stmt.bindString(4, vaccinationEvent.getDoseId());
+                stmt.bindString(5, vaccinationEvent.getHealthFacilityId());
+                stmt.bindString(6, vaccinationEvent.getId());
+                stmt.bindString(7, vaccinationEvent.getIsActive());
+                stmt.bindString(8, vaccinationEvent.getModifiedBy());
+                stmt.bindString(9, vaccinationEvent.getModifiedOn());
+                stmt.bindString(10, vaccinationEvent.getNonvaccinationReasonId());
+                stmt.bindString(11, vaccinationEvent.getScheduledDate());
+                stmt.bindString(12, vaccinationEvent.getVaccinationDate());
+                stmt.bindString(13, vaccinationEvent.getVaccinationStatus());
+                stmt.bindString(14, vaccinationEvent.getVaccineLotId());
+                stmt.execute();
+                stmt.clearBindings();
+            }
+
+            String sql1 = "INSERT OR REPLACE INTO " + SQLHandler.Tables.VACCINATION_APPOINTMENT + " ( "+
+                    SQLHandler.SyncColumns.UPDATED+", "+
+                    SQLHandler.VaccinationAppointmentColumns.CHILD_ID+","+
+                    SQLHandler.VaccinationAppointmentColumns.ID+","+
+                    SQLHandler.VaccinationAppointmentColumns.IS_ACTIVE+","+
+                    SQLHandler.VaccinationAppointmentColumns.MODIFIED_BY+","+
+                    SQLHandler.VaccinationAppointmentColumns.MODIFIED_ON+","+
+                    SQLHandler.VaccinationAppointmentColumns.NOTES+","+
+                    SQLHandler.VaccinationAppointmentColumns.OUTREACH+","+
+                    SQLHandler.VaccinationAppointmentColumns.SCHEDULED_DATE+","+
+                    SQLHandler.VaccinationAppointmentColumns.SCHEDULED_FACILITY_ID+
+                    " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
+
+            SQLiteStatement stmt1 = db1.compileStatement(sql1);
+
+            for (VaccinationAppointment vaccinationAppointment : vaccinationAppointments) {
+                stmt1.bindString(1, "1");
+                stmt1.bindString(2, vaccinationAppointment.getChildId());
+                stmt1.bindString(3, vaccinationAppointment.getId());
+                stmt1.bindString(4, vaccinationAppointment.getIsActive());
+                stmt1.bindString(5, vaccinationAppointment.getModifiedBy());
+                stmt1.bindString(6, vaccinationAppointment.getModifiedOn());
+                stmt1.bindString(7, vaccinationAppointment.getNotes());
+                stmt1.bindString(8, vaccinationAppointment.getOutreach());
+                stmt1.bindString(9, vaccinationAppointment.getScheduledDate());
+                stmt1.bindString(10, vaccinationAppointment.getScheduledFacilityId());
+
+                stmt1.execute();
+                stmt1.clearBindings();
+
+            }
+
+            db1.setTransactionSuccessful();
+            db1.endTransaction();
+        } catch (Exception e) {
+            db1.endTransaction();
+            e.printStackTrace();
+        }
+    }
+
+
+
     /**
-     * method to be used internaly since there were two other methods that needed this code to execute
+     * method used to add child, vaccination appointments and vaccination events into the database
      *
      * @param childCollector
      */
@@ -1658,7 +1862,6 @@ public class BackboneApplication extends Application {
             e.printStackTrace();
         }
     }
-
 
 
 
@@ -2287,7 +2490,6 @@ public class BackboneApplication extends Application {
     }
 
     public void parseGCMChildrenInQueueById() {
-        Log.d(TAG, "passing children in childupdates queue");
         final List<String> childIds = databaseInstance.getChildIdsFromChildUpdatesQueue();
         int size = childIds.size();
 
@@ -2307,41 +2509,45 @@ public class BackboneApplication extends Application {
                 final String childId = childIds.get(i);
 
                 Log.d(TAG, "passing child " + childId);
-                final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC).append("GetChildByIdV1?childId=").append(childId);
-                client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        parsedChildResults = 3;
-                    }
 
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, String response) {
-                        Log.d(TAG, "parseChildCollectorbyId = " + webServiceUrl.toString());
-                        ChildCollector childCollector = new ChildCollector();
-                        try {
-                            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-                            ObjectMapper mapper = new ObjectMapper();
-                            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-                            childCollector = mapper.readValue(new JSONArray(response).getJSONObject(0).toString(), ChildCollector.class);
-
-                            addChildVaccinationEventVaccinationAppointmentUnOptimisedForSmallAmountsOfData(childCollector);
-                            parsedChildResults = 1;
-                            databaseInstance.removeChildFromChildUpdateQueue(childId);
-                        } catch (JsonGenerationException e) {
-                            e.printStackTrace();
-                            parsedChildResults = 2;
-                        } catch (JsonMappingException e) {
-                            e.printStackTrace();
-                            parsedChildResults = 2;
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                if(getDatabaseInstance().checkIfChildUpdatesAreInPostman(childId)){
+                    final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC).append("GetChildByIdV1?childId=").append(childId);
+                    client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                             parsedChildResults = 3;
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            parsedChildResults = 2;
                         }
-                    }
-                });
+
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, String response) {
+                            Log.d(TAG, "parseChildCollectorbyId = " + webServiceUrl.toString());
+                            ChildCollector childCollector = new ChildCollector();
+                            try {
+                                Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                                ObjectMapper mapper = new ObjectMapper();
+                                mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                                childCollector = mapper.readValue(new JSONArray(response).getJSONObject(0).toString(), ChildCollector.class);
+                                addChildVaccinationEventVaccinationAppointmentUnOptimisedForSmallAmountsOfData(childCollector);
+                                parsedChildResults = 1;
+                                databaseInstance.removeChildFromChildUpdateQueue(childId);
+                            } catch (JsonGenerationException e) {
+                                e.printStackTrace();
+                                parsedChildResults = 2;
+                            } catch (JsonMappingException e) {
+                                e.printStackTrace();
+                                parsedChildResults = 2;
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                parsedChildResults = 3;
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                parsedChildResults = 2;
+                            }
+                        }
+                    });
+                }else{
+                    Log.d(TAG,"postponing updates for a child in postman until the details are synchronized to the server");
+                }
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -2432,50 +2638,6 @@ public class BackboneApplication extends Application {
         });
     }
 
-    public void parsePlaceByCustomHfId(String hf_id) {
-        final StringBuilder webServiceUrl = createWebServiceURL(hf_id, GET_PLACE);
-        Log.d("", webServiceUrl.toString());
-
-
-        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
-        client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                throwable.printStackTrace();
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String response) {
-                List<Place> objects = new ArrayList<Place>();
-
-                try {
-                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-                    ObjectMapper mapper = new ObjectMapper();
-                    objects = mapper.readValue(response, new TypeReference<List<Place>>() {
-                    });
-
-                } catch (JsonGenerationException e) {
-                    e.printStackTrace();
-                } catch (JsonMappingException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    for (Place object : objects) {
-                        ContentValues values = new ContentValues();
-                        //Log.d("Place ID", object.getId());
-                        values.put(SQLHandler.PlaceColumns.ID, object.getId());
-                        values.put(SQLHandler.SyncColumns.UPDATED, 1);
-                        values.put(SQLHandler.PlaceColumns.NAME, object.getName());
-                        //Log.d("Place NAME", object.getName());
-                        values.put(SQLHandler.PlaceColumns.CODE, object.getCode());
-                        DatabaseHandler db = getDatabaseInstance();
-                        db.addPlacesThatWereNotInDB(values, object.getId());
-                    }
-                }
-            }
-        });
-    }
 
     //needs to be merged with createWebServiceLoginURL and used with usr/pass as null in case not Login, hf as null in case of Login
     public StringBuilder createWebServiceURL(String rec_id, String service) {
@@ -2606,34 +2768,6 @@ public class BackboneApplication extends Application {
     public int updateVaccinationEventOnServer(final String url) {
         Log.e("Updating vaccin", url);
         Log.d("day4", "Vaccination Update URL : " + url);
-
-//        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
-//        client.get(url, new TextHttpResponseHandler() {
-//            @Override
-//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-//                updatingVaccineOnTheServerResult = -1;
-//                getDatabaseInstance().addPost(url, 1);
-//            }
-//
-//            @Override
-//            public void onSuccess(int statusCode, Header[] headers, String result) {
-//                try {
-//                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
-//                    JSONObject jobj = new JSONObject(result);
-//                    int childID = jobj.getInt("id");
-//                    if (childID == 1) {
-//                        updatingVaccineOnTheServerResult = childID;
-//                    } else {
-//                        getDatabaseInstance().addPost(url, 1);
-//                        updatingVaccineOnTheServerResult = -1;
-//                    }
-//
-//                } catch (Exception e) {
-//                    getDatabaseInstance().addPost(url, 1);
-//                    updatingVaccineOnTheServerResult = -1;
-//                }
-//            }
-//        });
         getDatabaseInstance().addPost(url, 1);
         return updatingVaccineOnTheServerResult;
     }
@@ -2641,30 +2775,28 @@ public class BackboneApplication extends Application {
 
     public void broadcastChildUpdates(int childId) {
         final StringBuilder webServiceUrl;
-        Log.d(TAG,"broadcasting child updates for childID = "+childId);
+        Log.i(TAG,"broadcasting child updates for childID = "+childId);
 
         webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC);
         webServiceUrl.append("BroadcastChildUpdates?childId=").append(childId);
 
         getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
-        Log.e("service broadcast", webServiceUrl + "");
     }
 
     public void broadcastChildUpdatesWithBarcodeId(String barcodeId) {
         final StringBuilder webServiceUrl;
-        Log.d(TAG,"broadcasting child updates for childTempID = "+barcodeId);
+        Log.i(TAG,"broadcasting child updates for childTempID = "+barcodeId);
 
         webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC);
         webServiceUrl.append("BroadcastChildUpdatesWithBarcodeId?barcodeId=").append(barcodeId);
 
         getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
-        Log.e("service broadcast", webServiceUrl + "");
     }
 
 
     /**
      * @return child ID
-     * @Arinela
+     * @Coze
      */
     private int childId;
     public int registerChildWithAppoitments(String barcode, String fristname, String lastname, String bDate, String gender, String hfid, String birthPlaceId, String domId,
@@ -2695,51 +2827,7 @@ public class BackboneApplication extends Application {
             webServiceUrl = new StringBuilder(postmanModel.getUrl());
         }
 
-//        getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
-        childId = -1;
-        Log.e("service weight", webServiceUrl + "");
-
-        //TODO this should be fully tested if it has no impact on the application.
-        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
-        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                throwable.printStackTrace();
-                Log.e("coze", "adding a post to send data when the connection is available");
-                getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
-                childId = -1;
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String result) {
-                try {
-                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
-                    JSONObject jobj = new JSONObject(result);
-                    childId = jobj.getInt("id");
-                    if (childId != -1) {
-
-                        Log.e("coze","data stored successfully");
-                        ContentValues contentValues = new ContentValues();
-                        contentValues.put(SQLHandler.ChildColumns.ID, childId);
-                        DatabaseHandler mydb = getDatabaseInstance();
-
-                        mydb.updateChildTableWithChildID(contentValues, threadTempId);
-                        mydb.updateVaccinationAppointementChildId(threadTempId, childId + "");
-                        mydb.updateVaccinationEventChildId(threadTempId, childId + "");
-
-                    } else {
-                        Log.e("coze","data stored failed");
-                        Log.e("coze","adding a post to send data when the connection is available");
-                        getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
-                    }
-
-
-                } catch (Exception e) {
-                    getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
-                    childId = -1;
-                }
-            }
-        });
+        getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
         return childId;
     }
 
@@ -2753,48 +2841,11 @@ public class BackboneApplication extends Application {
     private int updatingVaccinationAppOutreachResult=-1;
 
     public int updateVaccinationAppOutreach(String childBarcode, String doseId) {
-
-//TODO remove hardcoding of userID
         final StringBuilder webServiceUrl;
         webServiceUrl = new StringBuilder(WCF_URL).append("VaccinationAppointmentManagement.svc/UpdateVaccinationApp?outreach=true&userId=")
-                .append("12832")
+                .append(LOGGED_IN_USER_ID)
                 .append("&barcode=").append(childBarcode)
                 .append("&doseId=").append(doseId);
-
-
-        Log.e("day13", webServiceUrl + "");
-
-//        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
-//        client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
-//            @Override
-//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-//                updatingVaccinationAppOutreachResult=-1;
-//                throwable.printStackTrace();
-//                if (webServiceUrl != null) {
-//                    getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
-//                }
-//            }
-//
-//
-//            @Override
-//            public void onSuccess(int statusCode, Header[] headers, String result) {
-//                try {
-//                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + result);
-//                    JSONObject jobj = new JSONObject(result);
-//                    int idReturned = jobj.getInt("id");
-//                    // if any check is needed to be performed after communicating here you have the result parsed into this int
-//                    updatingVaccinationAppOutreachResult = idReturned;
-//
-//                }catch (JSONException e) {
-//                    e.printStackTrace();
-//                    updatingVaccinationAppOutreachResult = -1;
-//                } catch (NullPointerException e) {
-//                    e.printStackTrace();
-//                    updatingVaccinationAppOutreachResult = -1;
-//                }
-//            }
-//        });
-
         getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
 
         return updatingVaccinationAppOutreachResult;

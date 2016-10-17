@@ -66,7 +66,11 @@ public class ChildAppointmentsListFragment extends BackHandledFragment{
             Cursor mCursor = null;
             mCursor = this_database.getReadableDatabase().rawQuery(handler.SQLVaccinations, new String[]{child_id, child_id});
             if (mCursor != null) {
-                if (mCursor.moveToFirst()) {
+                if (mCursor.getCount()==0) {
+                    child_id = this_database.getChildIdByBarcode(childBarcode);
+                    mCursor = this_database.getReadableDatabase().rawQuery(handler.SQLVaccinations, new String[]{child_id, child_id});
+                }
+                if(mCursor.moveToFirst()){
                     do {
                         ViewAppointmentRow row = new ViewAppointmentRow();
                         row.setAppointment_id(mCursor.getString(mCursor.getColumnIndex("APPOINTMENT_ID")));
@@ -96,7 +100,7 @@ public class ChildAppointmentsListFragment extends BackHandledFragment{
                 bundle.putString("appointment_id", appointmentId);
                 bundle.putString("birthdate", birthdate);
                 bundle.putString("barcode", childBarcode);
-                Log.d("appointmentID", "Appointment Id is : " + appointmentId);
+
                 administerVaccineFragment.setArguments(bundle);
                 app.setCurrentFragment(app.VACCINATE_CHILD_FRAGMENT);
 //                fm.addFragment(administerVaccineFragment, R.id.vacc_fragment_frame, true, FragmentTransaction.TRANSIT_FRAGMENT_FADE, false);

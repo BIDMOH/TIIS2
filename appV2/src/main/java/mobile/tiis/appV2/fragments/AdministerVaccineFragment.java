@@ -55,6 +55,7 @@ import mobile.tiis.appv2.database.DatabaseHandler;
 import mobile.tiis.appv2.database.SQLHandler;
 import mobile.tiis.appv2.entity.AdministerVaccinesModel;
 import mobile.tiis.appv2.entity.NonVaccinationReason;
+import mobile.tiis.appv2.entity.VaccinationAppointment;
 import mobile.tiis.appv2.util.BackgroundThread;
 import rx.Observable;
 import rx.Subscriber;
@@ -62,12 +63,14 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func0;
 
+import static mobile.tiis.appv2.ChildDetailsActivity.childId;
+
 /**
  * Created by issymac on 27/01/16.
  */
 public class AdministerVaccineFragment extends BackHandledFragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener{
     private static final String TAG = AdministerVaccineFragment.class.getSimpleName();
-    private String appointment_id, birthdate, barcode, childId;
+    private String appointment_id, birthdate, barcode;
     private BackboneApplication app;
     private DatabaseHandler dbh;
     private Boolean SavedState = false;
@@ -95,6 +98,10 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
     private int pos;
 
     private boolean thereIsNoVaccinesInLot = false;
+    private boolean isChildBackEntered = false;
+    private Date backEnteredDate = new Date();
+    private Date selectedDate = new Date();
+
     private String emptyVaccineLotsVaccines = "";
 
     AlertDialog.Builder alertDialogBuilder;
@@ -145,6 +152,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
     private AppCompatActivity parent;
 
     private android.support.v7.app.ActionBar actionBar;
+    private VaccinationAppointment appointment;
 
     Toolbar toolbar;
 
@@ -165,11 +173,13 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         fm  = new FragmentStackManager(this.getActivity());
 
         app.saveNeeded = true;
-
         appointment_id  = getArguments().getString("appointment_id");
         birthdate       = getArguments().getString("birthdate");
         barcode         = getArguments().getString("barcode");
         SimpleDateFormat ft1 = new SimpleDateFormat("dd-MMM-yyyy");
+
+        appointment = dbh.getVaccinationAppointmentById(appointment_id);
+
         Log.d("EBENSEARCH", "Birth date is : "+ft1.format(BackboneActivity.dateParser(birthdate)));
 
         try {
@@ -332,11 +342,14 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         for (final AdministerVaccinesModel item : arr){
             View rowView = li.inflate(R.layout.vaccine_dose_quantity_item, null);
 
+            SimpleDateFormat ftD = new SimpleDateFormat("dd-MMM-yyyy");
+//            Date schedulddate = BackboneActivity.dateParser(item.getScheduled_Date_field());
+
             TextView tvDose                 = (TextView) rowView.findViewById(R.id.dose);
             final TextView tvVaccineDate    = (TextView)rowView.findViewById(R.id.vaccine_date);
             final Spinner spVaccLot         = (Spinner)rowView.findViewById(R.id.lot_spinner);
             final Spinner spReason          = (Spinner)rowView.findViewById(R.id.non_vacc_reason_spinner);
-            CheckBox chDone                 = (CheckBox)rowView.findViewById(R.id.vaccine_administered_done_checkbox);
+            final CheckBox chDone           = (CheckBox)rowView.findViewById(R.id.vaccine_administered_done_checkbox);
             final View view                 = (View) rowView.findViewById(R.id.split_dose);
 
             tvDose.setText(item.getDoseName());
@@ -363,7 +376,8 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
             String timeLong = tLong[0];
 
-            Date scheduledDate = new Date(Long.parseLong(timeLong));
+            Date scheduledDate  = new Date(Long.parseLong(timeLong));
+
             Calendar now = Calendar.getInstance();
 
             Date compDateOne = getZeroTimeDate(now.getTime());
@@ -449,20 +463,41 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
             SingleTextViewAdapterForVaccineLot statusAdapter = new SingleTextViewAdapterForVaccineLot(AdministerVaccineFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, item.getVaccine_lot_list());
             spVaccLot.setAdapter(statusAdapter);
-            if (item.getVaccine_lot_list().size() > 2) {
-                spVaccLot.setSelection(2);
-                item.setVaccination_lot_pos(2);
-                //setting the id of vaccine lot
-                item.setVaccination_lot(item.getVaccine_lot_map().get(item.getVaccine_lot_list().get(2)).toString());
-                Log.d("RowCollId", item.getVaccination_lot());
-            } else {
-                thereIsNoVaccinesInLot  = true;
-                emptyVaccineLotsVaccines += item.getDoseName()+", ";
-                Log.d("TIMR_LOG", "size is less than 2");
+
+            Date today          = new Date();
+
+            Calendar cl = Calendar.getInstance();
+            cl.setTime(scheduledDate);
+
+            cl.setTime(today);
+            Date compareDateOne = getZeroTimeDate(backEnteredDate);
+            Date compareDateTwo = getZeroTimeDate(today);
+
+            Log.d("SOMA", "selected Date "+compareDateOne);
+            Log.d("SOMA", "today is "+compareDateTwo);
+            Log.d("SOMA", "is Child Backentered "+isChildBackEntered);
+
+            if (compareDateOne.compareTo(compareDateTwo)<0 && (isChildBackEntered)){
                 spVaccLot.setSelection(1);
                 item.setVaccination_lot_pos(1);
                 item.setVaccination_lot(item.getVaccine_lot_map().get(item.getVaccine_lot_list().get(1)).toString());
                 Log.d("RowCollId", item.getVaccination_lot());
+
+                //Disable spinner and done checkbox
+                spVaccLot.setEnabled(false);
+            }else {
+                if (item.getVaccine_lot_list().size() > 2) {
+                    spVaccLot.setSelection(2);
+                    item.setVaccination_lot_pos(2);
+                    //setting the id of vaccine lot
+                    item.setVaccination_lot(item.getVaccine_lot_map().get(item.getVaccine_lot_list().get(2)).toString());
+                    Log.d("RowCollId", item.getVaccination_lot());
+                } else {
+                    spVaccLot.setSelection(1);
+                    item.setVaccination_lot_pos(1);
+                    item.setVaccination_lot(item.getVaccine_lot_map().get(item.getVaccine_lot_list().get(1)).toString());
+                    Log.d("RowCollId", item.getVaccination_lot());
+                }
             }
 
             //rowCollector.setVaccination_lot_pos(1);
@@ -547,6 +582,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
         Date compareDateOne = getZeroTimeDate(new_date);
         Date compareDateTwo = getZeroTimeDate(scheduledDate);
+        selectedDate = compareDateOne;
 
         if (compareDateOne.before(compareDateTwo)){
             correnctDateSelected = false;
@@ -634,10 +670,22 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
             }
         }
-        vaccinesListTableLayout.removeAllViews();
-        fillVaccineTableLayout(arrayListAdminVacc);
-//        vaccinesListTableLayout.invalidate();
-//        vaccinesListTableLayout.refreshDrawableState();
+
+        Date today = new Date();
+        Date compareToday = getZeroTimeDate(today);
+
+        //check to see if the child is being backentered so as to default to No Lot
+        if (selectedDate.before(compareToday)){
+            Log.d("SOMA", "The child is being back entered");
+            backEnteredDate = selectedDate;
+            isChildBackEntered = true;
+            vaccinesListTableLayout.removeAllViews();
+            fillVaccineTableLayout(arrayListAdminVacc);
+        }else {
+            isChildBackEntered = false;
+            vaccinesListTableLayout.removeAllViews();
+            fillVaccineTableLayout(arrayListAdminVacc);
+        }
 
         return new_date;
     }
@@ -682,10 +730,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
             childId = getChildIdCursor.getString(getChildIdCursor.getColumnIndex(SQLHandler.ChildColumns.ID));
             getChildIdCursor.close();
         } else {
-//          toastMessage(getString(R.string.empty_child_id));
             getChildIdCursor.close();
-            //TODO: Call the fragmentStackManager to replace the current fragment (if it was the activity its supposed to be finished)
-//            finish();
         }
     }
 
@@ -741,10 +786,24 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
         Observable.defer(new Func0<Observable<Boolean>>() {
         @Override
         public Observable<Boolean> call() {
-            // Do some long running operation
+
+
+            //refreshing the required appointmentId, childId incase they were updated in the database after receiving a push notification update
+            //it was noted that in some cases the values in the database was updated after receiving a push notification from the server before the uses clicked save vaccination
+            // so it is relevant to reattain appointmentId, childId  to capture such scenarios.
+            getChildId();
+            Log.d("delay","saving vaccines for childId = "+childId);
+            appointment_id = (dbh.getVaccinationAppointmentForList(childId,appointment.getScheduledDate()).get(0)).getId();
+            //Administering the vaccines
             administerVaccineSaveButtonClicked();
             if (SavedState) {
                 BackboneApplication application = (BackboneApplication) AdministerVaccineFragment.this.getActivity().getApplication();
+                try {
+                    application.broadcastChildUpdates(Integer.parseInt(childId));
+                }catch (NumberFormatException e){
+                    e.printStackTrace();
+                    application.broadcastChildUpdatesWithBarcodeId(barcode);
+                }
                 for (AdministerVaccinesModel a : arrayListAdminVacc) {
                     try {
                         DatabaseHandler db = application.getDatabaseInstance();
@@ -768,7 +827,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                         if (a.getStatus().equalsIgnoreCase("true") && !a.getVaccination_lot().toLowerCase().contains("no lot")) {
                             Log.d(TAG,"deducting stock");
                             Cursor cursor = db.getReadableDatabase().rawQuery("SELECT balance FROM health_facility_balance WHERE lot_id=?", new String[]{a.getVaccination_lot()});
-                            //Cursor cursor = db.getReadableDatabase().rawQuery("UPDATE health_facility_balance SET balance = balance - 1 WHERE lot_id=?", new String[]{a.getVaccination_lot()});
                             if (cursor != null && cursor.getCount() > 0) {
                                 cursor.moveToFirst();
                                 int bal = cursor.getInt(cursor.getColumnIndex("balance"));
@@ -777,7 +835,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                                 ContentValues cv = new ContentValues();
                                 cv.put(SQLHandler.HealthFacilityBalanceColumns.BALANCE, bal);
                                 db.updateStockBalance(cv, a.getVaccination_lot());
-                                //cursor = db.getReadableDatabase().rawQuery("UPDATE health_facility_balance SET balance=? WHERE lot_id=?", new String[]{String.valueOf(bal), a.getVaccination_lot()});
                             }
                         }else{
                             Log.d(TAG,"not deducting stock");
@@ -824,8 +881,12 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
                 }
             });
-            ad2.show();
-            ((ChildDetailsActivity)getActivity()).updateadapters();
+            try {
+                ad2.show();
+                ((ChildDetailsActivity) getActivity()).updateadapters();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
 
         @Override

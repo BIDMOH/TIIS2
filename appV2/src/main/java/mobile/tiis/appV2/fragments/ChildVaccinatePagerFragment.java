@@ -31,6 +31,8 @@ import mobile.tiis.appv2.entity.Child;
 import mobile.tiis.appv2.mObjects.RowCollector;
 import mobile.tiis.appv2.util.ViewAppointmentRow;
 
+import static mobile.tiis.appv2.ChildDetailsActivity.childId;
+
 /**
  *  Created by issymac on 27/01/16.
  */
@@ -165,7 +167,7 @@ public class ChildVaccinatePagerFragment extends Fragment {
 
             ChildAppointmentsListFragment appointmentsListFragment = new ChildAppointmentsListFragment();
             Bundle mBundle=new Bundle();
-            mBundle.putString("child_id", currentChild.getId());
+            mBundle.putString("child_id", childId);
             mBundle.putString("barcode", currentChild.getBarcodeID());
             mBundle.putString("birthdate", currentChild.getBirthdate());
             appointmentsListFragment.setArguments(mBundle);
@@ -194,7 +196,7 @@ public class ChildVaccinatePagerFragment extends Fragment {
         }else{
             ChildAppointmentsListFragment appointmentsListFragment = new ChildAppointmentsListFragment();
             Bundle bundle=new Bundle();
-            bundle.putString("child_id", currentChild.getId());
+            bundle.putString("child_id", childId);
             bundle.putString("barcode", currentChild.getBarcodeID());
             bundle.putString("birthdate", currentChild.getBirthdate());
 

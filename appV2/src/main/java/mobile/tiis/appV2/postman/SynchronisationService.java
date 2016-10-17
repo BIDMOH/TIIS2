@@ -141,6 +141,34 @@ public class SynchronisationService extends IntentService {
                                     e.printStackTrace();
                                 }
                             }while(!res);
+                        }else{
+                            //check if this was a duplicate barcode registered in the server. if so delete the child
+                            if(p.getUrl().contains("RegisterChildWithAppoitmentsWithMothersHivStatusAndTT2VaccineStatusAndCatchment")){
+                               String barcode =  p.getUrl().split("=")[1].substring(0,10);
+                                Log.d(TAG,"barcode = "+barcode);
+                                db.removeChildFromChildTable(db.getChildIdByBarcode(barcode));
+
+                                //In some very minor cases a network connectivity may be disrupted after posting information to the server but before receiving the results
+                                //this inturns leads to some scenariors where the data remains in postman and on resending a childregistration request
+                                // that has already been registered in the server for the second time, the server will keep returning a -1 results code showing that the child is a dublicate.
+                                //To fix such issues after deletion of a dublicate registration entry from the postman and the database it is important to synch that childs details from the server into the device
+                                //by using the child's barcode.
+
+                                //TODO create a custome method for broadcasting child updates to only this specific device and not all other devices with this  child's data
+                                app.broadcastChildUpdatesWithBarcodeId(barcode);
+
+                                boolean res1 = false;
+                                do {
+                                    try {
+                                        Thread.sleep(10000);
+                                        res1 = db.deletePostFromPostman(p.getPostId());
+                                        Log.d("POSTMAN COMPLETE","url = "+p.getUrl());
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }while(!res1);
+
+                            }
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -152,6 +180,8 @@ public class SynchronisationService extends IntentService {
                 }
             }
             app.parseGCMChildrenInQueueById();
+            app.parseItemLots();
+            app.parseStock();
         }
 
         this.stopSelf();

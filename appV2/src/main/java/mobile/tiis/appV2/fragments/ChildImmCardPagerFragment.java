@@ -13,6 +13,7 @@ import com.trello.rxlifecycle.components.support.RxFragment;
 
 import java.util.ArrayList;
 
+import mobile.tiis.appv2.ChildDetailsActivity;
 import mobile.tiis.appv2.CustomViews.NestedListView;
 import mobile.tiis.appv2.R;
 import mobile.tiis.appv2.adapters.ImmunizationCardAdapter;
@@ -115,9 +116,7 @@ public class ChildImmCardPagerFragment extends RxFragment {
     }
 
     private void renderViews(){
-        if (currentChild != null) {
-            childId = currentChild.getId();
-        }
+        childId = ChildDetailsActivity.childId;
 
         Observable.defer(new Func0<Observable<Boolean>>() {
             @Override
