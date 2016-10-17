@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#e5e5e5">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp">
+                <android.support.v7.widget.CardView
+                    android:layout_width="150dp"
+                    android:layout_height="45dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="32dp"
+                    android:id="@+id/date_text_card_wrap">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="7-Mar-2016"
+                        android:id="@+id/date_text"
+                        android:layout_gravity="center"/>
+
+                </android.support.v7.widget.CardView>
+
+            </RelativeLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <android.support.v7.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_margin="8dp"
+                    android:layout_weight=".5"
+                    android:layout_marginBottom="-2dp"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:text="Immunized Children"
+                            android:textStyle="bold"/>
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <RelativeLayout
+                                android:visibility="gone"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:id="@+id/rl_empty_immunized_children"
+                                android:background="@color/card_border">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/no_imunized_children_title"
+                                    android:layout_centerInParent="true"
+                                    android:text="No Immunized Children"/>
+
+                            </RelativeLayout>
+
+                            <mobile.tiis.appv2.CustomViews.NestedListView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/immunized_children_list"
+                                android:scrollbars="none">
+
+                            </mobile.tiis.appv2.CustomViews.NestedListView>
+
+                        </RelativeLayout>
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_margin="8dp"
+                    android:layout_marginBottom="-2dp"
+                    android:layout_weight=".5"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:text="Immunizations"
+                            android:textStyle="bold"/>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:gravity="center_vertical"
+                            android:background="@color/card_light_text"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight=".40"
+                                android:paddingLeft="16dp"
+                                android:layout_height="wrap_content"
+                                android:text="Antigen"
+                                android:id="@+id/txt_antigen"
+                                android:textSize="16sp"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight=".10"
+                                android:gravity="center"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:id="@+id/model_0"
+                                android:textSize="16sp"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight=".10"
+                                android:gravity="center"
+                                android:layout_height="wrap_content"
+                                android:text="1"
+                                android:id="@+id/model_1"
+                                android:textSize="16sp"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight=".10"
+                                android:gravity="center"
+                                android:layout_height="wrap_content"
+                                android:text="2"
+                                android:id="@+id/model_2"
+                                android:textSize="16sp"/>
+
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight=".10"
+                                android:gravity="center"
+                                android:layout_height="wrap_content"
+                                android:text="3"
+                                android:id="@+id/model_3"
+                                android:textSize="16sp"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight=".20"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="Total"
+                                android:id="@+id/txt_number"
+                                />
+
+                        </LinearLayout>
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <RelativeLayout
+                                android:visibility="gone"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:id="@+id/rl_empty_immunization"
+                                android:background="@color/card_border">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/txt_empty_immunizations"
+                                    android:layout_centerInParent="true"
+                                    android:text="No Immunizations"/>
+
+                            </RelativeLayout>
+
+                            <mobile.tiis.appv2.CustomViews.NestedListView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/immunizations_list"
+                                android:scrollbars="none">
+
+                            </mobile.tiis.appv2.CustomViews.NestedListView>
+
+                        </RelativeLayout>
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</ScrollView>

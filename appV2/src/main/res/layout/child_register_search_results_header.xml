@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#e5e5e5">
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:background="#ccc"
+        android:textColor="@color/black"
+        android:text="@string/list_of_similar_children_title"/>
+
+    <LinearLayout
+        android:layout_below="@id/title"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:paddingLeft="16dp"
+            android:layout_width="0dp"
+            android:layout_weight=".08"
+            android:layout_height="wrap_content"
+            android:text="SN"
+            android:textStyle="bold"
+            android:textColor="@color/card_grid_text"/>
+
+        <TextView
+            android:paddingLeft="16dp"
+            android:layout_width="0dp"
+            android:layout_weight=".18"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_child_names"
+            android:text="CHILD NAMES"
+            android:textStyle="bold"
+            android:textColor="@color/card_grid_text"/>
+
+        <TextView
+            android:paddingLeft="16dp"
+            android:layout_width="0dp"
+            android:layout_weight=".18"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_mother_names"
+            android:text="MOTHER NAMES"
+            android:textStyle="bold"
+            android:textColor="@color/card_grid_text"/>
+
+        <TextView
+            android:paddingLeft="16dp"
+            android:layout_width="0dp"
+            android:layout_weight=".14"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_child_dob"
+            android:text="DATE OF BIRTH"
+            android:textStyle="bold"
+            android:textColor="@color/card_grid_text"/>
+
+        <TextView
+            android:paddingLeft="16dp"
+            android:layout_width="0dp"
+            android:layout_weight=".11"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_child_gender"
+            android:text="GENDER"
+            android:textStyle="bold"
+            android:textColor="@color/card_grid_text"/>
+
+        <TextView
+            android:paddingLeft="16dp"
+            android:layout_width="0dp"
+            android:layout_weight=".12"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_child_village_domicile"
+            android:text="VILLAGE"
+            android:textStyle="bold"
+            android:textColor="@color/card_grid_text"/>
+
+        <TextView
+            android:paddingLeft="16dp"
+            android:layout_width="0dp"
+            android:layout_weight=".16"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_child_health_facility"
+            android:text="HEALTH CENTER"
+            android:textStyle="bold"
+            android:textColor="@color/card_grid_text"/>
+
+    </LinearLayout>
+
+
+</RelativeLayout>
