@@ -2512,7 +2512,7 @@ public class BackboneApplication extends Application {
 
                 Log.d(TAG, "passing child " + childId);
 
-                if(getDatabaseInstance().checkIfChildUpdatesAreInPostman(childId)){
+                if(!getDatabaseInstance().checkIfChildUpdatesAreInPostman(childId)){
                     final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC).append("GetChildByIdV1?childId=").append(childId);
                     client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
                         @Override

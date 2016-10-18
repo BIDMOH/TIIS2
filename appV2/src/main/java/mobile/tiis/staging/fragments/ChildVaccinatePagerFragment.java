@@ -165,32 +165,7 @@ public class ChildVaccinatePagerFragment extends Fragment {
 
 
         listStock = dbh.getAvailableHealthFacilityBalance();
-        if (currentChild.getBarcodeID().isEmpty() || currentChild.getBarcodeID().equals("")){
-            Toast.makeText(ChildVaccinatePagerFragment.this.getActivity(), getString(R.string.empty_barcode), Toast.LENGTH_SHORT).show();
-            noBarcode.setVisibility(View.VISIBLE);
-            registrationModeEnabled.setVisibility(View.GONE);
-            frameLayout.setVisibility(View.GONE);
-        }else if(PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).getBoolean(TABLET_REGISTRATION_MODE_PREFERENCE_NAME, false)){
-            noBarcode.setVisibility(View.GONE);
-            frameLayout.setVisibility(View.GONE);
-            registrationModeEnabled.setVisibility(View.VISIBLE);
-        }else if(!checkIfLotNumbersWereSetForAllVaccinesDuringTheDaysLoginOfTheDay()){
-            noBarcode.setVisibility(View.GONE);
-            frameLayout.setVisibility(View.GONE);
-            registrationModeEnabled.setVisibility(View.VISIBLE);
-            lotNumberErrorMessage.setText("Lot Numbers for some vaccines have not been selected. \nInorder to vaccinate a child, Go to Lot Number Settings on the main menu and select the vaccination Lot Numbers for vaccines that will be used today");
-
-        }else if(!checkIfThereAnyActivatedLotNumbersThatHaveRunOutOfStock()){
-            noBarcode.setVisibility(View.GONE);
-            frameLayout.setVisibility(View.GONE);
-            registrationModeEnabled.setVisibility(View.VISIBLE);
-            lotNumberErrorMessage.setText("Lot Numbers that were previously selected for today's use for some vaccines have run out. \n Please go to Lot Number Settings on the main menu and select new vaccination Lot Numbers to continue vaccinating children");
-
-        }else{
-            noBarcode.setVisibility(View.GONE);
-            frameLayout.setVisibility(View.VISIBLE);
-            registrationModeEnabled.setVisibility(View.GONE);
-        }
+        validateAccessPrevilageForTheChild();
 
         if (!appointmentID.isEmpty()){
 
@@ -250,6 +225,35 @@ public class ChildVaccinatePagerFragment extends Fragment {
         SimpleDateFormat ftD = new SimpleDateFormat("dd-MMM-yyyy");
 
         return v;
+    }
+
+    private void validateAccessPrevilageForTheChild(){
+        if (currentChild.getBarcodeID().isEmpty() || currentChild.getBarcodeID().equals("")){
+            Toast.makeText(ChildVaccinatePagerFragment.this.getActivity(), getString(R.string.empty_barcode), Toast.LENGTH_SHORT).show();
+            noBarcode.setVisibility(View.VISIBLE);
+            registrationModeEnabled.setVisibility(View.GONE);
+            frameLayout.setVisibility(View.GONE);
+        }else if(PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).getBoolean(TABLET_REGISTRATION_MODE_PREFERENCE_NAME, false)){
+            noBarcode.setVisibility(View.GONE);
+            frameLayout.setVisibility(View.GONE);
+            registrationModeEnabled.setVisibility(View.VISIBLE);
+        }else if(!checkIfLotNumbersWereSetForAllVaccinesDuringTheDaysLoginOfTheDay()){
+            noBarcode.setVisibility(View.GONE);
+            frameLayout.setVisibility(View.GONE);
+            registrationModeEnabled.setVisibility(View.VISIBLE);
+            lotNumberErrorMessage.setText("Lot Numbers for some vaccines have not been selected. \nInorder to vaccinate a child, Go to Lot Number Settings on the main menu and select the vaccination Lot Numbers for vaccines that will be used today");
+
+        }else if(!checkIfThereAnyActivatedLotNumbersThatHaveRunOutOfStock()){
+            noBarcode.setVisibility(View.GONE);
+            frameLayout.setVisibility(View.GONE);
+            registrationModeEnabled.setVisibility(View.VISIBLE);
+            lotNumberErrorMessage.setText("Lot Numbers that were previously selected for today's use for some vaccines have run out. \n Please go to Lot Number Settings on the main menu and select new vaccination Lot Numbers to continue vaccinating children");
+
+        }else{
+            noBarcode.setVisibility(View.GONE);
+            frameLayout.setVisibility(View.VISIBLE);
+            registrationModeEnabled.setVisibility(View.GONE);
+        }
     }
 
     public void setUpView(View v){
@@ -339,6 +343,11 @@ public class ChildVaccinatePagerFragment extends Fragment {
             }
         }
         return true;
+    }
+
+    public void updateChild() {
+        currentChild = dbh.getChildById(childId);
+        validateAccessPrevilageForTheChild();
     }
 
 }

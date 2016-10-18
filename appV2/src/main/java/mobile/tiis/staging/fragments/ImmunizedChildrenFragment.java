@@ -157,15 +157,18 @@ public class ImmunizedChildrenFragment extends Fragment implements OnChartValueS
         cal.set(year, (monthOfYear), dayOfMonth);
 
 
-        String displayDate = dayOfMonth+"/"+(monthOfYear+1)+"/"+year;
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        String date = null;
 
-        date = format.format(cal.getTime());
-        format = new SimpleDateFormat("dd MMM yyyy");
-        displayDate = format.format(cal.getTime());
+        SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy");
+        String displayDate = format.format(cal.getTime());
         dateText.setText(displayDate);
 
+
+        SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
+
+        long time = cal.getTimeInMillis()-24*60*60*1000;
+        cal.setTimeInMillis(time);
+
+        String date = format2.format(cal.getTime());
         refreshImmunizationList(date);
         refreshImmunizedChildren(date);
 //        renderChart();
