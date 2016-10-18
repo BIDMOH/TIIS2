@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:app_ms="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content_monthly_reports"
     android:layout_width="match_parent"
@@ -17,14 +18,57 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:id="@+id/info"
+            android:background="@color/card_light_text">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:text="Reporting Month"
+                android:textSize="18sp"
+                android:id="@+id/last_month_title"/>
+
+            <fr.ganfra.materialspinner.MaterialSpinner
+                android:id="@+id/mon_year_spiner"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/last_month_title"
+                android:layout_marginLeft="16dp"
+                android:layout_centerVertical="true"
+                app_ms:ms_multiline="false"
+                app_ms:ms_hint="Reporting Month"
+                app_ms:ms_enableFloatingLabel="true"
+                app_ms:ms_enableErrorLabel="false"
+                app_ms:ms_floatingLabelText="Reporting Month"
+                app_ms:ms_baseColor="@color/black"
+                app_ms:ms_highlightColor="@color/black"
+                app_ms:ms_errorColor="@color/red_500"
+                app_ms:ms_typeface="Roboto-LightItalic.ttf"
+                app_ms:ms_thickness="0.5dp"
+                app_ms:ms_hintColor="@color/black"
+                app_ms:ms_arrowColor="@color/black"
+                app_ms:ms_arrowSize="16dp"
+                app_ms:ms_alignLabels="false"
+                app_ms:ms_floatingLabelColor="@color/black"/>
+
+        </RelativeLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_below="@id/info">
 
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:layout_height="300dp">
 
             <TextView
@@ -32,7 +76,6 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/surveillance_txt"
                 android:text="DESEASE SURVEILLANCE DATA"
-                android:layout_marginLeft="16dp"
                 android:textColor="@color/card_title_text"
                 android:layout_marginTop="16dp"/>
 
@@ -40,8 +83,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_marginTop="8dp"
-                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
                 android:layout_below="@id/surveillance_txt"
                 android:background="@color/white">
 
@@ -60,9 +102,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Fever and Rush Illness"
-                            android:layout_marginRight="4dp"
                             android:layout_centerVertical="true"
-                            android:layout_marginLeft="8dp"/>
+                            android:layout_margin="6dp"
+                            android:paddingLeft="4dp"
+                            android:id="@+id/textView3" />
 
 
                     </RelativeLayout>
@@ -77,6 +120,16 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent">
 
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="6dp"
+                            android:paddingLeft="4dp"
+                            android:id="@+id/fever_monthly_cases"
+                            android:hint="cases"
+                            android:background="@drawable/border"
+                            android:inputType="number"/>
+
                     </RelativeLayout>
 
                     <View
@@ -88,6 +141,17 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="match_parent">
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="6dp"
+                            android:paddingLeft="4dp"
+                            android:background="@drawable/border"
+                            android:id="@+id/fever_deaths"
+                            android:hint="deaths"
+                            android:inputType="number"/>
+
 
                     </RelativeLayout>
 
@@ -125,6 +189,17 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent">
 
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="6dp"
+                            android:paddingLeft="4dp"
+                            android:background="@drawable/border"
+                            android:id="@+id/afp_monthly_cases"
+                            android:hint="cases"
+                            android:inputType="number"/>
+
+
                     </RelativeLayout>
 
                     <View
@@ -136,6 +211,17 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="match_parent">
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="6dp"
+                            android:paddingLeft="4dp"
+                            android:background="@drawable/border"
+                            android:id="@+id/afp_deaths"
+                            android:hint="deaths"
+                            android:inputType="number"/>
+
 
                     </RelativeLayout>
 
@@ -173,6 +259,16 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent">
 
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="6dp"
+                            android:paddingLeft="4dp"
+                            android:background="@drawable/border"
+                            android:id="@+id/tetanus_monthly_cases"
+                            android:hint="cases"
+                            android:inputType="number"/>
+
                     </RelativeLayout>
 
                     <View
@@ -185,6 +281,16 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent">
 
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="6dp"
+                            android:paddingLeft="4dp"
+                            android:background="@drawable/border"
+                            android:id="@+id/tetanus_deaths"
+                            android:hint="deaths"
+                            android:inputType="number"/>
+
                     </RelativeLayout>
 
                 </LinearLayout>
@@ -196,7 +302,8 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:layout_marginRight="4dp"
-                    android:text="Submit"/>
+                    android:text="Submit"
+                    android:id="@+id/surveillance_submit_button"/>
 
 
             </LinearLayout>
@@ -206,26 +313,192 @@
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="200dp">
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_height="300dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/refrigerator_txt"
                 android:text="REFRIGERATOR TEMPERATURE"
-                android:layout_marginLeft="16dp"
                 android:textColor="@color/card_title_text"
                 android:layout_marginTop="16dp"/>
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/white"
-                android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"
+                android:orientation="vertical"
                 android:layout_below="@id/refrigerator_txt">
 
-            </RelativeLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="@drawable/border"
+                    android:orientation="horizontal"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:text="Temperature"
+                        android:gravity="center"/>
+
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/card_border"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:text="No. Of Alarm Episodes"
+                        android:gravity="center"/>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="@drawable/border"
+                    android:orientation="horizontal"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:text="Max"
+                        android:gravity="center"/>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/card_border"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:text="Min"
+                        android:gravity="center"/>
+
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/card_border"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:text="Low Temp"
+                        android:gravity="center"/>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/card_border"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:text="High Temp"
+                        android:gravity="center"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:orientation="horizontal"
+                    android:background="@drawable/border"
+                    android:layout_weight="1">
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:background="@drawable/border"
+                        android:id="@+id/temp_max"
+                        android:hint="Value"
+                        android:textSize="14sp"
+                        android:inputType="numberDecimal"/>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/card_border"/>
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:background="@drawable/border"
+                        android:id="@+id/temp_min"
+                        android:hint="Value"
+                        android:textSize="14sp"
+                        android:inputType="numberDecimal"/>
+
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/card_border"/>
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:background="@drawable/border"
+
+                        android:id="@+id/alarm_low"
+                        android:hint="Value"
+                        android:textSize="14sp"
+                        android:inputType="numberDecimal"/>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/card_border"/>
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:background="@drawable/border"
+                        android:id="@+id/alarm_high"
+                        android:hint="Value"
+                        android:textSize="14sp"
+                        android:inputType="numberDecimal"/>
+
+                </LinearLayout>
+
+                <Button
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="right"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginRight="4dp"
+                    android:text="Submit"
+                    android:id="@+id/refrigerator_submit_button"/>
+
+
+            </LinearLayout>
 
         </RelativeLayout>
 

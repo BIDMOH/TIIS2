@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="mobile.tiis.staging.LotSettingsActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/toolbar"
+            style="@style/ToolBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/abc_action_bar_default_height_material"
+            android:minHeight="@dimen/abc_action_bar_default_height_material"
+            android:background="@color/light_blue_600">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="32dp"
+                    android:textColor="@color/white"
+                    android:id="@+id/toolbar_title"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_centerVertical="true"
+                    android:text="TImR"/>
+                <LinearLayout
+                    android:layout_alignParentRight="true"
+                    android:gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:text="Set as Registration Tablet"/>
+                    <android.support.v7.widget.SwitchCompat
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:id="@+id/set_tablet_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:theme="@style/MySwitch"/>
+                </LinearLayout>
+            </RelativeLayout>
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/frameLayout">
+            <include layout="@layout/item_list" />
+        </FrameLayout>
+        <TextView
+            android:visibility="invisible"
+            android:id="@+id/info"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_margin="64dp"
+            android:textSize="18sp"
+            android:layout_height="wrap_content"
+            android:text="This tablet has been set in Registration Mode.\nIt will not be used for vaccinating children until the mode is deselected (on the upper right corner of this screen). \nClick done to continue or Disable the Regitration Mode to set the day's Lot Numbers and start vaccinating children"/>
+
+
+    </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="32dp"
+        android:src="@drawable/ic_done_all_white_36dp" />
+
+
+</android.support.design.widget.CoordinatorLayout>

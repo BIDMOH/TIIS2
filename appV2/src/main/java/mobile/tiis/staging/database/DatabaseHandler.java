@@ -36,6 +36,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,6 +70,7 @@ import mobile.tiis.staging.entity.VaccinationQueueObject;
 import mobile.tiis.staging.fragments.FragmentVaccineNameQuantity;
 import mobile.tiis.staging.postman.PostmanModel;
 
+import static mobile.tiis.staging.database.GIISContract.ActiveLotNumbersColumns;
 import static mobile.tiis.staging.database.SQLHandler.Tables.POSTMAN;
 
 /**
@@ -78,7 +80,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String TAG = "DatabaseHandler";
 
     public static final String DATABASE_NAME = "giis_mobile.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     public static boolean dbPreinstalled = false;
 
     public DatabaseHandler(Context context) {
@@ -173,6 +175,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.execSQL(SQLHandler.SQLChildSupplements);
             db.execSQL(SQLHandler.SQLItemLot);
             db.execSQL(SQLHandler.SQLHealthFacilityBalance);
+            db.execSQL(SQLHandler.SQLActiveLotNumber);
 
             db.execSQL(SQLHandler.SQLDeseaseSurveillanceData);
             db.execSQL(SQLHandler.SQLRefrigeratorColums);
@@ -213,6 +216,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + Tables.HEALTH_FACILITY_BALANCE);
             db.execSQL("DROP TABLE IF EXISTS " + Tables.BIRTHPLACE);
             db.execSQL("DROP TABLE IF EXISTS " + Tables.CONFIG);
+            db.execSQL("DROP TABLE IF EXISTS " + Tables.ACTIVE_LOT_NUMBERS);
             db.execSQL("DROP VIEW IF EXISTS " + SQLHandler.Views.MONTHLY_PLAN);
 
             // CREATE NEW INSTANCE OF SCHEMA
@@ -1657,7 +1661,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         long result = -1;
         sd.beginTransaction();
         try {
-            result = sd.update(SQLHandler.Tables.CHILD, cv, SQLHandler.ChildColumns.ID + "=?",
+            result = sd.update(Tables.CHILD, cv, SQLHandler.ChildColumns.ID + "=?",
                     new String[]{
                             id
                     });
@@ -1676,7 +1680,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         long result = -1;
         sd.beginTransaction();
         try {
-            result = sd.update(SQLHandler.Tables.CHILD, cv, SQLHandler.ChildColumns.BARCODE_ID + "=?",
+            result = sd.update(Tables.CHILD, cv, SQLHandler.ChildColumns.BARCODE_ID + "=?",
                     new String[]{
                             barcodeId
                     });
@@ -3866,6 +3870,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             scheduled_vaccination_id = cursor.getString(cursor.getColumnIndex("SCHEDULED_VACCINATION_ID"));
             Log.d("Scheduled vacc id", scheduled_vaccination_id);
 
+
+            Calendar calendar=Calendar.getInstance();
+            GregorianCalendar gregorianCalendar = new GregorianCalendar(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH));
+
+
             Cursor cursor2 =   database.rawQuery("SELECT ITEM_ID FROM scheduled_vaccination WHERE ID=?", new String[]{scheduled_vaccination_id});
             if (cursor2.getCount() > 0) {
                 cursor2.moveToFirst();
@@ -3875,7 +3884,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         " SELECT '-2' AS id, 'No Lot' AS lot_number, '30' AS balance, datetime('now') as expire_date UNION " +
                         " SELECT item_lot.id, item_lot.lot_number, health_facility_balance.balance, datetime(substr(item_lot.expire_date,7,10), 'unixepoch') " +
                         " FROM item_lot  join health_facility_balance ON item_lot.ID = health_facility_balance.lot_id " +
-                        " WHERE item_lot.item_id = ? AND health_facility_balance.LotIsActive = 'true' AND CAST(health_facility_balance.balance as REAL) > "+0+"" +
+                        " INNER JOIN active_lot_numbers ON health_facility_balance.lot_id = active_lot_numbers.lot_id "+
+                        " WHERE active_lot_numbers.date= "+gregorianCalendar.getTimeInMillis()+" AND  item_lot.item_id = ? AND health_facility_balance.LotIsActive = 'true' AND CAST(health_facility_balance.balance as REAL) > "+0+"" +
                         " AND datetime(substr(item_lot.expire_date,7,10), 'unixepoch') >= datetime('now') ORDER BY expire_date", new String[]{item_id});
                 if (cursor.getCount() > 0) {
                     if (cursor.moveToFirst()) {
@@ -4062,5 +4072,64 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             c.close();return false;
         }
 
+    }
+
+    public void saveActiveLotNumber(String lot_id,String lot_number,String item,long date){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ActiveLotNumbersColumns.LOT_ID,lot_id);
+        contentValues.put(ActiveLotNumbersColumns.LOT_NUMBER,lot_number);
+        contentValues.put(ActiveLotNumbersColumns.ITEM,item);
+        contentValues.put(ActiveLotNumbersColumns.DATE,date);
+
+        db.beginTransaction();
+        try {
+            db.insert(Tables.ACTIVE_LOT_NUMBERS, null,contentValues);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+
+    /**
+     * method used to get the list of the vaccinations in the HeaalthFacilityBalance table whose balance is non zero
+     * @return
+     */
+    public List<Stock> getAvailableHealthFacilityBalance() {
+        //Container
+        List<Stock> stockList = new ArrayList<>();
+
+        //Query on Child Table
+        String selectQuery = "SELECT lot_id, gtin , lot_number , item , sum(balance) as balance , expire_date , ReorderQty, GtinIsActive, LotIsActive FROM "+ Tables.HEALTH_FACILITY_BALANCE +" where datetime(substr(expire_date,7,10), 'unixepoch') >= datetime('now') group by item" ;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                if(cursor.getInt(cursor.getColumnIndex("balance"))>0) {
+                    Stock stockItem = new Stock();
+                    stockItem.setBalance(cursor.getInt(cursor.getColumnIndex(SQLHandler.HealthFacilityBalanceColumns.BALANCE)));
+                    stockItem.setExpireDate(cursor.getString(cursor.getColumnIndex(SQLHandler.HealthFacilityBalanceColumns.EXPIRE_DATE)));
+                    stockItem.setGtin(cursor.getString(cursor.getColumnIndex(SQLHandler.HealthFacilityBalanceColumns.GTIN)));
+                    stockItem.setItem(cursor.getString(cursor.getColumnIndex(SQLHandler.HealthFacilityBalanceColumns.ITEM)));
+                    stockItem.setLotId(cursor.getString(cursor.getColumnIndex(SQLHandler.HealthFacilityBalanceColumns.LOT_ID)));
+                    stockItem.setLotNumber(cursor.getString(cursor.getColumnIndex(SQLHandler.HealthFacilityBalanceColumns.LOT_NUMBER)));
+                    stockItem.setReorderQty(cursor.getString(cursor.getColumnIndex(SQLHandler.HealthFacilityBalanceColumns.REORDER_QTY)));
+                    stockItem.setLotIsActive(cursor.getString(cursor.getColumnIndex(SQLHandler.HealthFacilityBalanceColumns.LOT_ISACTIVE)));
+                    stockItem.setGtinIsActive(cursor.getString(cursor.getColumnIndex(SQLHandler.HealthFacilityBalanceColumns.GTIN_ISACTIVE)));
+                    stockList.add(stockItem);
+                }
+            } while (cursor.moveToNext());
+        }
+
+        // return container
+        cursor.close();
+        return stockList;
     }
 }

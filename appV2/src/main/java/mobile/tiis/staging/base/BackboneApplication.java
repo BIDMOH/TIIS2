@@ -108,6 +108,7 @@ public class BackboneApplication extends Application {
      */
 //    public static final String WCF_URL = "https://ec2-52-11-215-89.us-west-2.compute.amazonaws.com/SVC/";
 
+    public static final String TABLET_REGISTRATION_MODE_PREFERENCE_NAME = "RegistrationMode";
     public static final String USER_MANAGEMENT_SVC = "UserManagement.svc/";
     public static final String PLACE_MANAGEMENT_SVC = "PlaceManagement.svc/";
     public static final String HEALTH_FACILITY_SVC = "HealthFacilityManagement.svc/";
@@ -1726,100 +1727,142 @@ public class BackboneApplication extends Application {
         List<VaccinationEvent> vaccinationEvents = childCollector.getVeList();
         List<VaccinationAppointment> vaccinationAppointments = childCollector.getVaList();
         ContentValues childCV = new ContentValues();
-        ContentValues vaccEventCV = new ContentValues();
-        ContentValues vaccAppointmentCV = new ContentValues();
         DatabaseHandler db = getDatabaseInstance();
 
-        long tStart = System.currentTimeMillis();
+        SQLiteDatabase db1 = db.getWritableDatabase();
+        db1.beginTransactionNonExclusive();
+        try {
+            String sql0 = "INSERT OR REPLACE INTO " + SQLHandler.Tables.CHILD + " ( "+
+                    SQLHandler.SyncColumns.UPDATED+", "+
+                    SQLHandler.ChildColumns.ID+","+
+                    SQLHandler.ChildColumns.BARCODE_ID+","+
+                    SQLHandler.ChildColumns.FIRSTNAME1+","+
+                    SQLHandler.ChildColumns.FIRSTNAME2+","+
+                    SQLHandler.ChildColumns.LASTNAME1+","+
+                    SQLHandler.ChildColumns.BIRTHDATE+","+
+                    SQLHandler.ChildColumns.GENDER+","+
+                    SQLHandler.ChildColumns.TEMP_ID+","+
+                    SQLHandler.ChildColumns.HEALTH_FACILITY+","+
+                    SQLHandler.ChildColumns.DOMICILE+","+
+                    SQLHandler.ChildColumns.DOMICILE_ID+","+
+                    SQLHandler.ChildColumns.HEALTH_FACILITY_ID+","+
+                    SQLHandler.ChildColumns.STATUS_ID+","+
+                    SQLHandler.ChildColumns.BIRTHPLACE_ID+","+
+                    SQLHandler.ChildColumns.NOTES+","+
+                    SQLHandler.ChildColumns.STATUS+","+
+                    SQLHandler.ChildColumns.MOTHER_FIRSTNAME+","+
+                    SQLHandler.ChildColumns.MOTHER_LASTNAME+","+
+                    SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER+","+
+                    SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR+","+
+                    SQLHandler.ChildColumns.MOTHER_TT2_STS+","+
+                    SQLHandler.ChildColumns.MOTHER_VVU_STS+","+
+                    SQLHandler.ChildColumns.PHONE+
+                    " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        Log.e("TIMING LOG","start insert/update child in DB");
-        childCV.put(SQLHandler.SyncColumns.UPDATED, 1);
-        childCV.put(SQLHandler.ChildColumns.ID, child.getId());
-        childCV.put(SQLHandler.ChildColumns.BARCODE_ID, child.getBarcodeID());
-        childCV.put(SQLHandler.ChildColumns.FIRSTNAME1, child.getFirstname1());
-        childCV.put(SQLHandler.ChildColumns.FIRSTNAME2, child.getFirstname2());
-        childCV.put(SQLHandler.ChildColumns.LASTNAME1, child.getLastname1());
-        childCV.put(SQLHandler.ChildColumns.BIRTHDATE, child.getBirthdate());
-        childCV.put(SQLHandler.ChildColumns.GENDER, child.getGender());
-        childCV.put(SQLHandler.ChildColumns.TEMP_ID, child.getTempId());
-        childCV.put(SQLHandler.ChildColumns.HEALTH_FACILITY, child.getHealthcenter());
-        childCV.put(SQLHandler.ChildColumns.DOMICILE, child.getDomicile());
-        childCV.put(SQLHandler.ChildColumns.DOMICILE_ID, child.getDomicileId());
-        childCV.put(SQLHandler.ChildColumns.HEALTH_FACILITY_ID, child.getHealthcenterId());
-        childCV.put(SQLHandler.ChildColumns.STATUS_ID, child.getStatusId());
-        childCV.put(SQLHandler.ChildColumns.BIRTHPLACE_ID, child.getBirthplaceId());
-        childCV.put(SQLHandler.ChildColumns.NOTES, child.getNotes());
-        childCV.put(SQLHandler.ChildColumns.STATUS, child.getDomicile());
-        childCV.put(SQLHandler.ChildColumns.MOTHER_FIRSTNAME, child.getMotherFirstname());
-        childCV.put(SQLHandler.ChildColumns.MOTHER_LASTNAME, child.getMotherLastname());
+            SQLiteStatement stmt0 = db1.compileStatement(sql0);
+            stmt0.bindString(1, "1");
+            stmt0.bindString(2, child.getId()==null?"":child.getId());
+            stmt0.bindString(3, child.getBarcodeID()==null?"":child.getBarcodeID());
+            stmt0.bindString(4, child.getFirstname1()==null?"":child.getFirstname1());
+            stmt0.bindString(5, child.getFirstname2()==null?"":child.getFirstname2());
+            stmt0.bindString(6, child.getLastname1()==null?"":child.getLastname1());
+            stmt0.bindString(7, child.getBirthdate()==null?"":child.getBirthdate());
+            stmt0.bindString(8, child.getGender()==null?"":child.getGender());
+            stmt0.bindString(9, child.getTempId()==null?"":child.getTempId());
+            stmt0.bindString(10, child.getHealthcenter()==null?"":child.getHealthcenter());
+            stmt0.bindString(11, child.getDomicile()==null?"":child.getDomicile());
+            stmt0.bindString(12, child.getDomicileId()==null?"":child.getDomicileId());
+            stmt0.bindString(13, child.getHealthcenterId()==null?"":child.getHealthcenterId());
+            stmt0.bindString(14, child.getStatusId()==null?"":child.getStatusId());
+            stmt0.bindString(15, child.getBirthplaceId()==null?"":child.getBirthplaceId());
+            stmt0.bindString(16, child.getNotes()==null?"":child.getNotes());
+            stmt0.bindString(17, child.getStatus()==null?"":child.getStatus());
+            stmt0.bindString(18, child.getMotherFirstname()==null?"":child.getMotherFirstname());
+            stmt0.bindString(19, child.getMotherLastname()==null?"":child.getMotherLastname());
+            stmt0.bindString(20, child.getChildCumulativeSn()==null?"":child.getChildCumulativeSn());
+            stmt0.bindString(21, child.getChildRegistryYear()==null?"":child.getChildRegistryYear());
+            stmt0.bindString(22, child.getMotherTT2Status()==null?"":child.getMotherTT2Status());
+            stmt0.bindString(23, child.getMotherHivStatus()==null?"":child.getMotherHivStatus());
+            stmt0.bindString(24, child.getPhone()==null?"":child.getPhone());
+            stmt0.execute();
+            stmt0.clearBindings();
 
-        childCV.put(SQLHandler.ChildColumns.CUMULATIVE_SERIAL_NUMBER, child.getChildCumulativeSn());
-        childCV.put(SQLHandler.ChildColumns.CHILD_REGISTRY_YEAR, child.getChildRegistryYear());
-        childCV.put(SQLHandler.ChildColumns.MOTHER_TT2_STS, child.getMotherTT2Status());
-        childCV.put(SQLHandler.ChildColumns.MOTHER_VVU_STS, child.getMotherHivStatus());
+            String sql = "INSERT OR REPLACE INTO " + SQLHandler.Tables.VACCINATION_EVENT + " ( "+
+                    SQLHandler.SyncColumns.UPDATED+", "+
+                    SQLHandler.VaccinationEventColumns.APPOINTMENT_ID+","+
+                    SQLHandler.VaccinationEventColumns.CHILD_ID+","+
+                    SQLHandler.VaccinationEventColumns.DOSE_ID+","+
+                    SQLHandler.VaccinationEventColumns.HEALTH_FACILITY_ID+","+
+                    SQLHandler.VaccinationEventColumns.ID+","+
+                    SQLHandler.VaccinationEventColumns.IS_ACTIVE+","+
+                    SQLHandler.VaccinationEventColumns.MODIFIED_BY+","+
+                    SQLHandler.VaccinationEventColumns.MODIFIED_ON+","+
+                    SQLHandler.VaccinationEventColumns.NONVACCINATION_REASON_ID+","+
+                    SQLHandler.VaccinationEventColumns.SCHEDULED_DATE+","+
+                    SQLHandler.VaccinationEventColumns.VACCINATION_DATE+","+
+                    SQLHandler.VaccinationEventColumns.VACCINATION_STATUS+","+
+                    SQLHandler.VaccinationEventColumns.VACCINE_LOT_ID+
+                    " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        childCV.put(SQLHandler.ChildColumns.PHONE, child.getPhone());
+            SQLiteStatement stmt = db1.compileStatement(sql);
 
-        if(!db.isChildIDInChildTable(child.getId())) {
-            db.addChild(childCV);
-        }else{
-            db.updateChild(childCV,child.getId());
-        }
-
-
-        Log.e("TIMING LOG","elapsed time insert/update child in DB (milliseconds): " + (System.currentTimeMillis() - tStart));
-        tStart = System.currentTimeMillis();
-
-        Log.e("TIMING LOG","start insert/update Vaccination Event list in DB");
-        for(VaccinationEvent vaccinationEvent : vaccinationEvents){
-            vaccEventCV.put(SQLHandler.SyncColumns.UPDATED, 1);
-            vaccEventCV.put(SQLHandler.VaccinationEventColumns.APPOINTMENT_ID, vaccinationEvent.getAppointmentId());
-            vaccEventCV.put(SQLHandler.VaccinationEventColumns.CHILD_ID, vaccinationEvent.getChildId());
-            vaccEventCV.put(SQLHandler.VaccinationEventColumns.DOSE_ID, vaccinationEvent.getDoseId());
-            vaccEventCV.put(SQLHandler.VaccinationEventColumns.HEALTH_FACILITY_ID, vaccinationEvent.getHealthFacilityId());
-            vaccEventCV.put(SQLHandler.VaccinationEventColumns.ID, vaccinationEvent.getId());
-            vaccEventCV.put(SQLHandler.VaccinationEventColumns.IS_ACTIVE, vaccinationEvent.getIsActive());
-            vaccEventCV.put(SQLHandler.VaccinationEventColumns.MODIFIED_BY, vaccinationEvent.getModifiedBy());
-            vaccEventCV.put(SQLHandler.VaccinationEventColumns.MODIFIED_ON, vaccinationEvent.getModifiedOn());
-            vaccEventCV.put(SQLHandler.VaccinationEventColumns.NONVACCINATION_REASON_ID, vaccinationEvent.getNonvaccinationReasonId());
-            vaccEventCV.put(SQLHandler.VaccinationEventColumns.SCHEDULED_DATE, vaccinationEvent.getScheduledDate());
-            vaccEventCV.put(SQLHandler.VaccinationEventColumns.VACCINATION_DATE, vaccinationEvent.getVaccinationDate());
-            vaccEventCV.put(SQLHandler.VaccinationEventColumns.VACCINATION_STATUS, vaccinationEvent.getVaccinationStatus());
-            vaccEventCV.put(SQLHandler.VaccinationEventColumns.VACCINE_LOT_ID, vaccinationEvent.getVaccineLotId());
-            if(!db.isVaccinationEventInDb(vaccinationEvent.getChildId(), vaccinationEvent.getDoseId())) {
-                db.addVaccinationEvent(vaccEventCV);
-            }else{
-                db.updateVaccinationEvent(vaccEventCV,vaccinationEvent.getId());
+            for (VaccinationEvent vaccinationEvent : vaccinationEvents) {
+                stmt.bindString(1, "1");
+                stmt.bindString(2, vaccinationEvent.getAppointmentId());
+                stmt.bindString(3, vaccinationEvent.getChildId());
+                stmt.bindString(4, vaccinationEvent.getDoseId());
+                stmt.bindString(5, vaccinationEvent.getHealthFacilityId());
+                stmt.bindString(6, vaccinationEvent.getId());
+                stmt.bindString(7, vaccinationEvent.getIsActive());
+                stmt.bindString(8, vaccinationEvent.getModifiedBy());
+                stmt.bindString(9, vaccinationEvent.getModifiedOn());
+                stmt.bindString(10, vaccinationEvent.getNonvaccinationReasonId());
+                stmt.bindString(11, vaccinationEvent.getScheduledDate());
+                stmt.bindString(12, vaccinationEvent.getVaccinationDate());
+                stmt.bindString(13, vaccinationEvent.getVaccinationStatus());
+                stmt.bindString(14, vaccinationEvent.getVaccineLotId());
+                stmt.execute();
+                stmt.clearBindings();
             }
-        }
 
-        Log.e("TIMING LOG","elapsed time insert/update Vaccination Event list in DB (milliseconds): " + (System.currentTimeMillis() - tStart));
-        tStart = System.currentTimeMillis();
+            String sql1 = "INSERT OR REPLACE INTO " + SQLHandler.Tables.VACCINATION_APPOINTMENT + " ( "+
+                    SQLHandler.SyncColumns.UPDATED+", "+
+                    SQLHandler.VaccinationAppointmentColumns.CHILD_ID+","+
+                    SQLHandler.VaccinationAppointmentColumns.ID+","+
+                    SQLHandler.VaccinationAppointmentColumns.IS_ACTIVE+","+
+                    SQLHandler.VaccinationAppointmentColumns.MODIFIED_BY+","+
+                    SQLHandler.VaccinationAppointmentColumns.MODIFIED_ON+","+
+                    SQLHandler.VaccinationAppointmentColumns.NOTES+","+
+                    SQLHandler.VaccinationAppointmentColumns.OUTREACH+","+
+                    SQLHandler.VaccinationAppointmentColumns.SCHEDULED_DATE+","+
+                    SQLHandler.VaccinationAppointmentColumns.SCHEDULED_FACILITY_ID+
+                    " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
 
-        Log.e("TIMING LOG","start insert/update Vaccination Appointment list in DB");
+            SQLiteStatement stmt1 = db1.compileStatement(sql1);
 
-        for(VaccinationAppointment vaccinationAppointment : vaccinationAppointments){
-            vaccAppointmentCV.put(SQLHandler.SyncColumns.UPDATED, 1);
-            vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.CHILD_ID, vaccinationAppointment.getChildId());
-            vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.ID, vaccinationAppointment.getId());
-            vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.IS_ACTIVE, vaccinationAppointment.getIsActive());
-            vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.MODIFIED_BY, vaccinationAppointment.getModifiedBy());
-            vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.MODIFIED_ON, vaccinationAppointment.getModifiedOn());
-            vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.NOTES, vaccinationAppointment.getNotes());
-            vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.SCHEDULED_DATE, vaccinationAppointment.getScheduledDate());
-            vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.OUTREACH, vaccinationAppointment.getOutreach());
-            vaccAppointmentCV.put(SQLHandler.VaccinationAppointmentColumns.SCHEDULED_FACILITY_ID, vaccinationAppointment.getScheduledFacilityId());
+            for (VaccinationAppointment vaccinationAppointment : vaccinationAppointments) {
+                stmt1.bindString(1, "1");
+                stmt1.bindString(2, vaccinationAppointment.getChildId());
+                stmt1.bindString(3, vaccinationAppointment.getId());
+                stmt1.bindString(4, vaccinationAppointment.getIsActive());
+                stmt1.bindString(5, vaccinationAppointment.getModifiedBy());
+                stmt1.bindString(6, vaccinationAppointment.getModifiedOn());
+                stmt1.bindString(7, vaccinationAppointment.getNotes());
+                stmt1.bindString(8, vaccinationAppointment.getOutreach());
+                stmt1.bindString(9, vaccinationAppointment.getScheduledDate());
+                stmt1.bindString(10, vaccinationAppointment.getScheduledFacilityId());
 
-            if(!db.isVaccinationAppointmentInDb(vaccinationAppointment.getChildId(), vaccinationAppointment.getScheduledDate())) {
-                db.addVaccinationAppointment(vaccAppointmentCV);
-            }else{
-                db.updateVaccinationAppointment(vaccAppointmentCV, vaccinationAppointment.getId());
+                stmt1.execute();
+                stmt1.clearBindings();
+
             }
 
+            db1.setTransactionSuccessful();
+            db1.endTransaction();
+        } catch (Exception e) {
+            db1.endTransaction();
+            e.printStackTrace();
         }
-
-        Log.e("TIMING LOG","elapsed time insert/update Vaccination Appointment list in DB (milliseconds): " + (System.currentTimeMillis() - tStart));
-
     }
 
 

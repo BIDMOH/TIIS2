@@ -138,6 +138,16 @@ public class SQLHandler {
                     + HealthFacilityBalanceColumns.GTIN_ISACTIVE + " TEXT,"
                     + HealthFacilityBalanceColumns.LOT_ISACTIVE + " TEXT,"
                     + GIISContract.HealthFacilityBalanceColumns.REORDER_QTY + " INTEGER); ";
+
+    public static final String SQLActiveLotNumber =
+            "CREATE TABLE IF NOT EXISTS " + Tables.ACTIVE_LOT_NUMBERS + " ("
+                    + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + GIISContract.ActiveLotNumbersColumns.LOT_ID + " TEXT,"
+                    + GIISContract.ActiveLotNumbersColumns.LOT_NUMBER + " TEXT,"
+                    + GIISContract.ActiveLotNumbersColumns.ITEM + " TEXT,"
+                    + GIISContract.ActiveLotNumbersColumns.DATE + " LONG); ";
+
+
     public static final String SQLUIValuesTable =
             "CREATE TABLE IF NOT EXISTS " + Tables.UIVALUES + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -662,7 +672,8 @@ public class SQLHandler {
                     + GIISContract.RefrigeratorColums.TEMP_MAX + " TEXT,"
                     + GIISContract.RefrigeratorColums.TEMP_MIN + " TEXT,"
                     + GIISContract.RefrigeratorColums.ALARM_HIGH_TEMP + " TEXT,"
-                    + GIISContract.RefrigeratorColums.ALARM_LOW_TEMP + " TEXT);";
+                    + GIISContract.RefrigeratorColums.ALARM_LOW_TEMP + " TEXT,"
+                    + GIISContract.RefrigeratorColums.REPORTED_MONTH + " TEXT);";
 
     public static final String NoTimeConstraintVaccines =
             "SELECT * FROM (" +
@@ -876,6 +887,7 @@ public class SQLHandler {
         String TEMP_MAX = "TEMP_MAX";
         String ALARM_LOW_TEMP = "ALARM_LOW_TEMP";
         String ALARM_HIGH_TEMP = "ALARM_HIGH_TEMP";
+        String REPORTED_MONTH = "REPORTED_MONTH";
     }
 
 //    public static final String SQLScheduledVaccinationTable =
@@ -1008,6 +1020,8 @@ public class SQLHandler {
         String CHILD_SUPPLEMENTS = "child_supplements";
         String ITEM_LOT = "item_lot";
         String HEALTH_FACILITY_BALANCE = "health_facility_balance";
+        //Table used to store the lot numbers of dosages that will be used for vaccination on a specific day
+        String ACTIVE_LOT_NUMBERS = "active_lot_numbers";
         String BIRTHPLACE = "birthplace";
         String CONFIG = "config";
         String ADJUSTMENT_REASONS = "Adjustment_Reasons";

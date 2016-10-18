@@ -201,6 +201,7 @@ public class GIISContract {
         String TEMP_MAX = "TEMP_MAX";
         String ALARM_LOW_TEMP = "ALARM_LOW_TEMP";
         String ALARM_HIGH_TEMP = "ALARM_HIGH_TEMP";
+        String REPORTED_MONTH = "REPORTED_MONTH";
     }
 
     interface  ScheduledVaccinationColumns{
@@ -281,6 +282,14 @@ public class GIISContract {
         String EXPIRE_DATE = "expire_date";
         String BALANCE = "balance";
         String REORDER_QTY = "ReorderQty";
+    }
+
+
+    public interface ActiveLotNumbersColumns{
+        String LOT_ID = "lot_id";
+        String LOT_NUMBER = "lot_number";
+        String ITEM = "item";
+        String DATE = "date";
     }
 
     public static final String CONTENT_AUTHORITY = "tiis.mobile";

@@ -128,6 +128,15 @@
 
     <style name="TIISTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="TIISTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="MySwitch" parent="Theme.AppCompat.Light">
+        <!-- active thumb & track color (30% transparency) -->
+        <item name="colorControlActivated">@color/pink_400</item>
+
+        <!-- inactive thumb color -->
+        <item name="colorSwitchThumbNormal">@color/pink_050</item>
+
+        <!-- inactive track color (30% transparency) -->
+        <!--<item name="android:colorForeground">@color/grey</item>-->
+    </style>
 
 </resources>
