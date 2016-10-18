@@ -264,6 +264,14 @@ public class GIISContract {
         String REORDER_QTY = "ReorderQty";
     }
 
+
+    public interface ActiveLotNumbersColumns{
+        String LOT_ID = "lot_id";
+        String LOT_NUMBER = "lot_number";
+        String ITEM = "item";
+        String DATE = "date";
+    }
+
     public static final String CONTENT_AUTHORITY = "tiis.mobile";
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
