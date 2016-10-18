@@ -34,13 +34,14 @@ import mobile.tiis.staging.database.SQLHandler;
 import mobile.tiis.staging.entity.Stock;
 import mobile.tiis.staging.fragments.ItemDetailFragment;
 
+import static mobile.tiis.staging.base.BackboneActivity.Roboto_Regular;
 import static mobile.tiis.staging.base.BackboneActivity.Rosario_Regular;
 import static mobile.tiis.staging.base.BackboneApplication.TABLET_REGISTRATION_MODE_PREFERENCE_NAME;
 
-public class ItemListActivity extends AppCompatActivity {
+public class LotSettingsActivity extends AppCompatActivity {
     private DatabaseHandler db;
     private LinearLayout itemsList;
-    private static final String TAG = ItemListActivity.class.getSimpleName();
+    private static final String TAG = LotSettingsActivity.class.getSimpleName();
     private List<Stock> listStock;
     private ItemDetailFragment fragment;
     private GregorianCalendar gregorianCalendar;
@@ -50,6 +51,8 @@ public class ItemListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
+
+        boolean isFromHome = getIntent().getBooleanExtra("isFromHomeActivity",false);
 
         editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
 
@@ -67,12 +70,15 @@ public class ItemListActivity extends AppCompatActivity {
         listStock = db.getAvailableHealthFacilityBalance();
         itemsList = (LinearLayout)findViewById(R.id.list);
 
-        if(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(TABLET_REGISTRATION_MODE_PREFERENCE_NAME,false) || checkIntegrity()){
-            Intent intent = new Intent(this, HomeActivityRevised.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
+        if(!isFromHome) {
+            if (PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(TABLET_REGISTRATION_MODE_PREFERENCE_NAME, false) || checkIntegrity()) {
+                Intent intent = new Intent(this, HomeActivityRevised.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+            }
         }
+
 
         addViewsToTable();
 
@@ -84,20 +90,21 @@ public class ItemListActivity extends AppCompatActivity {
                 if(checkIntegrity() || PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(TABLET_REGISTRATION_MODE_PREFERENCE_NAME,false)){
                     Snackbar.make(view, "Lot Numbers Saved Successfully", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
-                    Intent intent = new Intent(ItemListActivity.this, HomeActivityRevised.class);
+                    Intent intent = new Intent(LotSettingsActivity.this, HomeActivityRevised.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     finish();
                 }else{
-                    FlashDialogue flashDialogue = new FlashDialogue(ItemListActivity.this);
+                    FlashDialogue flashDialogue = new FlashDialogue(LotSettingsActivity.this);
                     flashDialogue.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 }
 
             }
         });
 
-        SwitchCompat setRegistrationTable = (SwitchCompat)findViewById(R.id.set_tablet_type);
-        setRegistrationTable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        SwitchCompat setRegistrationMode = (SwitchCompat)findViewById(R.id.set_tablet_type);
+        setRegistrationMode.setChecked(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(TABLET_REGISTRATION_MODE_PREFERENCE_NAME, false));
+        setRegistrationMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
@@ -123,7 +130,7 @@ public class ItemListActivity extends AppCompatActivity {
             View rowView = View.inflate(this, R.layout.view_lot_number_selection_item, null);
 
             TextView vaccineName = (TextView) rowView.findViewById(R.id.dosage_title);
-            vaccineName.setTypeface(Rosario_Regular);
+            vaccineName.setTypeface(Roboto_Regular);
             vaccineName.setText(stock.getItem());
 
             Cursor c = db.getReadableDatabase().rawQuery("SELECT * FROM "+ SQLHandler.Tables.ACTIVE_LOT_NUMBERS+" WHERE "+ GIISContract.ActiveLotNumbersColumns.ITEM+" = '"+stock.getItem()+"' AND "+

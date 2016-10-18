@@ -171,7 +171,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name="mobile.tiis.staging.ItemListActivity">
+        <activity android:name="mobile.tiis.staging.LotSettingsActivity">
         </activity>
 
 

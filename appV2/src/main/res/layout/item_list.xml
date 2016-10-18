@@ -7,7 +7,7 @@
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
     android:showDividers="middle"
-    tools:context="mobile.tiis.staging.ItemListActivity">
+    tools:context="mobile.tiis.staging.LotSettingsActivity">
 
     <!--
     This layout is a two-pane layout for the Items

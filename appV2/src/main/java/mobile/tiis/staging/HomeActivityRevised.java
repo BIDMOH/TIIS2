@@ -379,6 +379,17 @@ public class HomeActivityRevised extends BackboneActivity {
                                 changeFragment(SETTINGS_FRAGMENT, getString(R.string.home_settings));
                             }
                             break;
+                        case R.id.lot_settings:
+                            if (app.saveNeeded) {
+                                app.LAST_FRAGMENT = HOME_FRAGMENT;
+                                alertUserLeavingScreen(REPORTS_FRAGMENT, getString(R.string.home_reports));
+                            } else {
+                                app.LAST_FRAGMENT = HOME_FRAGMENT;
+                                app.LAST_FRAGMENT_TITLE = getString(R.string.home);
+                                changeFragmentToLotSettingsActivity(getString(R.string.home_settings));
+                                //changeFragment(REPORTS_FRAGMENT, getString(R.string.home_reports));
+                            }
+                            break;
                         default:
                             if (app.saveNeeded) {
                                 alertUserLeavingScreen(LOGOUT, getString(R.string.home));
@@ -892,6 +903,13 @@ public class HomeActivityRevised extends BackboneActivity {
     public void changeFragmentToReportActivity(String title){
         Intent intent = new Intent(this, ReportsActivityRevised.class);
         intent.putExtra("title", title);
+        startActivity(intent);
+    }
+
+
+    public void changeFragmentToLotSettingsActivity(String title){
+        Intent intent = new Intent(this, LotSettingsActivity.class);
+        intent.putExtra("isFromHomeActivity", true);
         startActivity(intent);
     }
 

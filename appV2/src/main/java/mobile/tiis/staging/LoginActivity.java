@@ -501,7 +501,7 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
                             editor.putBoolean("secondSyncNeeded", true);
                             editor.commit();
 
-                            Intent intent = new Intent(LoginActivity.this, ItemListActivity.class);
+                            Intent intent = new Intent(LoginActivity.this, LotSettingsActivity.class);
 
                             Log.d(TAG, "initiating offline for " + username + " password = " + password);
                             app.initializeOffline(username, password);
@@ -555,7 +555,7 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
                             editor.putBoolean("secondSyncNeeded", true);
                             editor.commit();
 
-                            Intent intent = new Intent(LoginActivity.this, ItemListActivity.class);
+                            Intent intent = new Intent(LoginActivity.this, LotSettingsActivity.class);
                             app.setUsername(username);
                             Log.d(TAG, "initiating offline for " + username + " password = " + password);
                             app.initializeOffline(username, password);
@@ -706,10 +706,10 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
                         Intent intent;
                         if(prefs.getBoolean("synchronization_needed", true)){
                             Log.d("supportLog", "call the loggin second time before the account was found");
-                            intent = new Intent(LoginActivity.this, ItemListActivity.class);
+                            intent = new Intent(LoginActivity.this, LotSettingsActivity.class);
                         }else{
                             Log.d("supportLog", "call the loggin second time before the account was found");
-                            intent = new Intent(LoginActivity.this, ItemListActivity.class);
+                            intent = new Intent(LoginActivity.this, LotSettingsActivity.class);
                             evaluateIfFirstLogin(app.getLOGGED_IN_USER_ID());
                         }
                         app.setUsername(username);

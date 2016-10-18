@@ -17,7 +17,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import mobile.tiis.staging.ItemListActivity;
+import mobile.tiis.staging.LotSettingsActivity;
 import mobile.tiis.staging.R;
 import mobile.tiis.staging.base.BackboneActivity;
 import mobile.tiis.staging.base.BackboneApplication;
@@ -27,7 +27,7 @@ import mobile.tiis.staging.database.SQLHandler;
 
 /**
  * A fragment representing a single Item detail screen.
- * This fragment is either contained in a {@link ItemListActivity}
+ * This fragment is either contained in a {@link LotSettingsActivity}
  * in two-pane mode (on tablets)
  * on handsets.
  */
@@ -87,7 +87,7 @@ public class ItemDetailFragment extends Fragment {
                     }
                 }
 
-                ((ItemListActivity)getActivity()).addViewsToTable();
+                ((LotSettingsActivity)getActivity()).addViewsToTable();
                 fillLots(mItem);
 
             }
