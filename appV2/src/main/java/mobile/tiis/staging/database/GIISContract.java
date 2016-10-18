@@ -184,6 +184,25 @@ public class GIISContract {
         String EXIT_DATE = "EXIT_DATE";
     }
 
+    interface SurveillanceColumns{
+        String ID = "ID";
+        String FEVER_MONTHLY_CASES = "FEVER_MONTHLY_CASES";
+        String FEVER_DEATHS = "FEVER_DEATHS";
+        String APF_MONTHLY_CASES = "AFP_MONTHLY_CASES";
+        String APF_DEATHS = "AFP_DEATHS";
+        String NEONATAL_TT_CASES = "NEONATAL_TT_CASES";
+        String NEONATAL_TT_DEATHS = "NEONATAL_TT_DEATHS";
+        String REPORTED_MONTH = "REPORTED_MONTH";
+    }
+
+    interface RefrigeratorColums{
+        String ID = "ID";
+        String TEMP_MIN = "TEMP_MIN";
+        String TEMP_MAX = "TEMP_MAX";
+        String ALARM_LOW_TEMP = "ALARM_LOW_TEMP";
+        String ALARM_HIGH_TEMP = "ALARM_HIGH_TEMP";
+    }
+
     interface  ScheduledVaccinationColumns{
         String ID = "ID";
         String NAME = "NAME";

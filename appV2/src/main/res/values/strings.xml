@@ -253,6 +253,7 @@
     <string name="home_vac_queue">Foleni ya Chanjo</string>
     <string name="home_monthly_plan">Mpango wa Mwenzi</string>
     <string name="home_reports">Ripoti</string>
+    <string name="home_monthly_reports">Ripoti Za Mwezi</string>
     <string name="home_stock">Stoku</string>
     <string name="home_settings">Settings</string>
     <string name="home_logout">Ondoka</string>
@@ -280,5 +281,6 @@
         <item>Inside Catchment</item>
         <item>Outside Catchment</item>
     </array>
+    <string name="title_activity_monthly_reports">Monthly Reports</string>
 
 </resources>

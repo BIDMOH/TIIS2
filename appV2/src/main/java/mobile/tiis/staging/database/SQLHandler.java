@@ -636,6 +636,34 @@ public class SQLHandler {
                     + GIISContract.ItemColumns.ENTRY_DATE + " DATE,"
                     + GIISContract.ItemColumns.EXIT_DATE + " DATE);";
 
+    public static final String SQLDeseaseSurveillanceData =
+            "CREATE TABLE IF NOT EXISTS " + Tables.DESEASES_SURVEILLANCE + " ("
+                    + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
+                    + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
+                    + GIISContract.SyncColumns.MODIFIED_AT + " DATE, "
+                    + GIISContract.SurveillanceColumns.ID + " TEXT,"
+                    + GIISContract.SurveillanceColumns.FEVER_MONTHLY_CASES + " TEXT,"
+                    + GIISContract.SurveillanceColumns.FEVER_DEATHS + " TEXT,"
+                    + GIISContract.SurveillanceColumns.APF_MONTHLY_CASES + " TEXT,"
+                    + GIISContract.SurveillanceColumns.APF_DEATHS + " TEXT,"
+                    + GIISContract.SurveillanceColumns.NEONATAL_TT_CASES + " TEXT,"
+                    + GIISContract.SurveillanceColumns.NEONATAL_TT_DEATHS + " TEXT,"
+                    + GIISContract.SurveillanceColumns.REPORTED_MONTH + " TEXT);";
+
+
+    public static final String SQLRefrigeratorColums =
+            "CREATE TABLE IF NOT EXISTS " + Tables.REFRIGERATOR_TEMPERATURE + " ("
+                    + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
+                    + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
+                    + GIISContract.SyncColumns.MODIFIED_AT + " DATE, "
+                    + GIISContract.RefrigeratorColums.ID + " TEXT,"
+                    + GIISContract.RefrigeratorColums.TEMP_MAX + " TEXT,"
+                    + GIISContract.RefrigeratorColums.TEMP_MIN + " TEXT,"
+                    + GIISContract.RefrigeratorColums.ALARM_HIGH_TEMP + " TEXT,"
+                    + GIISContract.RefrigeratorColums.ALARM_LOW_TEMP + " TEXT);";
+
     public static final String NoTimeConstraintVaccines =
             "SELECT * FROM (" +
                     "SELECT v.APPOINTMENT_ID, " +
@@ -831,6 +859,25 @@ public class SQLHandler {
         String OUTREACH = "OUTREACH";
     }
 
+    public interface SurveillanceColumns{
+        String ID = "ID";
+        String FEVER_MONTHLY_CASES = "FEVER_MONTHLY_CASES";
+        String FEVER_DEATHS = "FEVER_DEATHS";
+        String APF_MONTHLY_CASES = "AFP_MONTHLY_CASES";
+        String APF_DEATHS = "AFP_DEATHS";
+        String NEONATAL_TT_CASES = "NEONATAL_TT_CASES";
+        String NEONATAL_TT_DEATHS = "NEONATAL_TT_DEATHS";
+        String REPORTED_MONTH = "REPORTED_MONTH";
+    }
+
+    public interface RefrigeratorColums{
+        String ID = "ID";
+        String TEMP_MIN = "TEMP_MIN";
+        String TEMP_MAX = "TEMP_MAX";
+        String ALARM_LOW_TEMP = "ALARM_LOW_TEMP";
+        String ALARM_HIGH_TEMP = "ALARM_HIGH_TEMP";
+    }
+
 //    public static final String SQLScheduledVaccinationTable =
 //            "CREATE TABLE IF NOT EXISTS " + Tables.SCHEDULED_VACCINATION + " ("
 //                    + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -964,6 +1011,8 @@ public class SQLHandler {
         String BIRTHPLACE = "birthplace";
         String CONFIG = "config";
         String ADJUSTMENT_REASONS = "Adjustment_Reasons";
+        String REFRIGERATOR_TEMPERATURE = "Refrigerator_Temperature";
+        String DESEASES_SURVEILLANCE = "Deseases_Surveillance";
     }
 
     public interface Views {

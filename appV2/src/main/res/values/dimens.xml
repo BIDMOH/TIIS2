@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?xml version="1.0" encoding="UTF-8"?><!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~   ~ Copyright (C)AIRIS Solutions 2015 TIIS App - Tanzania Immunization Information System App
   ~   ~
@@ -17,10 +16,10 @@
   ~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <resources>
-  <dimen name="standard_padding">10dip</dimen>
-  <dimen name="half_padding">4dip</dimen>
+    <dimen name="standard_padding">10dip</dimen>
+    <dimen name="half_padding">4dip</dimen>
 
-  <dimen name="toolbar_elevation">4dp</dimen>
+    <dimen name="toolbar_elevation">4dp</dimen>
 
     <dimen name="title_height">60dp</dimen>
     <dimen name="text_size_small">14sp</dimen>
@@ -111,7 +110,8 @@
     <dimen name="sixty_sp">60sp</dimen>
 
 
-  <dimen name="drawer_size">280dp</dimen>
-  <dimen name="drawer_content_padding">0dp</dimen>
+    <dimen name="drawer_size">280dp</dimen>
+    <dimen name="drawer_content_padding">0dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 
 </resources>

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?xml version="1.0" encoding="UTF-8"?><!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~   ~ Copyright (C)AIRIS Solutions 2015 TIIS App - Tanzania Immunization Information System App
   ~   ~
@@ -18,15 +17,16 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <resources>
 
-  <style name="ResultButton" parent="@android:style/Widget.Holo.Button.Borderless.Small">
-    <item name="android:layout_width">0dip</item>
-    <item name="android:layout_height">wrap_content</item>
-    <item name="android:layout_weight">1</item>
-  </style>
-  <style name="ShareButton" parent="@android:style/Widget.Holo.Button.Borderless.Small">
-    <item name="android:layout_width">wrap_content</item>
-    <item name="android:layout_height">wrap_content</item>
-  </style>
+    <style name="ResultButton" parent="@android:style/Widget.Holo.Button.Borderless.Small">
+        <item name="android:layout_width">0dip</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <style name="ShareButton" parent="@android:style/Widget.Holo.Button.Borderless.Small">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
 
 
     <style name="TitleBar">
@@ -34,7 +34,7 @@
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">@dimen/title_height</item>
         <item name="android:orientation">horizontal</item>
-       <item name="android:background">@color/foreground2</item>
+        <item name="android:background">@color/foreground2</item>
     </style>
 
     <style name="TitleBarText">
@@ -86,8 +86,8 @@
         <item name="android:textSize">@dimen/text_size_medium</item>
     </style>
 
-    <style name="spinner_style" >
-    <item name="android:background">@drawable/spinner_bg</item>
+    <style name="spinner_style">
+        <item name="android:background">@drawable/spinner_bg</item>
 
         <item name="android:layout_marginRight">10dp</item>
         <item name="android:layout_marginBottom">10dp</item>
@@ -108,11 +108,11 @@
     </style>
 
     <!--<style name="MyActionBarStyles">-->
-        <!--<item name="android:titleTextStyle">@style/MyActionBarStyles.TitleTextStyle</item>-->
+    <!--<item name="android:titleTextStyle">@style/MyActionBarStyles.TitleTextStyle</item>-->
     <!--</style>-->
 
     <!--<style name="MyActionBarStyles.TitleTextStyle" parent="@android:style/Widget.TextView">-->
-        <!--<item name="android:textSize">12sp</item>-->
+    <!--<item name="android:textSize">12sp</item>-->
     <!--</style>-->
 
     <style name="MyAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -125,5 +125,9 @@
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
     </style>
+
+    <style name="TIISTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="TIISTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>

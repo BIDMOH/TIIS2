@@ -174,6 +174,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.execSQL(SQLHandler.SQLItemLot);
             db.execSQL(SQLHandler.SQLHealthFacilityBalance);
 
+            db.execSQL(SQLHandler.SQLDeseaseSurveillanceData);
+            db.execSQL(SQLHandler.SQLRefrigeratorColums);
+
         }
     }
 
@@ -709,6 +712,40 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         sd.beginTransaction();
         try {
             result = sd.insert(Tables.HEALTH_FACILITY, null, cv);
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+
+    }
+
+    public long addDeseaseSurveillance(ContentValues cv) {
+        SQLiteDatabase sd = getWritableDatabase();
+        long result =-1;
+        sd.beginTransaction();
+        try {
+            result = sd.insert(Tables.DESEASES_SURVEILLANCE, null, cv);
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+
+    }
+
+    public long addRefrigeratorTemperature(ContentValues cv) {
+        SQLiteDatabase sd = getWritableDatabase();
+        long result =-1;
+        sd.beginTransaction();
+        try {
+            result = sd.insert(Tables.REFRIGERATOR_TEMPERATURE, null, cv);
             sd.setTransactionSuccessful();
         } catch (Exception e) {
             //Error in between database transaction

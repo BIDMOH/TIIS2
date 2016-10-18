@@ -35,6 +35,11 @@
             android:title="@string/home_reports"/>
 
         <item
+            android:id="@+id/monthly_reports"
+            android:icon="@drawable/stock_button"
+            android:title="@string/home_monthly_reports"/>
+
+        <item
             android:id="@+id/stock"
             android:icon="@drawable/stock_button"
             android:title="@string/home_stock"/>
