@@ -75,6 +75,7 @@
     <application android:name="mobile.tiis.staging.base.BackboneApplication"
         android:icon="@mipmap/ic_launcher"
         android:logo="@mipmap/ic_launcher"
+        android:largeHeap="true"
         android:theme="@style/TIISTheme"
         android:label="@string/app_name"
         android:allowBackup="true">

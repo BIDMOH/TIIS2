@@ -1564,7 +1564,7 @@ public class BackboneApplication extends Application {
         client.setTimeout(DEFAULT_TIMEOUT);
 
 
-        client.setMaxConnections(20);
+        client.setMaxConnections(50);
 
 
     }
