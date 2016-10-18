@@ -36,6 +36,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -3832,6 +3833,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             scheduled_vaccination_id = cursor.getString(cursor.getColumnIndex("SCHEDULED_VACCINATION_ID"));
             Log.d("Scheduled vacc id", scheduled_vaccination_id);
 
+
+            Calendar calendar=Calendar.getInstance();
+            GregorianCalendar gregorianCalendar = new GregorianCalendar(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH));
+
+
             Cursor cursor2 =   database.rawQuery("SELECT ITEM_ID FROM scheduled_vaccination WHERE ID=?", new String[]{scheduled_vaccination_id});
             if (cursor2.getCount() > 0) {
                 cursor2.moveToFirst();
@@ -3841,7 +3847,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         " SELECT '-2' AS id, 'No Lot' AS lot_number, '30' AS balance, datetime('now') as expire_date UNION " +
                         " SELECT item_lot.id, item_lot.lot_number, health_facility_balance.balance, datetime(substr(item_lot.expire_date,7,10), 'unixepoch') " +
                         " FROM item_lot  join health_facility_balance ON item_lot.ID = health_facility_balance.lot_id " +
-                        " WHERE item_lot.item_id = ? AND health_facility_balance.LotIsActive = 'true' AND CAST(health_facility_balance.balance as REAL) > "+0+"" +
+                        " INNER JOIN active_lot_numbers ON health_facility_balance.lot_id = active_lot_numbers.lot_id "+
+                        " WHERE active_lot_numbers.date= "+gregorianCalendar.getTimeInMillis()+" AND  item_lot.item_id = ? AND health_facility_balance.LotIsActive = 'true' AND CAST(health_facility_balance.balance as REAL) > "+0+"" +
                         " AND datetime(substr(item_lot.expire_date,7,10), 'unixepoch') >= datetime('now') ORDER BY expire_date", new String[]{item_id});
                 if (cursor.getCount() > 0) {
                     if (cursor.moveToFirst()) {

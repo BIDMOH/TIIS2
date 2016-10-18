@@ -12,7 +12,6 @@
         android:src="@drawable/ic_close_black_32dp_2x"/>
     <TextView
         android:layout_marginLeft="8dp"
-        android:textColor="@color/pink_300"
         android:layout_gravity="center_vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

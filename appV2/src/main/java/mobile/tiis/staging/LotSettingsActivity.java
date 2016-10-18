@@ -32,7 +32,7 @@ import mobile.tiis.staging.database.DatabaseHandler;
 import mobile.tiis.staging.database.GIISContract;
 import mobile.tiis.staging.database.SQLHandler;
 import mobile.tiis.staging.entity.Stock;
-import mobile.tiis.staging.fragments.ItemDetailFragment;
+import mobile.tiis.staging.fragments.LotSelectionFragment;
 
 import static mobile.tiis.staging.base.BackboneActivity.Roboto_Regular;
 import static mobile.tiis.staging.base.BackboneActivity.Rosario_Regular;
@@ -43,7 +43,7 @@ public class LotSettingsActivity extends AppCompatActivity {
     private LinearLayout itemsList;
     private static final String TAG = LotSettingsActivity.class.getSimpleName();
     private List<Stock> listStock;
-    private ItemDetailFragment fragment;
+    private LotSelectionFragment fragment;
     private GregorianCalendar gregorianCalendar;
     private SharedPreferences.Editor editor;
 
@@ -95,6 +95,7 @@ public class LotSettingsActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 }else{
+                    addViewsToTable();
                     FlashDialogue flashDialogue = new FlashDialogue(LotSettingsActivity.this);
                     flashDialogue.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 }
@@ -103,7 +104,6 @@ public class LotSettingsActivity extends AppCompatActivity {
         });
 
         SwitchCompat setRegistrationMode = (SwitchCompat)findViewById(R.id.set_tablet_type);
-        setRegistrationMode.setChecked(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(TABLET_REGISTRATION_MODE_PREFERENCE_NAME, false));
         setRegistrationMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -120,6 +120,9 @@ public class LotSettingsActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+        setRegistrationMode.setChecked(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(TABLET_REGISTRATION_MODE_PREFERENCE_NAME, false));
     }
 
 
@@ -133,8 +136,8 @@ public class LotSettingsActivity extends AppCompatActivity {
             vaccineName.setTypeface(Roboto_Regular);
             vaccineName.setText(stock.getItem());
 
-            Cursor c = db.getReadableDatabase().rawQuery("SELECT * FROM "+ SQLHandler.Tables.ACTIVE_LOT_NUMBERS+" WHERE "+ GIISContract.ActiveLotNumbersColumns.ITEM+" = '"+stock.getItem()+"' AND "+
-                    GIISContract.ActiveLotNumbersColumns.DATE+" = "+gregorianCalendar.getTimeInMillis(),null);
+            Cursor c = db.getReadableDatabase().rawQuery("SELECT * FROM "+ SQLHandler.Tables.ACTIVE_LOT_NUMBERS+" INNER JOIN health_facility_balance ON health_facility_balance.lot_id = active_lot_numbers.lot_id WHERE  active_lot_numbers.item = '"+stock.getItem()+"' AND "+
+                    GIISContract.ActiveLotNumbersColumns.DATE+" = "+gregorianCalendar.getTimeInMillis()+" AND CAST(health_facility_balance.balance as REAL) > "+0+"",null);
 
             int count = c.getCount();
 
@@ -143,7 +146,7 @@ public class LotSettingsActivity extends AppCompatActivity {
                 View lotView = View.inflate(this, R.layout.view_lot_item, null);
                 TextView v = (TextView) lotView.findViewById(R.id.name);
                 v.setText(c.getString(c.getColumnIndex(GIISContract.ActiveLotNumbersColumns.LOT_NUMBER)));
-                v.setTypeface(Rosario_Regular);
+                v.setTypeface(Roboto_Regular);
 
                 final String item = stock.getItem();
                 final String lotNum = c.getString(c.getColumnIndex("lot_number"));
@@ -176,8 +179,8 @@ public class LotSettingsActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Bundle arguments = new Bundle();
-                    arguments.putString(ItemDetailFragment.ARG_ITEM, stock.getItem());
-                    fragment = new ItemDetailFragment();
+                    arguments.putString(LotSelectionFragment.ARG_ITEM, stock.getItem());
+                    fragment = new LotSelectionFragment();
                     fragment.setArguments(arguments);
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.item_detail_container, fragment)
@@ -208,8 +211,8 @@ public class LotSettingsActivity extends AppCompatActivity {
 
     private boolean checkIntegrity(){
         for (Stock stock : listStock){
-            Cursor c = db.getReadableDatabase().rawQuery("SELECT lot_id FROM "+ SQLHandler.Tables.ACTIVE_LOT_NUMBERS+" WHERE "+ GIISContract.ActiveLotNumbersColumns.ITEM+" = '"+stock.getItem()+"' AND "+
-                    GIISContract.ActiveLotNumbersColumns.DATE+" = "+gregorianCalendar.getTimeInMillis(),null);
+            Cursor c = db.getReadableDatabase().rawQuery("SELECT active_lot_numbers.lot_id FROM "+ SQLHandler.Tables.ACTIVE_LOT_NUMBERS+" INNER JOIN health_facility_balance ON health_facility_balance.lot_id = active_lot_numbers.lot_id WHERE active_lot_numbers.item = '"+stock.getItem()+"' AND "+
+                    GIISContract.ActiveLotNumbersColumns.DATE+" = "+gregorianCalendar.getTimeInMillis()+" AND CAST(health_facility_balance.balance as REAL) > "+0+"",null);
             if(c.getCount()==0){
                 return false;
             }

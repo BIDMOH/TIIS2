@@ -31,8 +31,8 @@ import mobile.tiis.staging.database.SQLHandler;
  * in two-pane mode (on tablets)
  * on handsets.
  */
-public class ItemDetailFragment extends Fragment {
-    private static final String TAG  = ItemDetailFragment.class.getSimpleName();
+public class LotSelectionFragment extends Fragment {
+    private static final String TAG  = LotSelectionFragment.class.getSimpleName();
     public static final String ARG_ITEM = "item";
     private String mItem;
     private List<LotNumber> lots = new ArrayList<>();
@@ -43,7 +43,7 @@ public class ItemDetailFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public ItemDetailFragment() {
+    public LotSelectionFragment() {
     }
 
     @Override
