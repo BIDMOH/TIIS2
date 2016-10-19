@@ -138,6 +138,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.execSQL(SQLHandler.SQLUserTable);
             db.execSQL(SQLHandler.SQLChildTable);
 
+            db.execSQL(SQLHandler.SQLChildUpdatesQueueTable);
+
             db.execSQL("CREATE UNIQUE INDEX index_childId ON " + Tables.CHILD + "("+SQLHandler.ChildColumns.ID+")");
 
             db.execSQL(SQLHandler.SQLStatusTable);
