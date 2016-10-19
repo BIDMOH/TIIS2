@@ -675,6 +675,20 @@ public class SQLHandler {
                     + GIISContract.RefrigeratorColums.ALARM_LOW_TEMP + " TEXT,"
                     + GIISContract.RefrigeratorColums.REPORTED_MONTH + " TEXT);";
 
+    public static final String SQLStockStatus =
+            "CREATE TABLE IF NOT EXISTS " + Tables.STOCK_STATUS_REPORT + " ("
+                    + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
+                    + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
+                    + GIISContract.SyncColumns.MODIFIED_AT + " DATE, "
+                    + GIISContract.StockStatusColumns.ID + " TEXT,"
+                    + GIISContract.StockStatusColumns.ITEM_NAME + " TEXT,"
+                    + GIISContract.StockStatusColumns.OPPENING_BALANCE + " TEXT,"
+                    + GIISContract.StockStatusColumns.CLOSING_BALANCE + " TEXT,"
+                    + GIISContract.StockStatusColumns.DISCARDED_UNOPENED + " TEXT,"
+                    + GIISContract.StockStatusColumns.DOSES_RECEIVED + " TEXT,"
+                    + GIISContract.StockStatusColumns.REPORTED_MONTH + " TEXT);";
+
     public static final String NoTimeConstraintVaccines =
             "SELECT * FROM (" +
                     "SELECT v.APPOINTMENT_ID, " +
@@ -890,6 +904,16 @@ public class SQLHandler {
         String REPORTED_MONTH = "REPORTED_MONTH";
     }
 
+    public interface StockStatusColumns{
+        String ID = "ID";
+        String ITEM_NAME ="ITEM_NAME";
+        String OPPENING_BALANCE ="OPPENING_BALANCE";
+        String CLOSING_BALANCE = "CLOSING_BALANCE";
+        String DOSES_RECEIVED = "DOSES_RECEIVED";
+        String DISCARDED_UNOPENED = "DISCARDED_UNOPENED";
+        String REPORTED_MONTH = "REPORTED_MONTH";
+    }
+
 //    public static final String SQLScheduledVaccinationTable =
 //            "CREATE TABLE IF NOT EXISTS " + Tables.SCHEDULED_VACCINATION + " ("
 //                    + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -1027,6 +1051,7 @@ public class SQLHandler {
         String ADJUSTMENT_REASONS = "Adjustment_Reasons";
         String REFRIGERATOR_TEMPERATURE = "Refrigerator_Temperature";
         String DESEASES_SURVEILLANCE = "Deseases_Surveillance";
+        String STOCK_STATUS_REPORT = "stock_status_report";
     }
 
     public interface Views {

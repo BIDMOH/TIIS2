@@ -13,6 +13,7 @@ import mobile.tiis.staging.fragments.HealthFacilityVisitsAndVaccinationSummaryFr
 import mobile.tiis.staging.fragments.DropoutReportFragment;
 import mobile.tiis.staging.fragments.ImmunizationChartFragment;
 import mobile.tiis.staging.fragments.ImmunizedChildrenFragment;
+import mobile.tiis.staging.fragments.StockStatusFragment;
 import mobile.tiis.staging.fragments.StockTabFragment;
 import mobile.tiis.staging.fragments.TabFragment;
 
@@ -22,7 +23,7 @@ import mobile.tiis.staging.fragments.TabFragment;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
-    private final String[] TITLES = {"Child Register Report (MTUHA)","Immunization Coverage Report (Scheduled)", "Immunization Coverage Report (Target)", "Defaulters List", "Dropout Report", "Immunized Children", "Vaccination Summary"};
+    private final String[] TITLES = {"Child Register Report (MTUHA)","Immunization Coverage Report (Scheduled)", "Immunization Coverage Report (Target)", "Defaulters List", "Dropout Report", "Immunized Children", "Vaccination Summary", "Stock Report"};
 
 
     public ViewPagerAdapter(FragmentManager fm) {
@@ -64,11 +65,11 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         else if (position == 5){
             return ImmunizedChildrenFragment.newInstance();
         }
-//        else if (position == 6){
-//            return StockTabFragment.newInstance();
-//        }
         else if (position == 6){
             return HealthFacilityVisitsAndVaccinationSummaryFragment.newInstance(position);
+        }
+        else if (position == 7){
+            return StockStatusFragment.newInstance();
         }
         else{
             return TabFragment.newInstance(position);

@@ -204,6 +204,16 @@ public class GIISContract {
         String REPORTED_MONTH = "REPORTED_MONTH";
     }
 
+    interface StockStatusColumns{
+        String ID = "ID";
+        String ITEM_NAME = "ITEM_NAME";
+        String OPPENING_BALANCE ="OPPENING_BALANCE";
+        String CLOSING_BALANCE = "CLOSING_BALANCE";
+        String DOSES_RECEIVED = "DOSES_RECEIVED";
+        String DISCARDED_UNOPENED = "DISCARDED_UNOPENED";
+        String REPORTED_MONTH = "REPORTED_MONTH";
+    }
+
     interface  ScheduledVaccinationColumns{
         String ID = "ID";
         String NAME = "NAME";
