@@ -15,7 +15,7 @@ android {
         applicationId "mobile.tiis.app"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 142
+        versionCode 143
         versionName "2.4.6"
 
     }

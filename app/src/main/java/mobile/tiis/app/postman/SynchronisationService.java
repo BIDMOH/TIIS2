@@ -96,7 +96,7 @@ public class SynchronisationService extends IntentService {
                         continue;
                     }
                     try {
-                        HttpGet httpGet = new HttpGet(p.getUrl());
+                        HttpGet httpGet = new HttpGet(p.getUrl().replaceAll("\\s+",""));
                         Utils.writeNetworkLogFileOnSD("SynchronisationService" + " "+ Utils.returnDeviceIdAndTimestamp(getApplicationContext())+p.getUrl() );
                         httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((app.getLOGGED_IN_USERNAME() + ":" + app.getLOGGED_IN_USER_PASS()).getBytes(), Base64.NO_WRAP));
                         HttpResponse httpResponse = httpClient.execute(httpGet);
@@ -144,7 +144,7 @@ public class SynchronisationService extends IntentService {
                             }while(!res);
                         }else{
                             //check if this was a duplicate barcode registered in the server. if so delete the child
-                            if(p.getUrl().contains("RegisterChildWithAppoitmentsWithMothersHivStatusAndTT2VaccineStatusAndCatchment")){
+                            if(p.getUrl().contains("RegisterChildWithAppoitments")){
                                 String barcode =  p.getUrl().split("=")[1].substring(0,10);
                                 Log.d(TAG,"barcode = "+barcode);
                                 db.removeChildFromChildTable(db.getChildIdByBarcode(barcode));

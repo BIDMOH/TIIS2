@@ -210,7 +210,7 @@ public class HomeActivityRevised extends BackboneActivity {
     protected void onCreate(Bundle starter) {
         super.onCreate(starter);
 
-        copyDatabaseToExtStg(this);
+//        copyDatabaseToExtStg(this);
         setContentView(R.layout.homeactivity_redesigned);
         setupTypeface(HomeActivityRevised.this);
         initializeViews();
