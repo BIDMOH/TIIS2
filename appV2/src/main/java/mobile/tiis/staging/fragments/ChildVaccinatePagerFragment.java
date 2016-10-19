@@ -44,6 +44,7 @@ import static mobile.tiis.staging.base.BackboneApplication.TABLET_REGISTRATION_M
  *  Created by issymac on 27/01/16.
  */
 public class ChildVaccinatePagerFragment extends Fragment {
+    private static final String TAG = ChildVaccinatePagerFragment.class.getSimpleName();
 
     private BackboneApplication app;
 
@@ -163,8 +164,6 @@ public class ChildVaccinatePagerFragment extends Fragment {
         v = (ViewGroup) inflater.inflate(R.layout.child_faccinate_pager_fragment, null);
         setUpView(v);
 
-
-        listStock = dbh.getAvailableHealthFacilityBalance();
         validateAccessPrevilageForTheChild();
 
         if (!appointmentID.isEmpty()){
@@ -228,6 +227,8 @@ public class ChildVaccinatePagerFragment extends Fragment {
     }
 
     private void validateAccessPrevilageForTheChild(){
+        Log.d(TAG,"validateAccessPrevilagesForTheChild called");
+        listStock = dbh.getAvailableHealthFacilityBalance();
         if (currentChild.getBarcodeID().isEmpty() || currentChild.getBarcodeID().equals("")){
             Toast.makeText(ChildVaccinatePagerFragment.this.getActivity(), getString(R.string.empty_barcode), Toast.LENGTH_SHORT).show();
             noBarcode.setVisibility(View.VISIBLE);

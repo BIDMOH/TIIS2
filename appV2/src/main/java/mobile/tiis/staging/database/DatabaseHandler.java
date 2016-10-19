@@ -4024,15 +4024,39 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
     //method used to check if there are any unsynchronized child details in postman table
-    public boolean checkIfChildUpdatesAreInPostman(String childId){
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM " +Tables.POSTMAN+
-                " WHERE "+ SQLHandler.PostmanColumns.URL+" LIKE '%"+getChildById(childId).getBarcodeID()+"%'",null);
-        if(c.getCount()>0){
-            c.close();
-            return true;
-        }else{
-            c.close();return false;
+    public boolean checkIfChildIdIsInPostman(String childId){
+        try {
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor c = db.rawQuery("SELECT * FROM " + Tables.POSTMAN +
+                    " WHERE " + SQLHandler.PostmanColumns.URL + " LIKE '%" + getChildById(childId).getBarcodeID() + "%'", null);
+            if (c.getCount() > 0) {
+                c.close();
+                return true;
+            } else {
+                c.close();
+                return false;
+            }
+        }catch (Exception e){
+            return false;
+        }
+
+    }
+
+    //method used to check if there are any unsynchronized child details in postman table
+    public boolean checkIfChildBarcodeIsInPostman(String barcode){
+        try {
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor c = db.rawQuery("SELECT * FROM " + Tables.POSTMAN +
+                    " WHERE " + SQLHandler.PostmanColumns.URL + " LIKE '%" + getChildByBarcode(barcode).getBarcodeID() + "%'", null);
+            if (c.getCount() > 0) {
+                c.close();
+                return true;
+            } else {
+                c.close();
+                return false;
+            }
+        }catch (Exception e){
+            return false;
         }
 
     }
@@ -4059,7 +4083,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
     /**
-     * method used to get the list of the vaccinations in the HeaalthFacilityBalance table whose balance is non zero
+     * method used to get the list of the vaccinations in the HealthFacilityBalance table whose balance is non zero
      * @return
      */
     public List<Stock> getAvailableHealthFacilityBalance() {
@@ -4095,4 +4119,5 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor.close();
         return stockList;
     }
+
 }

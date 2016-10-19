@@ -35,14 +35,13 @@ import mobile.tiis.staging.entity.Stock;
 import mobile.tiis.staging.fragments.LotSelectionFragment;
 
 import static mobile.tiis.staging.base.BackboneActivity.Roboto_Regular;
-import static mobile.tiis.staging.base.BackboneActivity.Rosario_Regular;
 import static mobile.tiis.staging.base.BackboneApplication.TABLET_REGISTRATION_MODE_PREFERENCE_NAME;
 
 public class LotSettingsActivity extends AppCompatActivity {
     private DatabaseHandler db;
     private LinearLayout itemsList;
     private static final String TAG = LotSettingsActivity.class.getSimpleName();
-    private List<Stock> listStock;
+    private List<Stock> listAllStock,listStock;
     private LotSelectionFragment fragment;
     private GregorianCalendar gregorianCalendar;
     private SharedPreferences.Editor editor;
@@ -68,6 +67,7 @@ public class LotSettingsActivity extends AppCompatActivity {
         BackboneApplication app = (BackboneApplication)getApplication();
         db  = app.getDatabaseInstance();
         listStock = db.getAvailableHealthFacilityBalance();
+        listAllStock = db.getAllHealthFacilityBalance();
         itemsList = (LinearLayout)findViewById(R.id.list);
 
         if(!isFromHome) {
@@ -128,7 +128,7 @@ public class LotSettingsActivity extends AppCompatActivity {
 
     public void addViewsToTable(){
         itemsList.removeAllViews();
-        for (final Stock stock : listStock){
+        for (final Stock stock : listAllStock){
 
             View rowView = View.inflate(this, R.layout.view_lot_number_selection_item, null);
 
@@ -136,57 +136,63 @@ public class LotSettingsActivity extends AppCompatActivity {
             vaccineName.setTypeface(Roboto_Regular);
             vaccineName.setText(stock.getItem());
 
-            Cursor c = db.getReadableDatabase().rawQuery("SELECT * FROM "+ SQLHandler.Tables.ACTIVE_LOT_NUMBERS+" INNER JOIN health_facility_balance ON health_facility_balance.lot_id = active_lot_numbers.lot_id WHERE  active_lot_numbers.item = '"+stock.getItem()+"' AND "+
-                    GIISContract.ActiveLotNumbersColumns.DATE+" = "+gregorianCalendar.getTimeInMillis()+" AND CAST(health_facility_balance.balance as REAL) > "+0+"",null);
+            if(stock.getBalance()<=0){
+                TextView lot = (TextView)rowView.findViewById(R.id.add_lot);
+                lot.setText("Out of Stock");
+                lot.setTextColor(this.getResources().getColor(R.color.red_500));
+            }else {
+                Cursor c = db.getReadableDatabase().rawQuery("SELECT * FROM " + SQLHandler.Tables.ACTIVE_LOT_NUMBERS + " INNER JOIN health_facility_balance ON health_facility_balance.lot_id = active_lot_numbers.lot_id WHERE  active_lot_numbers.item = '" + stock.getItem() + "' AND " +
+                        GIISContract.ActiveLotNumbersColumns.DATE + " = " + gregorianCalendar.getTimeInMillis() + " AND CAST(health_facility_balance.balance as REAL) > " + 0 + "", null);
 
-            int count = c.getCount();
+                int count = c.getCount();
 
-            for(int i=0;i<count;i++){
-                c.moveToPosition(i);
-                View lotView = View.inflate(this, R.layout.view_lot_item, null);
-                TextView v = (TextView) lotView.findViewById(R.id.name);
-                v.setText(c.getString(c.getColumnIndex(GIISContract.ActiveLotNumbersColumns.LOT_NUMBER)));
-                v.setTypeface(Roboto_Regular);
+                for (int i = 0; i < count; i++) {
+                    c.moveToPosition(i);
+                    View lotView = View.inflate(this, R.layout.view_lot_item, null);
+                    TextView v = (TextView) lotView.findViewById(R.id.name);
+                    v.setText(c.getString(c.getColumnIndex(GIISContract.ActiveLotNumbersColumns.LOT_NUMBER)));
+                    v.setTypeface(Roboto_Regular);
 
-                final String item = stock.getItem();
-                final String lotNum = c.getString(c.getColumnIndex("lot_number"));
-                final String lotId = c.getString(c.getColumnIndex(GIISContract.ActiveLotNumbersColumns.LOT_ID));
-                lotView.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
+                    final String item = stock.getItem();
+                    final String lotNum = c.getString(c.getColumnIndex("lot_number"));
+                    final String lotId = c.getString(c.getColumnIndex(GIISContract.ActiveLotNumbersColumns.LOT_ID));
+                    lotView.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            int result = db.getWritableDatabase().delete(SQLHandler.Tables.ACTIVE_LOT_NUMBERS,
+                                    GIISContract.ActiveLotNumbersColumns.ITEM + " = '" + stock.getItem() + "' AND "
+                                            + GIISContract.ActiveLotNumbersColumns.LOT_ID + " = '" + lotId + "' AND "
+                                            + GIISContract.ActiveLotNumbersColumns.DATE + " = " + gregorianCalendar.getTimeInMillis(), null);
+                            Log.d(TAG, "deleted lot no = " + lotNum + " result = " + result);
+                            Log.d(TAG, "deleted where = " +
+                                    GIISContract.ActiveLotNumbersColumns.ITEM + " = '" + stock.getItem() + "' AND "
+                                    + GIISContract.ActiveLotNumbersColumns.LOT_ID + " = '" + lotId + "' AND "
+                                    + GIISContract.ActiveLotNumbersColumns.DATE + " = " + gregorianCalendar.getTimeInMillis());
+
+                            if (fragment != null) {
+                                fragment.fillLots(item);
+                            }
+                            addViewsToTable();
+                        }
+                    });
+
+
+                    ((LinearLayout) rowView.findViewById(R.id.added_lot_numbers)).addView(lotView);
+                }
+
+                rowView.findViewById(R.id.add_lot).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        int result = db.getWritableDatabase().delete(SQLHandler.Tables.ACTIVE_LOT_NUMBERS,
-                                GIISContract.ActiveLotNumbersColumns.ITEM+" = '"+stock.getItem()+"' AND "
-                                +GIISContract.ActiveLotNumbersColumns.LOT_ID+" = '"+lotId+"' AND "
-                                +GIISContract.ActiveLotNumbersColumns.DATE +" = "+ gregorianCalendar.getTimeInMillis(), null);
-                        Log.d(TAG,"deleted lot no = "+lotNum+" result = "+result);
-                        Log.d(TAG,"deleted where = "+
-                                GIISContract.ActiveLotNumbersColumns.ITEM+" = '"+stock.getItem()+"' AND "
-                                        +GIISContract.ActiveLotNumbersColumns.LOT_ID+" = '"+lotId+"' AND "
-                                        +GIISContract.ActiveLotNumbersColumns.DATE +" = "+ gregorianCalendar.getTimeInMillis());
-
-                        if(fragment!=null){
-                            fragment.fillLots(item);
-                        }
-                        addViewsToTable();
+                        Bundle arguments = new Bundle();
+                        arguments.putString(LotSelectionFragment.ARG_ITEM, stock.getItem());
+                        fragment = new LotSelectionFragment();
+                        fragment.setArguments(arguments);
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.item_detail_container, fragment)
+                                .commit();
                     }
                 });
-
-
-                ((LinearLayout)rowView.findViewById(R.id.added_lot_numbers)).addView(lotView);
             }
-
-            rowView.findViewById(R.id.add_lot).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Bundle arguments = new Bundle();
-                    arguments.putString(LotSelectionFragment.ARG_ITEM, stock.getItem());
-                    fragment = new LotSelectionFragment();
-                    fragment.setArguments(arguments);
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.item_detail_container, fragment)
-                            .commit();
-                }
-            });
             itemsList.addView(rowView);
 
         }
