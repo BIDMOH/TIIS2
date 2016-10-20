@@ -30,6 +30,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import mobile.tiis.appv2.CustomViews.NestedListView;
 import mobile.tiis.appv2.R;
@@ -154,18 +155,20 @@ public class ImmunizedChildrenFragment extends Fragment implements OnChartValueS
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
         Calendar cal = new GregorianCalendar();
-        cal.set(year, (monthOfYear), dayOfMonth);
+        cal.setTimeZone(TimeZone.getTimeZone("GMT"));
+        cal.set(year, (monthOfYear), dayOfMonth,0,0,0);
 
 
-        String displayDate = dayOfMonth+"/"+(monthOfYear+1)+"/"+year;
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        String date = null;
 
-        date = format.format(cal.getTime());
-        format = new SimpleDateFormat("dd MMM yyyy");
-        displayDate = format.format(cal.getTime());
+        SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy");
+        String displayDate = format.format(cal.getTime());
         dateText.setText(displayDate);
 
+
+        SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
+
+
+        String date = format2.format(cal.getTime());
         refreshImmunizationList(date);
         refreshImmunizedChildren(date);
 //        renderChart();

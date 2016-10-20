@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/dosage_title"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:text="BCG"/>
+    <LinearLayout
+        android:id="@+id/added_lot_numbers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"/>
+    <TextView
+        android:id="@+id/add_lot"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_height="40dp"
+        android:gravity="center_vertical"
+        android:textSize="18sp"
+        android:textColor="@color/blue_300"
+        android:text="+  Add Lot Number"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="16dp"
+        android:background="@color/gray_light"/>
+</LinearLayout>
