@@ -72,9 +72,11 @@
         android:smallScreens="true"
         android:anyDensity="true"/>
 
+
     <application android:name="mobile.tiis.appv2.base.BackboneApplication"
-        android:icon="@drawable/newloginlogo"
-        android:logo="@drawable/newloginlogo"
+        android:icon="@mipmap/ic_launcher"
+        android:logo="@mipmap/ic_launcher"
+        android:largeHeap="true"
         android:theme="@style/TIISTheme"
         android:label="@string/app_name"
         android:allowBackup="true">
@@ -171,7 +173,8 @@
             </intent-filter>
         </receiver>
 
-
+        <activity android:name=".LotSettingsActivity">
+        </activity>
 
 
 

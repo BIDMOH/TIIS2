@@ -42,6 +42,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import mobile.tiis.appv2.ChildDetailsActivity;
@@ -83,7 +84,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
     private int counter = 0,DateDiffDialog = 0;
     private ArrayList<String> dosekeeper;
     private ArrayList<AdministerVaccinesModel> arrayListAdminVacc;
-    private Date newest_date;
     private ListView vaccineDosesList;
     private TableLayout vaccinesListTableLayout;
     private CheckBox    vitACheckbox, mabendazolCheckbox, cbOutreach;
@@ -180,8 +180,6 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
 
         appointment = dbh.getVaccinationAppointmentById(appointment_id);
 
-        Log.d("EBENSEARCH", "Birth date is : "+ft1.format(BackboneActivity.dateParser(birthdate)));
-
         try {
             Date dNow = new Date();
             SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy");
@@ -228,18 +226,24 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                 // Do some long running operation
                 dosekeeper = dbh.getDosesForAppointmentID(appointment_id);
                 arrayListAdminVacc = new ArrayList<AdministerVaccinesModel>();
-                newest_date = new Date();
+                Calendar c = Calendar.getInstance();
+                Calendar c2 = new GregorianCalendar();
+                c2.setTimeZone(TimeZone.getTimeZone("GMT"));
+                c2.set(c.get(Calendar.YEAR),c.get(Calendar.MONTH),c.get(Calendar.DAY_OF_MONTH),0,0,0);
+
+                new_date = c2.getTime();
 
                 for (String dose : dosekeeper) {
                     final AdministerVaccinesModel adminVacc = dbh.getPartOneAdminVaccModel(starter_set, appointment_id, dose);
                     starter_set = true;
                     dbh.getPartTwoAdminVacc(adminVacc, daysDiff, DateDiffDialog);
                     SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy");
-                    adminVacc.setTime(ft.format(newest_date));
-                    adminVacc.setTime2(newest_date);
+                    adminVacc.setTime(ft.format(new_date));
+                    adminVacc.setTime2(new_date);
                     //rowObjects.setInput(ft.format(newest_date));
                     //rowObjects.setDate(vaccination_date_col);
 
+                    Log.d("timezone","default set time = "+new_date.getTime());
                     arrayListAdminVacc.add(adminVacc);
                 }
 
@@ -493,10 +497,17 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                     item.setVaccination_lot(item.getVaccine_lot_map().get(item.getVaccine_lot_list().get(2)).toString());
                     Log.d("RowCollId", item.getVaccination_lot());
                 } else {
-                    spVaccLot.setSelection(1);
-                    item.setVaccination_lot_pos(1);
-                    item.setVaccination_lot(item.getVaccine_lot_map().get(item.getVaccine_lot_list().get(1)).toString());
-                    Log.d("RowCollId", item.getVaccination_lot());
+//                    spVaccLot.setSelection(1);
+//                    item.setVaccination_lot_pos(1);
+//                    item.setVaccination_lot(item.getVaccine_lot_map().get(item.getVaccine_lot_list().get(1)).toString());
+//                    Log.d("RowCollId", item.getVaccination_lot());
+//
+                    /**
+                     * unchecking of the vaccine as not given and and setting the vaccination reason of "kukosekana kwa chanjo(out of stock) by default"
+                     */
+                    chDone.setChecked(false);
+                    spReason.setSelection(reasons.indexOf("Kukosekana chanjo"));
+
                 }
             }
 
@@ -550,11 +561,15 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
         final SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy");
+        ft.setTimeZone(TimeZone.getTimeZone("GMT"));
         Date bdate = BackboneActivity.dateParser(birthdate);
 
         Calendar cal = new GregorianCalendar();
-        cal.set(year, (monthOfYear), dayOfMonth);
+        cal.set(year,monthOfYear,dayOfMonth,0,0,0);
+        cal.setTimeZone(TimeZone.getTimeZone("GMT"));
         new_date = cal.getTime();
+
+        Log.d("timezone","date selected from date picker = "+new_date.getTime());
 
         try {
             new_date = ft.parse(ft.format(new_date));
@@ -645,8 +660,9 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
     }
 
     public Date setdates(final int pos, final AdministerVaccinesModel coll){
-        final SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy");
+        Log.d("timezone","setting dates = "+new_date.getTime());
 
+        final SimpleDateFormat ft = new SimpleDateFormat("dd-MMM-yyyy");
         if (getDaysDifference(new_date, coll.getTime2()) > 0) {
             coll.setTime(ft.format(new_date));
             ((TextView)vaccinesListTableLayout.getChildAt(pos).findViewById(R.id.vaccine_date)).setText(ft.format(new_date));
@@ -984,8 +1000,8 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                 if (!(etNotes.getText().toString().equalsIgnoreCase(""))) {
                     updateRow.put(SQLHandler.VaccinationEventColumns.NOTES, etNotes.getText().toString());
                 }
-                Log.d("Time sent to update database", "/Date(" + a.getTime2().getTime() + "-0500)/");
-                updateRow.put(SQLHandler.VaccinationEventColumns.VACCINATION_DATE, "/Date(" + a.getTime2().getTime() + "-0500)/");
+                Log.d("TimeSentToUpdateDatabase", "/Date(" + a.getTime2().getTime() + "+0000)/");
+                updateRow.put(SQLHandler.VaccinationEventColumns.VACCINATION_DATE, "/Date(" + a.getTime2().getTime() + "+0000)/");
                 if (!(a.getNon_vac_reason().equalsIgnoreCase(""))) {
                     updateRow.put(SQLHandler.VaccinationEventColumns.NONVACCINATION_REASON_ID, a.getNon_vac_reason());
                 }

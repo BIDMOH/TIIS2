@@ -2,6 +2,7 @@ package mobile.tiis.appv2.fragments;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -10,12 +11,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,18 +29,22 @@ import mobile.tiis.appv2.R;
 import mobile.tiis.appv2.base.BackboneActivity;
 import mobile.tiis.appv2.base.BackboneApplication;
 import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.database.GIISContract;
 import mobile.tiis.appv2.database.SQLHandler;
 import mobile.tiis.appv2.entity.AdministerVaccinesModel;
 import mobile.tiis.appv2.entity.Child;
+import mobile.tiis.appv2.entity.Stock;
 import mobile.tiis.appv2.mObjects.RowCollector;
 import mobile.tiis.appv2.util.ViewAppointmentRow;
 
 import static mobile.tiis.appv2.ChildDetailsActivity.childId;
+import static mobile.tiis.appv2.base.BackboneApplication.TABLET_REGISTRATION_MODE_PREFERENCE_NAME;
 
 /**
  *  Created by issymac on 27/01/16.
  */
 public class ChildVaccinatePagerFragment extends Fragment {
+    private static final String TAG = ChildVaccinatePagerFragment.class.getSimpleName();
 
     private BackboneApplication app;
 
@@ -61,7 +69,7 @@ public class ChildVaccinatePagerFragment extends Fragment {
     final String VACC__ITEM_ID_LOG = "Vaccination Item Id";
 
 
-    private RelativeLayout noBarcode;
+    private RelativeLayout noBarcode,registrationModeEnabled;
 
     private RelativeLayout frameLayout;
 
@@ -128,6 +136,8 @@ public class ChildVaccinatePagerFragment extends Fragment {
     private FragmentStackManager fm;
 
     private String appointmentID = "";
+    private List<Stock> listStock;
+    private TextView lotNumberErrorMessage;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -154,14 +164,7 @@ public class ChildVaccinatePagerFragment extends Fragment {
         v = (ViewGroup) inflater.inflate(R.layout.child_faccinate_pager_fragment, null);
         setUpView(v);
 
-        if (currentChild.getBarcodeID().isEmpty() || currentChild.getBarcodeID().equals("")){
-            Toast.makeText(ChildVaccinatePagerFragment.this.getActivity(), getString(R.string.empty_barcode), Toast.LENGTH_SHORT).show();
-            noBarcode.setVisibility(View.VISIBLE);
-            frameLayout.setVisibility(View.GONE);
-        }else{
-            noBarcode.setVisibility(View.GONE);
-            frameLayout.setVisibility(View.VISIBLE);
-        }
+        validateAccessPrevilageForTheChild();
 
         if (!appointmentID.isEmpty()){
 
@@ -223,10 +226,43 @@ public class ChildVaccinatePagerFragment extends Fragment {
         return v;
     }
 
+    private void validateAccessPrevilageForTheChild(){
+        Log.d(TAG,"validateAccessPrevilagesForTheChild called");
+        listStock = dbh.getAvailableHealthFacilityBalance();
+        if (currentChild.getBarcodeID().isEmpty() || currentChild.getBarcodeID().equals("")){
+            Toast.makeText(ChildVaccinatePagerFragment.this.getActivity(), getString(R.string.empty_barcode), Toast.LENGTH_SHORT).show();
+            noBarcode.setVisibility(View.VISIBLE);
+            registrationModeEnabled.setVisibility(View.GONE);
+            frameLayout.setVisibility(View.GONE);
+        }else if(PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).getBoolean(TABLET_REGISTRATION_MODE_PREFERENCE_NAME, false)){
+            noBarcode.setVisibility(View.GONE);
+            frameLayout.setVisibility(View.GONE);
+            registrationModeEnabled.setVisibility(View.VISIBLE);
+        }else if(!checkIfLotNumbersWereSetForAllVaccinesDuringTheDaysLoginOfTheDay()){
+            noBarcode.setVisibility(View.GONE);
+            frameLayout.setVisibility(View.GONE);
+            registrationModeEnabled.setVisibility(View.VISIBLE);
+            lotNumberErrorMessage.setText("Lot Numbers for some vaccines have not been selected. \nInorder to vaccinate a child, Go to Lot Number Settings on the main menu and select the vaccination Lot Numbers for vaccines that will be used today");
+
+        }else if(!checkIfThereAnyActivatedLotNumbersThatHaveRunOutOfStock()){
+            noBarcode.setVisibility(View.GONE);
+            frameLayout.setVisibility(View.GONE);
+            registrationModeEnabled.setVisibility(View.VISIBLE);
+            lotNumberErrorMessage.setText("Lot Numbers that were previously selected for today's use for some vaccines have run out. \n Please go to Lot Number Settings on the main menu and select new vaccination Lot Numbers to continue vaccinating children");
+
+        }else{
+            noBarcode.setVisibility(View.GONE);
+            frameLayout.setVisibility(View.VISIBLE);
+            registrationModeEnabled.setVisibility(View.GONE);
+        }
+    }
+
     public void setUpView(View v){
         vaccineDosesListView        = (NestedListView) v.findViewById(R.id.lv_dose_list);
         vaccinateFrame              = (FrameLayout) v.findViewById(R.id.vacc_fragment_frame);
         noBarcode    = (RelativeLayout) v.findViewById(R.id.child_no_barcode_layout);
+        registrationModeEnabled    = (RelativeLayout) v.findViewById(R.id.registration_mode_enabled_layout);
+        lotNumberErrorMessage    = (TextView) v.findViewById(R.id.lot_number_error_message);
         noBarcode.setVisibility(View.GONE);
         frameLayout  = (RelativeLayout) v.findViewById(R.id.frame_layout);
     }
@@ -282,6 +318,37 @@ public class ChildVaccinatePagerFragment extends Fragment {
         parsedChild.setStatus(statusstr);
         return parsedChild;
 
+    }
+
+    private boolean checkIfLotNumbersWereSetForAllVaccinesDuringTheDaysLoginOfTheDay(){
+        Calendar calendar=Calendar.getInstance();
+        GregorianCalendar gregorianCalendar = new GregorianCalendar(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH));
+        for (Stock stock : listStock){
+            Cursor c = dbh.getReadableDatabase().rawQuery("SELECT lot_id FROM "+ SQLHandler.Tables.ACTIVE_LOT_NUMBERS+" WHERE "+ GIISContract.ActiveLotNumbersColumns.ITEM+" = '"+stock.getItem()+"' AND "+
+                    GIISContract.ActiveLotNumbersColumns.DATE+" = "+gregorianCalendar.getTimeInMillis(),null);
+            if(c.getCount()==0){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean checkIfThereAnyActivatedLotNumbersThatHaveRunOutOfStock(){
+        Calendar calendar=Calendar.getInstance();
+        GregorianCalendar gregorianCalendar = new GregorianCalendar(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH));
+        for (Stock stock : listStock){
+            Cursor c = dbh.getReadableDatabase().rawQuery("SELECT active_lot_numbers.lot_id FROM "+ SQLHandler.Tables.ACTIVE_LOT_NUMBERS+" INNER JOIN health_facility_balance ON health_facility_balance.lot_id = active_lot_numbers.lot_id WHERE active_lot_numbers.item = '"+stock.getItem()+"' AND "+
+                    GIISContract.ActiveLotNumbersColumns.DATE+" = "+gregorianCalendar.getTimeInMillis()+" AND CAST(health_facility_balance.balance as REAL) > "+0+"",null);
+            if(c.getCount()==0){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void updateChild() {
+        currentChild = dbh.getChildById(childId);
+        validateAccessPrevilageForTheChild();
     }
 
 }

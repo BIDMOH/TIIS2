@@ -95,7 +95,6 @@ public class DropoutReportFragment extends Fragment {
         dateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.d("SpinnerSelection", "Positions is : "+i);
                 if (i != -1){
                     currentYearSelected = years[i];
                     new getDropOutTable().execute(currentYearSelected);
@@ -184,21 +183,10 @@ public class DropoutReportFragment extends Fragment {
                                 " AND "+SQLHandler.VaccinationEventColumns.VACCINATION_STATUS+" = 'true' "+
                                 " AND "+ SQLHandler.VaccinationEventColumns.DOSE_ID +" = '68' ";
 
-                        Log.d("DropoutQueries", SQLBcgCount);
-                        Log.d("DropoutQueries", SQLMr1Count);
-                        Log.d("DropoutQueries", SQLPenta1Count);
-                        Log.d("DropoutQueries", SQLPenta3Count);
-
                         cursor1 = mydb.getReadableDatabase().rawQuery(SQLBcgCount, null);
                         cursor2 = mydb.getReadableDatabase().rawQuery(SQLMr1Count, null);
                         cursor3 = mydb.getReadableDatabase().rawQuery(SQLPenta1Count, null);
                         cursor4 = mydb.getReadableDatabase().rawQuery(SQLPenta3Count, null);
-
-//                        Log.d("day14", cursor1.getInt(cursor1.getColumnIndex("BCG_COUNT"))+ " of BCG for "+monthCursor.getString(monthCursor.getColumnIndex("month")));
-//                        Log.d("day14", cursor2.getInt(cursor1.getColumnIndex("MR1_COUNT"))+ " of MR1 for "+monthCursor.getString(monthCursor.getColumnIndex("month")));
-//                        Log.d("day14", cursor3.getInt(cursor1.getColumnIndex("PENTA1_COUNT"))+ " of PENTA 1 for "+monthCursor.getString(monthCursor.getColumnIndex("month")));
-//                        Log.d("day14", cursor4.getInt(cursor1.getColumnIndex("PENTA3_COUNT"))+ " of PENTA 3 for "+monthCursor.getString(monthCursor.getColumnIndex("month")));
-
                         if (cursor1 != null){
                             cursor1.moveToFirst();
                             row.setBcgAmount(cursor1.getInt(cursor1.getColumnIndex("BCG_COUNT")));
