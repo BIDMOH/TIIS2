@@ -288,7 +288,7 @@ public class HomeActivityRevised extends BackboneActivity {
         }else{
             //Do main if necessary
             if (Utils.isOnline(this) && sync_needed && app.getMainSyncronizationNeededStatus()) {
-                new mainSynchronisation().execute(0);
+//                new mainSynchronisation().execute(0);
             } else if (Utils.isOnline(this) && firstLoginOfDaySyncNeeded) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
                     new firstLoginOfDaySynchronisation().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, 0);

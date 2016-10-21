@@ -111,7 +111,8 @@ public class SynchronisationService extends IntentService {
                                             + " StatusCode " + httpResponse.getStatusLine().getStatusCode()
                                             + " ReasonPhrase " + httpResponse.getStatusLine().getReasonPhrase()
                                             + " ProtocolVersion " + httpResponse.getStatusLine().getProtocolVersion());
-                            return;
+                            if(httpResponse.getStatusLine().getStatusCode()!=400)
+                                return;
                         }
 
                         // the input stream of the response

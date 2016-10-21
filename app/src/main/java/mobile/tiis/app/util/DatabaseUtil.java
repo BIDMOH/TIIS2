@@ -8,7 +8,7 @@ import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
 
 
-import static mobile.tiis.app.database.DatabaseHandler.DATABASE_NAME;
+//import static mobile.tiis.app.database.DatabaseHandler.DATABASE_NAME;
 
 /**
  * Shayan Rais (http://shanraisshan.com)
@@ -24,7 +24,7 @@ public class DatabaseUtil {
     //todo -> rename the database according to your application
 
     //example WhatsApp :  /data/data/com.whatsapp/databases/msgstore.db
-    final static String FOLDER_EXTERNAL_DIRECTORY = Environment.getExternalStorageDirectory() + "/tiis";
+    public final static String FOLDER_EXTERNAL_DIRECTORY = Environment.getExternalStorageDirectory() + "/tiis";
 
     //______________________________________________________________________________________________
     /**
@@ -37,10 +37,10 @@ public class DatabaseUtil {
         File externalDirectory = new File(FOLDER_EXTERNAL_DIRECTORY);
         if(!externalDirectory.exists())
             externalDirectory.mkdirs();
-        File toFile = new File(externalDirectory, DATABASE_NAME);
+        File toFile = new File(externalDirectory, "DATABASE_NAME");
         //internal storage file
         //https://developer.android.com/reference/android/content/Context.html#getDatabasePath(java.lang.String)
-        File fromFile = ctx.getDatabasePath(DATABASE_NAME);
+        File fromFile = ctx.getDatabasePath("DATABASE_NAME");
         //example WhatsApp :  /data/data/com.whatsapp/databases/msgstore.db
         if (fromFile.exists())
             copy(fromFile, toFile);

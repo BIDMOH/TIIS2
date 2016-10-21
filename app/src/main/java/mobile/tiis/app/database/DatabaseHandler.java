@@ -71,15 +71,20 @@ import mobile.tiis.app.entity.VaccinationQueueObject;
 import mobile.tiis.app.fragments.FragmentVaccineNameQuantity;
 import mobile.tiis.app.postman.PostmanModel;
 
+import static mobile.tiis.app.util.DatabaseUtil.FOLDER_EXTERNAL_DIRECTORY;
+
 /**
  * Created by Melisa on 02/02/2015.
  */
 public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String TAG = "DatabaseHandler";
 
-    public static final String DATABASE_NAME = "giis_mobile.db";
+//    public static final String DATABASE_NAME = "giis_mobile.db";
     private static final int DATABASE_VERSION = 2;
     public static boolean dbPreinstalled = false;
+
+    private static final File dbfile = new File(FOLDER_EXTERNAL_DIRECTORY, "/giis_mobile.db");
+    private static final String DATABASE_NAME = dbfile.toString();
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
