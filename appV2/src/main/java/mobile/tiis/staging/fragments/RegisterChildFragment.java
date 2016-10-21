@@ -138,10 +138,8 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
 
 
     private String getDistrictCouncilName(String id){
-        Log.d(TAG,"health facility id = "+id);
         String name = "";
         for (HealthFacility districtCouncil : districtCouncilsList){
-            Log.d(TAG,"district council ids = "+districtCouncil.getId());
             if(districtCouncil.getId().equals(id)) {
                 name = districtCouncil.getName();
             }
@@ -540,12 +538,9 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
         calendar.set(year,monthOfYear,dayOfMonth,3,0,0);
 
 
-        Log.d(TAG,"selected date = "+calendar.getTimeInMillis());
-
         calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
         bdate = calendar.getTime();
 
-        Log.d(TAG,"selected date with time zone = "+bdate.getTime());
 
         final SimpleDateFormat ft = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -1168,7 +1163,6 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
     public void searchOutsideFacility(){
         if (isThereCorrectNumberOfCriteria()){
             searchChildrenOutsideFacility();
-            Log.d(TAG,"searching for the child from outside facility");
         }else {
             Toast.makeText(RegisterChildFragment.this.getActivity(), "Add criterias to search outside facility", Toast.LENGTH_LONG).show();
         }

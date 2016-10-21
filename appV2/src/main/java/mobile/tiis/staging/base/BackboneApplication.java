@@ -22,7 +22,6 @@ import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.os.Handler;
@@ -89,8 +88,6 @@ import mobile.tiis.staging.entity.Weight;
 import mobile.tiis.staging.helpers.Utils;
 import mobile.tiis.staging.postman.PostmanModel;
 import mobile.tiis.staging.util.Constants;
-
-import static mobile.tiis.staging.database.SQLHandler.Tables.POSTMAN;
 
 /**
  * Created by Teodor on 2/3/2015.
@@ -1564,7 +1561,7 @@ public class BackboneApplication extends Application {
         client.setTimeout(DEFAULT_TIMEOUT);
 
 
-        client.setMaxConnections(20);
+        client.setMaxConnections(50);
 
 
     }
@@ -2512,7 +2509,8 @@ public class BackboneApplication extends Application {
 
                 Log.d(TAG, "passing child " + childId);
 
-                if(getDatabaseInstance().checkIfChildUpdatesAreInPostman(childId)){
+                //A hacky, more improvements will be done, way to check if there are still unsynchronized data in the postman for that childId, so we should wait till the data synchronizes before updateing data from the server
+                if(!getDatabaseInstance().checkIfChildIdIsInPostman(childId)){
                     final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(CHILD_MANAGEMENT_SVC).append("GetChildByIdV1?childId=").append(childId);
                     client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
                         @Override
@@ -2529,9 +2527,17 @@ public class BackboneApplication extends Application {
                                 ObjectMapper mapper = new ObjectMapper();
                                 mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
                                 childCollector = mapper.readValue(new JSONArray(response).getJSONObject(0).toString(), ChildCollector.class);
-                                addChildVaccinationEventVaccinationAppointmentUnOptimisedForSmallAmountsOfData(childCollector);
-                                parsedChildResults = 1;
-                                databaseInstance.removeChildFromChildUpdateQueue(childId);
+
+                                //Check if there any unsynchronized updates in the postman table for this barcode
+                                if(!getDatabaseInstance().checkIfChildBarcodeIsInPostman(childCollector.getChildEntity().getBarcodeID())){
+                                    Log.d(TAG,"not postponing child with barcode "+childCollector.getChildEntity().getBarcodeID());
+                                    addChildVaccinationEventVaccinationAppointmentUnOptimisedForSmallAmountsOfData(childCollector);
+
+                                    parsedChildResults = 1;
+                                    databaseInstance.removeChildFromChildUpdateQueue(childId);
+                                }else{
+                                    Log.d(TAG,"postponing updates for a barcode in postman until the details are synchronized to the server");
+                                }
                             } catch (JsonGenerationException e) {
                                 e.printStackTrace();
                                 parsedChildResults = 2;
@@ -2548,7 +2554,7 @@ public class BackboneApplication extends Application {
                         }
                     });
                 }else{
-                    Log.d(TAG,"postponing updates for a child in postman until the details are synchronized to the server");
+                    Log.d(TAG,"postponing updates for a childID in postman until the details are synchronized to the server");
                 }
             }
         }catch (Exception e){

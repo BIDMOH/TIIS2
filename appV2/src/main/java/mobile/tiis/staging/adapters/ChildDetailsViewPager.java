@@ -91,6 +91,8 @@ public class ChildDetailsViewPager extends FragmentPagerAdapter {
             ((ChildImmCardPagerFragment) object).updateData();
         }else if (object instanceof ChildWeightPagerFragment) {
             ((ChildWeightPagerFragment) object).updateChildsWeight();
+        }else if (object instanceof ChildVaccinatePagerFragment) {
+            ((ChildVaccinatePagerFragment) object).updateChild();
         }
         return super.getItemPosition(object);
     };
