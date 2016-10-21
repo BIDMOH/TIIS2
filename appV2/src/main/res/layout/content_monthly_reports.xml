@@ -11,290 +11,945 @@
     tools:context="mobile.tiis.staging.MonthlyReportsActivity"
     tools:showIn="@layout/activity_monthly_reports">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:orientation="vertical">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:id="@+id/info"
-            android:background="@color/card_light_text">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="16dp"
-                android:text="Reporting Month"
-                android:textSize="18sp"
-                android:id="@+id/last_month_title"/>
-
-            <fr.ganfra.materialspinner.MaterialSpinner
-                android:id="@+id/mon_year_spiner"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/last_month_title"
-                android:layout_marginLeft="16dp"
-                android:layout_centerVertical="true"
-                app_ms:ms_multiline="false"
-                app_ms:ms_hint="Reporting Month"
-                app_ms:ms_enableFloatingLabel="true"
-                app_ms:ms_enableErrorLabel="false"
-                app_ms:ms_floatingLabelText="Reporting Month"
-                app_ms:ms_baseColor="@color/black"
-                app_ms:ms_highlightColor="@color/black"
-                app_ms:ms_errorColor="@color/red_500"
-                app_ms:ms_typeface="Roboto-LightItalic.ttf"
-                app_ms:ms_thickness="0.5dp"
-                app_ms:ms_hintColor="@color/black"
-                app_ms:ms_arrowColor="@color/black"
-                app_ms:ms_arrowSize="16dp"
-                app_ms:ms_alignLabels="false"
-                app_ms:ms_floatingLabelColor="@color/black"/>
-
-        </RelativeLayout>
+        android:layout_alignParentStart="true">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_below="@id/info">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
 
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_height="300dp">
+            <RelativeLayout
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:id="@+id/info"
+                android:background="@color/card_light_text">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/surveillance_txt"
-                android:text="DESEASE SURVEILLANCE DATA"
-                android:textColor="@color/card_title_text"
-                android:layout_marginTop="16dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="16dp"
+                    android:text="Reporting Month"
+                    android:textSize="18sp"
+                    android:id="@+id/last_month_title"/>
+
+            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@id/info">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/surveillance_txt"
+                    android:text="DESEASE SURVEILLANCE DATA"
+                    android:textColor="@color/card_title_text"
+                    android:layout_marginTop="16dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="16dp"
+                    android:layout_below="@id/surveillance_txt"
+                    android:background="@color/white">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="@drawable/border">
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Fever and Rush Illness"
+                                android:layout_centerVertical="true"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:id="@+id/textView3" />
+
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent">
+
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:id="@+id/fever_monthly_cases"
+                                android:hint=""
+                                android:background="@drawable/border"
+                                android:inputType="number"/>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent">
+
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/fever_deaths"
+                                android:hint=""
+                                android:inputType="number"/>
+
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="@drawable/border">
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="AFP "
+                                android:layout_marginRight="4dp"
+                                android:layout_marginLeft="8dp"
+                                android:layout_centerVertical="true" />
+
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent">
+
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/afp_monthly_cases"
+                                android:hint=""
+                                android:inputType="number"/>
+
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent">
+
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/afp_deaths"
+                                android:hint=""
+                                android:inputType="number"/>
+
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="@drawable/border">
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Neonatal Tetanus"
+                                android:layout_centerVertical="true"
+                                android:layout_marginRight="4dp"
+                                android:layout_marginLeft="8dp"/>
+
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent">
+
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tetanus_monthly_cases"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent">
+
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tetanus_deaths"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                    <Button
+                        android:layout_width="100dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="right"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="Submit"
+                        android:id="@+id/surveillance_submit_button"/>
+
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/refrigerator_txt"
+                    android:text="REFRIGERATOR TEMPERATURE"
+                    android:textColor="@color/card_title_text"
+                    android:layout_marginTop="16dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical"
+                    android:background="@drawable/border"
+                    android:layout_below="@id/refrigerator_txt">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:text="Temperature"
+                            android:gravity="center"/>
+
+                        <View
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/card_border"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:text="No. Of Alarm Episodes"
+                            android:gravity="center"/>
+
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="@drawable/border"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:text="Max"
+                            android:gravity="center"/>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/card_border"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:text="Min"
+                            android:gravity="center"/>
+
+                        <View
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/card_border"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:text="Low Temp"
+                            android:gravity="center"/>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/card_border"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:text="High Temp"
+                            android:gravity="center"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:orientation="horizontal">
+
+                        <EditText
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:layout_margin="6dp"
+                            android:paddingLeft="4dp"
+                            android:background="@drawable/border"
+                            android:id="@+id/temp_max"
+                            android:hint=""
+                            android:textSize="14sp"
+                            android:inputType="numberDecimal"/>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/card_border"/>
+
+                        <EditText
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:layout_margin="6dp"
+                            android:paddingLeft="4dp"
+                            android:background="@drawable/border"
+                            android:id="@+id/temp_min"
+                            android:hint=""
+                            android:textSize="14sp"
+                            android:inputType="numberDecimal"/>
+
+                        <View
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/card_border"/>
+
+                        <EditText
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:layout_margin="6dp"
+                            android:paddingLeft="4dp"
+                            android:background="@drawable/border"
+
+                            android:id="@+id/alarm_low"
+                            android:hint=""
+                            android:textSize="14sp"
+                            android:inputType="numberDecimal"/>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/card_border"/>
+
+                        <EditText
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:layout_margin="6dp"
+                            android:paddingLeft="4dp"
+                            android:background="@drawable/border"
+                            android:id="@+id/alarm_high"
+                            android:hint=""
+                            android:textSize="14sp"
+                            android:inputType="numberDecimal"/>
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="@drawable/border"/>
+
+                    <Button
+                        android:layout_width="100dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="right"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="Submit"
+                        android:id="@+id/refrigerator_submit_button"/>
+
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp">
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/border"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:background="@color/card_separator"
+                            android:text="Immunization Sessions"
+                            android:gravity="center"
+                            android:textColor="@color/black"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:text="Fixed (conducted)"
+                                android:layout_height="match_parent"
+                                android:gravity="center"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:text="Outreach Planned"
+                                android:layout_height="match_parent"
+                                android:gravity="center"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:text="Outreach (conducted)"
+                                android:layout_height="match_parent"
+                                android:gravity="center"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:text="Outreach (cancelled)"
+                                android:layout_height="match_parent"
+                                android:gravity="center"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:orientation="horizontal">
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/fixed_conducted"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/outreach_planned"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/outreach_conducted"
+                                android:hint=""
+                                android:inputType="number"/>
+
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/outreach_cancelled"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                        </LinearLayout>
+
+                        <Button
+                            android:layout_width="100dp"
+                            android:layout_height="50dp"
+                            android:layout_gravity="right"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:text="Submit"
+                            android:id="@+id/immunization_sessions_submit_button"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:background="@drawable/border"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:background="@color/card_separator"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.2"
+                                android:layout_height="match_parent"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.4"
+                                android:layout_height="match_parent"
+                                android:text="Service Area"
+                                android:gravity="center"
+                                android:textSize="12sp"
+                                android:textColor="@color/black"/>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/black"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.4"
+                                android:textSize="12sp"
+                                android:layout_height="match_parent"
+                                android:text="Catchment Area"
+                                android:gravity="center"
+                                android:textColor="@color/black"/>
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/black"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:background="@color/card_separator"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:text="Antigen"
+                                android:gravity="center"
+                                android:textSize="12sp"
+                                android:textColor="@color/black"/>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/card_separator"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:text="Female"
+                                android:gravity="center"
+                                android:textSize="12sp"
+                                android:textColor="@color/black"/>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/card_separator"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:text="Male"
+                                android:gravity="center"
+                                android:textSize="12sp"
+                                android:textColor="@color/black"/>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/card_separator"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:text="Female"
+                                android:gravity="center"
+                                android:textSize="12sp"
+                                android:textColor="@color/black"/>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/card_separator"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:textSize="12sp"
+                                android:layout_height="match_parent"
+                                android:text="Male"
+                                android:gravity="center"
+                                android:textColor="@color/black"/>
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/black"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:text="BCG"
+                                android:gravity="center"
+                                android:textSize="12sp"
+                                android:textColor="@color/black"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/bcg_female_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/bcg_male_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/bcg_female_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/bcg_male_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:text="OPV"
+                                android:gravity="center"
+                                android:textSize="12sp"
+                                android:textColor="@color/black"/>
+
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/opv_female_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/opv_male_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/opv_female_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/opv_male_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:text="TT"
+                                android:gravity="center"
+                                android:textSize="12sp"
+                                android:textColor="@color/black"
+                                android:id="@+id/textView5" />
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt_female_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt_male_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt_female_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt_male_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                        </LinearLayout>
+
+
+                        <Button
+                            android:layout_width="100dp"
+                            android:layout_height="50dp"
+                            android:layout_gravity="right"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:text="Submit"
+                            android:id="@+id/vaccinations_submit_button"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginTop="16dp"
-                android:layout_below="@id/surveillance_txt"
-                android:background="@color/white">
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp">
 
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:background="@drawable/border"
-                    android:layout_weight="1">
+                    android:layout_height="50dp"
+                    android:background="@color/card_separator"
+                    android:text="Other Major Immunization Activities"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:id="@+id/textView4" />
 
-                    <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Fever and Rush Illness"
-                            android:layout_centerVertical="true"
-                            android:layout_margin="6dp"
-                            android:paddingLeft="4dp"
-                            android:id="@+id/textView3" />
-
-
-                    </RelativeLayout>
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_border"/>
-
-                    <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent">
-
-                        <EditText
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_margin="6dp"
-                            android:paddingLeft="4dp"
-                            android:id="@+id/fever_monthly_cases"
-                            android:hint="cases"
-                            android:background="@drawable/border"
-                            android:inputType="number"/>
-
-                    </RelativeLayout>
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_border"/>
-
-                    <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent">
-
-                        <EditText
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_margin="6dp"
-                            android:paddingLeft="4dp"
-                            android:background="@drawable/border"
-                            android:id="@+id/fever_deaths"
-                            android:hint="deaths"
-                            android:inputType="number"/>
-
-
-                    </RelativeLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
+                <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="4dp"
+                    android:minLines="5"
+                    android:lines="5"
+                    android:maxLines="5"
+                    android:padding="8dp"
                     android:background="@drawable/border"
-                    android:layout_weight="1">
-
-                    <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="AFP Cases"
-                            android:layout_marginRight="4dp"
-                            android:layout_marginLeft="8dp"
-                            android:layout_centerVertical="true" />
-
-
-                    </RelativeLayout>
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_border"/>
-
-                    <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent">
-
-                        <EditText
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_margin="6dp"
-                            android:paddingLeft="4dp"
-                            android:background="@drawable/border"
-                            android:id="@+id/afp_monthly_cases"
-                            android:hint="cases"
-                            android:inputType="number"/>
-
-
-                    </RelativeLayout>
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_border"/>
-
-                    <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent">
-
-                        <EditText
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_margin="6dp"
-                            android:paddingLeft="4dp"
-                            android:background="@drawable/border"
-                            android:id="@+id/afp_deaths"
-                            android:hint="deaths"
-                            android:inputType="number"/>
-
-
-                    </RelativeLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:background="@drawable/border"
-                    android:layout_weight="1">
-
-                    <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Neonatal Tetanus"
-                            android:layout_centerVertical="true"
-                            android:layout_marginRight="4dp"
-                            android:layout_marginLeft="8dp"/>
-
-
-                    </RelativeLayout>
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_border"/>
-
-                    <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent">
-
-                        <EditText
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_margin="6dp"
-                            android:paddingLeft="4dp"
-                            android:background="@drawable/border"
-                            android:id="@+id/tetanus_monthly_cases"
-                            android:hint="cases"
-                            android:inputType="number"/>
-
-                    </RelativeLayout>
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_border"/>
-
-                    <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent">
-
-                        <EditText
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_margin="6dp"
-                            android:paddingLeft="4dp"
-                            android:background="@drawable/border"
-                            android:id="@+id/tetanus_deaths"
-                            android:hint="deaths"
-                            android:inputType="number"/>
-
-                    </RelativeLayout>
-
-                </LinearLayout>
+                    android:gravity="top|left"
+                    android:id="@+id/other_major_immunization_activities"
+                    android:hint=""
+                    android:inputType="textMultiLine"/>
 
                 <Button
                     android:layout_width="100dp"
@@ -302,125 +957,228 @@
                     android:layout_gravity="right"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:layout_marginRight="4dp"
                     android:text="Submit"
-                    android:id="@+id/surveillance_submit_button"/>
+                    android:id="@+id/major_immunization_submit_button"/>
 
 
             </LinearLayout>
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_height="300dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/refrigerator_txt"
-                android:text="REFRIGERATOR TEMPERATURE"
-                android:textColor="@color/card_title_text"
-                android:layout_marginTop="16dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                android:layout_marginTop="8dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border"
                 android:orientation="vertical"
-                android:layout_below="@id/refrigerator_txt">
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/card_separator"
+                    android:text="Safe Injection Equipment"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:id="@+id/syringes_title" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:background="@drawable/border"
-                    android:orientation="horizontal"
-                    android:layout_weight="1">
+                    android:layout_height="50dp"
+                    android:background="@color/card_separator"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="match_parent"
-                        android:text="Temperature"
                         android:gravity="center"/>
 
                     <View
-                        android:layout_width="2dp"
+                        android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/card_border"/>
+                        android:background="@color/card_separator"/>
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="match_parent"
-                        android:text="No. Of Alarm Episodes"
-                        android:gravity="center"/>
+                        android:gravity="center"
+                        android:text="Opening Balance"
+                        android:textSize="12sp"
+                        android:textColor="@color/black"/>
 
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/card_separator"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="Received"
+                        android:textSize="12sp"
+                        android:textColor="@color/black"/>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/card_separator"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="Used"
+                        android:textSize="12sp"
+                        android:textColor="@color/black"/>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/card_separator"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="Wastage"
+                        android:textSize="12sp"
+                        android:textColor="@color/black"/>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/card_separator"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="Stock in Hand"
+                        android:textSize="12sp"
+                        android:textColor="@color/black"/>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/card_separator"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="Stocked Out Days"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:textColor="@color/black"/>
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:background="@drawable/border"
-                    android:orientation="horizontal"
-                    android:layout_weight="1">
+                    android:layout_height="50dp"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_weight="1"
+                        android:text="ADS_0.05ml"
                         android:layout_height="match_parent"
-                        android:text="Max"
-                        android:gravity="center"/>
+                        android:textSize="12sp"
+                        android:gravity="center_vertical"
+                        android:layout_marginLeft="8dp"
+                        android:textColor="@color/black"/>
 
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_border"/>
 
-                    <TextView
+                    <EditText
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="match_parent"
-                        android:text="Min"
-                        android:gravity="center"/>
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/ml005_open"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
 
-                    <View
-                        android:layout_width="2dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_border"/>
-
-                    <TextView
+                    <EditText
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="match_parent"
-                        android:text="Low Temp"
-                        android:gravity="center"/>
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/ml005_received"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
 
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_border"/>
-
-                    <TextView
+                    <EditText
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="match_parent"
-                        android:text="High Temp"
-                        android:gravity="center"/>
+                        android:layout_margin="6dp"
+                        android:id="@+id/ml005_used"
+                        android:paddingLeft="4dp"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/ml005_wastage"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/ml005_stock_in_hand"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/ml005_stocked_out_days"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:orientation="horizontal"
-                    android:background="@drawable/border"
-                    android:layout_weight="1">
+                    android:layout_height="50dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="ADS_0.5ml"
+                        android:layout_height="match_parent"
+                        android:textSize="12sp"
+                        android:gravity="center_vertical"
+                        android:layout_marginLeft="8dp"
+                        android:textColor="@color/black"/>
+
 
                     <EditText
                         android:layout_width="0dp"
@@ -428,16 +1186,10 @@
                         android:layout_height="match_parent"
                         android:layout_margin="6dp"
                         android:paddingLeft="4dp"
+                        android:id="@+id/ads05_opening"
                         android:background="@drawable/border"
-                        android:id="@+id/temp_max"
-                        android:hint="Value"
-                        android:textSize="14sp"
-                        android:inputType="numberDecimal"/>
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_border"/>
+                        android:hint=""
+                        android:inputType="number"/>
 
                     <EditText
                         android:layout_width="0dp"
@@ -445,16 +1197,10 @@
                         android:layout_height="match_parent"
                         android:layout_margin="6dp"
                         android:paddingLeft="4dp"
+                        android:id="@+id/ads05_received"
                         android:background="@drawable/border"
-                        android:id="@+id/temp_min"
-                        android:hint="Value"
-                        android:textSize="14sp"
-                        android:inputType="numberDecimal"/>
-
-                    <View
-                        android:layout_width="2dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_border"/>
+                        android:hint=""
+                        android:inputType="number"/>
 
                     <EditText
                         android:layout_width="0dp"
@@ -462,17 +1208,10 @@
                         android:layout_height="match_parent"
                         android:layout_margin="6dp"
                         android:paddingLeft="4dp"
+                        android:id="@+id/ads05_used"
                         android:background="@drawable/border"
-
-                        android:id="@+id/alarm_low"
-                        android:hint="Value"
-                        android:textSize="14sp"
-                        android:inputType="numberDecimal"/>
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_border"/>
+                        android:hint=""
+                        android:inputType="number"/>
 
                     <EditText
                         android:layout_width="0dp"
@@ -480,13 +1219,206 @@
                         android:layout_height="match_parent"
                         android:layout_margin="6dp"
                         android:paddingLeft="4dp"
+                        android:id="@+id/ads05_wastage"
                         android:background="@drawable/border"
-                        android:id="@+id/alarm_high"
-                        android:hint="Value"
-                        android:textSize="14sp"
-                        android:inputType="numberDecimal"/>
+                        android:hint=""
+                        android:inputType="number"/>
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/ads05_stock_in_hand"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/ads05_stocked_out_days"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
 
                 </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="Sdillution_5ml"
+                        android:layout_height="match_parent"
+                        android:textSize="12sp"
+                        android:gravity="center_vertical"
+                        android:layout_marginLeft="8dp"
+                        android:textColor="@color/black"
+                        android:id="@+id/textView6" />
+
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/dillution_opening"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/dillution_received"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/dillution_used"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/dillution_wastage"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/dillution_stock_in_hand"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/dillution_stocked_out_hand"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="Safety boxes"
+                        android:layout_height="match_parent"
+                        android:textSize="12sp"
+                        android:gravity="center_vertical"
+                        android:layout_marginLeft="8dp"
+                        android:textColor="@color/black"/>
+
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/safety_box_opening"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/safety_box_received"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/safety_box_used"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/safety_box_wastage"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/safety_box_stock_in_hand"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/safety_box_stocked_out_days"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
+
+                </LinearLayout>
+
 
                 <Button
                     android:layout_width="100dp"
@@ -494,42 +1426,276 @@
                     android:layout_gravity="right"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:layout_marginRight="4dp"
                     android:text="Submit"
-                    android:id="@+id/refrigerator_submit_button"/>
+                    android:id="@+id/syringes_submit_button"/>
 
 
             </LinearLayout>
 
-        </RelativeLayout>
-
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="16dp">
+            android:background="@drawable/border"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp">
 
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="300dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/card_separator"
+                android:text="Vitamin A Stock"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:id="@+id/vitamin_title" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/card_separator"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:gravity="center"/>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/card_separator"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="Opening Balance"
+                        android:textSize="12sp"
+                        android:textColor="@color/black"/>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/card_separator"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="Vit A Received"
+                        android:textSize="12sp"
+                        android:textColor="@color/black"/>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/card_separator"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="Vit A Administered"
+                        android:textSize="12sp"
+                        android:textColor="@color/black"/>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/card_separator"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="Wastage"
+                        android:textSize="12sp"
+                        android:textColor="@color/black"/>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/card_separator"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="Stock in Hand"
+                        android:textSize="12sp"
+                        android:textColor="@color/black"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="VitA 100,000IU"
+                        android:layout_height="match_parent"
+                        android:textSize="12sp"
+                        android:gravity="center_vertical"
+                        android:layout_marginLeft="8dp"
+                        android:textColor="@color/black"/>
 
 
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/vit_a_1_opening"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
 
-            </RelativeLayout>
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/vit_a_1_received"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
 
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="300dp">
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/vit_a_1_administered"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
 
-            </RelativeLayout>
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/vit_a_1_wastage"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/vit_a_1_stock_in_hand"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
+
+                    </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="VitA 200,000IU"
+                        android:layout_height="match_parent"
+                        android:textSize="12sp"
+                        android:gravity="center_vertical"
+                        android:layout_marginLeft="8dp"
+                        android:textColor="@color/black"/>
+
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/vit_a_2_opening"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/vit_a_2_received"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/vit_a_2_administered"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/vit_a_2_wastage"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:paddingLeft="4dp"
+                        android:id="@+id/vit_a_2_stock_in_hand"
+                        android:background="@drawable/border"
+                        android:hint=""
+                        android:inputType="number"/>
+
+                </LinearLayout>
+
+            <Button
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:layout_gravity="right"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="Submit"
+                android:id="@+id/vitamin_submit_button"/>
+
 
         </LinearLayout>
 
-    </LinearLayout>
 
+        </LinearLayout>
+
+    </ScrollView>
 
 </RelativeLayout>

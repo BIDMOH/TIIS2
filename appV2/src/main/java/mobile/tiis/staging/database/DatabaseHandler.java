@@ -180,6 +180,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.execSQL(SQLHandler.SQLDeseaseSurveillanceData);
             db.execSQL(SQLHandler.SQLRefrigeratorColums);
             db.execSQL(SQLHandler.SQLStockStatus);
+            db.execSQL(SQLHandler.SQLImmunizationSession);
+            db.execSQL(SQLHandler.SQLVaccinationsBcgOpvTt);
+            db.execSQL(SQLHandler.SQLMajorImunizationActivities);
+            db.execSQL(SQLHandler.SQLSyringesAndSafetyBoxes);
+            db.execSQL(SQLHandler.SQLHealthFacilityVitaminA);
 
         }
     }
@@ -221,6 +226,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + Tables.DESEASES_SURVEILLANCE);
             db.execSQL("DROP TABLE IF EXISTS " + Tables.REFRIGERATOR_TEMPERATURE);
             db.execSQL("DROP TABLE IF EXISTS " + Tables.STOCK_STATUS_REPORT);
+
+            db.execSQL("DROP TABLE IF EXISTS " + Tables.IMMUNIZATION_SESSION);
+            db.execSQL("DROP TABLE IF EXISTS " + Tables.VACCINATIONS_BCG_OPV_TT);
+            db.execSQL("DROP TABLE IF EXISTS " + Tables.MAJOR_IMMUNIZATION_ACTIVITIES);
+            db.execSQL("DROP TABLE IF EXISTS " + Tables.SYRINGES_AND_SAFETY_BOXES);
+            db.execSQL("DROP TABLE IF EXISTS " + Tables.HF_VITAMIN_A);
+
             db.execSQL("DROP VIEW IF EXISTS " + SQLHandler.Views.MONTHLY_PLAN);
 
             // CREATE NEW INSTANCE OF SCHEMA
@@ -249,7 +261,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         , new String[]{childId});
         return cursor;
     }
-
 
     public String getCurrentMonthName(BackboneApplication application){
 
@@ -784,6 +795,85 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     }
 
+    public long addImmunizationSessions(ContentValues cv){
+        SQLiteDatabase sd = getWritableDatabase();
+        long result =-1;
+        sd.beginTransaction();
+        try {
+            result = sd.insert(Tables.IMMUNIZATION_SESSION, null, cv);
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+    }
+
+    public long addVaccinationsBcgOpvTt(ContentValues cv){
+        SQLiteDatabase sd = getWritableDatabase();
+        long result =-1;
+        sd.beginTransaction();
+        try {
+            result = sd.insert(Tables.VACCINATIONS_BCG_OPV_TT, null, cv);
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+    }
+
+    public long addOtherMajorImmunizationActivities(ContentValues cv){
+        SQLiteDatabase sd = getWritableDatabase();
+        long result =-1;
+        sd.beginTransaction();
+        try {
+            result = sd.insert(Tables.MAJOR_IMMUNIZATION_ACTIVITIES, null, cv);
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+    }
+
+    public long addInjectionEquipment(ContentValues cv){
+        SQLiteDatabase sd = getWritableDatabase();
+        long result =-1;
+        sd.beginTransaction();
+        try {
+            result = sd.insert(Tables.SYRINGES_AND_SAFETY_BOXES, null, cv);
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+    }
+
+    public long addVitaminAStock(ContentValues cv){
+        SQLiteDatabase sd = getWritableDatabase();
+        long result =-1;
+        sd.beginTransaction();
+        try {
+            result = sd.insert(Tables.HF_VITAMIN_A, null, cv);
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+    }
 
     public long addUpdateHealthFacility(ContentValues cv, String healthFacId) {
         // RETRIEVE WRITEABLE DATABASE AND INSERT or UPDATE
