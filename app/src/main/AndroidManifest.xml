@@ -76,11 +76,11 @@
         android:icon="@drawable/newloginlogo"
         android:logo="@drawable/newloginlogo"
         android:theme="@style/TIISTheme"
-        android:label="@string/app_name"
+        android:label="TImR - manual sync from any tablet"
         android:allowBackup="true">
 
         <activity android:name="mobile.tiis.app.LoginActivity"
-            android:label="Tanzania ImR"
+            android:label="TImR - manual sync from any tablet"
             android:stateNotNeeded="true"
             android:configChanges="keyboard|keyboardHidden|uiMode|screenSize|smallestScreenSize"
             android:windowSoftInputMode="stateAlwaysHidden">
