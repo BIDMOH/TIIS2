@@ -3716,6 +3716,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
+
+        Log.d("immunizations","immunization count = "+cursor.getCount());
+        Log.d("immunizations","datevar = "+dateVar);
+
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {

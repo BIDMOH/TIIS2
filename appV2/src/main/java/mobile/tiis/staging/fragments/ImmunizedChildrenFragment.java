@@ -254,7 +254,7 @@ public class ImmunizedChildrenFragment extends Fragment implements OnChartValueS
             }
         }
 
-        if(listImmun.isEmpty()){
+        if(listOfImmunizations.isEmpty()){
             emptyImmunizations.setVisibility(View.VISIBLE);
         }else {
             emptyImmunizations  .setVisibility(View.GONE);
