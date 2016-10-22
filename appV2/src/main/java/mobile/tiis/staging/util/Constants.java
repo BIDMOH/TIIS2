@@ -28,4 +28,14 @@ public class Constants {
     public static int LimitNumberOfDaysBeforeExpireVal = 30;
     public final static String EligibleForVaccination = "EligibleForVaccination";
     public static int EligibleForVaccinationVal = 10;
+
+
+    //Monthly Reports
+    public static final String ADS_OO5ML = "ADS_005ML";
+    public static final String ADS_O5ML = "ADS_05ML";
+    public static final String SDILLUTION = "SDILLUTION";
+    public static final String SAFETY_BOXES = "SAFETY_BOXES";
+    public static final String VITAMIN_A_100000_IU = "VITAMIN_A_100000_IU";
+    public static final String VITAMIN_A_200000_IU = "VITAMIN_A_200000_IU";
+
 }

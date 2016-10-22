@@ -37,6 +37,60 @@ public class GIISContract {
         String MODIFIED_AT ="modfied_at";
     }
 
+    interface ImmunizationSessionColumns{
+        String FIXED_CONDUCTED = "FIXED_CONDUCTED";
+        String OUTREACH_PLANNED = "OUTREACH_PLANNED";
+        String OUTREACH_CONDUCTED = "OUTREACH_CONDUCTED";
+        String OUTREACH_CANCELLED = "OUTREACH_CANCELLED";
+        String MODIFIED_ON = "MODIFIED_ON";
+        String REPORTING_MONTH = "REPORTING_MONTH";
+    }
+
+    interface VaccinationsBcgOpvTtColumns{
+        String DOSE_NAME = "DOSE_NAME";
+        String MALE_SERVICE_AREA = "MALE_SERVICE_AREA";
+        String FEMALE_SERVICE_AREA = "FEMALE_SERVICE_AREA";
+        String TOTAL_SERVICE_AREA = "TOTAL_SERVICE_AREA";
+        String MALE_CATCHMENT_AREA = "MALE_CATCHMENT_AREA";
+        String FEMALE_CATCHMENT_AREA = "FEMALE_CATCHMENT_AREA";
+        String TOTAL_CATCHMENT_AREA = "TOTAL_CATCHMENT_AREA";
+        String COVERAGE_CATCHMENT_AREA = "COVERAGE_CATCHMENT_AREA";
+        String COVERAGE_SERVICE_AREA = "COVERAGE_SERVICE_AREA";
+        String COVERAGE_CATCHMENT_AND_SERVICE = "COVERAGE_CATCHMENT_AND_SERVICE";
+        String TOTAL_CATCHMENT_AND_SERVICE_AREA = "TOTAL_CATCHMENT_AND_SERVICE_AREA";
+        String REPORTING_MONTH = "REPORTING_MONTH";
+        String MODIFIED_ON = "MODIFIED_ON";
+    }
+
+    interface OtherMajorImmunizationActivitiesColumns{
+        String OTHER_ACTIVITIES = "OTHER_ACTIVITIES";
+        String REPORTING_MONTH = "REPORTING_MONTH";
+        String MODIFIED_ON = "MODIFIED_ON";
+    }
+
+    interface SyringesAndSafetyBoxesColumns{
+        String ITEM_NAME = "ITEM_NAME";
+        String OPENING_BALANCE = "OPENING_BALANCE";
+        String RECEIVED = "RECEIVED";
+        String USED = "USED";
+        String WASTAGE = "WASTAGE";
+        String STOCK_AT_HAND = "STOCK_AT_HAND";
+        String STOCKED_OUT_DAYS = "STOCKED_OUT_DAYS";
+        String REPORTING_MONTH = "REPORTING_MONTH";
+        String MODIFIED_ON = "MODIFIED_ON";
+    }
+
+    interface HfVitaminAColumns{
+        String VITAMIN_NAME = "VITAMIN_NAME";
+        String OPENING_BALANCE = "OPENING_BALANCE";
+        String RECEIVED = "RECEIVED";
+        String TOTAL_ADMINISTERED = "TOTAL_ADMINISTERED";
+        String WASTAGE = "WASTAGE";
+        String STOCK_ON_HAND = "STOCK_ON_HAND";
+        String REPORTING_MONTH = "REPORTING_MONTH";
+        String MODIFIED_ON = "MODIFIED_ON";
+    }
+
     interface HealthFacilityColumns{
         String ID = "ID";
         String NAME = "NAME";
@@ -182,6 +236,36 @@ public class GIISContract {
         String CODE = "CODE";
         String ENTRY_DATE = "ENTRY_DATE";
         String EXIT_DATE = "EXIT_DATE";
+    }
+
+    interface SurveillanceColumns{
+        String ID = "ID";
+        String FEVER_MONTHLY_CASES = "FEVER_MONTHLY_CASES";
+        String FEVER_DEATHS = "FEVER_DEATHS";
+        String APF_MONTHLY_CASES = "AFP_MONTHLY_CASES";
+        String APF_DEATHS = "AFP_DEATHS";
+        String NEONATAL_TT_CASES = "NEONATAL_TT_CASES";
+        String NEONATAL_TT_DEATHS = "NEONATAL_TT_DEATHS";
+        String REPORTED_MONTH = "REPORTED_MONTH";
+    }
+
+    interface RefrigeratorColums{
+        String ID = "ID";
+        String TEMP_MIN = "TEMP_MIN";
+        String TEMP_MAX = "TEMP_MAX";
+        String ALARM_LOW_TEMP = "ALARM_LOW_TEMP";
+        String ALARM_HIGH_TEMP = "ALARM_HIGH_TEMP";
+        String REPORTED_MONTH = "REPORTED_MONTH";
+    }
+
+    interface StockStatusColumns{
+        String ID = "ID";
+        String ITEM_NAME = "ITEM_NAME";
+        String OPPENING_BALANCE ="OPPENING_BALANCE";
+        String CLOSING_BALANCE = "CLOSING_BALANCE";
+        String DOSES_RECEIVED = "DOSES_RECEIVED";
+        String DISCARDED_UNOPENED = "DISCARDED_UNOPENED";
+        String REPORTED_MONTH = "REPORTED_MONTH";
     }
 
     interface  ScheduledVaccinationColumns{

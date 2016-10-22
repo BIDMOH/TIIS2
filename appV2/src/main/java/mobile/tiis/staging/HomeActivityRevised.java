@@ -359,6 +359,16 @@ public class HomeActivityRevised extends BackboneActivity {
                                 changeFragment(MONTHLY_PLAN_FRAGMENT, getString(R.string.home_monthly_plan));
                             }
                             break;
+                        case R.id.monthly_reports:
+                            if (app.saveNeeded) {
+                                app.LAST_FRAGMENT = HOME_FRAGMENT;
+                                alertUserLeavingScreen(STOCK_FRAGMENT, getString(R.string.home_stock));
+                            } else {
+                                app.LAST_FRAGMENT = HOME_FRAGMENT;
+                                app.LAST_FRAGMENT_TITLE = getString(R.string.home);
+                                changeFromFragmentToMonthlyReportsActivity(getString(R.string.home_stock));
+                            }
+                            break;
                         case R.id.stock:
                             if (app.saveNeeded) {
                                 app.LAST_FRAGMENT = HOME_FRAGMENT;
@@ -892,6 +902,12 @@ public class HomeActivityRevised extends BackboneActivity {
 
         // show it
         alertDialog.show();
+    }
+
+    public void changeFromFragmentToMonthlyReportsActivity(String title){
+        Intent intent = new Intent(this, MonthlyReportsActivity.class);
+        intent.putExtra("title", title);
+        startActivity(intent);
     }
 
     public void changeFragmentToActivity(String title){
