@@ -657,7 +657,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 
         //TODO Create Service URL and send it to postmast
 
-        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
         float alarmHigh, alarmLow, tempMax, tempMin;
 
         String nowString = URLEncoder.encode(fmt.format(Calendar.getInstance().getTime()));
@@ -668,6 +668,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         tempMin     = Float.parseFloat(strTempMin);
         int selectedMonth    = Integer.parseInt(currentSelectedMonth.getMonth_number());
         int selectedYear     = Integer.parseInt(currentlySelectedYear);
+        int userID  = Integer.parseInt(app.getLOGGED_IN_USER_ID());
 
         int hfid = Integer.parseInt(app.getLOGGED_IN_USER_HF_ID());
 
@@ -679,7 +680,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
                 .append("&alarmHighTemp=").append(alarmHigh)
                 .append("&alarmLowTemp=").append(alarmLow)
                 .append("&reportingMonth=").append(selectedMonth)
-                .append("&userId=").append(app.getLOGGED_IN_USER_ID())
+                .append("&userId=").append(userID)
                 .append("&modifiedOn=").append(URLEncoder.encode(fmt.format(Calendar.getInstance().getTime())))
                 .append("&reportingYear=").append(selectedYear);
 
