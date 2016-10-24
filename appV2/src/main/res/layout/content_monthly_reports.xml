@@ -73,6 +73,70 @@
                     android:layout_below="@id/surveillance_txt"
                     android:background="@color/white">
 
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/black"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="@color/card_separator"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/black"/>
+
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:text="Desease"
+                            android:textColor="@color/black"
+                            android:gravity="center"/>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/black"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:textColor="@color/black"
+                            android:layout_height="match_parent"
+                            android:text="Monthly \nCases"
+                            android:gravity="center"/>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/black"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:textColor="@color/black"
+                            android:layout_height="match_parent"
+                            android:text="Deaths"
+                            android:gravity="center"
+                            android:id="@+id/textView7" />
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/black"/>
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/black"/>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
@@ -285,37 +349,55 @@
                     android:background="@drawable/border"
                     android:layout_below="@id/refrigerator_txt">
 
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/black"/>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
+                        android:background="@color/card_separator"
                         android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/black"/>
+
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="match_parent"
                             android:text="Temperature"
+                            android:textColor="@color/black"
                             android:gravity="center"/>
 
                         <View
-                            android:layout_width="2dp"
+                            android:layout_width="1dp"
                             android:layout_height="match_parent"
-                            android:background="@color/card_border"/>
+                            android:background="@color/black"/>
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_weight="1"
+                            android:textColor="@color/black"
                             android:layout_height="match_parent"
                             android:text="No. Of Alarm Episodes"
                             android:gravity="center"/>
 
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/black"/>
 
                     </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:background="@drawable/border"/>
+                        android:layout_height="1dp"
+                        android:background="@color/black"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -478,6 +560,11 @@
                         android:background="@drawable/border"
                         android:orientation="vertical">
 
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/black"/>
+
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
@@ -485,6 +572,11 @@
                             android:text="Immunization Sessions"
                             android:gravity="center"
                             android:textColor="@color/black"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/black"/>
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -573,6 +665,23 @@
 
                         </LinearLayout>
 
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="4dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginLeft="4dp"
+                            android:layout_marginRight="4dp"
+                            android:minLines="4"
+                            android:lines="4"
+                            android:maxLines="4"
+                            android:padding="8dp"
+                            android:background="@drawable/border"
+                            android:gravity="top|left"
+                            android:id="@+id/other_major_immunization_activities_new"
+                            android:hint="Other Major immunization activities"
+                            android:inputType="textMultiLine"/>
+
                         <Button
                             android:layout_width="100dp"
                             android:layout_height="50dp"
@@ -599,11 +708,21 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/black"/>
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
                             android:background="@color/card_separator"
                             android:orientation="horizontal">
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/black"/>
 
                             <TextView
                                 android:layout_width="0dp"
@@ -633,6 +752,12 @@
                                 android:gravity="center"
                                 android:textColor="@color/black"/>
 
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/black"/>
+
+
                         </LinearLayout>
 
                         <View
@@ -646,6 +771,11 @@
                             android:background="@color/card_separator"
                             android:orientation="horizontal">
 
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/black"/>
+
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
@@ -658,7 +788,7 @@
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/card_separator"/>
+                                android:background="@color/black"/>
 
                             <TextView
                                 android:layout_width="0dp"
@@ -672,7 +802,7 @@
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/card_separator"/>
+                                android:background="@color/black"/>
 
                             <TextView
                                 android:layout_width="0dp"
@@ -686,7 +816,7 @@
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/card_separator"/>
+                                android:background="@color/black"/>
 
                             <TextView
                                 android:layout_width="0dp"
@@ -700,7 +830,7 @@
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/card_separator"/>
+                                android:background="@color/black"/>
 
                             <TextView
                                 android:layout_width="0dp"
@@ -710,6 +840,11 @@
                                 android:text="Male"
                                 android:gravity="center"
                                 android:textColor="@color/black"/>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/black"/>
 
                         </LinearLayout>
 
@@ -924,9 +1059,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:visibility="gone"
                 android:layout_marginTop="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black"/>
+
 
                 <TextView
                     android:layout_width="match_parent"
@@ -936,6 +1078,11 @@
                     android:gravity="center"
                     android:textColor="@color/black"
                     android:id="@+id/textView4" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black"/>
 
                 <EditText
                     android:layout_width="match_parent"
@@ -973,6 +1120,11 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="8dp">
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black"/>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
@@ -982,11 +1134,22 @@
                     android:textColor="@color/black"
                     android:id="@+id/syringes_title" />
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black"/>
+
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="@color/card_separator"
                     android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/black"/>
 
                     <TextView
                         android:layout_width="0dp"
@@ -997,7 +1160,7 @@
                     <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/card_separator"/>
+                        android:background="@color/black"/>
 
                     <TextView
                         android:layout_width="0dp"
@@ -1011,7 +1174,7 @@
                     <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/card_separator"/>
+                        android:background="@color/black"/>
 
                     <TextView
                         android:layout_width="0dp"
@@ -1025,7 +1188,7 @@
                     <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/card_separator"/>
+                        android:background="@color/black"/>
 
                     <TextView
                         android:layout_width="0dp"
@@ -1039,7 +1202,7 @@
                     <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/card_separator"/>
+                        android:background="@color/black"/>
 
                     <TextView
                         android:layout_width="0dp"
@@ -1053,7 +1216,7 @@
                     <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/card_separator"/>
+                        android:background="@color/black"/>
 
                     <TextView
                         android:layout_width="0dp"
@@ -1067,7 +1230,7 @@
                     <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/card_separator"/>
+                        android:background="@color/black"/>
 
                     <TextView
                         android:layout_width="0dp"
@@ -1078,7 +1241,18 @@
                         android:textSize="12sp"
                         android:textColor="@color/black"/>
 
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/black"/>
+
+
                 </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -1443,6 +1617,11 @@
             android:layout_marginRight="16dp"
             android:layout_marginBottom="8dp">
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black"/>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -1452,22 +1631,33 @@
                 android:textColor="@color/black"
                 android:id="@+id/vitamin_title" />
 
-                <LinearLayout
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black"/>
+
+            <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="@color/card_separator"
                     android:orientation="horizontal">
 
-                    <TextView
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/black"/>
+
+
+                <TextView
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="match_parent"
                         android:gravity="center"/>
 
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_separator"/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/black"/>
 
                     <TextView
                         android:layout_width="0dp"
@@ -1478,10 +1668,10 @@
                         android:textSize="12sp"
                         android:textColor="@color/black"/>
 
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_separator"/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/black"/>
 
                     <TextView
                         android:layout_width="0dp"
@@ -1492,23 +1682,24 @@
                         android:textSize="12sp"
                         android:textColor="@color/black"/>
 
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_separator"/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/black"/>
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:gravity="center"
+                        android:layout_weight="1"
                         android:text="Vit A Administered"
                         android:textSize="12sp"
                         android:textColor="@color/black"/>
 
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_separator"/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/black"/>
 
                     <TextView
                         android:layout_width="0dp"
@@ -1519,10 +1710,10 @@
                         android:textSize="12sp"
                         android:textColor="@color/black"/>
 
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/card_separator"/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/black"/>
 
                     <TextView
                         android:layout_width="0dp"
@@ -1533,9 +1724,20 @@
                         android:textSize="12sp"
                         android:textColor="@color/black"/>
 
-                </LinearLayout>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/black"/>
 
-                <LinearLayout
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black"/>
+
+
+            <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:orientation="horizontal">

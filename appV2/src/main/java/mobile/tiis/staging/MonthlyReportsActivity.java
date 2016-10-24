@@ -1,14 +1,12 @@
 package mobile.tiis.staging;
 
 import android.content.ContentValues;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.util.AsyncListUtil;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -18,11 +16,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.loopj.android.http.RequestHandle;
+import com.loopj.android.http.SyncHttpClient;
+import com.loopj.android.http.TextHttpResponseHandler;
+
+import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import cz.msebera.android.httpclient.Header;
 import fr.ganfra.materialspinner.MaterialSpinner;
 import mobile.tiis.staging.adapters.PlacesOfBirthAdapter;
 import mobile.tiis.staging.adapters.SpinnerAdapter;
@@ -31,10 +37,10 @@ import mobile.tiis.staging.database.DatabaseHandler;
 import mobile.tiis.staging.database.GIISContract;
 import mobile.tiis.staging.database.SQLHandler;
 import mobile.tiis.staging.entity.MonthEntity;
-import mobile.tiis.staging.fragments.ChildWeightPagerFragment;
-import mobile.tiis.staging.fragments.RegisterChildFragment;
-import mobile.tiis.staging.util.Constants;
 
+import static mobile.tiis.staging.base.BackboneApplication.CHILD_MANAGEMENT_SVC;
+import static mobile.tiis.staging.base.BackboneApplication.HEALTH_FACILITY_SVC;
+import static mobile.tiis.staging.base.BackboneApplication.WCF_URL;
 import static mobile.tiis.staging.util.Constants.ADS_O5ML;
 import static mobile.tiis.staging.util.Constants.ADS_OO5ML;
 import static mobile.tiis.staging.util.Constants.SAFETY_BOXES;
@@ -52,7 +58,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
     private EditText fixedConducted, outreachPlanned, outreachConducted, outreachCancelled;
     private EditText bcgFemaleServiceArea, bcgMaleServiceArea, bcgFemaleCatchmentArea, bcgMaleCatchmentArea, opvFemaleServiceArea, opvMaleServiceArea, opvFemaleCatchmentArea, opvMaleCatchmentArea;
     private EditText ttFemaleServiceArea, ttMaleServiceArea, ttFemaleCatchmentArea, ttMaleCatchmentArea;
-    private EditText otherMajorImmunizationActivities;
+    private EditText otherMajorImmunizationActivities, otherMajorImmunizationActivitiesNew;
     private EditText ml005Balance, ml005Received, ml005Used, ml005Wastage, ml005StockInHand, ml005StockedOutDays;
     private EditText ads05Balance, ads05Received, ads05Used, ads05Wastage, ads05StockInHand, ads05StockedOutDays;
     private EditText dillutionBalance, dillutionReceived, dillutionUsed, dillutionWastage, dillutionStockInHand, dillutionStockedOutDays;
@@ -63,7 +69,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
     //Variables
     private String strFeverCases, strFeverDeaths, strAfpCases, strAfpDeaths, strTetanusCases, strTetanusDeaths;
     private String strTempMax, strTempMin, strAlarmHigh, strAlarmLow;
-    private String strFixedConducted, strOutreachConducted, strOutreachPlanned, strOutreachCancelled;
+    private String strFixedConducted, strOutreachConducted, strOutreachPlanned, strOutreachCancelled, strOtherMajorImmunizationActivitiesNew;
     private String strBcgFemaleService, strBcgMaleService, strBcgFemaleCatchment, strBcgMaleCatchment, strOpvFemaleService, strOpvMaleService, strOpvFemaleCatchment, strOpvMaleCatchment;
     private String strTtFemaleService, strTtMaleServicec, strTtFemaleCatchment, strTtMaleCatchment, strOtherMajorImmunizationActivities;
     private String strml005Balance, strml005Received, strml005Used, strml005Wastage, strml005StockInHand, strml005StockedOutDays;
@@ -224,7 +230,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
             outreachPlanned.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.ImmunizationSessionColumns.OUTREACH_PLANNED)));
             outreachConducted.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.ImmunizationSessionColumns.OUTREACH_CONDUCTED)));
             outreachCancelled.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.ImmunizationSessionColumns.OUTREACH_CANCELLED)));
-
+//            otherMajorImmunizationActivitiesNew.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.ImmunizationSessionColumns.OTHERACTIVITIES)));
         }
     }
 
@@ -552,6 +558,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         strOutreachPlanned      = outreachPlanned.getText().toString().trim();
         strOutreachConducted    = outreachConducted.getText().toString().trim();
         strOutreachCancelled    = outreachCancelled.getText().toString().trim();
+        strOtherMajorImmunizationActivitiesNew  = otherMajorImmunizationActivitiesNew.getText().toString().trim();
     }
 
     public void getValue4(){
@@ -617,7 +624,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         strVitA2StockInHand = vitA2StockInHand.getText().toString().trim();
     }
 
-    public boolean saveValues(){
+    public boolean saveDeseasesSurveillance(){
         ContentValues cv = new ContentValues();
         cv.put(GIISContract.SyncColumns.UPDATED, 1);
         cv.put(SQLHandler.SurveillanceColumns.FEVER_MONTHLY_CASES, strFeverCases);
@@ -646,7 +653,45 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         cv.put(SQLHandler.RefrigeratorColums.REPORTED_MONTH, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
 
         DatabaseHandler db = new DatabaseHandler(this);
-        db.addRefrigeratorTemperature(cv);
+//        db.addRefrigeratorTemperature(cv);
+
+        //TODO Create Service URL and send it to postmast
+
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+        float alarmHigh, alarmLove, tempMax, tempMin;
+
+        String nowString = URLEncoder.encode(fmt.format(Calendar.getInstance().getTime()));
+        Date now = null;
+        try {
+            now = fmt.parse(nowString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        alarmHigh = Float.parseFloat(strAlarmHigh);
+        alarmLove = Float.parseFloat(strAlarmLow);
+        tempMax     = Float.parseFloat(strTempMax);
+        tempMin     = Float.parseFloat(strTempMin);
+        int selectedMonth    = Integer.parseInt(currentSelectedMonth.getMonth_number());
+        int selectedYear     = Integer.parseInt(currentlySelectedYear);
+
+        int hfid = Integer.parseInt(app.getLOGGED_IN_USER_HF_ID());
+
+        final StringBuilder webServiceUrl;
+        webServiceUrl = new StringBuilder(BackboneApplication.WCF_URL).append(BackboneApplication.HEALTH_FACILITY_SVC);
+        webServiceUrl.append("StoreHealthFacilityColdChain?healthFacilityId=").append(hfid)
+                .append("&tempMax=").append(tempMax)
+                .append("&tempMin=").append(tempMin)
+                .append("&alarmHighTemp=").append(alarmHigh)
+                .append("&alarmLowTemp=").append(alarmLove)
+                .append("&reportingMonth=").append(selectedMonth)
+                .append("&userId=").append(app.getLOGGED_IN_USER_ID())
+                .append("&modifiedOn=").append("")
+                .append("&reportingYear=").append(selectedYear);
+
+        Log.d("SOMA", "deseases surveillance URL : "+webServiceUrl);
+
+        mydb.addPost(webServiceUrl.toString(), 1);
 
         return true;
     }
@@ -659,6 +704,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         cv.put(SQLHandler.ImmunizationSessionColumns.OUTREACH_CANCELLED, strOutreachCancelled);
         cv.put(SQLHandler.ImmunizationSessionColumns.OUTREACH_CONDUCTED, strOutreachConducted);
         cv.put(SQLHandler.ImmunizationSessionColumns.OUTREACH_PLANNED, strOutreachPlanned);
+        cv.put(SQLHandler.ImmunizationSessionColumns.OTHERACTIVITIES, strOtherMajorImmunizationActivitiesNew);
         cv.put(SQLHandler.ImmunizationSessionColumns.REPORTING_MONTH, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
 
         DatabaseHandler db = new DatabaseHandler(this);
@@ -862,6 +908,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         ttMaleServiceArea.setText("");
 
         otherMajorImmunizationActivities.setText("");
+        otherMajorImmunizationActivitiesNew.setText("");
     }
 
     public void setupview(){
@@ -924,7 +971,8 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         ttFemaleCatchmentArea   = (EditText) findViewById(R.id.tt_female_catchment);
         ttMaleCatchmentArea     = (EditText) findViewById(R.id.tt_male_catchment);
 
-        otherMajorImmunizationActivities = (EditText) findViewById(R.id.other_major_immunization_activities);
+        otherMajorImmunizationActivities    = (EditText) findViewById(R.id.other_major_immunization_activities);
+        otherMajorImmunizationActivitiesNew = (EditText) findViewById(R.id.other_major_immunization_activities_new);
 
         //MaterialSpinner
         monthYearSpinner    = (MaterialSpinner) findViewById(R.id.mon_year_spiner);
@@ -983,7 +1031,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
                 resetValues();
                 if (verifyInputs()){
                     getValues();
-                    if (saveValues()){
+                    if (saveDeseasesSurveillance()){
                         //Saved Successfully
                         Toast.makeText(MonthlyReportsActivity.this, "Saved Successfully", Toast.LENGTH_LONG).show();
                     }else {
@@ -1073,4 +1121,6 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
                 break;
         }
     }
+
+
 }

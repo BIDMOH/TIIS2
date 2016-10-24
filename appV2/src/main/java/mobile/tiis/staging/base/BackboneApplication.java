@@ -74,6 +74,7 @@ import mobile.tiis.staging.entity.ChildCollector;
 import mobile.tiis.staging.entity.ChildCollector2;
 import mobile.tiis.staging.entity.Dose;
 import mobile.tiis.staging.entity.HealthFacility;
+import mobile.tiis.staging.entity.HealthFacilityColdChain;
 import mobile.tiis.staging.entity.Item;
 import mobile.tiis.staging.entity.ItemLot;
 import mobile.tiis.staging.entity.NonVaccinationReason;
@@ -161,6 +162,9 @@ public class BackboneApplication extends Application {
     public static final String GET_AGE_DEFINITIONS_LIST = "GET_AGE_DEFINITIONS_LIST";
     public static final String GET_SCHEDULED_VACCINATION_LIST = "GET_SCHEDULED_VACCINATION_LIST";
     public static final String GET_NON_VACCINATION_REASON_LIST = "GET_NON_VACCINATION_REASON_LIST";
+
+    public static final String GET_FACILITY_COLD_CHAIN = "GET_FACILITY_COLD_CHAIN";
+
     //checkin
     public static final String SEARCH_BY_BARCODE = "SearchByBarcodeV1";
     public static final String UPDATE_VACCINATION_QUEUE = "UpdateVaccinationQueue";
@@ -1216,6 +1220,129 @@ public class BackboneApplication extends Application {
         return searchedChild;
 
     }
+
+
+    /**
+     * START: Services To Send monthly Report Data to the server
+     */
+    private boolean deseaseSurveillance = true;
+    public boolean saveDeseaseSurveillance(float tempMax, float tempMin, float alarmHighTemp, float alarmLowTemp, int reportingMonth, int reportingYear, Date modifiedOn) {
+        String date = "";
+        try {
+            date = URLEncoder.encode(new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(Calendar.getInstance().getTime()), "utf-8");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        int hfid = Integer.parseInt(LOGGED_IN_USER_HF_ID);
+
+        final StringBuilder webServiceUrl;
+        webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+        webServiceUrl.append("StoreHealthFacilityColdChain?healthFacilityId=").append(hfid)
+                .append("&tempMax=").append(tempMax)
+                .append("&tempMin=").append(tempMin)
+                .append("&alarmHighTemp=").append(alarmHighTemp)
+                .append("&alarmLowTemp=").append(alarmLowTemp)
+                .append("&reportingMonth=").append(reportingMonth)
+                .append("&userId=").append(LOGGED_IN_USER_ID)
+                .append("&modifiedOn=").append(date)
+                .append("&reportingYear=").append(reportingYear);
+
+        Log.d("SOMA", "deseases surveillance URL : "+webServiceUrl);
+
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                throwable.printStackTrace();
+                Log.d("SOMA", "Failure \nStatus Code : "+statusCode+"\nResponce"+responseString);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String response) {
+
+                Log.d("SOMA", "Successful \nStatus Code : "+statusCode+"\nResponce"+response);
+
+            }
+        });
+
+//        getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
+
+        return deseaseSurveillance;
+
+    }
+
+
+    public void parseColdChain(String selectedMonth, String selectedYear){
+        try {
+            if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
+                List<User> allUsers = databaseInstance.getAllUsers();
+                User user = allUsers.get(0);
+
+                client.setBasicAuth(user.getUsername(), user.getPassword(), true);
+            } else {
+                client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+            }
+
+            final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+            webServiceUrl.append("GetHealthFacilityColdChain?healthFacilityId=").append(URLEncoder.encode(LOGGED_IN_USER_HF_ID))
+                    .append("&reportingMonth=").append(URLEncoder.encode(selectedMonth))
+                    .append("&reportingYear=").append(URLEncoder.encode(selectedYear));
+
+            Log.d(TAG, "Health Facility Cold Chain..........  "+webServiceUrl.toString());
+
+            RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String response) {
+                    List<HealthFacilityColdChain> objects = new ArrayList<HealthFacilityColdChain>();
+                    try {
+                        Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                        ObjectMapper mapper = new ObjectMapper();
+                        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                        objects = mapper.readValue(response, new TypeReference<List<HealthFacilityColdChain>>() {
+                        });
+
+                    } catch (JsonGenerationException e) {
+                        e.printStackTrace();
+                    } catch (JsonMappingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        for (HealthFacilityColdChain object : objects) {
+                            ContentValues values = new ContentValues();
+                            values.put(SQLHandler.SyncColumns.UPDATED, 1);
+                            values.put(SQLHandler.RefrigeratorColums.ALARM_HIGH_TEMP, object.getAlarmHighTemp()+"");
+                            values.put(SQLHandler.RefrigeratorColums.ALARM_LOW_TEMP, object.getAlarmLowTemp()+"");
+                            values.put(SQLHandler.RefrigeratorColums.TEMP_MIN, object.getTempMin()+"");
+                            values.put(SQLHandler.RefrigeratorColums.TEMP_MAX, object.getTempMax()+"");
+                            values.put(SQLHandler.RefrigeratorColums.REPORTED_MONTH, getDatabaseInstance().getMonthNameFromNumber(object.getReportedMonth()+"", BackboneApplication.this)+" "+object.getReportedYear());
+                            DatabaseHandler db = getDatabaseInstance();
+                            db.addRefrigeratorTemperature(values);
+                        }
+                    }
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * END: Services To Send monthly Report Data to the server
+     */
+
+
+
+
+
+
 
     /**
      * @param barcode
@@ -2652,6 +2779,12 @@ public class BackboneApplication extends Application {
         StringBuilder webServiceURL;
 
         switch (service) {
+            case GET_FACILITY_COLD_CHAIN:
+                webServiceURL = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC)
+                        .append("GetHealthFacilityColdChain?healthFacilityId=").append(rec_id)
+                        .append("&reportingMonth=").append(10)
+                        .append("&reportingYear=").append(2016);
+                break;
             case GET_PLACE:
                 webServiceURL = new StringBuilder(WCF_URL).append(PLACE_MANAGEMENT_SVC).append(PLACE_MANAGEMENT_SVC_GETTER).append(rec_id);
                 break;

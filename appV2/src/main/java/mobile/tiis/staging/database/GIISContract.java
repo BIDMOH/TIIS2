@@ -44,6 +44,7 @@ public class GIISContract {
         String OUTREACH_CANCELLED = "OUTREACH_CANCELLED";
         String MODIFIED_ON = "MODIFIED_ON";
         String REPORTING_MONTH = "REPORTING_MONTH";
+        String OTHERACTIVITIES = "OTHERACTIVITIES";
     }
 
     interface VaccinationsBcgOpvTtColumns{
