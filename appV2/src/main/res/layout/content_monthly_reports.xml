@@ -464,7 +464,7 @@
                             android:id="@+id/temp_max"
                             android:hint=""
                             android:textSize="14sp"
-                            android:inputType="numberDecimal"/>
+                            android:inputType="number"/>
 
                         <View
                             android:layout_width="1dp"
@@ -481,7 +481,7 @@
                             android:id="@+id/temp_min"
                             android:hint=""
                             android:textSize="14sp"
-                            android:inputType="numberDecimal"/>
+                            android:inputType="number"/>
 
                         <View
                             android:layout_width="2dp"
@@ -499,7 +499,7 @@
                             android:id="@+id/alarm_low"
                             android:hint=""
                             android:textSize="14sp"
-                            android:inputType="numberDecimal"/>
+                            android:inputType="number"/>
 
                         <View
                             android:layout_width="1dp"
@@ -516,7 +516,7 @@
                             android:id="@+id/alarm_high"
                             android:hint=""
                             android:textSize="14sp"
-                            android:inputType="numberDecimal"/>
+                            android:inputType="number"/>
 
                     </LinearLayout>
 
@@ -560,18 +560,14 @@
                         android:background="@drawable/border"
                         android:orientation="vertical">
 
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="@color/black"/>
-
                         <TextView
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="50dp"
-                            android:background="@color/card_separator"
-                            android:text="Immunization Sessions"
-                            android:gravity="center"
-                            android:textColor="@color/black"/>
+                            android:id="@+id/immunization_session_title"
+                            android:text="IMMUNIZATION SESSIONS"
+                            android:gravity="center_vertical"
+                            android:textSize="18sp"
+                            android:textColor="@color/card_title_text" />
 
                         <View
                             android:layout_width="match_parent"
@@ -581,7 +577,14 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
+                            android:background="@color/card_separator"
                             android:orientation="horizontal">
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/black"/>
+
 
                             <TextView
                                 android:layout_width="0dp"
@@ -590,12 +593,23 @@
                                 android:layout_height="match_parent"
                                 android:gravity="center"/>
 
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/black"/>
+
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
                                 android:text="Outreach Planned"
                                 android:layout_height="match_parent"
                                 android:gravity="center"/>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/black"/>
+
 
                             <TextView
                                 android:layout_width="0dp"
@@ -604,6 +618,12 @@
                                 android:layout_height="match_parent"
                                 android:gravity="center"/>
 
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/black"/>
+
+
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
@@ -611,7 +631,18 @@
                                 android:layout_height="match_parent"
                                 android:gravity="center"/>
 
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/black"/>
+
+
                         </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/black"/>
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -707,6 +738,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="50dp"
+                            android:id="@+id/immunization_session_title"
+                            android:text="BCG, OPV, TT REPORT"
+                            android:gravity="center_vertical"
+                            android:textSize="18sp"
+                            android:textColor="@color/card_title_text" />
 
                         <View
                             android:layout_width="match_parent"
@@ -1120,16 +1160,10 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="8dp">
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/black"/>
-
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:background="@color/card_separator"
-                    android:text="Safe Injection Equipment"
+                    android:text="SAFE INJECTION EQUIPMENT"
                     android:gravity="center"
                     android:textColor="@color/black"
                     android:id="@+id/syringes_title" />
@@ -1617,16 +1651,11 @@
             android:layout_marginRight="16dp"
             android:layout_marginBottom="8dp">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/black"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="@color/card_separator"
-                android:text="Vitamin A Stock"
+                android:text="VITAMIN A STOCK"
                 android:gravity="center"
                 android:textColor="@color/black"
                 android:id="@+id/vitamin_title" />

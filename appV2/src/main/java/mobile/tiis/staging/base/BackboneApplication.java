@@ -1294,11 +1294,12 @@ public class BackboneApplication extends Application {
             RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-
+                    Log.d("TIMR_COLD_CHAIN", "Error connection to server"+responseString);
                 }
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, String response) {
+                    Log.d("TIMR_COLD_CHAIN", "Success adding cold chain "+response);
                     List<HealthFacilityColdChain> objects = new ArrayList<HealthFacilityColdChain>();
                     try {
                         Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);

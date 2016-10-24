@@ -653,7 +653,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         cv.put(SQLHandler.RefrigeratorColums.REPORTED_MONTH, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
 
         DatabaseHandler db = new DatabaseHandler(this);
-//        db.addRefrigeratorTemperature(cv);
+        db.addRefrigeratorTemperature(cv);
 
         //TODO Create Service URL and send it to postmast
 
