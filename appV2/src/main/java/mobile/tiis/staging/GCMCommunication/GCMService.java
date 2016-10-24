@@ -72,16 +72,15 @@ public class GCMService extends GCMBaseIntentService {
             application.parseColdChainMonthly(month+"", year+"");
             application.parseColdChainMonthly(prevMonth+"", year+"");
 
-        }
+        }else{
+            application.getDatabaseInstance().addChildToChildUpdatesQueue(childId,3);
+            synchronized (application) {
+                application.parseGCMChildrenInQueueById();
+            }
+            sendResult(childId,context);
 
-        application.getDatabaseInstance().addChildToChildUpdatesQueue(childId,3);
-        synchronized (application) {
-            application.parseGCMChildrenInQueueById();
         }
-
 //        createNotification(context,"updates received");
-        sendResult(childId,context);
-
 
 	}
 

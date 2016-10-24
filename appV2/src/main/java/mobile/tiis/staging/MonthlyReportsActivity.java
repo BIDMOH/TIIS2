@@ -661,12 +661,6 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         float alarmHigh, alarmLow, tempMax, tempMin;
 
         String nowString = URLEncoder.encode(fmt.format(Calendar.getInstance().getTime()));
-        Date now = null;
-        try {
-            now = fmt.parse(nowString);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
 
         alarmHigh   = Float.parseFloat(strAlarmHigh);
         alarmLow    = Float.parseFloat(strAlarmLow);
@@ -686,7 +680,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
                 .append("&alarmLowTemp=").append(alarmLow)
                 .append("&reportingMonth=").append(selectedMonth)
                 .append("&userId=").append(app.getLOGGED_IN_USER_ID())
-                .append("&modifiedOn=").append(nowString)
+                .append("&modifiedOn=").append(URLEncoder.encode(fmt.format(Calendar.getInstance().getTime())))
                 .append("&reportingYear=").append(selectedYear);
 
         Log.d("SOMA", "deseases surveillance URL : "+webServiceUrl);
