@@ -1,6 +1,7 @@
 package mobile.tiis.staging;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -20,11 +21,11 @@ import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.SyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +38,8 @@ import mobile.tiis.staging.database.DatabaseHandler;
 import mobile.tiis.staging.database.GIISContract;
 import mobile.tiis.staging.database.SQLHandler;
 import mobile.tiis.staging.entity.MonthEntity;
+
+import java.util.Calendar;
 
 import static mobile.tiis.staging.base.BackboneApplication.CHILD_MANAGEMENT_SVC;
 import static mobile.tiis.staging.base.BackboneApplication.HEALTH_FACILITY_SVC;
@@ -658,35 +661,26 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         //TODO Create Service URL and send it to postmast
 
         SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
-        float alarmHigh, alarmLow, tempMax, tempMin;
+        float tempMax, tempMin;
+        int alarmLow,alarmHigh;
 
         String nowString = URLEncoder.encode(fmt.format(Calendar.getInstance().getTime()));
 
-        alarmHigh   = Float.parseFloat(strAlarmHigh);
-        alarmLow    = Float.parseFloat(strAlarmLow);
+        alarmHigh   = Integer.parseInt(strAlarmHigh);
+        alarmLow    = Integer.parseInt(strAlarmLow);
         tempMax     = Float.parseFloat(strTempMax);
         tempMin     = Float.parseFloat(strTempMin);
         int selectedMonth    = Integer.parseInt(currentSelectedMonth.getMonth_number());
         int selectedYear     = Integer.parseInt(currentlySelectedYear);
-        int userID  = Integer.parseInt(app.getLOGGED_IN_USER_ID());
 
-        int hfid = Integer.parseInt(app.getLOGGED_IN_USER_HF_ID());
+        String modifiedOnString = "";
+        try {
+            modifiedOnString = URLEncoder.encode(new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(Calendar.getInstance().getTime()), "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
-        final StringBuilder webServiceUrl;
-        webServiceUrl = new StringBuilder(BackboneApplication.WCF_URL).append(BackboneApplication.HEALTH_FACILITY_SVC);
-        webServiceUrl.append("StoreHealthFacilityColdChain?healthFacilityId=").append(hfid)
-                .append("&tempMax=").append(tempMax)
-                .append("&tempMin=").append(tempMin)
-                .append("&alarmHighTemp=").append(alarmHigh)
-                .append("&alarmLowTemp=").append(alarmLow)
-                .append("&reportingMonth=").append(selectedMonth)
-                .append("&userId=").append(userID)
-                .append("&modifiedOn=").append(URLEncoder.encode(fmt.format(Calendar.getInstance().getTime())))
-                .append("&reportingYear=").append(selectedYear);
-
-        Log.d("SOMA", "deseases surveillance URL : "+webServiceUrl);
-
-        mydb.addPost(webServiceUrl.toString(), 1);
+        app.sendColdChainToServer(tempMax,tempMin,alarmHigh,alarmLow,selectedMonth,selectedYear,modifiedOnString);
 
         return true;
     }
