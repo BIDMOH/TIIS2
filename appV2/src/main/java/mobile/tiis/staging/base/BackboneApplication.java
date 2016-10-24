@@ -3038,6 +3038,36 @@ public class BackboneApplication extends Application {
 
 
     /**
+     * Method for saving coldchain data to the server
+     * @param tempMax
+     * @param tempMin
+     * @param alarmHigh
+     * @param alarmLow
+     * @param selectedMonth
+     * @param selectedYear
+     * @param modOn
+     */
+    public void sendColdChainToServer(double tempMax, double tempMin, int alarmHigh, int alarmLow, int selectedMonth, int selectedYear, String modOn) {
+
+        final StringBuilder webServiceUrl;
+        webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+        webServiceUrl.append("StoreHealthFacilityColdChain?healthFacilityId=").append(getLOGGED_IN_USER_HF_ID())
+                .append("&tempMax=").append(tempMax)
+                .append("&tempMin=").append(tempMin)
+                .append("&alarmHighTemp=").append(alarmHigh)
+                .append("&alarmLowTemp=").append(alarmLow)
+                .append("&reportingMonth=").append(selectedMonth)
+                .append("&userId=").append(getLOGGED_IN_USER_ID())
+                .append("&modifiedOn=").append(modOn)
+                .append("&reportingYear=").append(selectedYear);
+
+        Log.d(TAG, "cold chain URL : "+webServiceUrl);
+
+        getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
+    }
+
+
+    /**
      * this method expects the childBarcode value and one of doseId(not needed a precise one)
      * // @param childBarcode
      * // @param doseId

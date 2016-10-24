@@ -145,6 +145,7 @@
                         <RelativeLayout
                             android:layout_width="0dp"
                             android:layout_weight="1"
+                            android:background="@color/card_separator"
                             android:layout_height="match_parent">
 
                             <TextView
@@ -203,6 +204,7 @@
 
                         <RelativeLayout
                             android:layout_width="0dp"
+                            android:background="@color/card_separator"
                             android:layout_weight="1"
                             android:layout_height="match_parent">
 
@@ -263,6 +265,7 @@
                         <RelativeLayout
                             android:layout_width="0dp"
                             android:layout_weight="1"
+                            android:background="@color/card_separator"
                             android:layout_height="match_parent">
 
                             <TextView
