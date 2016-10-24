@@ -13,6 +13,8 @@ import android.os.Build;
 import android.util.Log;
 import com.google.android.gcm.GCMBaseIntentService;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Random;
 
 import mobile.tiis.staging.HomeActivityRevised;
@@ -58,6 +60,20 @@ public class GCMService extends GCMBaseIntentService {
 
         BackboneApplication application = (BackboneApplication) getApplication();
         String childId = intent.getStringExtra("message");
+        if (childId.equals("UpdateHealthFacilityColdChain")){
+            Date now = new Date();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(now);
+
+            int month       = (calendar.get(Calendar.MONTH)+1);
+            int prevMonth   = month - 1;
+            int year = calendar.get(Calendar.YEAR);
+
+            application.parseColdChain(month+"", year+"");
+            application.parseColdChain(prevMonth+"", year+"");
+
+        }
+
         application.getDatabaseInstance().addChildToChildUpdatesQueue(childId,3);
         synchronized (application) {
             application.parseGCMChildrenInQueueById();

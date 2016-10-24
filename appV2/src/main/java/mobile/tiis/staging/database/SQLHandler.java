@@ -700,6 +700,7 @@ public class SQLHandler {
                     + GIISContract.ImmunizationSessionColumns.OUTREACH_CANCELLED + " TEXT,"
                     + GIISContract.ImmunizationSessionColumns.OUTREACH_CONDUCTED + " TEXT,"
                     + GIISContract.ImmunizationSessionColumns.OUTREACH_PLANNED + " TEXT,"
+                    + GIISContract.ImmunizationSessionColumns.OTHERACTIVITIES + " TEXT,"
                     + GIISContract.ImmunizationSessionColumns.REPORTING_MONTH + " TEXT);";
 
     public static final String SQLVaccinationsBcgOpvTt =
@@ -799,6 +800,7 @@ public class SQLHandler {
         String OUTREACH_CANCELLED = "OUTREACH_CANCELLED";
         String MODIFIED_ON = "MODIFIED_ON";
         String REPORTING_MONTH = "REPORTING_MONTH";
+        String OTHERACTIVITIES = "OTHERACTIVITIES";
     }
 
     public interface VaccinationsBcgOpvTtColumns{
