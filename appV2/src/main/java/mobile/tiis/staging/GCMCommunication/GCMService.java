@@ -69,8 +69,8 @@ public class GCMService extends GCMBaseIntentService {
             int prevMonth   = month - 1;
             int year = calendar.get(Calendar.YEAR);
 
-            application.parseColdChain(month+"", year+"");
-            application.parseColdChain(prevMonth+"", year+"");
+            application.parseColdChainMonthly(month+"", year+"");
+            application.parseColdChainMonthly(prevMonth+"", year+"");
 
         }
 

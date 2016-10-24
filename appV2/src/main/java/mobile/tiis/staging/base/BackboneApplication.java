@@ -1273,7 +1273,7 @@ public class BackboneApplication extends Application {
     }
 
 
-    public void parseColdChain(String selectedMonth, String selectedYear){
+    public void parseColdChainMonthly(String selectedMonth, String selectedYear){
         try {
             if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
                 List<User> allUsers = databaseInstance.getAllUsers();
@@ -1288,6 +1288,70 @@ public class BackboneApplication extends Application {
             webServiceUrl.append("GetHealthFacilityColdChain?healthFacilityId=").append(URLEncoder.encode(LOGGED_IN_USER_HF_ID))
                     .append("&reportingMonth=").append(URLEncoder.encode(selectedMonth))
                     .append("&reportingYear=").append(URLEncoder.encode(selectedYear));
+
+            Log.d(TAG, "Health Facility Cold Chain..........  "+webServiceUrl.toString());
+
+            RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String response) {
+                    List<HealthFacilityColdChain> objects = new ArrayList<HealthFacilityColdChain>();
+                    try {
+                        Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                        ObjectMapper mapper = new ObjectMapper();
+                        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                        objects = mapper.readValue(response, new TypeReference<List<HealthFacilityColdChain>>() {
+                        });
+
+                    } catch (JsonGenerationException e) {
+                        e.printStackTrace();
+                    } catch (JsonMappingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        for (HealthFacilityColdChain object : objects) {
+                            ContentValues values = new ContentValues();
+                            values.put(SQLHandler.SyncColumns.UPDATED, 1);
+                            values.put(SQLHandler.RefrigeratorColums.ALARM_HIGH_TEMP, object.getAlarmHighTemp()+"");
+                            values.put(SQLHandler.RefrigeratorColums.ALARM_LOW_TEMP, object.getAlarmLowTemp()+"");
+                            values.put(SQLHandler.RefrigeratorColums.TEMP_MIN, object.getTempMin()+"");
+                            values.put(SQLHandler.RefrigeratorColums.TEMP_MAX, object.getTempMax()+"");
+                            values.put(SQLHandler.RefrigeratorColums.REPORTED_MONTH, getDatabaseInstance().getMonthNameFromNumber(object.getReportedMonth()+"", BackboneApplication.this)+" "+object.getReportedYear());
+                            DatabaseHandler db = getDatabaseInstance();
+                            db.addRefrigeratorTemperature(values);
+                        }
+                    }
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     *
+     * This method is used to parse healthFacility Cold Chain upon first syncronization to receive all the coldchain data for that facility
+     */
+    public void parseHealthFacilityColdChainAsList(){
+        try {
+            if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
+                List<User> allUsers = databaseInstance.getAllUsers();
+                User user = allUsers.get(0);
+
+                client.setBasicAuth(user.getUsername(), user.getPassword(), true);
+            } else {
+                client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+            }
+
+            final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+            webServiceUrl.append("GetHealthFacilityColdChainAsList?healthFacilityId=").append(URLEncoder.encode(LOGGED_IN_USER_HF_ID));
+            //GetHealthFacilityColdChainAsList?healthFacilityId=17342
 
             Log.d(TAG, "Health Facility Cold Chain..........  "+webServiceUrl.toString());
 

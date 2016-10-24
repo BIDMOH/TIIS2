@@ -658,7 +658,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         //TODO Create Service URL and send it to postmast
 
         SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
-        float alarmHigh, alarmLove, tempMax, tempMin;
+        float alarmHigh, alarmLow, tempMax, tempMin;
 
         String nowString = URLEncoder.encode(fmt.format(Calendar.getInstance().getTime()));
         Date now = null;
@@ -668,8 +668,8 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
             e.printStackTrace();
         }
 
-        alarmHigh = Float.parseFloat(strAlarmHigh);
-        alarmLove = Float.parseFloat(strAlarmLow);
+        alarmHigh   = Float.parseFloat(strAlarmHigh);
+        alarmLow    = Float.parseFloat(strAlarmLow);
         tempMax     = Float.parseFloat(strTempMax);
         tempMin     = Float.parseFloat(strTempMin);
         int selectedMonth    = Integer.parseInt(currentSelectedMonth.getMonth_number());
@@ -683,10 +683,10 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
                 .append("&tempMax=").append(tempMax)
                 .append("&tempMin=").append(tempMin)
                 .append("&alarmHighTemp=").append(alarmHigh)
-                .append("&alarmLowTemp=").append(alarmLove)
+                .append("&alarmLowTemp=").append(alarmLow)
                 .append("&reportingMonth=").append(selectedMonth)
                 .append("&userId=").append(app.getLOGGED_IN_USER_ID())
-                .append("&modifiedOn=").append("")
+                .append("&modifiedOn=").append(nowString)
                 .append("&reportingYear=").append(selectedYear);
 
         Log.d("SOMA", "deseases surveillance URL : "+webServiceUrl);
