@@ -104,6 +104,8 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         app = (BackboneApplication) this.getApplication();
         mydb = app.getDatabaseInstance();
