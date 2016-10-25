@@ -658,7 +658,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         apfDeaths   = Integer.parseInt(strAfpDeaths);
         ttMCases    = Integer.parseInt(strTetanusCases);
         ttDeaths    = Integer.parseInt(strTetanusDeaths);
-        selectedMonth   = Integer.parseInt(currentSelectedMonth.getMonth_name());
+        selectedMonth   = Integer.parseInt(currentSelectedMonth.getMonth_number());
         selectedYear    = Integer.parseInt(currentlySelectedYear);
 
         try {
@@ -1319,5 +1319,10 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         }
     }
 
+
+    @Override
+    public void onBackPressed(){
+        //dont leave the acitivity
+    }
 
 }
