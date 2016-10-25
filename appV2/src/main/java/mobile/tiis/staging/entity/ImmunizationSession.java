@@ -3,62 +3,39 @@ package mobile.tiis.staging.entity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
- * Created by issy on 10/24/16.
+ * Created by issy on 10/25/16.
  */
 
-public class HealthFacilityColdChain implements Serializable {
+public class ImmunizationSession implements Serializable{
 
-    public HealthFacilityColdChain(){
+    public ImmunizationSession(){}
 
-    }
-
-    private int AlarmHighTemp;
-    private int AlarmLowTemp;
-    private float TempMax;
-    private float TempMin;
+    private String OtherMajorImmunizationActivities;
+    private int OutreachPlanned;
     private String HealthFacilityId;
     private String ModifiedBy;
     private String ModifiedOn;
     private int ReportedMonth;
     private int ReportedYear;
 
-    @JsonProperty("AlarmHighTemp")
-    public int getAlarmHighTemp() {
-        return AlarmHighTemp;
+    @JsonProperty("OtherMajorImmunizationActivities")
+    public String getOtherMajorImmunizationActivities() {
+        return OtherMajorImmunizationActivities;
     }
 
-    public void setAlarmHighTemp(int alarmHighTemp) {
-        this.AlarmHighTemp = alarmHighTemp;
+    public void setOtherMajorImmunizationActivities(String otherMajorImmunizationActivities) {
+        OtherMajorImmunizationActivities = otherMajorImmunizationActivities;
     }
 
-    @JsonProperty("AlarmLowTemp")
-    public int getAlarmLowTemp() {
-        return AlarmLowTemp;
+    @JsonProperty("OutreachPlanned")
+    public int getOutreachPlanned() {
+        return OutreachPlanned;
     }
 
-    public void setAlarmLowTemp(int alarmLowTemp) {
-        this.AlarmLowTemp = alarmLowTemp;
-    }
-
-    @JsonProperty("TempMax")
-    public float getTempMax() {
-        return TempMax;
-    }
-
-    public void setTempMax(float tempMax) {
-        TempMax = tempMax;
-    }
-
-    @JsonProperty("TempMin")
-    public float getTempMin() {
-        return TempMin;
-    }
-
-    public void setTempMin(float tempMin) {
-        TempMin = tempMin;
+    public void setOutreachPlanned(int outreachPlanned) {
+        OutreachPlanned = outreachPlanned;
     }
 
     @JsonProperty("HealthFacilityId")
@@ -76,7 +53,7 @@ public class HealthFacilityColdChain implements Serializable {
     }
 
     public void setModifiedBy(String modifiedBy) {
-        this.ModifiedBy = modifiedBy;
+        ModifiedBy = modifiedBy;
     }
 
     @JsonProperty("ModifiedOn")

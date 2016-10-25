@@ -761,12 +761,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     }
 
-    public long addDeseaseSurveillance(ContentValues cv) {
+    public long addUpdateRefrigeratorTemperature(ContentValues cv, String selectedMonth){
         SQLiteDatabase sd = getWritableDatabase();
-        long result =-1;
+        long result = -1;
         sd.beginTransaction();
         try {
-            result = sd.insert(Tables.DESEASES_SURVEILLANCE, null, cv);
+            if (!isColdChainPresentInDb(selectedMonth)) {
+                Log.d("COLD_CHAIN_TAG", "Not present, adding new");
+                result = sd.insert(Tables.REFRIGERATOR_TEMPERATURE, null, cv);
+            } else {
+                Log.d("COLD_CHAIN_TAG", "Yes present Update");
+                result = sd.update(Tables.REFRIGERATOR_TEMPERATURE, cv, SQLHandler.RefrigeratorColums.REPORTED_MONTH + "=?", new String[]{selectedMonth});
+            }
             sd.setTransactionSuccessful();
         } catch (Exception e) {
             //Error in between database transaction
@@ -775,15 +781,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             sd.endTransaction();
             return result;
         }
-
     }
 
-    public long addRefrigeratorTemperature(ContentValues cv) {
+    public long addUpdateDeseasesSurveillance(ContentValues cv, String selectedMonth){
         SQLiteDatabase sd = getWritableDatabase();
-        long result =-1;
+        long result = -1;
         sd.beginTransaction();
         try {
-            result = sd.insert(Tables.REFRIGERATOR_TEMPERATURE, null, cv);
+            if (!isDeseaseSurveillanceEntryInDB(selectedMonth)) {
+                Log.d("COLD_CHAIN_TAG", "DESEASE: Not present, adding new");
+                result = sd.insert(Tables.DESEASES_SURVEILLANCE, null, cv);
+            } else {
+                Log.d("COLD_CHAIN_TAG", "DESEASE: Yes present Update");
+                result = sd.update(Tables.DESEASES_SURVEILLANCE, cv, SQLHandler.RefrigeratorColums.REPORTED_MONTH + "=?", new String[]{selectedMonth});
+            }
             sd.setTransactionSuccessful();
         } catch (Exception e) {
             //Error in between database transaction
@@ -792,7 +803,119 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             sd.endTransaction();
             return result;
         }
+    }
 
+    /**
+     *
+     * @param cv
+     * @param selectedMonth (Month Name + Year)
+     * @param doseID
+     * @return
+     */
+    public long addUpdateVaccinationsBcgOpvTt(ContentValues cv, String selectedMonth, String doseID){
+        SQLiteDatabase sd = getWritableDatabase();
+        long result = -1;
+        sd.beginTransaction();
+        try {
+            if (!isaVaccinationsBcgOpvTtInDb(selectedMonth, doseID)) {
+                Log.d("COLD_CHAIN_TAG", "BCG_OPV_TT: Not present, adding new");
+                result = sd.insert(Tables.VACCINATIONS_BCG_OPV_TT, null, cv);
+            } else {
+                Log.d("COLD_CHAIN_TAG", "BCG_OPV_TT: Yes present Update");
+                result = sd.update(Tables.VACCINATIONS_BCG_OPV_TT, cv, SQLHandler.VaccinationsBcgOpvTtColumns.REPORTING_MONTH + "=? AND "+
+                        SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID+" =?",
+                        new String[]{
+                                selectedMonth,
+                                doseID
+                        });
+            }
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+    }
+
+    public long addUpdateInjectionEquipment(ContentValues cv, String selectedMonth, String itemName){
+        SQLiteDatabase sd = getWritableDatabase();
+        long result = -1;
+        sd.beginTransaction();
+        try {
+            if (!isInjectionItemInDb(selectedMonth, itemName)) {
+                Log.d("COLD_CHAIN_TAG", "Syringes: Not present, adding new");
+                result = sd.insert(Tables.SYRINGES_AND_SAFETY_BOXES, null, cv);
+            } else {
+                Log.d("COLD_CHAIN_TAG", "Syringes: Yes present Update");
+                result = sd.update(Tables.SYRINGES_AND_SAFETY_BOXES, cv, SQLHandler.SyringesAndSafetyBoxesColumns.REPORTING_MONTH + "=? AND "+
+                                SQLHandler.SyringesAndSafetyBoxesColumns.ITEM_NAME+" =?",
+                        new String[]{
+                                selectedMonth,
+                                itemName
+                        });
+            }
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+    }
+
+    public long addUpdateVitaminAStock(ContentValues cv, String selectedMonth, String vitaminName){
+        SQLiteDatabase sd = getWritableDatabase();
+        long result = -1;
+        sd.beginTransaction();
+        try {
+            if (!isVitaminAInDb(selectedMonth, vitaminName)) {
+                Log.d("VITAMIN_A", "Vitamin A : Not present, adding new");
+                result = sd.insert(Tables.HF_VITAMIN_A, null, cv);
+            } else {
+                Log.d("VITAMIN_A", "Vitamin A : Yes present Update");
+                result = sd.update(Tables.HF_VITAMIN_A, cv, SQLHandler.HfVitaminAColumns.REPORTING_MONTH + "=? AND "+
+                                SQLHandler.HfVitaminAColumns.VITAMIN_NAME+" =?",
+                        new String[]{
+                                selectedMonth,
+                                vitaminName
+                        });
+            }
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+    }
+
+    public long addUpdateImmunizationSessions(ContentValues cv, String selectedMonth){
+        SQLiteDatabase sd = getWritableDatabase();
+        long result = -1;
+        sd.beginTransaction();
+        try {
+            if (!isImmunizationSessionInDb(selectedMonth)) {
+                Log.d("COLD_CHAIN_TAG", "BCG_OPV_TT: Not present, adding new");
+                result = sd.insert(Tables.IMMUNIZATION_SESSION, null, cv);
+            } else {
+                Log.d("COLD_CHAIN_TAG", "BCG_OPV_TT: Yes present Update");
+                result = sd.update(Tables.IMMUNIZATION_SESSION, cv, SQLHandler.VaccinationsBcgOpvTtColumns.REPORTING_MONTH + "=?",
+                        new String[]{
+                                selectedMonth
+                        });
+            }
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
     }
 
     public long addImmunizationSessions(ContentValues cv){
@@ -811,60 +934,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
 
-    public long addVaccinationsBcgOpvTt(ContentValues cv){
-        SQLiteDatabase sd = getWritableDatabase();
-        long result =-1;
-        sd.beginTransaction();
-        try {
-            result = sd.insert(Tables.VACCINATIONS_BCG_OPV_TT, null, cv);
-            sd.setTransactionSuccessful();
-        } catch (Exception e) {
-            //Error in between database transaction
-            result = -1;
-        } finally {
-            sd.endTransaction();
-            return result;
-        }
-    }
-
     public long addOtherMajorImmunizationActivities(ContentValues cv){
         SQLiteDatabase sd = getWritableDatabase();
         long result =-1;
         sd.beginTransaction();
         try {
             result = sd.insert(Tables.MAJOR_IMMUNIZATION_ACTIVITIES, null, cv);
-            sd.setTransactionSuccessful();
-        } catch (Exception e) {
-            //Error in between database transaction
-            result = -1;
-        } finally {
-            sd.endTransaction();
-            return result;
-        }
-    }
-
-    public long addInjectionEquipment(ContentValues cv){
-        SQLiteDatabase sd = getWritableDatabase();
-        long result =-1;
-        sd.beginTransaction();
-        try {
-            result = sd.insert(Tables.SYRINGES_AND_SAFETY_BOXES, null, cv);
-            sd.setTransactionSuccessful();
-        } catch (Exception e) {
-            //Error in between database transaction
-            result = -1;
-        } finally {
-            sd.endTransaction();
-            return result;
-        }
-    }
-
-    public long addVitaminAStock(ContentValues cv){
-        SQLiteDatabase sd = getWritableDatabase();
-        long result =-1;
-        sd.beginTransaction();
-        try {
-            result = sd.insert(Tables.HF_VITAMIN_A, null, cv);
             sd.setTransactionSuccessful();
         } catch (Exception e) {
             //Error in between database transaction
@@ -3436,6 +3511,86 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor.close();
         return found;
     }
+
+
+
+    //MONTHLY REPORT METHODS BEGIN
+
+    private boolean isColdChainPresentInDb(String selectedMonth){
+        Log.d("COLD_CHAIN_TAG", "checking cold chain");
+        String selectQuery = "SELECT * FROM "+ Tables.REFRIGERATOR_TEMPERATURE + " WHERE "+ SQLHandler.RefrigeratorColums.REPORTED_MONTH+"='"+selectedMonth+"'";
+        Log.d("COLD_CHAIN_TAG", selectQuery);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        Log.d("COLD_CHAIN_TAG", "cursor size is : "+cursor.getCount());
+        boolean found = cursor.moveToFirst();
+        cursor.close();
+        return found;
+
+    }
+
+    private boolean isDeseaseSurveillanceEntryInDB(String selectedMonth){
+        Log.d("COLD_CHAIN_TAG", "checking Surveillance");
+        String selectQuery = "SELECT * FROM "+ Tables.DESEASES_SURVEILLANCE + " WHERE "+ SQLHandler.RefrigeratorColums.REPORTED_MONTH+"='"+selectedMonth+"'";
+        Log.d("COLD_CHAIN_TAG", selectQuery);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        Log.d("COLD_CHAIN_TAG", "cursor size is : "+cursor.getCount());
+        boolean found = cursor.moveToFirst();
+        cursor.close();
+        return found;
+    }
+
+    private boolean isaVaccinationsBcgOpvTtInDb(String selectedMonth, String doseId){
+        Log.d("COLD_CHAIN_TAG", "checking BCG_OPV_TT");
+        String selectQuery = "SELECT * FROM "+ Tables.VACCINATIONS_BCG_OPV_TT + " WHERE "+ SQLHandler.VaccinationsBcgOpvTtColumns.REPORTING_MONTH+"='"+selectedMonth+"' AND "+ SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID+" = '"+doseId+"'";
+        Log.d("COLD_CHAIN_TAG", selectQuery);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        Log.d("COLD_CHAIN_TAG", "cursor size is : "+cursor.getCount());
+        boolean found = cursor.moveToFirst();
+        cursor.close();
+        return found;
+    }
+
+    private boolean isInjectionItemInDb(String selectedMonth, String itemName){
+        Log.d("COLD_CHAIN_TAG", "checking BCG_OPV_TT");
+        String selectQuery = "SELECT * FROM "+ Tables.SYRINGES_AND_SAFETY_BOXES + " WHERE "+ SQLHandler.SyringesAndSafetyBoxesColumns.REPORTING_MONTH+"='"+selectedMonth+"' AND "+ SQLHandler.SyringesAndSafetyBoxesColumns.ITEM_NAME+" = '"+itemName+"'";
+        Log.d("COLD_CHAIN_TAG", selectQuery);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        Log.d("COLD_CHAIN_TAG", "cursor size is : "+cursor.getCount());
+        boolean found = cursor.moveToFirst();
+        cursor.close();
+        return found;
+    }
+
+    private boolean isVitaminAInDb(String selectedMonth, String vitaminName){
+        Log.d("VITAMIN_A", "checking Vitamin A");
+        String selectQuery = "SELECT * FROM "+ Tables.HF_VITAMIN_A + " WHERE "+ SQLHandler.HfVitaminAColumns.REPORTING_MONTH+"='"+selectedMonth+"' AND "+ SQLHandler.HfVitaminAColumns.VITAMIN_NAME+" = '"+vitaminName+"'";
+        Log.d("VITAMIN_A", selectQuery);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        Log.d("VITAMIN_A", "cursor size is : "+cursor.getCount());
+        boolean found = cursor.moveToFirst();
+        cursor.close();
+        return found;
+    }
+
+    private boolean isImmunizationSessionInDb(String selectedMonth){
+        Log.d("IMMUNIZATION_SESSION", "checking Imunization Session");
+        String selectQuery = "SELECT * FROM "+ Tables.IMMUNIZATION_SESSION + " WHERE "+ SQLHandler.HfVitaminAColumns.REPORTING_MONTH+"='"+selectedMonth+"'";
+        Log.d("IMMUNIZATION_SESSION", selectQuery);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        Log.d("IMMUNIZATION_SESSION", "cursor size is : "+cursor.getCount());
+        boolean found = cursor.moveToFirst();
+        cursor.close();
+        return found;
+    }
+
+    //MONTHLY REPORT METHODS END
+
     public String getDomicilesFoundInChildAndNotInPlace() {
         //Query on Child Table
         String selectQuery = " SELECT DISTINCT(DOMICILE_ID) FROM CHILD WHERE DOMICILE_ID  NOT IN (SELECT ID FROM place) AND DOMICILE_ID <> 0";
@@ -3843,6 +3998,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             monthName = app.getString(R.string.november);
         }else if(monthNrAsString.equals("12")){
             monthName = app.getString(R.string.december);
+        }
+
+        if(monthNrAsString.equals("1")){
+            monthName = app.getString(R.string.january);
+        }else if(monthNrAsString.equals("2")){
+            monthName = app.getString(R.string.february);
+        }else if(monthNrAsString.equals("3")){
+            monthName = app.getString(R.string.march);
+        }else if(monthNrAsString.equals("4")){
+            monthName = app.getString(R.string.april);
+        }else if(monthNrAsString.equals("5")){
+            monthName = app.getString(R.string.may);
+        }else if(monthNrAsString.equals("6")){
+            monthName = app.getString(R.string.june);
+        }else if(monthNrAsString.equals("7")){
+            monthName = app.getString(R.string.july);
+        }else if(monthNrAsString.equals("8")){
+            monthName = app.getString(R.string.august);
+        }else if(monthNrAsString.equals("9")){
+            monthName = app.getString(R.string.september);
         }
 
         return monthName;

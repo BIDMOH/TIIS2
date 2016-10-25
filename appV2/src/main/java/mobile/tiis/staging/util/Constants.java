@@ -38,4 +38,7 @@ public class Constants {
     public static final String VITAMIN_A_100000_IU = "VITAMIN_A_100000_IU";
     public static final String VITAMIN_A_200000_IU = "VITAMIN_A_200000_IU";
 
+    public static final String BCG_NAME = "BCG";
+    public static final String OPV_NAME = "OPV";
+    public static final String TT_NAME = "TT";
 }

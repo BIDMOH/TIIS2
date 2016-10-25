@@ -793,6 +793,11 @@ public class HomeActivityRevised extends BackboneActivity {
             application.parseItemLots();
             application.parseStock();
             application.parseHealthFacilityColdChainAsList();
+            application.parseDeseaseSurveillanceAsList();
+            application.parseBcgOpvTtAsList();
+            application.parseSyringesAndSafetyBoxesAsList();
+            application.parseVitaminAStockAsList();
+            application.parseImmunizationSessionAsList();
 
             SharedPreferences.Editor editor = sync_preferences.edit();
             editor.putBoolean("firstLoginOfDaySyncNeeded", false);

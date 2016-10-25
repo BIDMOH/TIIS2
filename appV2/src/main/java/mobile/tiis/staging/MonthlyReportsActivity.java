@@ -46,8 +46,11 @@ import static mobile.tiis.staging.base.BackboneApplication.HEALTH_FACILITY_SVC;
 import static mobile.tiis.staging.base.BackboneApplication.WCF_URL;
 import static mobile.tiis.staging.util.Constants.ADS_O5ML;
 import static mobile.tiis.staging.util.Constants.ADS_OO5ML;
+import static mobile.tiis.staging.util.Constants.BCG_NAME;
+import static mobile.tiis.staging.util.Constants.OPV_NAME;
 import static mobile.tiis.staging.util.Constants.SAFETY_BOXES;
 import static mobile.tiis.staging.util.Constants.SDILLUTION;
+import static mobile.tiis.staging.util.Constants.TT_NAME;
 import static mobile.tiis.staging.util.Constants.VITAMIN_A_100000_IU;
 import static mobile.tiis.staging.util.Constants.VITAMIN_A_200000_IU;
 
@@ -111,7 +114,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         Calendar cal = Calendar.getInstance();
         cal.setTime(now);
 
-        int month   = cal.get(Calendar.MONTH);
+        int month   = cal.get(Calendar.MONTH)+1;
         int year    = cal.get(Calendar.YEAR);
 
         years.add("2015");
@@ -121,18 +124,18 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         years.add("2019");
         years.add("2020");
 
-        monthEntities.add(new MonthEntity("January", "0"));
-        monthEntities.add(new MonthEntity("February", "1"));
-        monthEntities.add(new MonthEntity("March", "2"));
-        monthEntities.add(new MonthEntity("April", "3"));
-        monthEntities.add(new MonthEntity("May", "4"));
-        monthEntities.add(new MonthEntity("June", "5"));
-        monthEntities.add(new MonthEntity("July", "6"));
-        monthEntities.add(new MonthEntity("August", "7"));
-        monthEntities.add(new MonthEntity("September", "8"));
-        monthEntities.add(new MonthEntity("October", "9"));
-        monthEntities.add(new MonthEntity("November", "10"));
-        monthEntities.add(new MonthEntity("December", "11"));
+        monthEntities.add(new MonthEntity("January", "1"));
+        monthEntities.add(new MonthEntity("February", "2"));
+        monthEntities.add(new MonthEntity("March", "3"));
+        monthEntities.add(new MonthEntity("April", "4"));
+        monthEntities.add(new MonthEntity("May", "5"));
+        monthEntities.add(new MonthEntity("June", "6"));
+        monthEntities.add(new MonthEntity("July", "7"));
+        monthEntities.add(new MonthEntity("August", "8"));
+        monthEntities.add(new MonthEntity("September", "9"));
+        monthEntities.add(new MonthEntity("October", "10"));
+        monthEntities.add(new MonthEntity("November", "11"));
+        monthEntities.add(new MonthEntity("December", "12"));
 
         PlacesOfBirthAdapter adapter = new PlacesOfBirthAdapter(this, R.layout.single_text_spinner_dropdown_toolbar,years);
         yearSpinner.setAdapter(adapter);
@@ -233,7 +236,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
             outreachPlanned.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.ImmunizationSessionColumns.OUTREACH_PLANNED)));
             outreachConducted.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.ImmunizationSessionColumns.OUTREACH_CONDUCTED)));
             outreachCancelled.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.ImmunizationSessionColumns.OUTREACH_CANCELLED)));
-//            otherMajorImmunizationActivitiesNew.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.ImmunizationSessionColumns.OTHERACTIVITIES)));
+            otherMajorImmunizationActivitiesNew.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.ImmunizationSessionColumns.OTHERACTIVITIES)));
         }
     }
 
@@ -246,20 +249,24 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         Log.d("SOMA", "cursor size "+cursor.getCount());
         if (cursor.getCount()>0){
             cursor.moveToFirst();
+            Log.d("SOMA", "Dose ID found is : "+cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID)));
             do {
-                if (cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_NAME)).equals("BCG")){
+                if (cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID)).equals("61")){
+                    Log.d("SOMA", "BCG found ");
                     bcgMaleCatchmentArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_CATCHMENT_AREA)));
                     bcgFemaleCatchmentArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_CATCHMENT_AREA)));
                     bcgMaleServiceArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA)));
                     bcgFemaleServiceArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_SERVICE_AREA)));
                 }
-                else if (cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_NAME)).equals("OPV")){
+                else if (cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID)).equals("62")){
+                    Log.d("SOMA", "OPV 0 found : ");
                     opvMaleCatchmentArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_CATCHMENT_AREA)));
                     opvFemaleCatchmentArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_CATCHMENT_AREA)));
                     opvMaleServiceArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA)));
                     opvFemaleServiceArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_SERVICE_AREA)));
                 }
-                else if (cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_NAME)).equals("TT")){
+                else if (cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID)).equals("79")){
+                    Log.d("SOMA", "TT found");
                     ttMaleCatchmentArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_CATCHMENT_AREA)));
                     ttFemaleCatchmentArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_CATCHMENT_AREA)));
                     ttMaleServiceArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA)));
@@ -640,7 +647,27 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 
         //Save Surveillance to local DB
         DatabaseHandler db = new DatabaseHandler(this);
-        db.addDeseaseSurveillance(cv);
+        db.addUpdateDeseasesSurveillance(cv, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
+
+        int feverMCases, feverDeaths, apfMcases, apfDeaths, ttMCases, ttDeaths, selectedMonth, selectedYear, selectedMonthNumber;
+        String modifiedOnString = "";
+
+        feverMCases = Integer.parseInt(strFeverCases);
+        feverDeaths = Integer.parseInt(strFeverDeaths);
+        apfMcases   = Integer.parseInt(strAfpCases);
+        apfDeaths   = Integer.parseInt(strAfpDeaths);
+        ttMCases    = Integer.parseInt(strTetanusCases);
+        ttDeaths    = Integer.parseInt(strTetanusDeaths);
+        selectedMonth   = Integer.parseInt(currentSelectedMonth.getMonth_name());
+        selectedYear    = Integer.parseInt(currentlySelectedYear);
+
+        try {
+            modifiedOnString = URLEncoder.encode(new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(Calendar.getInstance().getTime()), "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        app.sendDeseaseSurveillanceToServer(feverMCases, feverDeaths, apfMcases, apfDeaths, ttMCases, ttDeaths, selectedMonth, selectedYear, modifiedOnString);
 
         return true;
 
@@ -656,7 +683,9 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         cv.put(SQLHandler.RefrigeratorColums.REPORTED_MONTH, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
 
         DatabaseHandler db = new DatabaseHandler(this);
-        db.addRefrigeratorTemperature(cv);
+//        db.addRefrigeratorTemperature(cv);
+        Log.d("COLD_CHAIN_TAG", "calling SQLITE database");
+        db.addUpdateRefrigeratorTemperature(cv, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
 
         //TODO Create Service URL and send it to postmast
 
@@ -687,6 +716,20 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 
     public boolean saveImmunizationSessionValue(){
 
+        int selectedMonth    = Integer.parseInt(currentSelectedMonth.getMonth_number());
+        int selectedYear     = Integer.parseInt(currentlySelectedYear);
+
+        String modifiedOnString = "";
+        try {
+            modifiedOnString = URLEncoder.encode(new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(Calendar.getInstance().getTime()), "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        int outreachPlanned = Integer.parseInt(strOutreachPlanned);
+        int fixedConducted  = Integer.parseInt(strFixedConducted);
+        int cancelled       = outreachPlanned - fixedConducted;
+
         ContentValues cv    = new ContentValues();
         cv.put(GIISContract.SyncColumns.UPDATED, 1);
         cv.put(SQLHandler.ImmunizationSessionColumns.FIXED_CONDUCTED, strFixedConducted);
@@ -697,7 +740,8 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         cv.put(SQLHandler.ImmunizationSessionColumns.REPORTING_MONTH, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
 
         DatabaseHandler db = new DatabaseHandler(this);
-        db.addImmunizationSessions(cv);
+        db.addUpdateImmunizationSessions(cv, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
+        app.sendImmunizationSessionsToServer(outreachPlanned, strOtherMajorImmunizationActivities, selectedMonth, selectedYear, modifiedOnString);
 
         return true;
     }
@@ -705,36 +749,90 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
     public boolean saveVaccinationsValues(){
 
         DatabaseHandler db = new DatabaseHandler(this);
+        int BCG_DOSE_ID  = 61;
+        int OPV_0_DOSE_ID = 62;
+        int TT_DOSE_ID   = 79;
+
+        int selectedMonth    = Integer.parseInt(currentSelectedMonth.getMonth_number());
+        int selectedYear     = Integer.parseInt(currentlySelectedYear);
+
+        String modifiedOnString = "";
+        try {
+            modifiedOnString = URLEncoder.encode(new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(Calendar.getInstance().getTime()), "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        int bcgMaleService = Integer.parseInt(strBcgMaleService);
+        int bcgFemaleService    = Integer.parseInt(strBcgFemaleService);
+        int bcgMaleCatchment    = Integer.parseInt(strBcgMaleCatchment);
+        int bcgFemaleCatchment  = Integer.parseInt(strBcgFemaleCatchment);
+        int bcgTotalService     = bcgMaleService+bcgFemaleService;
+        int bcgTotalCatchment   = bcgMaleCatchment+bcgFemaleCatchment;
+        int bcgTotalServiceAndCatchment = bcgTotalService + bcgTotalCatchment;
 
         ContentValues bcgCv    = new ContentValues();
         bcgCv.put(GIISContract.SyncColumns.UPDATED, 1);
-        bcgCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_NAME, "BCG");
+        bcgCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID, BCG_DOSE_ID+"");
         bcgCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_SERVICE_AREA, strBcgFemaleService);
         bcgCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA, strBcgMaleService);
+        bcgCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_SERVICE_AREA, bcgTotalService+"");
         bcgCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_CATCHMENT_AREA, strBcgFemaleCatchment);
         bcgCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_CATCHMENT_AREA, strBcgMaleCatchment);
+        bcgCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_CATCHMENT_AREA, bcgTotalCatchment+"");
+        bcgCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_CATCHMENT_AND_SERVICE_AREA, bcgTotalServiceAndCatchment+"");
         bcgCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.REPORTING_MONTH, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
-        db.addVaccinationsBcgOpvTt(bcgCv);
+
+
+        db.addUpdateVaccinationsBcgOpvTt(bcgCv, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear, BCG_DOSE_ID+"");
+        app.sendBcgOpvTtToServer(BCG_DOSE_ID, bcgMaleService, bcgMaleCatchment, bcgFemaleService, bcgFemaleCatchment, 0, 0, 0, selectedMonth, selectedYear, modifiedOnString);
+
+        int opvMaleService = Integer.parseInt(strOpvMaleService);
+        int opvFemaleService    = Integer.parseInt(strOpvFemaleService);
+        int opvMaleCatchment    = Integer.parseInt(strOpvMaleCatchment);
+        int opvFemaleCatchment  = Integer.parseInt(strOpvFemaleCatchment);
+        int opvTotalService     = opvMaleService+opvFemaleService;
+        int opvTotalCatchment   = opvMaleCatchment+opvFemaleCatchment;
+        int opvTotalServiceAndCatchment = opvTotalService + opvTotalCatchment;
 
         ContentValues opvCv = new ContentValues();
         opvCv.put(GIISContract.SyncColumns.UPDATED, 1);
-        opvCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_NAME, "OPV");
+        opvCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID, OPV_0_DOSE_ID+"");
         opvCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_SERVICE_AREA, strOpvFemaleService);
         opvCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA, strOpvMaleService);
+        bcgCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_SERVICE_AREA, opvTotalService+"");
         opvCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_CATCHMENT_AREA, strOpvFemaleCatchment);
         opvCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_CATCHMENT_AREA, strOpvMaleCatchment);
+        bcgCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_CATCHMENT_AREA, opvTotalCatchment+"");
+        bcgCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_CATCHMENT_AND_SERVICE_AREA, opvTotalServiceAndCatchment+"");
         opvCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.REPORTING_MONTH, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
-        db.addVaccinationsBcgOpvTt(opvCv);
+
+        db.addUpdateVaccinationsBcgOpvTt(opvCv, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear, OPV_0_DOSE_ID+"");
+        app.sendBcgOpvTtToServer(OPV_0_DOSE_ID, opvMaleService, opvMaleCatchment, opvFemaleService, opvFemaleCatchment, 0, 0, 0, selectedMonth, selectedYear, modifiedOnString);
+
+
+        int ttMaleService = Integer.parseInt(strTtMaleServicec);
+        int ttFemaleService    = Integer.parseInt(strTtFemaleService);
+        int ttMaleCatchment    = Integer.parseInt(strTtMaleCatchment);
+        int ttFemaleCatchment  = Integer.parseInt(strTtFemaleCatchment);
+        int ttTotalService     = ttMaleService+ttFemaleService;
+        int ttTotalCatchment   = ttMaleCatchment+ttFemaleCatchment;
+        int ttTotalServiceAndCatchment = ttTotalService + ttTotalCatchment;
 
         ContentValues ttCv = new ContentValues();
         ttCv.put(GIISContract.SyncColumns.UPDATED, 1);
-        ttCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_NAME, "TT");
+        ttCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID, TT_DOSE_ID+"");
         ttCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_SERVICE_AREA, strTtFemaleService);
         ttCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA, strTtMaleServicec);
+        bcgCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_SERVICE_AREA, ttTotalService+"");
         ttCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_CATCHMENT_AREA, strTtFemaleCatchment);
         ttCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_CATCHMENT_AREA, strTtMaleCatchment);
+        bcgCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_CATCHMENT_AREA, ttTotalCatchment+"");
+        bcgCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_CATCHMENT_AND_SERVICE_AREA, ttTotalServiceAndCatchment+"");
         ttCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.REPORTING_MONTH, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
-        db.addVaccinationsBcgOpvTt(ttCv);
+
+        db.addUpdateVaccinationsBcgOpvTt(ttCv, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear, TT_DOSE_ID+"");
+        app.sendBcgOpvTtToServer(TT_DOSE_ID, ttMaleService, ttMaleCatchment, ttFemaleService, ttFemaleCatchment, 0, 0, 0, selectedMonth, selectedYear, modifiedOnString);
 
         return true;
     }
@@ -754,6 +852,24 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 
     public boolean saveInjectionEquipments(){
         DatabaseHandler db = new DatabaseHandler(this);
+        String selectedMon  = currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear;
+
+        int openingBalance  = Integer.parseInt(strml005Balance);
+        int received        = Integer.parseInt(strml005Received);
+        int used            = Integer.parseInt(strml005Used);
+        int wastage         = Integer.parseInt(strml005Wastage);
+        int stockInHand     = Integer.parseInt(strml005StockInHand);
+        int stockesOutDays  = Integer.parseInt(strml005StockedOutDays);
+
+        int selectedMonth    = Integer.parseInt(currentSelectedMonth.getMonth_number());
+        int selectedYear     = Integer.parseInt(currentlySelectedYear);
+
+        String modifiedOnString = "";
+        try {
+            modifiedOnString = URLEncoder.encode(new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(Calendar.getInstance().getTime()), "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
         ContentValues ads005Cv    = new ContentValues();
         ads005Cv.put(GIISContract.SyncColumns.UPDATED, 1);
@@ -764,8 +880,17 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         ads005Cv.put(SQLHandler.SyringesAndSafetyBoxesColumns.WASTAGE, strml005Wastage);
         ads005Cv.put(SQLHandler.SyringesAndSafetyBoxesColumns.STOCK_AT_HAND, strml005StockInHand);
         ads005Cv.put(SQLHandler.SyringesAndSafetyBoxesColumns.STOCKED_OUT_DAYS, strml005StockedOutDays);
-        ads005Cv.put(SQLHandler.SyringesAndSafetyBoxesColumns.REPORTING_MONTH, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
-        db.addInjectionEquipment(ads005Cv);
+        ads005Cv.put(SQLHandler.SyringesAndSafetyBoxesColumns.REPORTING_MONTH, selectedMon);
+
+        app.sendSyrinjesAndSafetyBoxesToServer(ADS_OO5ML, openingBalance, received, stockInHand, used, wastage, stockesOutDays, selectedMonth, selectedYear, modifiedOnString);
+        db.addUpdateInjectionEquipment(ads005Cv, selectedMon, ADS_OO5ML);
+
+        openingBalance  = Integer.parseInt(strads05Balance);
+        received        = Integer.parseInt(strads05Received);
+        used            = Integer.parseInt(strads05Used);
+        wastage         = Integer.parseInt(strads05Wastage);
+        stockInHand     = Integer.parseInt(strads05StockInHand);
+        stockesOutDays  = Integer.parseInt(strads05StockedOutDays);
 
         ContentValues ads05Cv    = new ContentValues();
         ads05Cv.put(GIISContract.SyncColumns.UPDATED, 1);
@@ -777,8 +902,17 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         ads05Cv.put(SQLHandler.SyringesAndSafetyBoxesColumns.STOCK_AT_HAND, strads05StockInHand);
         ads05Cv.put(SQLHandler.SyringesAndSafetyBoxesColumns.STOCKED_OUT_DAYS, strads05StockedOutDays);
         ads05Cv.put(SQLHandler.SyringesAndSafetyBoxesColumns.REPORTING_MONTH, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
-        db.addInjectionEquipment(ads05Cv);
 
+
+        app.sendSyrinjesAndSafetyBoxesToServer(ADS_O5ML, openingBalance, received, stockInHand, used, wastage, stockesOutDays, selectedMonth, selectedYear, modifiedOnString);
+        db.addUpdateInjectionEquipment(ads05Cv, selectedMon, ADS_O5ML);
+
+        openingBalance  = Integer.parseInt(strDillutionBalance);
+        received        = Integer.parseInt(strDillutionReceived);
+        used            = Integer.parseInt(strDillutionUsed);
+        wastage         = Integer.parseInt(strDillutionUsed);
+        stockInHand     = Integer.parseInt(strDillutionStockInHand);
+        stockesOutDays  = Integer.parseInt(strDillutionStockedOutDays);
 
         ContentValues dillutionCv    = new ContentValues();
         dillutionCv.put(GIISContract.SyncColumns.UPDATED, 1);
@@ -790,8 +924,17 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         dillutionCv.put(SQLHandler.SyringesAndSafetyBoxesColumns.STOCK_AT_HAND, strDillutionStockInHand);
         dillutionCv.put(SQLHandler.SyringesAndSafetyBoxesColumns.STOCKED_OUT_DAYS, strDillutionStockedOutDays);
         dillutionCv.put(SQLHandler.SyringesAndSafetyBoxesColumns.REPORTING_MONTH, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
-        db.addInjectionEquipment(dillutionCv);
 
+        app.sendSyrinjesAndSafetyBoxesToServer(SDILLUTION, openingBalance, received, stockInHand, used, wastage, stockesOutDays, selectedMonth, selectedYear, modifiedOnString);
+        db.addUpdateInjectionEquipment(dillutionCv, selectedMon, SDILLUTION);
+
+
+        openingBalance  = Integer.parseInt(strSafetyBoxBalance);
+        received        = Integer.parseInt(strSafetyBoxReceived);
+        used            = Integer.parseInt(strSafetyBoxUsed);
+        wastage         = Integer.parseInt(strSafetyBoxWastage);
+        stockInHand     = Integer.parseInt(strSafetyBoxStockInHand);
+        stockesOutDays  = Integer.parseInt(strSafetyBoxStockedOutDays);
 
         ContentValues safetyBoxesCV    = new ContentValues();
         safetyBoxesCV.put(GIISContract.SyncColumns.UPDATED, 1);
@@ -803,13 +946,32 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         safetyBoxesCV.put(SQLHandler.SyringesAndSafetyBoxesColumns.STOCK_AT_HAND, strSafetyBoxStockInHand);
         safetyBoxesCV.put(SQLHandler.SyringesAndSafetyBoxesColumns.STOCKED_OUT_DAYS, strSafetyBoxStockedOutDays);
         safetyBoxesCV.put(SQLHandler.SyringesAndSafetyBoxesColumns.REPORTING_MONTH, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
-        db.addInjectionEquipment(safetyBoxesCV);
+
+        app.sendSyrinjesAndSafetyBoxesToServer(SAFETY_BOXES, openingBalance, received, stockInHand, used, wastage, stockesOutDays, selectedMonth, selectedYear, modifiedOnString);
+        db.addUpdateInjectionEquipment(safetyBoxesCV, selectedMon, SAFETY_BOXES);
 
         return true;
     }
 
     public boolean saveVitaminAStock(){
         DatabaseHandler db = new DatabaseHandler(this);
+        String reportingMonth   = currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear;
+
+        int openingBalance  = Integer.parseInt(strVitA1Opening);
+        int received        = Integer.parseInt(strVitA1Received);
+        int administered    = Integer.parseInt(strVitA1Administered);
+        int wastage         = Integer.parseInt(strVitA1Wastage);
+        int stockInHand     = Integer.parseInt(strVitA1StockInHand);
+
+        int selectedMonth    = Integer.parseInt(currentSelectedMonth.getMonth_number());
+        int selectedYear     = Integer.parseInt(currentlySelectedYear);
+
+        String modifiedOnString = "";
+        try {
+            modifiedOnString = URLEncoder.encode(new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(Calendar.getInstance().getTime()), "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
         ContentValues vitA1    = new ContentValues();
         vitA1.put(GIISContract.SyncColumns.UPDATED, 1);
@@ -819,8 +981,16 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         vitA1.put(SQLHandler.HfVitaminAColumns.TOTAL_ADMINISTERED, strVitA1Administered);
         vitA1.put(SQLHandler.HfVitaminAColumns.WASTAGE, strVitA1Wastage);
         vitA1.put(SQLHandler.HfVitaminAColumns.STOCK_ON_HAND, strVitA1StockInHand);
-        vitA1.put(SQLHandler.HfVitaminAColumns.REPORTING_MONTH, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
-        db.addVitaminAStock(vitA1);
+        vitA1.put(SQLHandler.HfVitaminAColumns.REPORTING_MONTH, reportingMonth);
+
+        app.sendVitaminAStockToServer(VITAMIN_A_100000_IU, openingBalance, received, stockInHand, administered, selectedMonth, selectedYear, modifiedOnString, wastage );
+        db.addUpdateVitaminAStock(vitA1, reportingMonth, VITAMIN_A_100000_IU);
+
+        openingBalance  = Integer.parseInt(strVitA2Opening);
+        received        = Integer.parseInt(strVitA2Received);
+        administered    = Integer.parseInt(strVitA2Administered);
+        wastage         = Integer.parseInt(strVitA2Wastage);
+        stockInHand     = Integer.parseInt(strVitA2StockInHand);
 
         ContentValues vitA2    = new ContentValues();
         vitA2.put(GIISContract.SyncColumns.UPDATED, 1);
@@ -830,8 +1000,10 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         vitA2.put(SQLHandler.HfVitaminAColumns.TOTAL_ADMINISTERED, strVitA2Administered);
         vitA2.put(SQLHandler.HfVitaminAColumns.WASTAGE, strVitA2Wastage);
         vitA2.put(SQLHandler.HfVitaminAColumns.STOCK_ON_HAND, strVitA2StockInHand);
-        vitA2.put(SQLHandler.HfVitaminAColumns.REPORTING_MONTH, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
-        db.addVitaminAStock(vitA2);
+        vitA2.put(SQLHandler.HfVitaminAColumns.REPORTING_MONTH, reportingMonth);
+
+        app.sendVitaminAStockToServer(VITAMIN_A_200000_IU, openingBalance, received, stockInHand, administered, selectedMonth, selectedYear, modifiedOnString, wastage );
+        db.addUpdateVitaminAStock(vitA2, reportingMonth, VITAMIN_A_200000_IU);
 
         return true;
     }
@@ -898,6 +1070,42 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 
         otherMajorImmunizationActivities.setText("");
         otherMajorImmunizationActivitiesNew.setText("");
+
+        ml005Balance.setText("");
+        ml005Received.setText("");
+        ml005Used.setText("");
+        ml005Wastage.setText("");
+        ml005StockInHand.setText("");
+        ml005StockedOutDays.setText("");
+        ads05Balance.setText("");
+        ads05Received.setText("");
+        ads05Used.setText("");
+        ads05Wastage.setText("");
+        ads05StockInHand.setText("");
+        ads05StockedOutDays.setText("");
+        dillutionBalance.setText("");
+        dillutionReceived.setText("");
+        dillutionUsed.setText("");
+        dillutionWastage.setText("");
+        dillutionStockInHand.setText("");
+        dillutionStockedOutDays.setText("");
+        safetyBoxBalance.setText("");
+        safetyBoxReceived.setText("");
+        safetyBoxUsed.setText("");
+        safetyBoxWastage.setText("");
+        safetyBoxStockInHand.setText("");
+        safetyBoxStockedOutDays.setText("");
+        vitA1Opening.setText("");
+        vitA1Received.setText("");
+        vitA1Administered.setText("");
+        vitA1Wastage.setText("");
+        vitA1StockInHand.setText("");
+        vitA2Opening.setText("");
+        vitA2Received.setText("");
+        vitA2Administered.setText("");
+        vitA2Wastage.setText("");
+        vitA2StockInHand.setText("");
+
     }
 
     public void setupview(){

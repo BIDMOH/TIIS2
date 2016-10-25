@@ -709,7 +709,7 @@ public class SQLHandler {
                     + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
                     + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
                     + GIISContract.SyncColumns.MODIFIED_AT + " DATE, "
-                    + GIISContract.VaccinationsBcgOpvTtColumns.DOSE_NAME + " TEXT,"
+                    + GIISContract.VaccinationsBcgOpvTtColumns.DOSE_ID + " TEXT,"
                     + GIISContract.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA + " TEXT,"
                     + GIISContract.VaccinationsBcgOpvTtColumns.FEMALE_SERVICE_AREA + " TEXT,"
                     + GIISContract.VaccinationsBcgOpvTtColumns.TOTAL_SERVICE_AREA + " TEXT,"
@@ -804,7 +804,7 @@ public class SQLHandler {
     }
 
     public interface VaccinationsBcgOpvTtColumns{
-        String DOSE_NAME = "DOSE_NAME";
+        String DOSE_ID = "DOSE_ID";
         String MALE_SERVICE_AREA = "MALE_SERVICE_AREA";
         String FEMALE_SERVICE_AREA = "FEMALE_SERVICE_AREA";
         String TOTAL_SERVICE_AREA = "TOTAL_SERVICE_AREA";

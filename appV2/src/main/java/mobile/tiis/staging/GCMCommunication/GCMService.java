@@ -59,25 +59,58 @@ public class GCMService extends GCMBaseIntentService {
         Log.d(TAG, "message received");
 
         BackboneApplication application = (BackboneApplication) getApplication();
-        String childId = intent.getStringExtra("message");
-        if (childId.equals("UpdateHealthFacilityColdChain")){
-            Date now = new Date();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(now);
+        String gcmMessage = intent.getStringExtra("message");
+        Log.d(TAG, "Message Received "+gcmMessage);
 
-            int month       = (calendar.get(Calendar.MONTH)+1);
-            int prevMonth   = month - 1;
-            int year = calendar.get(Calendar.YEAR);
+        Date now = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
 
+        int month       = (calendar.get(Calendar.MONTH)+1);
+        int prevMonth   = month - 1;
+        if (month == 1){
+            prevMonth = 12;
+        }
+        int year = calendar.get(Calendar.YEAR);
+
+        //HEALTH FACILITY COLD CHAIN
+        if (gcmMessage.equals("UpdateHealthFacilityColdChain")){
             application.parseColdChainMonthly(month+"", year+"");
             application.parseColdChainMonthly(prevMonth+"", year+"");
 
-        }else{
-            application.getDatabaseInstance().addChildToChildUpdatesQueue(childId,3);
+        }
+        //DESEASES SURVEILLANCE
+        else if (gcmMessage.equals("UpdateHealthFacilityDeseaseSurvailance")){
+            application.parseDeseaseSurveilanceMonthly(month+"", year+"");
+            application.parseDeseaseSurveilanceMonthly(prevMonth+"", year+"");
+        }
+        //BCG_OPV_TT
+        else if(gcmMessage.equals("UpdateHealthFacilityBcgOpv0AndTTVaccinations")){
+            application.parseBcgOpvTtMonthly(month+"", year+"");
+            application.parseBcgOpvTtMonthly(prevMonth+"", year+"");
+        }
+        //SYRINGES AND SAFETY BOXES
+        else if(gcmMessage.equals("UpdateHealthFacilitySyringesAndSafetyBoxesStockBalance")){
+            application.parseSyringesAndSafetyBoxesMonthly(month+"", year+"");
+            application.parseSyringesAndSafetyBoxesMonthly(prevMonth+"", year+"");
+        }
+        //VITAMIN A STOCK
+        else if(gcmMessage.equals("UpdateHealthFacilityVitaminAStockBalance")){
+            application.parseVitamAMonthly(month+"", year+"");
+            application.parseVitamAMonthly(prevMonth+"", year+"");
+        }
+        else if(gcmMessage.equals("UpdateHealthFacilityImmunizationSessions")){
+            Log.d("IMMUNIZATION_SESSION", "month is : "+month);
+            Log.d("IMMUNIZATION_SESSION", "previous month is : "+prevMonth);
+            application.parseImmunizationSessionMonthly(month+"", year+"");
+            application.parseImmunizationSessionMonthly(prevMonth+"", year+"");
+        }
+        else{
+            application.getDatabaseInstance().addChildToChildUpdatesQueue(gcmMessage,3);
             synchronized (application) {
                 application.parseGCMChildrenInQueueById();
             }
-            sendResult(childId,context);
+            sendResult(gcmMessage,context);
 
         }
 //        createNotification(context,"updates received");

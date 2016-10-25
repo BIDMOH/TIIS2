@@ -48,7 +48,7 @@ public class GIISContract {
     }
 
     interface VaccinationsBcgOpvTtColumns{
-        String DOSE_NAME = "DOSE_NAME";
+        String DOSE_ID = "DOSE_ID";
         String MALE_SERVICE_AREA = "MALE_SERVICE_AREA";
         String FEMALE_SERVICE_AREA = "FEMALE_SERVICE_AREA";
         String TOTAL_SERVICE_AREA = "TOTAL_SERVICE_AREA";

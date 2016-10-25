@@ -1,5 +1,8 @@
 package mobile.tiis.staging.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.io.Serializable;
 import java.util.Date;
 
 import mobile.tiis.staging.database.GIISContract;
@@ -9,82 +12,122 @@ import mobile.tiis.staging.database.SQLHandler;
  * Created by issy on 10/24/16.
  */
 
-public class DeseasesSurveilance {
+public class DeseasesSurveilance implements Serializable{
 
     public DeseasesSurveilance(){
 
     }
 
-    private Date modifiedAt;
-    private String feverMonthlyCases;
-    private String feverDeaths;
-    private String apfMonthlyCases;
-    private String apfDeaths;
-    private String neonatalTTCases;
-    private String neonatalTTDeaths;
-    private String reportedMonth;
 
-    public String getReportedMonth() {
-        return reportedMonth;
+    private int FeverMonthlyDeaths;
+    private int FeverMonthlyCases;
+    private int AFPMonthlyCases;
+    private int AFPDeaths;
+    private String HealthFacilityId;
+    private String ModifiedBy;
+    private String ModifiedOn;
+    private int NeonatalTTCases;
+    private int NeonatalTTDeaths;
+    private int ReportedMonth;
+    private int ReportedYear;
+
+    @JsonProperty("FeverMonthlyDeaths")
+    public int getFeverMonthlyDeaths() {
+        return FeverMonthlyDeaths;
     }
 
-    public void setReportedMonth(String reportedMonth) {
-        this.reportedMonth = reportedMonth;
+    public void setFeverMonthlyDeaths(int feverMonthlyDeaths) {
+        FeverMonthlyDeaths = feverMonthlyDeaths;
     }
 
-    public Date getModifiedAt() {
-        return modifiedAt;
+    public void setFeverMonthlyCases(int feverMonthlyCases) {
+        FeverMonthlyCases = feverMonthlyCases;
     }
 
-    public void setModifiedAt(Date modifiedAt) {
-        this.modifiedAt = modifiedAt;
+    @JsonProperty("AFPMonthlyCases")
+    public int getAFPMonthlyCases() {
+        return AFPMonthlyCases;
     }
 
-    public String getFeverMonthlyCases() {
-        return feverMonthlyCases;
+    public void setAFPMonthlyCases(int AFPMonthlyCases) {
+        this.AFPMonthlyCases = AFPMonthlyCases;
     }
 
-    public void setFeverMonthlyCases(String feverMonthlyCases) {
-        this.feverMonthlyCases = feverMonthlyCases;
+    @JsonProperty("AFPDeaths")
+    public int getAFPDeaths() {
+        return AFPDeaths;
     }
 
-    public String getFeverDeaths() {
-        return feverDeaths;
+    public void setAFPDeaths(int AFPDeaths) {
+        this.AFPDeaths = AFPDeaths;
     }
 
-    public void setFeverDeaths(String feverDeaths) {
-        this.feverDeaths = feverDeaths;
+    @JsonProperty("HealthFacilityId")
+    public String getHealthFacilityId() {
+        return HealthFacilityId;
     }
 
-    public String getApfMonthlyCases() {
-        return apfMonthlyCases;
+    public void setHealthFacilityId(String healthFacilityId) {
+        HealthFacilityId = healthFacilityId;
     }
 
-    public void setApfMonthlyCases(String apfMonthlyCases) {
-        this.apfMonthlyCases = apfMonthlyCases;
+    @JsonProperty("ModifiedBy")
+    public String getModifiedBy() {
+        return ModifiedBy;
     }
 
-    public String getApfDeaths() {
-        return apfDeaths;
+    public void setModifiedBy(String modifiedBy) {
+        ModifiedBy = modifiedBy;
     }
 
-    public void setApfDeaths(String apfDeaths) {
-        this.apfDeaths = apfDeaths;
+    @JsonProperty("ModifiedOn")
+    public String getModifiedOn() {
+        return ModifiedOn;
     }
 
-    public String getNeonatalTTCases() {
-        return neonatalTTCases;
+    public void setModifiedOn(String modifiedOn) {
+        ModifiedOn = modifiedOn;
     }
 
-    public void setNeonatalTTCases(String neonatalTTCases) {
-        this.neonatalTTCases = neonatalTTCases;
+    public void setNeonatalTTCases(int neonatalTTCases) {
+        NeonatalTTCases = neonatalTTCases;
     }
 
-    public String getNeonatalTTDeaths() {
-        return neonatalTTDeaths;
+    public void setNeonatalTTDeaths(int neonatalTTDeaths) {
+        NeonatalTTDeaths = neonatalTTDeaths;
     }
 
-    public void setNeonatalTTDeaths(String neonatalTTDeaths) {
-        this.neonatalTTDeaths = neonatalTTDeaths;
+    @JsonProperty("FeverMonthlyCases")
+    public int getFeverMonthlyCases() {
+        return FeverMonthlyCases;
+    }
+
+    @JsonProperty("NeonatalTTCases")
+    public int getNeonatalTTCases() {
+        return NeonatalTTCases;
+    }
+
+    @JsonProperty("NeonatalTTDeaths")
+    public int getNeonatalTTDeaths() {
+        return NeonatalTTDeaths;
+    }
+
+    @JsonProperty("ReportedMonth")
+    public int getReportedMonth() {
+        return ReportedMonth;
+    }
+
+    public void setReportedMonth(int reportedMonth) {
+        ReportedMonth = reportedMonth;
+    }
+
+    @JsonProperty("ReportedYear")
+    public int getReportedYear() {
+        return ReportedYear;
+
+    }
+
+    public void setReportedYear(int reportedYear) {
+        ReportedYear = reportedYear;
     }
 }
