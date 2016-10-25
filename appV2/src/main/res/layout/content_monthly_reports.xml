@@ -61,12 +61,14 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
+                    android:id="@+id/separator_top"
                     android:background="@color/black"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:paddingLeft="16dp"
+                    android:layout_below="@id/separator_top"
                     android:gravity="center_vertical"
                     android:id="@+id/surveillance_txt"
                     android:text="DESEASE SURVEILLANCE DATA"
@@ -341,18 +343,26 @@
                 android:layout_weight="1"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
                 android:layout_height="wrap_content">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:id="@+id/separator_top_2"
+                    android:background="@color/black"/>
+
 
                 <TextView
                     android:layout_width="match_parent"
                     android:gravity="center_vertical"
                     android:paddingLeft="16dp"
                     android:layout_height="50dp"
+                    android:layout_below="@id/separator_top_2"
                     android:id="@+id/refrigerator_txt"
                     android:text="REFRIGERATOR TEMPERATURE"
                     android:background="@color/card_separator"
-                    android:textColor="@color/black"
-                    android:layout_marginTop="16dp"/>
+                    android:textColor="@color/black"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
