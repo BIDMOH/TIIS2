@@ -27,7 +27,7 @@
                 <fr.ganfra.materialspinner.MaterialSpinner
                     android:id="@+id/year_spinner"
                     android:layout_width="100dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="55dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="16dp"
                     android:layout_alignParentRight="true"
@@ -50,7 +50,7 @@
                 <fr.ganfra.materialspinner.MaterialSpinner
                     android:id="@+id/mon_year_spiner"
                     android:layout_width="100dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="55dp"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="16dp"
                     android:layout_toLeftOf="@id/year_spinner"
