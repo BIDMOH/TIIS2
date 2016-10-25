@@ -3579,7 +3579,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     private boolean isImmunizationSessionInDb(String selectedMonth){
         Log.d("IMMUNIZATION_SESSION", "checking Imunization Session");
-        String selectQuery = "SELECT * FROM "+ Tables.IMMUNIZATION_SESSION + " WHERE "+ SQLHandler.HfVitaminAColumns.REPORTING_MONTH+"='"+selectedMonth+"'";
+        String selectQuery = "SELECT * FROM "+ Tables.IMMUNIZATION_SESSION + " WHERE "+ SQLHandler.ImmunizationSessionColumns.REPORTING_MONTH+"='"+selectedMonth+"'";
         Log.d("IMMUNIZATION_SESSION", selectQuery);
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);

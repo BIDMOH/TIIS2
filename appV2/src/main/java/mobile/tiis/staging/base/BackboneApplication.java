@@ -2126,7 +2126,7 @@ public class BackboneApplication extends Application {
                     } finally {
                         for (ImmunizationSession object : objects) {
                             String reportingMonth   = getDatabaseInstance().getMonthNameFromNumber(object.getReportedMonth()+"", BackboneApplication.this)+" "+object.getReportedYear();
-                            String vitamin_name        = object.getHealthFacilityId();
+
                             ContentValues values = new ContentValues();
                             values.put(SQLHandler.SyncColumns.UPDATED, 1);
                             values.put(SQLHandler.ImmunizationSessionColumns.OTHERACTIVITIES, object.getOtherMajorImmunizationActivities());

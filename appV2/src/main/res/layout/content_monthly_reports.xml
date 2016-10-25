@@ -55,21 +55,28 @@
                 android:layout_weight="1"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
                 android:layout_height="wrap_content">
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black"/>
+
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:paddingLeft="16dp"
+                    android:gravity="center_vertical"
                     android:id="@+id/surveillance_txt"
                     android:text="DESEASE SURVEILLANCE DATA"
-                    android:textColor="@color/card_title_text"
-                    android:layout_marginTop="16dp"/>
+                    android:background="@color/card_separator"
+                    android:textColor="@color/black" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginTop="16dp"
                     android:layout_below="@id/surveillance_txt"
                     android:background="@color/white">
 
@@ -337,17 +344,19 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="16dp"
+                    android:layout_height="50dp"
                     android:id="@+id/refrigerator_txt"
                     android:text="REFRIGERATOR TEMPERATURE"
-                    android:textColor="@color/card_title_text"
+                    android:background="@color/card_separator"
+                    android:textColor="@color/black"
                     android:layout_marginTop="16dp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
                     android:orientation="vertical"
                     android:background="@drawable/border"
                     android:layout_below="@id/refrigerator_txt">
@@ -563,15 +572,20 @@
                         android:background="@drawable/border"
                         android:orientation="vertical">
 
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/black"/>
+
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="50dp"
                             android:id="@+id/immunization_session_title"
                             android:text="IMMUNIZATION SESSIONS"
+                            android:background="@color/card_separator"
                             android:gravity="center_vertical"
-                            android:textSize="16sp"
-                            android:layout_marginLeft="8dp"
-                            android:textColor="@color/card_title_text" />
+                            android:paddingLeft="16dp"
+                            android:textColor="@color/black" />
 
                         <View
                             android:layout_width="match_parent"
@@ -743,15 +757,20 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/black"/>
+
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="50dp"
                             android:id="@+id/bcg_session_title"
                             android:text="BCG, OPV, TT REPORT"
                             android:gravity="center_vertical"
-                            android:layout_marginLeft="8dp"
-                            android:textSize="18sp"
-                            android:textColor="@color/card_title_text" />
+                            android:background="@color/card_separator"
+                            android:paddingLeft="16dp"
+                            android:textColor="@color/black" />
 
                         <View
                             android:layout_width="match_parent"
@@ -1165,11 +1184,17 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="8dp">
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black"/>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:text="SAFE INJECTION EQUIPMENT"
                     android:gravity="center"
+                    android:background="@color/card_separator"
                     android:textColor="@color/black"
                     android:id="@+id/syringes_title" />
 
@@ -1656,12 +1681,17 @@
             android:layout_marginRight="16dp"
             android:layout_marginBottom="8dp">
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:text="VITAMIN A STOCK"
                 android:gravity="center"
+                android:background="@color/card_separator"
                 android:textColor="@color/black"
                 android:id="@+id/vitamin_title" />
 
