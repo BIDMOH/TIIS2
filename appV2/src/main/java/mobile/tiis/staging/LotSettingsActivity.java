@@ -265,4 +265,11 @@ public class LotSettingsActivity extends AppCompatActivity {
             return null;
         }
     }
+
+
+    @Override
+    public void onBackPressed(){
+        //dont leave the acitivity
+    }
+
 }
