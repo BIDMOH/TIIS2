@@ -1,35 +1,30 @@
 package mobile.tiis.staging;
 
+import android.app.Dialog;
 import android.content.ContentValues;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.util.AsyncListUtil;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.RequestHandle;
-import com.loopj.android.http.SyncHttpClient;
-import com.loopj.android.http.TextHttpResponseHandler;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import cz.msebera.android.httpclient.Header;
 import fr.ganfra.materialspinner.MaterialSpinner;
 import mobile.tiis.staging.adapters.PlacesOfBirthAdapter;
 import mobile.tiis.staging.adapters.SpinnerAdapter;
@@ -41,16 +36,10 @@ import mobile.tiis.staging.entity.MonthEntity;
 
 import java.util.Calendar;
 
-import static mobile.tiis.staging.base.BackboneApplication.CHILD_MANAGEMENT_SVC;
-import static mobile.tiis.staging.base.BackboneApplication.HEALTH_FACILITY_SVC;
-import static mobile.tiis.staging.base.BackboneApplication.WCF_URL;
 import static mobile.tiis.staging.util.Constants.ADS_O5ML;
 import static mobile.tiis.staging.util.Constants.ADS_OO5ML;
-import static mobile.tiis.staging.util.Constants.BCG_NAME;
-import static mobile.tiis.staging.util.Constants.OPV_NAME;
 import static mobile.tiis.staging.util.Constants.SAFETY_BOXES;
 import static mobile.tiis.staging.util.Constants.SDILLUTION;
-import static mobile.tiis.staging.util.Constants.TT_NAME;
 import static mobile.tiis.staging.util.Constants.VITAMIN_A_100000_IU;
 import static mobile.tiis.staging.util.Constants.VITAMIN_A_200000_IU;
 
@@ -96,6 +85,9 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
     private MonthEntity currentSelectedMonth;
     private String currentlySelectedYear;
 
+    public Dialog dialog;
+    public TextView dialogueMessage, dialogueOKButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +98,22 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        View dialogueView   = LayoutInflater.from(this).inflate(R.layout.monthly_report_dialogue, null);
+        dialog.setContentView(dialogueView);
+        dialogueMessage     = (TextView) dialogueView.findViewById(R.id.mesage);
+        dialogueMessage.setTypeface(HomeActivityRevised.Roboto_Light);
+        dialogueOKButton    = (TextView) dialogueView.findViewById(R.id.tv_ok);
+        dialogueOKButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.hide();
+            }
+        });
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
 
         app = (BackboneApplication) this.getApplication();
         mydb = app.getDatabaseInstance();
@@ -375,27 +383,45 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
     public boolean verifyInputs(){
 
         if (feverCases.getText().toString().equals("")){
-            feverCases.setError("Fill This");
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
         }
         else if (feverDeaths.getText().toString().equals("")){
-            feverDeaths.setError("Fill This");
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
         }
         else if (afpCases.getText().toString().equals("")){
-            afpCases.setError("Fill This");
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
         }
         else if (afpDeaths.getText().toString().equals("")) {
-            afpDeaths.setError("Fill This");
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
         }
         else if (tetanusCases.getText().toString().equals("")){
-            tetanusCases.setError("Fill This");
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
         }
         else if (tetanusDeaths.getText().toString().equals("")){
-            tetanusDeaths.setError("Fill This");
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
         }
         else if (monthYearSpinner.getSelectedItemPosition() <= 0){
@@ -409,142 +435,495 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 
     public boolean verifyInputs2(){
         if (tempMin.getText().toString().equals(""))
+        {
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
+        }
+
         else if (tempMax.getText().toString().equals(""))
+        {
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        else if (alarmHigh.getText().toString().equals(""))
+        }
+        else if (alarmHigh.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        else if (alarmLow.getText().toString().equals(""))
+        }
+        else if (alarmLow.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        else if (monthYearSpinner.getSelectedItemPosition() <= 0)
+        }
+        else if (monthYearSpinner.getSelectedItemPosition() <= 0){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
+        }
         else
             return true;
     }
 
     public boolean verifyInputs3(){
-        if(fixedConducted.getText().toString().trim().equals(""))
+        if(fixedConducted.getText().toString().trim().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (outreachPlanned.getText().toString().trim().equals(""))
+        }
+        if (outreachPlanned.getText().toString().trim().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (outreachConducted.getText().toString().trim().equals(""))
+        }
+        if (outreachConducted.getText().toString().trim().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (outreachCancelled.getText().toString().trim().equals(""))
+        }
+        if (outreachCancelled.getText().toString().trim().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
+        }
         else
             return true;
     }
 
     public boolean verifyInputs4(){
-        if(bcgFemaleServiceArea.getText().toString().trim().equals(""))
+        if(bcgFemaleServiceArea.getText().toString().trim().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if(bcgMaleServiceArea.getText().toString().trim().equals(""))
+        }
+        if(bcgMaleServiceArea.getText().toString().trim().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if(bcgFemaleCatchmentArea.getText().toString().trim().equals(""))
+        }
+        if(bcgFemaleCatchmentArea.getText().toString().trim().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if(bcgMaleCatchmentArea.getText().toString().trim().equals(""))
+        }
+        if(bcgMaleCatchmentArea.getText().toString().trim().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (opvFemaleServiceArea.getText().toString().trim().equals(""))
+        }
+        if (opvFemaleServiceArea.getText().toString().trim().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if(opvMaleServiceArea.getText().toString().trim().equals(""))
+        }
+        if(opvMaleServiceArea.getText().toString().trim().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if(opvFemaleCatchmentArea.getText().toString().trim().equals(""))
+        }
+        if(opvFemaleCatchmentArea.getText().toString().trim().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if(opvMaleCatchmentArea.getText().toString().trim().equals(""))
+        }
+        if(opvMaleCatchmentArea.getText().toString().trim().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (ttFemaleServiceArea.getText().toString().trim().equals(""))
+        }
+        if (ttFemaleServiceArea.getText().toString().trim().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (ttMaleServiceArea.getText().toString().trim().equals(""))
+        }
+        if (ttMaleServiceArea.getText().toString().trim().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if(ttFemaleCatchmentArea.getText().toString().trim().equals(""))
+        }
+        if(ttFemaleCatchmentArea.getText().toString().trim().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if(ttMaleCatchmentArea.getText().toString().trim().equals(""))
+        }
+        if(ttMaleCatchmentArea.getText().toString().trim().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
+        }
         else
             return true;
     }
 
     public boolean verifyInputs5(){
-        if (otherMajorImmunizationActivities.getText().toString().equals(""))
+        if (otherMajorImmunizationActivities.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
+        }
         else return true;
     }
 
     public boolean verifyInputs6(){
-        if (ml005Balance.getText().toString().equals(""))
+        if (ml005Balance.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (ml005Received.getText().toString().equals(""))
+        }
+        if (ml005Received.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (ml005Used.getText().toString().equals(""))
+        }
+        if (ml005Used.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (ml005Wastage.getText().toString().equals(""))
+        }
+//        if (ml005Wastage.getText().toString().equals("")){
+//            sayThis(
+//                    "You must fill all the fields before submitting",
+//                    1
+//            );
+//            return false;
+//        }
+        if (ml005StockInHand.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (ml005StockInHand.getText().toString().equals(""))
+        }
+        if (ml005StockedOutDays.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (ml005StockedOutDays.getText().toString().equals(""))
+        }
+        if (ads05Balance.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (ads05Balance.getText().toString().equals(""))
+        }
+        if (ads05Received.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (ads05Received.getText().toString().equals(""))
+        }
+        if (ads05Used.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (ads05Used.getText().toString().equals(""))
+        }
+//        if (ads05Wastage.getText().toString().equals("")){
+//            sayThis(
+//                    "You must fill all the fields before submitting",
+//                    1
+//            );
+//            return false;
+//        }
+        if (ads05StockInHand.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (ads05Wastage.getText().toString().equals(""))
+        }
+        if (ads05StockedOutDays.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (ads05StockInHand.getText().toString().equals(""))
+        }
+        if (dillutionBalance.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (ads05StockedOutDays.getText().toString().equals(""))
+        }
+        if (dillutionReceived.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (dillutionBalance.getText().toString().equals(""))
+        }
+        if (dillutionUsed.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (dillutionReceived.getText().toString().equals(""))
+        }
+//        if (dillutionWastage.getText().toString().equals("")){
+//            sayThis(
+//                    "You must fill all the fields before submitting",
+//                    1
+//            );
+//            return false;
+//        }
+        if (dillutionStockInHand.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (dillutionUsed.getText().toString().equals(""))
+        }
+        if (dillutionStockedOutDays.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (dillutionWastage.getText().toString().equals(""))
+        }
+        if (safetyBoxBalance.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (dillutionStockInHand.getText().toString().equals(""))
+        }
+        if (safetyBoxReceived.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (dillutionStockedOutDays.getText().toString().equals(""))
+        }
+        if (safetyBoxUsed.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (safetyBoxBalance.getText().toString().equals(""))
+        }
+//        if (safetyBoxWastage.getText().toString().equals("")){
+//            sayThis(
+//                    "You must fill all the fields before submitting",
+//                    1
+//            );
+//            return false;
+//        }
+        if (safetyBoxStockInHand.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (safetyBoxReceived.getText().toString().equals(""))
+        }
+        if (safetyBoxStockedOutDays.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (safetyBoxUsed.getText().toString().equals(""))
+        }
+
+        int mlOpen, mlRec, mlUsed, adsOpen, adsRec, adsUsed, dilOpen, dilRec, dilUsed, safetyOpen, safetyRec, safetyUsed;
+
+        mlOpen      = Integer.parseInt(ml005Balance.getText().toString());
+        mlRec       = Integer.parseInt(ml005Received.getText().toString());
+        mlUsed      = Integer.parseInt(ml005Used.getText().toString());
+        adsOpen     = Integer.parseInt(ads05Balance.getText().toString());
+        adsRec      = Integer.parseInt(ads05Received.getText().toString());
+        adsUsed     = Integer.parseInt(ads05Used.getText().toString());
+        dilOpen     = Integer.parseInt(dillutionBalance.getText().toString());
+        dilRec      = Integer.parseInt(dillutionReceived.getText().toString());
+        dilUsed     = Integer.parseInt(dillutionUsed.getText().toString());
+        safetyOpen  = Integer.parseInt(safetyBoxBalance.getText().toString());
+        safetyRec   = Integer.parseInt(safetyBoxReceived.getText().toString());
+        safetyUsed  = Integer.parseInt(safetyBoxUsed.getText().toString());
+
+        if ((mlOpen+mlRec) < mlUsed){
+            sayThis(
+                    "Invalid Safety Injection Equipment data, Please Verify data and submit again",
+                    1
+            );
             return false;
-        if (safetyBoxWastage.getText().toString().equals(""))
+        }
+
+        if ((adsOpen+adsRec)<adsUsed){
+            sayThis(
+                    "Invalid Safety Injection Equipment data, Please Verify data and submit again",
+                    1
+            );
             return false;
-        if (safetyBoxStockInHand.getText().toString().equals(""))
+        }
+
+        if ((dilOpen+dilRec)<dilUsed){
+            sayThis(
+                    "Invalid Safety Injection Equipment data, Please Verify data and submit again",
+                    1
+            );
             return false;
-        if (safetyBoxStockedOutDays.getText().toString().equals(""))
+        }
+
+        if ((safetyOpen+safetyRec)<safetyUsed){
+            sayThis(
+                    "Invalid Safety Injection Equipment data, Please Verify data and submit again",
+                    1
+            );
             return false;
+        }
         else
             return true;
     }
 
     public boolean verifyInputs7(){
-        if (vitA1Opening.getText().toString().equals(""))
+        if (vitA1Opening.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (vitA1Received.getText().toString().equals(""))
+        }
+        if (vitA1Received.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (vitA1Administered.getText().toString().equals(""))
+        }
+        if (vitA1Administered.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (vitA1Wastage.getText().toString().equals(""))
+        }
+//        if (vitA1Wastage.getText().toString().equals("")){
+//            sayThis(
+//                    "You must fill all the fields before submitting",
+//                    1
+//            );
+//            return false;
+//        }
+        if (vitA1StockInHand.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (vitA1StockInHand.getText().toString().equals(""))
-            return false;
+        }
 
-        if (vitA2Opening.getText().toString().equals(""))
+        if (vitA2Opening.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (vitA2Received.getText().toString().equals(""))
+        }
+        if (vitA2Received.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (vitA2Administered.getText().toString().equals(""))
+        }
+        if (vitA2Administered.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (vitA2Wastage.getText().toString().equals(""))
+        }
+//        if (vitA2Wastage.getText().toString().equals("")){
+//            sayThis(
+//                    "You must fill all the fields before submitting",
+//                    1
+//            );
+//            return false;
+//        }
+        if (vitA2StockInHand.getText().toString().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
             return false;
-        if (vitA2StockInHand.getText().toString().equals(""))
+        }
+
+        int vit1Open, vit1Rec, vit1Adm, vit2Open, vit2Rec, vit2Adm;
+        vit1Open    = Integer.parseInt(vitA1Opening.getText().toString());
+        vit2Open    = Integer.parseInt(vitA2Opening.getText().toString());
+        vit1Rec     = Integer.parseInt(vitA1Received.getText().toString());
+        vit2Rec     = Integer.parseInt(vitA2Received.getText().toString());
+        vit1Adm     = Integer.parseInt(vitA1Administered.getText().toString());
+        vit2Adm     = Integer.parseInt(vitA2Administered.getText().toString());
+
+        if ((vit1Open+vit1Rec)<vit1Adm){
+            sayThis(
+                    "Invalid Vitamin A data, Please Verify data and submit again",
+                    1
+            );
             return false;
+        }
+        if ((vit2Open+vit2Rec)<vit2Adm){
+            sayThis(
+                    "Invalid Vitamin A data, Please Verify data and submit again",
+                    1
+            );
+            return false;
+        }
 
         return true;
     }
@@ -859,7 +1238,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         int openingBalance  = Integer.parseInt(strml005Balance);
         int received        = Integer.parseInt(strml005Received);
         int used            = Integer.parseInt(strml005Used);
-        int wastage         = Integer.parseInt(strml005Wastage);
+        int wastage         = Integer.parseInt(ml005Wastage.getText().toString());
         int stockInHand     = Integer.parseInt(strml005StockInHand);
         int stockesOutDays  = Integer.parseInt(strml005StockedOutDays);
 
@@ -890,7 +1269,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         openingBalance  = Integer.parseInt(strads05Balance);
         received        = Integer.parseInt(strads05Received);
         used            = Integer.parseInt(strads05Used);
-        wastage         = Integer.parseInt(strads05Wastage);
+        wastage         = Integer.parseInt(ads05Wastage.getText().toString());
         stockInHand     = Integer.parseInt(strads05StockInHand);
         stockesOutDays  = Integer.parseInt(strads05StockedOutDays);
 
@@ -912,7 +1291,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         openingBalance  = Integer.parseInt(strDillutionBalance);
         received        = Integer.parseInt(strDillutionReceived);
         used            = Integer.parseInt(strDillutionUsed);
-        wastage         = Integer.parseInt(strDillutionUsed);
+        wastage         = Integer.parseInt(dillutionWastage.getText().toString());
         stockInHand     = Integer.parseInt(strDillutionStockInHand);
         stockesOutDays  = Integer.parseInt(strDillutionStockedOutDays);
 
@@ -934,7 +1313,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         openingBalance  = Integer.parseInt(strSafetyBoxBalance);
         received        = Integer.parseInt(strSafetyBoxReceived);
         used            = Integer.parseInt(strSafetyBoxUsed);
-        wastage         = Integer.parseInt(strSafetyBoxWastage);
+        wastage         = Integer.parseInt(safetyBoxWastage.getText().toString());
         stockInHand     = Integer.parseInt(strSafetyBoxStockInHand);
         stockesOutDays  = Integer.parseInt(strSafetyBoxStockedOutDays);
 
@@ -962,7 +1341,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         int openingBalance  = Integer.parseInt(strVitA1Opening);
         int received        = Integer.parseInt(strVitA1Received);
         int administered    = Integer.parseInt(strVitA1Administered);
-        int wastage         = Integer.parseInt(strVitA1Wastage);
+        int wastage         = Integer.parseInt(vitA1Wastage.getText().toString());
         int stockInHand     = Integer.parseInt(strVitA1StockInHand);
 
         int selectedMonth    = Integer.parseInt(currentSelectedMonth.getMonth_number());
@@ -991,7 +1370,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         openingBalance  = Integer.parseInt(strVitA2Opening);
         received        = Integer.parseInt(strVitA2Received);
         administered    = Integer.parseInt(strVitA2Administered);
-        wastage         = Integer.parseInt(strVitA2Wastage);
+        wastage         = Integer.parseInt(vitA2Wastage.getText().toString());
         stockInHand     = Integer.parseInt(strVitA2StockInHand);
 
         ContentValues vitA2    = new ContentValues();
@@ -1110,6 +1489,53 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 
     }
 
+    public void calculateWastageSafeInjection(){
+
+        int ads05Opening, ads05Received, ads05Used, ads05StockInHand, mlOpening, mlUsed, mlReceived, mlStockInHand, dilOpening, dilReceived, dilUsed, dilStockInHand, safetyBoxOpening, safetyBoxReceived, safetyBoxUsed, safetyBoxStockInHand;
+        ads05Opening    = Integer.parseInt(strads05Balance);
+        ads05Received   = Integer.parseInt(strads05Received);
+        ads05Used       = Integer.parseInt(strads05Used);
+        ads05StockInHand    = Integer.parseInt(strads05StockInHand);
+
+        mlOpening       = Integer.parseInt(strml005Balance);
+        mlReceived      = Integer.parseInt(strml005Received);
+        mlUsed          = Integer.parseInt(strml005Used);
+        mlStockInHand   = Integer.parseInt(strml005StockInHand);
+
+        dilOpening      = Integer.parseInt(strDillutionBalance);
+        dilReceived     = Integer.parseInt(strDillutionReceived);
+        dilUsed         = Integer.parseInt(strDillutionUsed);
+        dilStockInHand  = Integer.parseInt(strDillutionStockInHand);
+
+        safetyBoxOpening    = Integer.parseInt(strSafetyBoxBalance);
+        safetyBoxReceived   = Integer.parseInt(strSafetyBoxReceived);
+        safetyBoxUsed       = Integer.parseInt(strSafetyBoxUsed);
+        safetyBoxStockInHand= Integer.parseInt(strSafetyBoxStockInHand);
+
+        ads05Wastage.setText(((ads05Opening+ads05Received)-ads05Used-ads05StockInHand)+"");
+        ml005Wastage.setText((mlOpening+mlReceived-mlUsed-mlStockInHand)+"");
+        dillutionWastage.setText((dilOpening+dilReceived-dilUsed-dilStockInHand)+"");
+        safetyBoxWastage.setText((safetyBoxOpening+safetyBoxReceived-safetyBoxUsed-safetyBoxStockInHand)+"");
+
+    }
+
+    public void calculateWastageVitaminA(){
+        int vitA1Opening, vitA1Received, vitA1Administered, vitA1StockInAHand, vitA2Opening, vitA2Received, vitA2Administered, vitA2StockInAHand;
+
+        vitA1Opening    = Integer.parseInt(strVitA1Opening);
+        vitA1Received   = Integer.parseInt(strVitA1Received);
+        vitA1Administered   = Integer.parseInt(strVitA1Administered);
+        vitA1StockInAHand   = Integer.parseInt(strVitA1StockInHand);
+
+        vitA2Opening    = Integer.parseInt(strVitA2Opening);
+        vitA2Received   = Integer.parseInt(strVitA2Received);
+        vitA2Administered   = Integer.parseInt(strVitA2Administered);
+        vitA2StockInAHand   = Integer.parseInt(strVitA2StockInHand);
+
+        vitA1Wastage.setText((vitA1Opening+vitA1Received-vitA1Administered-vitA1StockInAHand)+"");
+        vitA2Wastage.setText((vitA2Opening+vitA2Received-vitA2Administered-vitA2StockInAHand)+"");
+    }
+
     public void setupview(){
 
         //EditText
@@ -1118,6 +1544,9 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         ml005Received   = (EditText) findViewById(R.id.ml005_received);
         ml005Used       = (EditText) findViewById(R.id.ml005_used);
         ml005Wastage    = (EditText) findViewById(R.id.ml005_wastage);
+        ml005Wastage.setTextColor(getResources().getColor(R.color.card_border));
+        ml005Wastage.setEnabled(false);
+
         ml005StockInHand= (EditText) findViewById(R.id.ml005_stock_in_hand);
         ml005StockedOutDays = (EditText) findViewById(R.id.ml005_stocked_out_days);
 
@@ -1126,29 +1555,44 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         ads05Received   = (EditText) findViewById(R.id.ads05_received);
         ads05Used       = (EditText) findViewById(R.id.ads05_used);
         ads05Wastage    = (EditText) findViewById(R.id.ads05_wastage);
+        ads05Wastage.setEnabled(false);
+        ads05Wastage.setTextColor(getResources().getColor(R.color.card_border));
+
         ads05StockInHand    = (EditText) findViewById(R.id.ads05_stock_in_hand);
         ads05StockedOutDays = (EditText) findViewById(R.id.ads05_stocked_out_days);
         dillutionBalance    = (EditText) findViewById(R.id.dillution_opening);
         dillutionReceived   = (EditText) findViewById(R.id.dillution_received);
         dillutionUsed       = (EditText) findViewById(R.id.dillution_used);
         dillutionWastage    = (EditText) findViewById(R.id.dillution_wastage);
+        dillutionWastage.setEnabled(false);
+        dillutionWastage.setTextColor(getResources().getColor(R.color.card_border));
+
         dillutionStockInHand    = (EditText) findViewById(R.id.dillution_stock_in_hand);
         dillutionStockedOutDays= (EditText) findViewById(R.id.dillution_stocked_out_hand);
         safetyBoxBalance    = (EditText) findViewById(R.id.safety_box_opening);
         safetyBoxReceived   = (EditText) findViewById(R.id.safety_box_received);
         safetyBoxUsed       = (EditText) findViewById(R.id.safety_box_used);
         safetyBoxWastage    = (EditText) findViewById(R.id.safety_box_wastage);
+        safetyBoxWastage.setEnabled(false);
+        safetyBoxWastage.setTextColor(getResources().getColor(R.color.card_border));
+
         safetyBoxStockInHand    = (EditText) findViewById(R.id.safety_box_stock_in_hand);
         safetyBoxStockedOutDays = (EditText) findViewById(R.id.safety_box_stocked_out_days);
         vitA1Opening        = (EditText) findViewById(R.id.vit_a_1_opening);
         vitA1Received       = (EditText) findViewById(R.id.vit_a_1_received);
         vitA1Administered   = (EditText) findViewById(R.id.vit_a_1_administered);
         vitA1Wastage        = (EditText) findViewById(R.id.vit_a_1_wastage);
+        vitA1Wastage.setTextColor(getResources().getColor(R.color.card_border));
+        vitA1Wastage.setEnabled(false);
+
         vitA1StockInHand    = (EditText) findViewById(R.id.vit_a_1_stock_in_hand);
         vitA2Opening        = (EditText) findViewById(R.id.vit_a_2_opening);
         vitA2Received       = (EditText) findViewById(R.id.vit_a_2_received);
         vitA2Administered   = (EditText) findViewById(R.id.vit_a_2_administered);
         vitA2Wastage        = (EditText) findViewById(R.id.vit_a_2_wastage);
+        vitA2Wastage.setTextColor(getResources().getColor(R.color.card_border));
+        vitA2Wastage.setEnabled(false);
+
         vitA2StockInHand    = (EditText) findViewById(R.id.vit_a_2_stock_in_hand);
 
 
@@ -1245,11 +1689,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
                 if (verifyInputs2()){
                     getValues2();
                     if (saveRefrigeratorValues()){
-                        Toast.makeText(
-                                MonthlyReportsActivity.this,
-                                "Refrigerator Information Saved Successfully",
-                                Toast.LENGTH_LONG
-                        ).show();
+                        sayThis("Cold chain saved Successfully", 2);
                     }
                 }
                 break;
@@ -1258,11 +1698,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
                 if (verifyInputs3()){
                     getValue3();
                     if (saveImmunizationSessionValue()){
-                        Toast.makeText(
-                                MonthlyReportsActivity.this,
-                                "Immunization Sessions Saved Successfully",
-                                Toast.LENGTH_LONG
-                        ).show();
+                        sayThis("Immunization session saved successfully", 2);
                     }
                 }
                 break;
@@ -1271,11 +1707,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
                 if (verifyInputs4()){
                     getValue4();
                     if (saveVaccinationsValues()){
-                        Toast.makeText(
-                                MonthlyReportsActivity.this,
-                                "Vaccinations Saved Successfully",
-                                Toast.LENGTH_LONG
-                        ).show();
+                        sayThis("Vaccinations Saved Successfully", 2);
                     }
                 }
                 break;
@@ -1296,12 +1728,9 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
                 resetValues();
                 if (verifyInputs6()){
                     getValue6();
+                    calculateWastageSafeInjection();
                     if (saveInjectionEquipments()){
-                        Toast.makeText(
-                                MonthlyReportsActivity.this,
-                                "Safe Injection Equipments Saved Successfully",
-                                Toast.LENGTH_LONG
-                        ).show();
+                        sayThis("Syringes and Safety boxes saved successfully", 2);
                     }
                 }
                 break;
@@ -1309,16 +1738,24 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
                 resetValues();
                 if (verifyInputs7()){
                     getValue7();
+                    calculateWastageVitaminA();
                     if (saveVitaminAStock()){
-                        Toast.makeText(
-                                MonthlyReportsActivity.this,
-                                "Vitamin A Stock Saved Successfully",
-                                Toast.LENGTH_LONG
-                        ).show();
+                        sayThis("Vitamins Data Saved Successfully", 2);
                     }
                 }
                 break;
         }
+    }
+
+    public void sayThis(String message, int code){
+        dialogueMessage.setText(message);
+        if (code == 1){
+            dialogueMessage.setTextColor(getResources().getColor(R.color.red_600));
+        }else if (code == 2){
+            dialogueMessage.setTextColor(getResources().getColor(R.color.green_600));
+        }
+
+        dialog.show();
     }
 
 
