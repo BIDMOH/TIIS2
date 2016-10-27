@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -87,6 +88,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 
     public Dialog dialog;
     public TextView dialogueMessage, dialogueOKButton;
+    public boolean fieldsEditable = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +120,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         app = (BackboneApplication) this.getApplication();
         mydb = app.getDatabaseInstance();
 
-        setLastMonthReported();
+//        setLastMonthReported();
 
         Date now  = new Date();
         Calendar cal = Calendar.getInstance();
@@ -178,6 +180,30 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
                 if (i >= 0){
                     currentSelectedMonth = monthEntities.get(i);
                     clearFields();
+                    Date today = new Date();
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(today);
+
+                    int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+                    int month   = calendar.get(Calendar.MONTH);
+                    month = month+1;
+
+                    int selmonth = Integer.parseInt(currentSelectedMonth.getMonth_number());
+
+                    Log.d("THURSDAY_TOUCHUPS", "Selected month is "+selmonth);
+                    Log.d("THURSDAY_TOUCHUPS", "This month is "+month);
+
+                    if ((month-selmonth)>1){
+                        setFieldsAccessibility(false);
+                        fieldsEditable = false;
+                    }else if ((month-selmonth)==1 && dayOfMonth>5){
+                        setFieldsAccessibility(false);
+                        fieldsEditable = false;
+                    }else {
+                        setFieldsAccessibility(true);
+                        fieldsEditable = true;
+                    }
+
                     checkdatabaseForAlreadyReportedFormsForThisMonth();
                 }
             }
@@ -188,19 +214,41 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
             }
         });
 
+        Date today = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(today);
+
+        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+        int monthVal   = calendar.get(Calendar.MONTH);
+        monthVal = monthVal+1;
+
+        int selectedmonth = Integer.parseInt(currentSelectedMonth.getMonth_number());
+
+        if ((monthVal-selectedmonth)>1){
+            setFieldsAccessibility(false);
+            fieldsEditable = false;
+        }else if ((monthVal-selectedmonth)==1 && dayOfMonth>5){
+            setFieldsAccessibility(false);
+            fieldsEditable = false;
+        }else {
+            setFieldsAccessibility(true);
+            fieldsEditable = true;
+        }
+
+
     }
 
     public void checkdatabaseForAlreadyReportedFormsForThisMonth(){
-        querySurveillanceInformation();
-        queryRefrigeratorTemperature();
-        queryImmunizationSessions();
-        queryVaccinationsBcgOpvTt();
-        queryOtherImmunizationActivities();
-        querySafeInjectionEquipments();
-        queryVitaminAStock();
+        querySurveillanceInformation( );
+        queryRefrigeratorTemperature( );
+        queryImmunizationSessions( );
+        queryVaccinationsBcgOpvTt( );
+        querySafeInjectionEquipments( );
+        queryVitaminAStock( );
     }
 
     public void queryRefrigeratorTemperature(){
+
         String query = "SELECT * FROM "+ SQLHandler.Tables.REFRIGERATOR_TEMPERATURE
                 +" WHERE "+ SQLHandler.RefrigeratorColums.REPORTED_MONTH+" = '"+currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear+"'";
         Log.d("SOMA", "Query is : "+query);
@@ -209,8 +257,11 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         Log.d("SOMA", "cursor size "+cursor.getCount());
         if (cursor.moveToFirst()){
             tempMax.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.RefrigeratorColums.TEMP_MAX)));
+
             tempMin.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.RefrigeratorColums.TEMP_MIN)));
+
             alarmLow.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.RefrigeratorColums.ALARM_LOW_TEMP)));
+
             alarmHigh.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.RefrigeratorColums.ALARM_HIGH_TEMP)));
 
         }
@@ -225,28 +276,100 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         Log.d("SOMA", "cursor size "+cursor.getCount());
         if (cursor.moveToFirst()){
             feverCases.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.SurveillanceColumns.FEVER_MONTHLY_CASES)));
+
             feverDeaths.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.SurveillanceColumns.FEVER_DEATHS)));
+
             afpCases.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.SurveillanceColumns.APF_MONTHLY_CASES)));
+
             afpDeaths.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.SurveillanceColumns.APF_DEATHS)));
+
             tetanusCases.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.SurveillanceColumns.NEONATAL_TT_CASES)));
+
             tetanusDeaths.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.SurveillanceColumns.NEONATAL_TT_DEATHS)));
 
         }
     }
 
     public void queryImmunizationSessions(){
+
+        String fromDate = "";
+        String toDate   = "";
+        SimpleDateFormat formatted = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance(); // this would default to now
+        Date now = calendar.getTime();
+        toDate  = formatted.format(now);
+
+        calendar.add(Calendar.DAY_OF_MONTH, -28);
+        Date lastmonth = calendar.getTime();
+
         String query = "SELECT * FROM "+ SQLHandler.Tables.IMMUNIZATION_SESSION
                 +" WHERE "+ SQLHandler.ImmunizationSessionColumns.REPORTING_MONTH+" = '"+currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear+"'";
         Log.d("SOMA", "Query is : "+query);
         SQLiteDatabase db = mydb.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         Log.d("SOMA", "cursor size "+cursor.getCount());
+        String modifiedOnString = "";
+
         if (cursor.moveToFirst()){
             fixedConducted.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.ImmunizationSessionColumns.FIXED_CONDUCTED)));
             outreachPlanned.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.ImmunizationSessionColumns.OUTREACH_PLANNED)));
             outreachConducted.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.ImmunizationSessionColumns.OUTREACH_CONDUCTED)));
             outreachCancelled.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.ImmunizationSessionColumns.OUTREACH_CANCELLED)));
             otherMajorImmunizationActivitiesNew.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.ImmunizationSessionColumns.OTHERACTIVITIES)));
+        }
+
+        String modifiedAtQuery = "SELECT "+GIISContract.SyncColumns.MODIFIED_AT+" FROM "+ SQLHandler.Tables.IMMUNIZATION_SESSION
+                +" WHERE "+ SQLHandler.ImmunizationSessionColumns.REPORTING_MONTH+" = '"+mydb.getMonthNameFromNumber((Integer.parseInt(currentSelectedMonth.getMonth_number())-1)+"", app)+" "+currentlySelectedYear+"'";
+        Cursor modifiedAtCursor = db.rawQuery(modifiedAtQuery, null);
+
+        if (modifiedAtCursor.moveToFirst()){
+            modifiedOnString = modifiedAtCursor.getString(cursor.getColumnIndex(GIISContract.SyncColumns.MODIFIED_AT));
+        }else {
+            modifiedOnString = formatted.format(lastmonth);
+        }
+
+        fromDate = modifiedOnString;
+
+        if (fieldsEditable){
+            Log.d("SOMMA", "its editable and am here");
+            String SQLCountOutReach = "SELECT COUNT (DISTINCT(c.ID)) AS IDS FROM vaccination_appointment as va " +
+                    "INNER JOIN " +
+                    "   vaccination_event as ve on va.ID = ve.APPOINTMENT_ID " +
+                    "INNER JOIN " +
+                    "   child as c on c.ID = ve.CHILD_ID " +
+                    "WHERE ve.APPOINTMENT_ID = va.ID " +
+                    "   AND ve.HEALTH_FACILITY_ID = '"+app.getLOGGED_IN_USER_HF_ID()+"' " +
+                    "   AND ve.VACCINATION_STATUS = 'true'" +
+                    "   AND va.OUTREACH = 'true'" +
+                    "   AND datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch')" +
+                    "   AND datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
+
+
+            String SQLCountFixed = "SELECT COUNT (DISTINCT(c.ID)) AS IDS FROM vaccination_appointment as va " +
+                    "INNER JOIN " +
+                    "   vaccination_event as ve on va.ID = ve.APPOINTMENT_ID " +
+                    "INNER JOIN " +
+                    "   child as c on c.ID = ve.CHILD_ID " +
+                    "WHERE ve.APPOINTMENT_ID = va.ID " +
+                    "   AND ve.HEALTH_FACILITY_ID = '"+app.getLOGGED_IN_USER_HF_ID()+"' " +
+                    "   AND ve.VACCINATION_STATUS = 'true'" +
+                    "   AND va.OUTREACH = '' " +
+                    "   AND datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch')" +
+                    "   AND datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
+
+            Cursor outreachCursor = db.rawQuery(SQLCountOutReach, null);
+            if (outreachCursor.moveToFirst()){
+                int val = outreachCursor.getInt(outreachCursor.getColumnIndex("IDS"));
+                Log.d("SOMMA", "in db OUTREACH is "+val);
+                outreachConducted.setText(val+"");
+            }
+
+            Cursor fixedCursor   = db.rawQuery(SQLCountFixed, null);
+            if (fixedCursor.moveToFirst()){
+                int val = fixedCursor.getInt(fixedCursor.getColumnIndex("IDS"));
+                Log.d("SOMMA", "in db FIXED is "+val);
+                fixedConducted.setText(val+"");
+            }
         }
     }
 
@@ -264,9 +387,13 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
                 if (cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID)).equals("61")){
                     Log.d("SOMA", "BCG found ");
                     bcgMaleCatchmentArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_CATCHMENT_AREA)));
+
                     bcgFemaleCatchmentArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_CATCHMENT_AREA)));
+
                     bcgMaleServiceArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA)));
+
                     bcgFemaleServiceArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_SERVICE_AREA)));
+
                 }
                 else if (cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID)).equals("62")){
                     Log.d("SOMA", "OPV 0 found : ");
@@ -274,6 +401,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
                     opvFemaleCatchmentArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_CATCHMENT_AREA)));
                     opvMaleServiceArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA)));
                     opvFemaleServiceArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_SERVICE_AREA)));
+
                 }
                 else if (cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID)).equals("79")){
                     Log.d("SOMA", "TT found");
@@ -281,6 +409,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
                     ttFemaleCatchmentArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_CATCHMENT_AREA)));
                     ttMaleServiceArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA)));
                     ttFemaleServiceArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_SERVICE_AREA)));
+
                 }
 
             }while (cursor.moveToNext());
@@ -341,9 +470,11 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
                     safetyBoxWastage.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.SyringesAndSafetyBoxesColumns.WASTAGE)));
                     safetyBoxStockInHand.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.SyringesAndSafetyBoxesColumns.STOCK_AT_HAND)));
                     safetyBoxStockedOutDays.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.SyringesAndSafetyBoxesColumns.STOCKED_OUT_DAYS)));
+
                 }
 
             }while (cursor.moveToNext());
+
         }
     }
 
@@ -363,6 +494,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
                     vitA1Administered.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.HfVitaminAColumns.TOTAL_ADMINISTERED)));
                     vitA1Wastage.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.HfVitaminAColumns.WASTAGE)));
                     vitA1StockInHand.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.HfVitaminAColumns.STOCK_ON_HAND)));
+
                 }
                 else if (cursor.getString(cursor.getColumnIndex(SQLHandler.HfVitaminAColumns.VITAMIN_NAME)).equals(VITAMIN_A_200000_IU)){
                     vitA2Opening.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.HfVitaminAColumns.OPENING_BALANCE)));
@@ -370,14 +502,87 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
                     vitA2Administered.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.HfVitaminAColumns.TOTAL_ADMINISTERED)));
                     vitA2Wastage.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.HfVitaminAColumns.WASTAGE)));
                     vitA2StockInHand.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.HfVitaminAColumns.STOCK_ON_HAND)));
+
                 }
 
             }while (cursor.moveToNext());
         }
     }
 
-    public void setLastMonthReported(){
+    public void setFieldsAccessibility(boolean flag){
 
+        //Cold Chain
+        tempMax.setEnabled(flag);
+        tempMin.setEnabled(flag);
+        alarmLow.setEnabled(flag);
+        alarmHigh.setEnabled(flag);
+
+        //Desease Surveillance
+        feverCases.setEnabled(flag);
+        feverDeaths.setEnabled(flag);
+        afpCases.setEnabled(flag);
+        afpDeaths.setEnabled(flag);
+        tetanusCases.setEnabled(flag);
+        tetanusDeaths.setEnabled(flag);
+
+        //Immunization Sessions
+        otherMajorImmunizationActivitiesNew.setEnabled(flag);
+        outreachCancelled.setEnabled(flag);
+        outreachConducted.setEnabled(flag);
+        outreachPlanned.setEnabled(flag);
+        fixedConducted.setEnabled(flag);
+
+        //BCG OPV TT
+        bcgFemaleServiceArea.setEnabled(flag);
+        bcgMaleServiceArea.setEnabled(flag);
+        bcgFemaleCatchmentArea.setEnabled(flag);
+        bcgMaleCatchmentArea.setEnabled(flag);
+        opvMaleCatchmentArea.setEnabled(flag);
+        opvMaleServiceArea.setEnabled(flag);
+        opvFemaleCatchmentArea.setEnabled(flag);
+        opvFemaleServiceArea.setEnabled(flag);
+        ttMaleServiceArea.setEnabled(flag);
+        ttMaleCatchmentArea.setEnabled(flag);
+        ttFemaleCatchmentArea.setEnabled(flag);
+        ttFemaleServiceArea.setEnabled(flag);
+
+        //Vitamins
+        vitA2Opening.setEnabled(flag);
+        vitA2Wastage.setEnabled(flag);
+        vitA2Administered.setEnabled(flag);
+        vitA2Received.setEnabled(flag);
+        vitA2StockInHand.setEnabled(flag);
+        vitA1Administered.setEnabled(flag);
+        vitA1Received.setEnabled(flag);
+        vitA1Wastage.setEnabled(flag);
+        vitA1StockInHand.setEnabled(flag);
+        vitA1Opening.setEnabled(flag);
+
+        //Safe Injections
+        ml005Wastage.setEnabled(flag);
+        ml005StockedOutDays.setEnabled(flag);
+        ml005StockInHand.setEnabled(flag);
+        ml005Balance.setEnabled(flag);
+        ml005Received.setEnabled(flag);
+        ml005Used.setEnabled(flag);
+        ads05StockedOutDays.setEnabled(flag);
+        ads05Wastage.setEnabled(flag);
+        ads05StockInHand.setEnabled(flag);
+        ads05Used.setEnabled(flag);
+        ads05Received.setEnabled(flag);
+        ads05Balance.setEnabled(flag);
+        dillutionWastage.setEnabled(flag);
+        dillutionStockedOutDays.setEnabled(flag);
+        dillutionStockInHand.setEnabled(flag);
+        dillutionBalance.setEnabled(flag);
+        dillutionReceived.setEnabled(flag);
+        dillutionUsed.setEnabled(flag);
+        safetyBoxStockedOutDays.setEnabled(flag);
+        safetyBoxWastage.setEnabled(flag);
+        safetyBoxStockInHand.setEnabled(flag);
+        safetyBoxReceived.setEnabled(flag);
+        safetyBoxUsed.setEnabled(flag);
+        safetyBoxBalance.setEnabled(flag);
     }
 
     public boolean verifyInputs(){
@@ -948,7 +1153,15 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         strFixedConducted       = fixedConducted.getText().toString().trim();
         strOutreachPlanned      = outreachPlanned.getText().toString().trim();
         strOutreachConducted    = outreachConducted.getText().toString().trim();
-        strOutreachCancelled    = outreachCancelled.getText().toString().trim();
+
+        int outreachPlanedInt   = Integer.parseInt(strOutreachPlanned);
+        int outreachConductedInt    = Integer.parseInt(strOutreachConducted);
+
+        int outreachCancelledInt    = outreachPlanedInt - outreachConductedInt;
+
+        strOutreachCancelled    = outreachCancelledInt+"";
+        outreachCancelled.setText(strOutreachCancelled);
+
         strOtherMajorImmunizationActivitiesNew  = otherMajorImmunizationActivitiesNew.getText().toString().trim();
     }
 
@@ -1100,6 +1313,8 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         int selectedMonth    = Integer.parseInt(currentSelectedMonth.getMonth_number());
         int selectedYear     = Integer.parseInt(currentlySelectedYear);
 
+        SimpleDateFormat formatted = new SimpleDateFormat("yyyy-MM-dd");
+
         String modifiedOnString = "";
         try {
             modifiedOnString = URLEncoder.encode(new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(Calendar.getInstance().getTime()), "utf-8");
@@ -1111,8 +1326,17 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         int fixedConducted  = Integer.parseInt(strFixedConducted);
         int cancelled       = outreachPlanned - fixedConducted;
 
+        Date modifiedAt = null;
+
+        try {
+            modifiedAt = formatted.parse(modifiedOnString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         ContentValues cv    = new ContentValues();
         cv.put(GIISContract.SyncColumns.UPDATED, 1);
+        cv.put(GIISContract.SyncColumns.MODIFIED_AT, modifiedOnString);
         cv.put(SQLHandler.ImmunizationSessionColumns.FIXED_CONDUCTED, strFixedConducted);
         cv.put(SQLHandler.ImmunizationSessionColumns.OUTREACH_CANCELLED, strOutreachCancelled);
         cv.put(SQLHandler.ImmunizationSessionColumns.OUTREACH_CONDUCTED, strOutreachConducted);
