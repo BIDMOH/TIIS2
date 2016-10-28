@@ -4151,7 +4151,6 @@ public class BackboneApplication extends Application {
 
 
     //method for AdminVacc
-
     public void setUpdateURL(AdministerVaccinesModel a, String strNotes, String strBarcode) {
         String dateTodayTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(Calendar.getInstance().getTime());
         try {
