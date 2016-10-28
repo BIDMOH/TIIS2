@@ -4170,7 +4170,7 @@ public class BackboneApplication extends Application {
                 .append("&vaccineLotId=").append(URLEncoder.encode(a.getVaccination_lot()))
                 .append("&healthFacilityId=").append(URLEncoder.encode(getLOGGED_IN_USER_HF_ID()))
                 .append("&vaccinationDate=").append(URLEncoder.encode(formatted.format(a.getTime2())))
-                .append("&notes=").append(vnotes)
+                .append("&notes=").append(URLEncoder.encode(vnotes))
                 .append("&vaccinationStatus=").append(a.getStatus())
                 .append("&nonvaccinationReasonId=").append(a.getNon_vac_reason())
                 .append("&userId=").append(this.getLOGGED_IN_USER_ID())
