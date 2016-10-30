@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -65,6 +66,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func0;
 
 import static mobile.tiis.staging.ChildDetailsActivity.childId;
+import static mobile.tiis.staging.base.BackboneApplication.TABLET_REGISTRATION_MODE_PREFERENCE_NAME;
 
 /**
  * Created by issymac on 27/01/16.
@@ -481,6 +483,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
             Log.d("SOMA", "today is "+compareDateTwo);
             Log.d("SOMA", "is Child Backentered "+isChildBackEntered);
 
+
             if (compareDateOne.compareTo(compareDateTwo)<0 && (isChildBackEntered)){
                 spVaccLot.setSelection(1);
                 item.setVaccination_lot_pos(1);
@@ -509,6 +512,19 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                     spReason.setSelection(reasons.indexOf("Kukosekana chanjo"));
 
                 }
+            }
+
+            /**
+            Check to see if the tablet is in registration mode then allow only backentering of children
+             */
+            if(PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).getBoolean(TABLET_REGISTRATION_MODE_PREFERENCE_NAME, false)){
+                spVaccLot.setSelection(1);
+                item.setVaccination_lot_pos(1);
+                item.setVaccination_lot(item.getVaccine_lot_map().get(item.getVaccine_lot_list().get(1)).toString());
+                Log.d("RowCollId", item.getVaccination_lot());
+
+                //Disable spinner and done checkbox
+                spVaccLot.setEnabled(false);
             }
 
             //rowCollector.setVaccination_lot_pos(1);

@@ -234,21 +234,20 @@ public class ChildVaccinatePagerFragment extends Fragment {
             noBarcode.setVisibility(View.VISIBLE);
             registrationModeEnabled.setVisibility(View.GONE);
             frameLayout.setVisibility(View.GONE);
-        }else if(PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).getBoolean(TABLET_REGISTRATION_MODE_PREFERENCE_NAME, false)){
-            noBarcode.setVisibility(View.GONE);
-            frameLayout.setVisibility(View.GONE);
-            registrationModeEnabled.setVisibility(View.VISIBLE);
-        }else if(!checkIfLotNumbersWereSetForAllVaccinesDuringTheDaysLoginOfTheDay()){
-            noBarcode.setVisibility(View.GONE);
-            frameLayout.setVisibility(View.GONE);
-            registrationModeEnabled.setVisibility(View.VISIBLE);
-            lotNumberErrorMessage.setText("Lot Numbers for some vaccines have not been selected. \nInorder to vaccinate a child, Go to Lot Number Settings on the main menu and select the vaccination Lot Numbers for vaccines that will be used today");
+        }else if(!(PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).getBoolean(TABLET_REGISTRATION_MODE_PREFERENCE_NAME, false))){
 
-        }else if(!checkIfThereAnyActivatedLotNumbersThatHaveRunOutOfStock()){
-            noBarcode.setVisibility(View.GONE);
-            frameLayout.setVisibility(View.GONE);
-            registrationModeEnabled.setVisibility(View.VISIBLE);
-            lotNumberErrorMessage.setText("Lot Numbers that were previously selected for today's use for some vaccines have run out. \n Please go to Lot Number Settings on the main menu and select new vaccination Lot Numbers to continue vaccinating children");
+            if(!checkIfLotNumbersWereSetForAllVaccinesDuringTheDaysLoginOfTheDay()){
+                noBarcode.setVisibility(View.GONE);
+                frameLayout.setVisibility(View.GONE);
+                registrationModeEnabled.setVisibility(View.VISIBLE);
+                lotNumberErrorMessage.setText("Lot Numbers for some vaccines have not been selected. \nInorder to vaccinate a child, Go to Lot Number Settings on the main menu and select the vaccination Lot Numbers for vaccines that will be used today");
+
+            }else if(!checkIfThereAnyActivatedLotNumbersThatHaveRunOutOfStock()){
+                noBarcode.setVisibility(View.GONE);
+                frameLayout.setVisibility(View.GONE);
+                registrationModeEnabled.setVisibility(View.VISIBLE);
+                lotNumberErrorMessage.setText("Lot Numbers that were previously selected for today's use for some vaccines have run out. \n Please go to Lot Number Settings on the main menu and select new vaccination Lot Numbers to continue vaccinating children");
+            }
 
         }else{
             noBarcode.setVisibility(View.GONE);
