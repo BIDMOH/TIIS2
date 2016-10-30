@@ -99,8 +99,6 @@ public class StockProofOfDeliveryFragment extends Fragment{
         application = (BackboneApplication)getActivity().getApplication();
         database = application.getDatabaseInstance();
 
-        rowCollectorList = getHealthFacilityStockDistributions();
-        Log.d(TAG,"count = "+rowCollectorList.size());
         addViewsToTable();
 
 
@@ -115,6 +113,7 @@ public class StockProofOfDeliveryFragment extends Fragment{
     }
 
     public void addViewsToTable(){
+        rowCollectorList = getHealthFacilityStockDistributions();
         stockHostTable.removeAllViews();
         for (final HealthFacilityProofOfDelivery HealthFacilityProofOfDelivery : rowCollectorList){
 
@@ -177,27 +176,22 @@ public class StockProofOfDeliveryFragment extends Fragment{
                 Date date = BackboneActivity.dateParser(healthfacility.getDistributionDate());
                 String distributionDate = null;
                 try {
-                    distributionDate = URLEncoder.encode(new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(date), "utf-8");
+                    distributionDate = URLEncoder.encode(new SimpleDateFormat("yyyy-MM-dd").format(date), "utf-8");
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
 
-                application.updateStockDistribution(healthfacility.getFromHealthFacilityId(),healthfacility.getToHealthFacilityId(),healthfacility.getProductId(),healthfacility.getLotId(),healthfacility.getItemId(),healthfacility.getDistributionType(),distributionDate,healthfacility.getQuantity(),"RECEIVED");
+                application.updateStockDistribution(healthfacility.getFromHealthFacilityId(),healthfacility.getToHealthFacilityId(),healthfacility.getProductId(),healthfacility.getLotId(),healthfacility.getItemId(),healthfacility.getDistributionType(),distributionDate,healthfacility.getQuantity(),"RECEIVED",application.getLOGGED_IN_USER_ID());
             }
             if (success) {
-                sayThis(getResources().getString(R.string.saved_successfully),1);
+                sayThis(getResources().getString(R.string.saved_successfully),2);
             }
+            addViewsToTable();
         } else {
             sayThis("Please fill all fields",1);
         }
 
         addViewsToTable();
-
-    }
-
-    public void showDialogWhenSavedSucc(String text) {
-
-        Toast.makeText(StockProofOfDeliveryFragment.this.getActivity(), text, Toast.LENGTH_LONG).show();
 
     }
 

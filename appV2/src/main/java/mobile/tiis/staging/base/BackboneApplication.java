@@ -4543,9 +4543,9 @@ public class BackboneApplication extends Application {
     }
 
 
-    public void updateStockDistribution(int fromHealthFacilityId, int toHealthFacilityId, int productId, int lotId, int itemId, String distributionType , String distributionDate,int quantity,String status) {
+    public void updateStockDistribution(int fromHealthFacilityId, int toHealthFacilityId, int productId, int lotId, int itemId, String distributionType , String distributionDate,int quantity,String status,String userId) {
         final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
-        webServiceUrl.append("updateHelthFacilityStockDistribution?fromHealthFacilityId=").append(fromHealthFacilityId)
+        webServiceUrl.append("updateHeathFacilityStockDistributions?fromHealthFacilityId=").append(fromHealthFacilityId)
                 .append("&toHealthFacilityId=").append(toHealthFacilityId)
                 .append("&productId=").append(productId)
                 .append("&lotId=").append(lotId)
@@ -4553,7 +4553,8 @@ public class BackboneApplication extends Application {
                 .append("&distributionType=").append(distributionType)
                 .append("&distributionDate=").append(distributionDate)
                 .append("&quantity=").append(quantity)
-                .append("&status=").append(status);
+                .append("&status=").append(status)
+                .append("&userId=").append(userId);
 
         Log.e(" save health faci", webServiceUrl + "");
 

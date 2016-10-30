@@ -115,6 +115,7 @@ public class GCMService extends GCMBaseIntentService {
             application.parseItemLots();
             application.parseStock();
             application.parseStockDistributions();
+            createNotification(context,"New Stock Sent");
         }
         else{
             application.getDatabaseInstance().addChildToChildUpdatesQueue(gcmMessage,3);
