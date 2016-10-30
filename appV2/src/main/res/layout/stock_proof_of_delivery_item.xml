@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app_ms="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".10"
+            android:layout_gravity="center_vertical"
+            android:textSize="16sp"
+            android:id="@+id/item_name"/>
+
+        <TextView
+            android:gravity="center_horizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".10"
+            android:layout_gravity="center_vertical"
+            android:textSize="16sp"
+            android:id="@+id/unit_of_measure"/>
+
+        <TextView
+            android:gravity="center_horizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".10"
+            android:layout_gravity="center_vertical"
+            android:textSize="16sp"
+            android:id="@+id/lot_no"/>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_weight=".10"
+            android:layout_height="wrap_content">
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:gravity="center_horizontal|bottom"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_width="56dp"
+                android:inputType="number"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="16sp"
+                android:id="@+id/quantity_received"/>
+
+        </FrameLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>

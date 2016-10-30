@@ -99,11 +99,22 @@ public class GCMService extends GCMBaseIntentService {
             application.parseVitamAMonthly(month+"", year+"");
             application.parseVitamAMonthly(prevMonth+"", year+"");
         }
+        //IMMUNIZATION SESSIONS
         else if(gcmMessage.equals("UpdateHealthFacilityImmunizationSessions")){
             Log.d("IMMUNIZATION_SESSION", "month is : "+month);
             Log.d("IMMUNIZATION_SESSION", "previous month is : "+prevMonth);
             application.parseImmunizationSessionMonthly(month+"", year+"");
             application.parseImmunizationSessionMonthly(prevMonth+"", year+"");
+        }
+        //STOCK DISTRIBUTIONS
+        else if(gcmMessage.equals("UpdateHealthFacilityStockDistributions")){
+            Log.d(TAG,"updating Heath facility stock distributions");
+            application.parseItem();
+            application.parseScheduledVaccination();
+            application.parseDose();
+            application.parseItemLots();
+            application.parseStock();
+            application.parseStockDistributions();
         }
         else{
             application.getDatabaseInstance().addChildToChildUpdatesQueue(gcmMessage,3);
