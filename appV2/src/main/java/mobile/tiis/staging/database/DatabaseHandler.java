@@ -72,6 +72,7 @@ import mobile.tiis.staging.fragments.FragmentVaccineNameQuantity;
 import mobile.tiis.staging.postman.PostmanModel;
 
 import static mobile.tiis.staging.database.GIISContract.ActiveLotNumbersColumns;
+import static mobile.tiis.staging.database.SQLHandler.StockDistributionsValuesColumns;
 
 /**
  * Created by Melisa on 02/02/2015.
@@ -185,6 +186,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.execSQL(SQLHandler.SQLMajorImunizationActivities);
             db.execSQL(SQLHandler.SQLSyringesAndSafetyBoxes);
             db.execSQL(SQLHandler.SQLHealthFacilityVitaminA);
+            db.execSQL(SQLHandler.SQLDistributedStock);
 
         }
     }
@@ -232,6 +234,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + Tables.MAJOR_IMMUNIZATION_ACTIVITIES);
             db.execSQL("DROP TABLE IF EXISTS " + Tables.SYRINGES_AND_SAFETY_BOXES);
             db.execSQL("DROP TABLE IF EXISTS " + Tables.HF_VITAMIN_A);
+            db.execSQL("DROP TABLE IF EXISTS " + Tables.STOCK_DISTRIBUTIONS);
 
             db.execSQL("DROP VIEW IF EXISTS " + SQLHandler.Views.MONTHLY_PLAN);
 
@@ -4564,4 +4567,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return stockList;
     }
 
+
+    public boolean isStockDistributionInDb(int fromHealthFacilityId,int toHealthFacilityId, String distributionDate, int itemId, int lotId, int productId, String quantity,String distributionType) {
+        String selectQuery = "SELECT "+StockDistributionsValuesColumns.TO_HEALTH_FACILITY_ID+" FROM stock_distributions" +
+                " WHERE "+StockDistributionsValuesColumns.FROM_HEALTH_FACILITY_ID+" = " + fromHealthFacilityId + " AND "
+                +StockDistributionsValuesColumns.DISTRIBUTION_DATE+" = '" + distributionDate + "' AND "
+                +StockDistributionsValuesColumns.ITEM_ID+" = " + itemId + " AND "
+                +StockDistributionsValuesColumns.LOT_ID+" = " + lotId + " AND "
+                +StockDistributionsValuesColumns.PRODUCT_ID+" = " + productId + " AND "
+                +StockDistributionsValuesColumns.QUANTITY+" = '" + quantity + "' AND "
+                +StockDistributionsValuesColumns.DISTRIBUTION_TYPE+" = '" + distributionType + "' AND "
+                +StockDistributionsValuesColumns.TO_HEALTH_FACILITY_ID+" = " + toHealthFacilityId + "";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            cursor.close();
+            return true;
+        } else {
+            cursor.close();
+            return false;
+        }
+    }
 }

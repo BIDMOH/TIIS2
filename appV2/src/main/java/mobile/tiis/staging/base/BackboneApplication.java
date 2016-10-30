@@ -42,6 +42,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestHandle;
+import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 
@@ -173,6 +174,8 @@ public class BackboneApplication extends Application {
     public static final String GET_NON_VACCINATION_REASON_LIST = "GET_NON_VACCINATION_REASON_LIST";
 
     public static final String GET_FACILITY_COLD_CHAIN = "GET_FACILITY_COLD_CHAIN";
+
+    public static final String GET_STOCK_DISTRIBUTIONS= "GetHealthFacilityStockDistributions";
 
     //checkin
     public static final String SEARCH_BY_BARCODE = "SearchByBarcodeV1";
@@ -4151,7 +4154,6 @@ public class BackboneApplication extends Application {
 
 
     //method for AdminVacc
-
     public void setUpdateURL(AdministerVaccinesModel a, String strNotes, String strBarcode) {
         String dateTodayTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(Calendar.getInstance().getTime());
         try {
@@ -4170,7 +4172,7 @@ public class BackboneApplication extends Application {
                 .append("&vaccineLotId=").append(URLEncoder.encode(a.getVaccination_lot()))
                 .append("&healthFacilityId=").append(URLEncoder.encode(getLOGGED_IN_USER_HF_ID()))
                 .append("&vaccinationDate=").append(URLEncoder.encode(formatted.format(a.getTime2())))
-                .append("&notes=").append(vnotes)
+                .append("&notes=").append(URLEncoder.encode(vnotes))
                 .append("&vaccinationStatus=").append(a.getStatus())
                 .append("&nonvaccinationReasonId=").append(a.getNon_vac_reason())
                 .append("&userId=").append(this.getLOGGED_IN_USER_ID())
@@ -4457,4 +4459,107 @@ public class BackboneApplication extends Application {
         super.attachBaseContext(base);
         MultiDex.install(this);
     }
+
+
+    public void parseStockDistributions() {
+        try {
+            String username, password;
+            if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
+                List<User> allUsers = databaseInstance.getAllUsers();
+                User user = allUsers.get(0);
+
+                username = user.getUsername();
+                password = user.getPassword();
+                client.setBasicAuth(username, password, true);
+            } else {
+                client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+            }
+
+            final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC).append(GET_STOCK_DISTRIBUTIONS);
+
+            RequestParams params = new RequestParams();
+            params.add("healthFacilityId",getLOGGED_IN_USER_HF_ID());
+
+
+            RequestHandle message = client.get(webServiceUrl.toString(), params,new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    throwable.printStackTrace();
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String response) {
+                    JSONArray arr = null;
+                    try {
+                        arr = new JSONArray(response);
+                        int count = arr.length();
+                        for (int i=0;i<count;i++) {
+                            JSONObject o = arr.getJSONObject(i);
+
+                            try {
+                                ContentValues adCV = new ContentValues();
+                                DatabaseHandler db = getDatabaseInstance();
+
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.FROM_HEALTH_FACILITY_ID, o.getInt("FromHealthFacilityId"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.TO_HEALTH_FACILITY_ID, o.getInt("ToHealthFacilityId"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.PROGRAM_ID, o.getInt("ProgramId"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.PRODUCT_ID, o.getInt("ProductId"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.QUANTITY, o.getString("Quantity"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.ITEM_ID, o.getInt("ItemId"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.LOT_ID, o.getInt("LotId"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.VIMS_LOT_ID, o.getInt("VimsLotId"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.VVM_STATUS, o.getString("VvmStatus"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.STATUS, o.getString("Status"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.DISTRIBUTION_TYPE, o.getString("DistributionType"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.DISTRIBUTION_DATE, o.getString("DistributionDate"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.UNIT_OF_MEASURE, o.getString("BaseUom"));
+
+                                if (db.isStockDistributionInDb(o.getInt("FromHealthFacilityId"), o.getInt("ToHealthFacilityId"), o.getString("DistributionDate"), o.getInt("ItemId"), o.getInt("LotId"), o.getInt("ProductId"), o.getString("Quantity"), o.getString("DistributionType"))) {
+                                    db.getWritableDatabase().update(SQLHandler.Tables.STOCK_DISTRIBUTIONS, adCV,
+                                            SQLHandler.StockDistributionsValuesColumns.FROM_HEALTH_FACILITY_ID + "= " + o.getInt("FromHealthFacilityId") + " AND " +
+                                                    SQLHandler.StockDistributionsValuesColumns.TO_HEALTH_FACILITY_ID + "= " + o.getInt("ToHealthFacilityId") + " AND " +
+                                                    SQLHandler.StockDistributionsValuesColumns.PRODUCT_ID + "= " + o.getInt("ProductId") + " AND " +
+                                                    SQLHandler.StockDistributionsValuesColumns.QUANTITY + "= '" + o.getString("Quantity") + "' AND " +
+                                                    SQLHandler.StockDistributionsValuesColumns.LOT_ID + "= " + o.getInt("LotId") + " AND " +
+                                                    SQLHandler.StockDistributionsValuesColumns.ITEM_ID + "= " + o.getInt("ItemId") + " AND " +
+                                                    SQLHandler.StockDistributionsValuesColumns.DISTRIBUTION_TYPE + "= '" + o.getString("DistributionType") + "' AND " +
+                                                    SQLHandler.StockDistributionsValuesColumns.DISTRIBUTION_DATE + "= '" + o.getString("DistributionDate") + "'", null);
+                                } else {
+                                    db.getWritableDatabase().insert(SQLHandler.Tables.STOCK_DISTRIBUTIONS, null, adCV);
+                                }
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+    public void updateStockDistribution(int fromHealthFacilityId, int toHealthFacilityId, int productId, int lotId, int itemId, String distributionType , String distributionDate,int quantity,String status,String userId) {
+        final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+        webServiceUrl.append("updateHeathFacilityStockDistributions?fromHealthFacilityId=").append(fromHealthFacilityId)
+                .append("&toHealthFacilityId=").append(toHealthFacilityId)
+                .append("&productId=").append(productId)
+                .append("&lotId=").append(lotId)
+                .append("&itemId=").append(itemId)
+                .append("&distributionType=").append(distributionType)
+                .append("&distributionDate=").append(distributionDate)
+                .append("&quantity=").append(quantity)
+                .append("&status=").append(status)
+                .append("&userId=").append(userId);
+
+        Log.e(" save health faci", webServiceUrl + "");
+
+        getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
+
+    }
+
 }

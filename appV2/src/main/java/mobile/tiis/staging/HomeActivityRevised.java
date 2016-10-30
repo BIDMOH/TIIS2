@@ -644,6 +644,7 @@ public class HomeActivityRevised extends BackboneActivity {
                 application.parseSyringesAndSafetyBoxesAsList();
                 application.parseVitaminAStockAsList();
                 application.parseImmunizationSessionAsList();
+                application.parseStockDistributions();
 
                 try {
 //                    application.intervalGetChildrenByHealthFacilitySinceLastLogin(); // old service

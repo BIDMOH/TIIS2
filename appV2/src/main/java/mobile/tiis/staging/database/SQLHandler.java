@@ -156,6 +156,25 @@ public class SQLHandler {
                     + UIValuesColumns.CODE + " TEXT NOT NULL,"
                     + UIValuesColumns.VALUE + " TEXT NOT NULL,"
                     + UIValuesColumns.SCREEN + " TEXT NOT NULL); ";
+
+    public static final String SQLDistributedStock =
+            "CREATE TABLE IF NOT EXISTS " + Tables.STOCK_DISTRIBUTIONS + " ("
+                    + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + StockDistributionsValuesColumns.FROM_HEALTH_FACILITY_ID + " INTEGER NOT NULL,"
+                    + StockDistributionsValuesColumns.TO_HEALTH_FACILITY_ID + " INTEGER NOT NULL,"
+                    + StockDistributionsValuesColumns.PROGRAM_ID + " INTEGER NOT NULL,"
+                    + StockDistributionsValuesColumns.DISTRIBUTION_DATE + " TEXT ,"
+                    + StockDistributionsValuesColumns.ITEM_ID + " TEXT NOT NULL,"
+                    + StockDistributionsValuesColumns.PRODUCT_ID + " INTEGER NOT NULL,"
+                    + StockDistributionsValuesColumns.LOT_ID + " INTEGER NOT NULL,"
+                    + StockDistributionsValuesColumns.VIMS_LOT_ID + " INTEGER NOT NULL,"
+                    + StockDistributionsValuesColumns.VVM_STATUS + " TEXT ,"
+                    + StockDistributionsValuesColumns.QUANTITY + " TEXT ,"
+                    + StockDistributionsValuesColumns.DISTRIBUTION_TYPE + " TEXT ,"
+                    + StockDistributionsValuesColumns.UNIT_OF_MEASURE + " TEXT ,"
+                    + StockDistributionsValuesColumns.STATUS + " TEXT NOT NULL); ";
+
+
     public static final String SQLFillUitValuesTable =
             "INSERT INTO '" + Tables.UIVALUES + "' (" + UIValuesColumns.LANGUAGE_ID + "," + UIValuesColumns.CODE + "," + UIValuesColumns.VALUE + "," + UIValuesColumns.SCREEN + ") " +
                     "SELECT 1 AS '" + UIValuesColumns.LANGUAGE_ID + "','app_name' AS '" + UIValuesColumns.CODE
@@ -1144,6 +1163,22 @@ public class SQLHandler {
     }
 
 
+    public interface StockDistributionsValuesColumns {
+        String FROM_HEALTH_FACILITY_ID = "from_health_facility_id";
+        String TO_HEALTH_FACILITY_ID = "to_health_facility_id";
+        String PROGRAM_ID = "program_id";
+        String DISTRIBUTION_DATE = "distribution_date";
+        String ITEM_ID = "item_id";
+        String PRODUCT_ID = "product_id";
+        String LOT_ID = "lot_id";
+        String VIMS_LOT_ID = "vims_lot_id";
+        String VVM_STATUS = "vvm_status";
+        String QUANTITY = "quantity";
+        String STATUS = "status";
+        String UNIT_OF_MEASURE = "unit_of_measure";
+        String DISTRIBUTION_TYPE = "distribution_type";
+    }
+
     public interface Tables {
         String APP_STATE = "app_state";
         String HEALTH_FACILITY = "health_facility";
@@ -1153,6 +1188,7 @@ public class SQLHandler {
         String CHILD = "child";
         String STATUS = "status";
         String UIVALUES = "uivalues";
+        String STOCK_DISTRIBUTIONS = "stock_distributions";
         String COMMUNITY = "community";
         String WEIGHT = "weight";
         String CHILD_WEIGHT = "child_weight";
