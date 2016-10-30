@@ -353,7 +353,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
                     "WHERE ve.APPOINTMENT_ID = va.ID " +
                     "   AND ve.HEALTH_FACILITY_ID = '"+app.getLOGGED_IN_USER_HF_ID()+"' " +
                     "   AND ve.VACCINATION_STATUS = 'true'" +
-                    "   AND va.OUTREACH = '' " +
+                    "   AND va.OUTREACH = 'false' " +
                     "   AND datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch')" +
                     "   AND datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
 
