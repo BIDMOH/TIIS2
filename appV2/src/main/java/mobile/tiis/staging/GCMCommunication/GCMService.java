@@ -107,8 +107,8 @@ public class GCMService extends GCMBaseIntentService {
             application.parseImmunizationSessionMonthly(prevMonth+"", year+"");
         }
         //STOCK DISTRIBUTIONS
-        else if(gcmMessage.equals("UpdateHealthFacilityStockDistributions")){
-            Log.d(TAG,"updating Heath facility stock distributions");
+        else if(gcmMessage.equals("newHealthFacilityStockDistributions")){
+            Log.d(TAG,"receiving new Heath facility stock distributions");
             application.parseItem();
             application.parseScheduledVaccination();
             application.parseDose();
@@ -116,6 +116,17 @@ public class GCMService extends GCMBaseIntentService {
             application.parseStock();
             application.parseStockDistributions();
             createNotification(context,"New Stock Sent");
+        }
+
+        else if(gcmMessage.equals("proofOfDeliverySentSuccessfully")){
+            Log.d(TAG,"updating Heath facility stock distributions");
+            application.parseItem();
+            application.parseScheduledVaccination();
+            application.parseDose();
+            application.parseItemLots();
+            application.parseStock();
+            application.parseStockDistributions();
+            createNotification(context,"Proof Of Delivery Sent Successfully");
         }
         else{
             application.getDatabaseInstance().addChildToChildUpdatesQueue(gcmMessage,3);
