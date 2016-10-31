@@ -2030,8 +2030,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
                 otherActivities = (cursor.getString(cursor.getColumnIndex(SQLHandler.ImmunizationSessionColumns.OTHERACTIVITIES)));
             }
 
-            Log.d("SOMMA", "its editable and am here");
-            String SQLCountOutReach = "SELECT COUNT (DISTINCT(c.ID)) AS IDS FROM vaccination_appointment as va " +
+            String SQLCountOutReach = "SELECT COUNT (DISTINCT strftime('%d', datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch') )) AS IDS FROM vaccination_appointment as va " +
                     "INNER JOIN " +
                     "   vaccination_event as ve on va.ID = ve.APPOINTMENT_ID " +
                     "INNER JOIN " +
@@ -2044,7 +2043,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
                     "   AND datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
 
 
-            String SQLCountFixed = "SELECT COUNT (DISTINCT(c.ID)) AS IDS FROM vaccination_appointment as va " +
+            String SQLCountFixed = "SELECT COUNT (DISTINCT strftime('%d', datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch') )) AS IDS FROM vaccination_appointment as va " +
                     "INNER JOIN " +
                     "   vaccination_event as ve on va.ID = ve.APPOINTMENT_ID " +
                     "INNER JOIN " +
