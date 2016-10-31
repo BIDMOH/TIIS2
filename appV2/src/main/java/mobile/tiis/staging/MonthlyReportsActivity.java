@@ -84,6 +84,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 
     private DatabaseHandler mydb;
     private BackboneApplication app;
+    private SQLiteDatabase db;
 
     private MonthEntity currentSelectedMonth;
     private String currentlySelectedYear;
@@ -122,6 +123,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 
         app = (BackboneApplication) this.getApplication();
         mydb = app.getDatabaseInstance();
+        db = mydb.getWritableDatabase();
 
 //        setLastMonthReported();
 
@@ -253,7 +255,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         String query = "SELECT * FROM "+ SQLHandler.Tables.REFRIGERATOR_TEMPERATURE
                 +" WHERE "+ SQLHandler.RefrigeratorColums.REPORTED_MONTH+" = '"+currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear+"'";
         Log.d("SOMA", "Query is : "+query);
-        SQLiteDatabase db = mydb.getWritableDatabase();
+
         Cursor cursor = db.rawQuery(query, null);
         Log.d("SOMA", "cursor size "+cursor.getCount());
         if (cursor.moveToFirst()){
@@ -272,7 +274,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         String query = "SELECT * FROM "+ SQLHandler.Tables.DESEASES_SURVEILLANCE
                 +" WHERE "+ SQLHandler.SurveillanceColumns.REPORTED_MONTH+" = '"+currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear+"'";
         Log.d("SOMA", "Query is : "+query);
-        SQLiteDatabase db = mydb.getWritableDatabase();
+
         Cursor cursor = db.rawQuery(query, null);
         Log.d("SOMA", "cursor size "+cursor.getCount());
         if (cursor.moveToFirst()){
@@ -304,7 +306,6 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         String query = "SELECT * FROM "+ SQLHandler.Tables.VACCINATIONS_BCG_OPV_TT
                 +" WHERE "+ SQLHandler.VaccinationsBcgOpvTtColumns.REPORTING_MONTH+" = '"+currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear+"'";
         Log.d("SOMA", "Query is : "+query);
-        SQLiteDatabase db = mydb.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         Log.d("SOMA", "cursor size "+cursor.getCount());
         if (cursor.getCount()>0){
@@ -360,7 +361,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         String query = "SELECT * FROM "+ SQLHandler.Tables.SYRINGES_AND_SAFETY_BOXES
                 +" WHERE "+ SQLHandler.SyringesAndSafetyBoxesColumns.REPORTING_MONTH+" = '"+currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear+"'";
         Log.d("SOMA", "Query is : "+query);
-        SQLiteDatabase db = mydb.getWritableDatabase();
+
         Cursor cursor = db.rawQuery(query, null);
         Log.d("SOMA", "cursor size "+cursor.getCount());
         if (cursor.getCount()>0){
@@ -409,7 +410,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         String query = "SELECT * FROM "+ SQLHandler.Tables.HF_VITAMIN_A
                 +" WHERE "+ SQLHandler.HfVitaminAColumns.REPORTING_MONTH+" = '"+currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear+"'";
         Log.d("SOMA", "Query is : "+query);
-        SQLiteDatabase db = mydb.getWritableDatabase();
+
         Cursor cursor = db.rawQuery(query, null);
         Log.d("SOMA", "cursor size "+cursor.getCount());
         if (cursor.getCount()>0){
@@ -1978,7 +1979,6 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 
         SimpleDateFormat formatted = new SimpleDateFormat("yyyy-MM-dd");
 
-        SQLiteDatabase db;
         Calendar calendar;
         Date lastmonth;
 
@@ -1994,10 +1994,6 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 
             calendar.add(Calendar.DAY_OF_MONTH, -28);
             lastmonth = calendar.getTime();
-
-            app = (BackboneApplication) MonthlyReportsActivity.this.getApplication();
-            mydb = app.getDatabaseInstance();
-            db = mydb.getWritableDatabase();
 
         }
 
@@ -2039,8 +2035,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
                     "   AND ve.HEALTH_FACILITY_ID = '"+app.getLOGGED_IN_USER_HF_ID()+"' " +
                     "   AND ve.VACCINATION_STATUS = 'true'" +
                     "   AND va.OUTREACH = 'true'" +
-                    "   AND datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch')" +
-                    "   AND datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
+                    "   AND datetime('"+fromDate+"','unixepoch') >= datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch') <= datetime('"+toDate+"','unixepoch')";
 
 
             String SQLCountFixed = "SELECT COUNT (DISTINCT strftime('%d', datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch') )) AS IDS FROM vaccination_appointment as va " +
@@ -2052,8 +2047,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
                     "   AND ve.HEALTH_FACILITY_ID = '"+app.getLOGGED_IN_USER_HF_ID()+"' " +
                     "   AND ve.VACCINATION_STATUS = 'true'" +
                     "   AND va.OUTREACH = 'false' " +
-                    "   AND datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch')>=datetime('"+fromDate+"','unixepoch')" +
-                    "   AND datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch')<=datetime('"+toDate+"','unixepoch')";
+                    "   AND datetime('"+fromDate+"','unixepoch') >= datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch') <= datetime('"+toDate+"','unixepoch')";
 
             Log.d("SOMMA", "Outreach SQL is "+SQLCountOutReach);
             Log.d("SOMMA", "Fixed SQL is "+SQLCountFixed);
