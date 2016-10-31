@@ -106,6 +106,15 @@
             android:layout_height="match_parent"
             android:layout_weight=".30">
 
+            <TextView
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/back_enter_info"
+                android:layout_centerInParent="true"
+                android:text="Backentering Child"/>
+
             <Spinner
                 android:background="@color/white"
                 android:id="@+id/non_vacc_reason_spinner"

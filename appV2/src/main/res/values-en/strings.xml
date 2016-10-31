@@ -250,7 +250,7 @@
     <string name="vaccine_lot">Lot Number</string>
     <string name="vaccination_date">Vaccination Date</string>
     <string name="done">Done</string>
-    <string name="reason">Reason \nif not done</string>
+    <string name="reason">Reasons</string>
     <string name="reason_only">Reason</string>
     <string name="modify">Modify</string>
     <string name="empty_phone">The phone number can not be empty</string>
