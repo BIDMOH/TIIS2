@@ -244,10 +244,10 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
     public void checkdatabaseForAlreadyReportedFormsForThisMonth(){
         querySurveillanceInformation( );
         queryRefrigeratorTemperature( );
-        queryImmunizationSessions( );
         queryVaccinationsBcgOpvTt( );
         querySafeInjectionEquipments( );
         queryVitaminAStock( );
+        queryImmunizationSessions( );
     }
 
     public void queryRefrigeratorTemperature(){
@@ -275,6 +275,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
                 +" WHERE "+ SQLHandler.SurveillanceColumns.REPORTED_MONTH+" = '"+currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear+"'";
         Log.d("SOMA", "Query is : "+query);
 
+        db.beginTransaction();
         Cursor cursor = db.rawQuery(query, null);
         Log.d("SOMA", "cursor size "+cursor.getCount());
         if (cursor.moveToFirst()){
@@ -291,6 +292,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
             tetanusDeaths.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.SurveillanceColumns.NEONATAL_TT_DEATHS)));
 
         }
+        db.endTransaction();
     }
 
     public void queryImmunizationSessions(){
@@ -306,6 +308,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         String query = "SELECT * FROM "+ SQLHandler.Tables.VACCINATIONS_BCG_OPV_TT
                 +" WHERE "+ SQLHandler.VaccinationsBcgOpvTtColumns.REPORTING_MONTH+" = '"+currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear+"'";
         Log.d("SOMA", "Query is : "+query);
+        db.beginTransaction();
         Cursor cursor = db.rawQuery(query, null);
         Log.d("SOMA", "cursor size "+cursor.getCount());
         if (cursor.getCount()>0){
@@ -342,6 +345,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 
             }while (cursor.moveToNext());
         }
+        db.endTransaction();
     }
 
     public void queryOtherImmunizationActivities(){
@@ -361,7 +365,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         String query = "SELECT * FROM "+ SQLHandler.Tables.SYRINGES_AND_SAFETY_BOXES
                 +" WHERE "+ SQLHandler.SyringesAndSafetyBoxesColumns.REPORTING_MONTH+" = '"+currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear+"'";
         Log.d("SOMA", "Query is : "+query);
-
+        db.beginTransaction();
         Cursor cursor = db.rawQuery(query, null);
         Log.d("SOMA", "cursor size "+cursor.getCount());
         if (cursor.getCount()>0){
@@ -404,13 +408,14 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
             }while (cursor.moveToNext());
 
         }
+        db.endTransaction();
     }
 
     public void queryVitaminAStock(){
         String query = "SELECT * FROM "+ SQLHandler.Tables.HF_VITAMIN_A
                 +" WHERE "+ SQLHandler.HfVitaminAColumns.REPORTING_MONTH+" = '"+currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear+"'";
         Log.d("SOMA", "Query is : "+query);
-
+        db.beginTransaction();
         Cursor cursor = db.rawQuery(query, null);
         Log.d("SOMA", "cursor size "+cursor.getCount());
         if (cursor.getCount()>0){
@@ -435,6 +440,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 
             }while (cursor.moveToNext());
         }
+        db.endTransaction();
     }
 
     public void setFieldsAccessibility(boolean flag){
@@ -2052,19 +2058,23 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
             Log.d("SOMMA", "Outreach SQL is "+SQLCountOutReach);
             Log.d("SOMMA", "Fixed SQL is "+SQLCountFixed);
 
-            Cursor outreachCursor = db.rawQuery(SQLCountOutReach, null);
-            if (outreachCursor.moveToFirst()){
-                int val = outreachCursor.getInt(outreachCursor.getColumnIndex("IDS"));
-                Log.d("SOMMA", "in db OUTREACH is "+val);
-                outConducted = (val+"");
-            }
-
-            Cursor fixedCursor   = db.rawQuery(SQLCountFixed, null);
-            if (fixedCursor.moveToFirst()){
-                int val = fixedCursor.getInt(fixedCursor.getColumnIndex("IDS"));
-                Log.d("SOMMA", "in db FIXED is "+val);
-                fxConducted = (val+"");
-            }
+//            db.beginTransaction();
+//            Cursor outreachCursor = db.rawQuery(SQLCountOutReach, null);
+//            if (outreachCursor.moveToFirst()){
+//                int val = outreachCursor.getInt(outreachCursor.getColumnIndex("IDS"));
+//                Log.d("SOMMA", "in db OUTREACH is "+val);
+//                outConducted = (val+"");
+//            }
+//            db.endTransaction();
+//
+//            db.beginTransaction();
+//            Cursor fixedCursor   = db.rawQuery(SQLCountFixed, null);
+//            if (fixedCursor.moveToFirst()){
+//                int val = fixedCursor.getInt(fixedCursor.getColumnIndex("IDS"));
+//                Log.d("SOMMA", "in db FIXED is "+val);
+//                fxConducted = (val+"");
+//            }
+//            db.endTransaction();
 
             return null;
         }
