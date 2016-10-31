@@ -1622,6 +1622,32 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         strTtMaleServicec = "";
         strTtFemaleCatchment = "";
         strTtMaleCatchment = "";
+        strml005StockedOutDays = "";
+        strml005StockInHand = "";
+        strml005Wastage = "";
+        strml005Used = "";
+        strml005Received = "";
+        strml005Balance = "";
+        strads05StockedOutDays = "";
+        strads05StockInHand = "";
+        strads05Wastage = "";
+        strads05Used = "";
+        strads05Balance = "";
+        strads05Received = "";
+        strDillutionStockedOutDays = "";
+        strDillutionStockInHand ="";
+        strDillutionWastage = "";
+        strDillutionUsed = "";
+        strDillutionBalance = "";
+        strDillutionReceived = "";
+        strSafetyBoxBalance = "";
+        strSafetyBoxStockedOutDays = "";
+        strSafetyBoxStockInHand =  "";
+        strSafetyBoxWastage = "";
+        strSafetyBoxUsed = "";
+        strSafetyBoxReceived = "";
+
+
     }
 
     public void clearFields(){
