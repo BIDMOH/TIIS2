@@ -50,6 +50,7 @@
 
                 <fr.ganfra.materialspinner.MaterialSpinner
                     android:id="@+id/mon_year_spiner"
+                    android:padding="0dp"
                     android:layout_width="100dp"
                     android:layout_height="55dp"
                     android:layout_centerVertical="true"
