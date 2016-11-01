@@ -4568,16 +4568,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-    public boolean isStockDistributionInDb(int fromHealthFacilityId,int toHealthFacilityId, String distributionDate, int itemId, int lotId, int productId, String quantity,String distributionType) {
+    public boolean isStockDistributionInDb(int StockDistributionId) {
         String selectQuery = "SELECT "+StockDistributionsValuesColumns.TO_HEALTH_FACILITY_ID+" FROM stock_distributions" +
-                " WHERE "+StockDistributionsValuesColumns.FROM_HEALTH_FACILITY_ID+" = " + fromHealthFacilityId + " AND "
-                +StockDistributionsValuesColumns.DISTRIBUTION_DATE+" = '" + distributionDate + "' AND "
-                +StockDistributionsValuesColumns.ITEM_ID+" = " + itemId + " AND "
-                +StockDistributionsValuesColumns.LOT_ID+" = " + lotId + " AND "
-                +StockDistributionsValuesColumns.PRODUCT_ID+" = " + productId + " AND "
-                +StockDistributionsValuesColumns.QUANTITY+" = '" + quantity + "' AND "
-                +StockDistributionsValuesColumns.DISTRIBUTION_TYPE+" = '" + distributionType + "' AND "
-                +StockDistributionsValuesColumns.TO_HEALTH_FACILITY_ID+" = " + toHealthFacilityId + "";
+                " WHERE "+StockDistributionsValuesColumns.STOCK_DISTRIBUTION_ID+" = " + StockDistributionId;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 

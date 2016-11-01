@@ -1003,7 +1003,7 @@
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
                                 android:layout_height="match_parent"
-                                android:text="OPV"
+                                android:text="OPV0"
                                 android:gravity="center"
                                 android:textSize="12sp"
                                 android:textColor="@color/black"/>
@@ -1067,11 +1067,10 @@
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
                                 android:layout_height="match_parent"
-                                android:text="TT"
+                                android:text="TT1"
                                 android:gravity="center"
                                 android:textSize="12sp"
-                                android:textColor="@color/black"
-                                android:id="@+id/textView5" />
+                                android:textColor="@color/black" />
 
                             <EditText
                                 android:layout_width="0dp"
@@ -1080,7 +1079,7 @@
                                 android:layout_margin="6dp"
                                 android:paddingLeft="4dp"
                                 android:background="@drawable/border"
-                                android:id="@+id/tt_female_service"
+                                android:id="@+id/tt1_female_service"
                                 android:hint=""
                                 android:inputType="number"/>
 
@@ -1091,7 +1090,7 @@
                                 android:layout_margin="6dp"
                                 android:paddingLeft="4dp"
                                 android:background="@drawable/border"
-                                android:id="@+id/tt_male_service"
+                                android:id="@+id/tt1_male_service"
                                 android:hint=""
                                 android:inputType="number"/>
 
@@ -1102,7 +1101,7 @@
                                 android:layout_margin="6dp"
                                 android:paddingLeft="4dp"
                                 android:background="@drawable/border"
-                                android:id="@+id/tt_female_catchment"
+                                android:id="@+id/tt1_female_catchment"
                                 android:hint=""
                                 android:inputType="number"/>
 
@@ -1114,12 +1113,311 @@
                                 android:layout_margin="6dp"
                                 android:paddingLeft="4dp"
                                 android:background="@drawable/border"
-                                android:id="@+id/tt_male_catchment"
+                                android:id="@+id/tt1_male_catchment"
                                 android:hint=""
                                 android:inputType="number"/>
 
                         </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:orientation="horizontal">
 
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:text="TT2"
+                                android:gravity="center"
+                                android:textSize="12sp"
+                                android:textColor="@color/black"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt2_female_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt2_male_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt2_female_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt2_male_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:text="TT3"
+                                android:gravity="center"
+                                android:textSize="12sp"
+                                android:textColor="@color/black" />
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt3_female_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt3_male_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt3_female_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt3_male_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:text="TT4"
+                                android:gravity="center"
+                                android:textSize="12sp"
+                                android:textColor="@color/black"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt4_female_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt4_male_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt4_female_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt4_male_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:text="TT5"
+                                android:gravity="center"
+                                android:textSize="12sp"
+                                android:textColor="@color/black"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt5_female_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt5_male_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt5_female_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt5_male_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:text="Completed TT5"
+                                android:gravity="center"
+                                android:textSize="12sp"
+                                android:textColor="@color/black"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt5_Completed_female_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt5_Completed_male_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt5_Completed_female_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt5_Completed_male_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                        </LinearLayout>
 
                         <Button
                             android:layout_width="100dp"

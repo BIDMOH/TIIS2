@@ -72,7 +72,6 @@ public class StockProofOfDeliveryFragment extends Fragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         View dialogueView   = LayoutInflater.from(getActivity()).inflate(R.layout.monthly_report_dialogue, null);
@@ -123,6 +122,11 @@ public class StockProofOfDeliveryFragment extends Fragment{
             vaccineName.setTypeface(BackboneActivity.Rosario_Regular);
             vaccineName.setText(HealthFacilityProofOfDelivery.getVaccineName());
 
+
+            TextView quantity_sent = (TextView) rowView.findViewById(R.id.quantity_sent);
+            quantity_sent.setTypeface(BackboneActivity.Rosario_Regular);
+            quantity_sent.setText(HealthFacilityProofOfDelivery.getQuantity()+"");
+
             TextView vaccineLotNumber = (TextView) rowView.findViewById(R.id.lot_no);
             vaccineLotNumber.setTypeface(BackboneActivity.Rosario_Regular);
             vaccineLotNumber.setText(HealthFacilityProofOfDelivery.getLotNumber());
@@ -165,13 +169,7 @@ public class StockProofOfDeliveryFragment extends Fragment{
                 values.put(SQLHandler.StockDistributionsValuesColumns.STATUS,"RECEIVED");
 
                 database.getWritableDatabase().update(SQLHandler.Tables.STOCK_DISTRIBUTIONS,values,
-                        SQLHandler.StockDistributionsValuesColumns.FROM_HEALTH_FACILITY_ID + "= " + healthfacility.getFromHealthFacilityId() + " AND " +
-                        SQLHandler.StockDistributionsValuesColumns.TO_HEALTH_FACILITY_ID + "= " + healthfacility.getToHealthFacilityId() + " AND " +
-                        SQLHandler.StockDistributionsValuesColumns.PRODUCT_ID + "= " + healthfacility.getProductId()+ " AND " +
-                        SQLHandler.StockDistributionsValuesColumns.LOT_ID + "= " + healthfacility.getLotId() + " AND " +
-                        SQLHandler.StockDistributionsValuesColumns.ITEM_ID + "= " + healthfacility.getItemId() + " AND " +
-                        SQLHandler.StockDistributionsValuesColumns.DISTRIBUTION_TYPE + "= '" + healthfacility.getDistributionType() + "' AND " +
-                        SQLHandler.StockDistributionsValuesColumns.DISTRIBUTION_DATE + "= '" + healthfacility.getDistributionDate() + "'",null);
+                        SQLHandler.StockDistributionsValuesColumns.STOCK_DISTRIBUTION_ID + "= " + healthfacility.getStockDistributionId(),null);
 
                 Date date = BackboneActivity.dateParser(healthfacility.getDistributionDate());
                 String distributionDate = null;
@@ -181,7 +179,7 @@ public class StockProofOfDeliveryFragment extends Fragment{
                     e.printStackTrace();
                 }
 
-                application.updateStockDistribution(healthfacility.getFromHealthFacilityId(),healthfacility.getToHealthFacilityId(),healthfacility.getProductId(),healthfacility.getLotId(),healthfacility.getItemId(),healthfacility.getDistributionType(),distributionDate,healthfacility.getQuantity(),"RECEIVED",application.getLOGGED_IN_USER_ID());
+                application.updateStockDistribution(healthfacility.getFromHealthFacilityId(),healthfacility.getToHealthFacilityId(),healthfacility.getProductId(),healthfacility.getLotId(),healthfacility.getItemId(),healthfacility.getDistributionType(),distributionDate,healthfacility.getQuantity(),"RECEIVED",healthfacility.getStockDistributionId());
             }
             if (success) {
                 sayThis(getResources().getString(R.string.saved_successfully),2);
@@ -206,6 +204,7 @@ public class StockProofOfDeliveryFragment extends Fragment{
             if (cursor.moveToFirst()) {
                 do {
                     HealthFacilityProofOfDelivery row = new HealthFacilityProofOfDelivery();
+                    row.setStockDistributionId(cursor.getInt(cursor.getColumnIndex(SQLHandler.StockDistributionsValuesColumns.STOCK_DISTRIBUTION_ID)));
                     row.setFromHealthFacilityId(cursor.getInt(cursor.getColumnIndex(SQLHandler.StockDistributionsValuesColumns.FROM_HEALTH_FACILITY_ID)));
                     row.setToHealthFacilityId(cursor.getInt(cursor.getColumnIndex(SQLHandler.StockDistributionsValuesColumns.TO_HEALTH_FACILITY_ID)));
                     row.setDistributionDate(cursor.getString(cursor.getColumnIndex(SQLHandler.StockDistributionsValuesColumns.DISTRIBUTION_DATE)));

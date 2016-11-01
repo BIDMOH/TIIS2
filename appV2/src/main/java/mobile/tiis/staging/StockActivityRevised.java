@@ -49,6 +49,8 @@ public class StockActivityRevised extends BackboneActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        int position = extras.getInt("stock_distribution");
+
         toolbarTitle.setText(title);
 
         adapter = new StockViewPagerAdapter(getSupportFragmentManager());
@@ -58,6 +60,8 @@ public class StockActivityRevised extends BackboneActivity {
         tabs.setTextColor(Color.WHITE);
 
         tabs.setViewPager(pager);
+
+        pager.setCurrentItem(2);
 
     }
 

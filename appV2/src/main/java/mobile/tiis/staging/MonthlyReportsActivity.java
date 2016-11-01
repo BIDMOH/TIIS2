@@ -55,7 +55,14 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
     private TextView toolbarTitle;
     private EditText fixedConducted, outreachPlanned, outreachConducted, outreachCancelled;
     private EditText bcgFemaleServiceArea, bcgMaleServiceArea, bcgFemaleCatchmentArea, bcgMaleCatchmentArea, opvFemaleServiceArea, opvMaleServiceArea, opvFemaleCatchmentArea, opvMaleCatchmentArea;
-    private EditText ttFemaleServiceArea, ttMaleServiceArea, ttFemaleCatchmentArea, ttMaleCatchmentArea;
+    private EditText tt1FemaleServiceArea, tt1MaleServiceArea, tt1FemaleCatchmentArea, tt1MaleCatchmentArea;
+    private EditText tt2FemaleServiceArea, tt2MaleServiceArea, tt2FemaleCatchmentArea, tt2MaleCatchmentArea;
+    private EditText tt3FemaleServiceArea, tt3MaleServiceArea, tt3FemaleCatchmentArea, tt3MaleCatchmentArea;
+    private EditText tt4FemaleServiceArea, tt4MaleServiceArea, tt4FemaleCatchmentArea, tt4MaleCatchmentArea;
+    private EditText tt5FemaleServiceArea, tt5MaleServiceArea, tt5FemaleCatchmentArea, tt5MaleCatchmentArea;
+    private EditText tt5CompletedFemaleServiceArea, tt5CompletedMaleServiceArea, tt5CompletedFemaleCatchmentArea, tt5CompletedMaleCatchmentArea;
+
+
     private EditText otherMajorImmunizationActivities, otherMajorImmunizationActivitiesNew;
     private EditText ml005Balance, ml005Received, ml005Used, ml005Wastage, ml005StockInHand, ml005StockedOutDays;
     private EditText ads05Balance, ads05Received, ads05Used, ads05Wastage, ads05StockInHand, ads05StockedOutDays;
@@ -69,7 +76,16 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
     private String strTempMax, strTempMin, strAlarmHigh, strAlarmLow;
     private String strFixedConducted, strOutreachConducted, strOutreachPlanned, strOutreachCancelled, strOtherMajorImmunizationActivitiesNew;
     private String strBcgFemaleService, strBcgMaleService, strBcgFemaleCatchment, strBcgMaleCatchment, strOpvFemaleService, strOpvMaleService, strOpvFemaleCatchment, strOpvMaleCatchment;
-    private String strTtFemaleService, strTtMaleServicec, strTtFemaleCatchment, strTtMaleCatchment, strOtherMajorImmunizationActivities;
+    private String strTt1FemaleService, strTt1MaleServicec, strTt1FemaleCatchment, strTt1MaleCatchment;
+    private String strTt2FemaleService, strTt2MaleServicec, strTt2FemaleCatchment, strTt2MaleCatchment;
+    private String strTt3FemaleService, strTt3MaleServicec, strTt3FemaleCatchment, strTt3MaleCatchment;
+    private String strTt4FemaleService, strTt4MaleServicec, strTt4FemaleCatchment, strTt4MaleCatchment;
+    private String strTt5FemaleService, strTt5MaleServicec, strTt5FemaleCatchment, strTt5MaleCatchment;
+    private String strTt5CompletedFemaleService, strTt5CompletedMaleServicec, strTt5CompletedFemaleCatchment, strTt5CompletedMaleCatchment;
+
+    private String strOtherMajorImmunizationActivities;
+
+
     private String strml005Balance, strml005Received, strml005Used, strml005Wastage, strml005StockInHand, strml005StockedOutDays;
     private String strads05Balance, strads05Received, strads05Used, strads05Wastage, strads05StockInHand, strads05StockedOutDays;
     private String strDillutionBalance, strDillutionReceived, strDillutionUsed, strDillutionWastage, strDillutionStockInHand, strDillutionStockedOutDays;
@@ -335,11 +351,46 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 
                 }
                 else if (cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID)).equals("79")){
-                    Log.d("SOMA", "TT found");
-                    ttMaleCatchmentArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_CATCHMENT_AREA)));
-                    ttFemaleCatchmentArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_CATCHMENT_AREA)));
-                    ttMaleServiceArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA)));
-                    ttFemaleServiceArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_SERVICE_AREA)));
+                    Log.d("SOMA", "TT1 found");
+                    tt1MaleCatchmentArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_CATCHMENT_AREA)));
+                    tt1FemaleCatchmentArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_CATCHMENT_AREA)));
+                    tt1MaleServiceArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA)));
+                    tt1FemaleServiceArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_SERVICE_AREA)));
+
+                } else if (cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID)).equals("80")){
+                    Log.d("SOMA", "TT1 found");
+                    tt2MaleCatchmentArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_CATCHMENT_AREA)));
+                    tt2FemaleCatchmentArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_CATCHMENT_AREA)));
+                    tt2MaleServiceArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA)));
+                    tt2FemaleServiceArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_SERVICE_AREA)));
+
+                } else if (cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID)).equals("81")){
+                    Log.d("SOMA", "TT1 found");
+                    tt3MaleCatchmentArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_CATCHMENT_AREA)));
+                    tt3FemaleCatchmentArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_CATCHMENT_AREA)));
+                    tt3MaleServiceArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA)));
+                    tt3FemaleServiceArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_SERVICE_AREA)));
+
+                } else if (cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID)).equals("82")){
+                    Log.d("SOMA", "TT1 found");
+                    tt4MaleCatchmentArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_CATCHMENT_AREA)));
+                    tt4FemaleCatchmentArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_CATCHMENT_AREA)));
+                    tt4MaleServiceArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA)));
+                    tt4FemaleServiceArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_SERVICE_AREA)));
+
+                } else if (cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID)).equals("83")){
+                    Log.d("SOMA", "TT1 found");
+                    tt5MaleCatchmentArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_CATCHMENT_AREA)));
+                    tt5FemaleCatchmentArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_CATCHMENT_AREA)));
+                    tt5MaleServiceArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA)));
+                    tt5FemaleServiceArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_SERVICE_AREA)));
+
+                } else if (cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID)).equals("84")){
+                    Log.d("SOMA", "TT1 found");
+                    tt5CompletedMaleCatchmentArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_CATCHMENT_AREA)));
+                    tt5CompletedFemaleCatchmentArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_CATCHMENT_AREA)));
+                    tt5CompletedMaleServiceArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA)));
+                    tt5CompletedFemaleServiceArea.setText(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_SERVICE_AREA)));
 
                 }
 
@@ -475,10 +526,38 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         opvMaleServiceArea.setEnabled(flag);
         opvFemaleCatchmentArea.setEnabled(flag);
         opvFemaleServiceArea.setEnabled(flag);
-        ttMaleServiceArea.setEnabled(flag);
-        ttMaleCatchmentArea.setEnabled(flag);
-        ttFemaleCatchmentArea.setEnabled(flag);
-        ttFemaleServiceArea.setEnabled(flag);
+        tt1MaleServiceArea.setEnabled(flag);
+        tt1MaleCatchmentArea.setEnabled(flag);
+        tt1FemaleCatchmentArea.setEnabled(flag);
+        tt1FemaleServiceArea.setEnabled(flag);
+
+        tt2MaleServiceArea.setEnabled(flag);
+        tt2MaleCatchmentArea.setEnabled(flag);
+        tt2FemaleCatchmentArea.setEnabled(flag);
+        tt2FemaleServiceArea.setEnabled(flag);
+
+        tt3MaleServiceArea.setEnabled(flag);
+        tt3MaleCatchmentArea.setEnabled(flag);
+        tt3FemaleCatchmentArea.setEnabled(flag);
+        tt3FemaleServiceArea.setEnabled(flag);
+
+        tt4MaleServiceArea.setEnabled(flag);
+        tt4MaleCatchmentArea.setEnabled(flag);
+        tt4FemaleCatchmentArea.setEnabled(flag);
+        tt4FemaleServiceArea.setEnabled(flag);
+
+        tt5MaleServiceArea.setEnabled(flag);
+        tt5MaleCatchmentArea.setEnabled(flag);
+        tt5FemaleCatchmentArea.setEnabled(flag);
+        tt5FemaleServiceArea.setEnabled(flag);
+
+        tt5CompletedMaleServiceArea.setEnabled(flag);
+        tt5CompletedMaleCatchmentArea.setEnabled(flag);
+        tt5CompletedFemaleCatchmentArea.setEnabled(flag);
+        tt5CompletedFemaleServiceArea.setEnabled(flag);
+
+
+
 
         //Vitamins
         vitA2Opening.setEnabled(flag);
@@ -735,28 +814,42 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
             );
             return false;
         }
-        if (ttFemaleServiceArea.getText().toString().trim().equals("")){
+        if (tt1FemaleServiceArea.getText().toString().trim().equals("") || tt1MaleServiceArea.getText().toString().trim().equals("") || tt1FemaleCatchmentArea.getText().toString().trim().equals("") || tt1MaleCatchmentArea.getText().toString().trim().equals("")){
             sayThis(
                     "You must fill all the fields before submitting",
                     1
             );
             return false;
         }
-        if (ttMaleServiceArea.getText().toString().trim().equals("")){
+        if (tt2FemaleServiceArea.getText().toString().trim().equals("") || tt2MaleServiceArea.getText().toString().trim().equals("") || tt2FemaleCatchmentArea.getText().toString().trim().equals("") || tt2MaleCatchmentArea.getText().toString().trim().equals("")){
             sayThis(
                     "You must fill all the fields before submitting",
                     1
             );
             return false;
         }
-        if(ttFemaleCatchmentArea.getText().toString().trim().equals("")){
+        if (tt3FemaleServiceArea.getText().toString().trim().equals("") || tt3MaleServiceArea.getText().toString().trim().equals("") || tt3FemaleCatchmentArea.getText().toString().trim().equals("") || tt3MaleCatchmentArea.getText().toString().trim().equals("")){
             sayThis(
                     "You must fill all the fields before submitting",
                     1
             );
             return false;
         }
-        if(ttMaleCatchmentArea.getText().toString().trim().equals("")){
+        if (tt4FemaleServiceArea.getText().toString().trim().equals("") || tt4MaleServiceArea.getText().toString().trim().equals("") || tt4FemaleCatchmentArea.getText().toString().trim().equals("") || tt4MaleCatchmentArea.getText().toString().trim().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
+            return false;
+        }
+        if (tt5FemaleServiceArea.getText().toString().trim().equals("") || tt5MaleServiceArea.getText().toString().trim().equals("") || tt5FemaleCatchmentArea.getText().toString().trim().equals("") || tt5MaleCatchmentArea.getText().toString().trim().equals("")){
+            sayThis(
+                    "You must fill all the fields before submitting",
+                    1
+            );
+            return false;
+        }
+        if (tt5CompletedFemaleServiceArea.getText().toString().trim().equals("") || tt5CompletedMaleServiceArea.getText().toString().trim().equals("") || tt5CompletedFemaleCatchmentArea.getText().toString().trim().equals("") || tt5CompletedMaleCatchmentArea.getText().toString().trim().equals("")){
             sayThis(
                     "You must fill all the fields before submitting",
                     1
@@ -1151,10 +1244,40 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         strOpvFemaleCatchment   = opvFemaleCatchmentArea.getText().toString().trim();
         strOpvMaleCatchment     = opvMaleCatchmentArea.getText().toString().trim();
 
-        strTtFemaleService      = ttFemaleServiceArea.getText().toString().trim();
-        strTtMaleServicec       = ttMaleServiceArea.getText().toString().trim();
-        strTtFemaleCatchment    = ttFemaleCatchmentArea.getText().toString().trim();
-        strTtMaleCatchment      = ttMaleCatchmentArea.getText().toString().trim();
+        strTt1FemaleService      = tt1FemaleServiceArea.getText().toString().trim();
+        strTt1MaleServicec       = tt1MaleServiceArea.getText().toString().trim();
+        strTt1FemaleCatchment    = tt1FemaleCatchmentArea.getText().toString().trim();
+        strTt1MaleCatchment      = tt1MaleCatchmentArea.getText().toString().trim();
+
+
+        strTt2FemaleService      = tt2FemaleServiceArea.getText().toString().trim();
+        strTt2MaleServicec       = tt2MaleServiceArea.getText().toString().trim();
+        strTt2FemaleCatchment    = tt2FemaleCatchmentArea.getText().toString().trim();
+        strTt2MaleCatchment      = tt2MaleCatchmentArea.getText().toString().trim();
+
+
+        strTt3FemaleService      = tt3FemaleServiceArea.getText().toString().trim();
+        strTt3MaleServicec       = tt3MaleServiceArea.getText().toString().trim();
+        strTt3FemaleCatchment    = tt3FemaleCatchmentArea.getText().toString().trim();
+        strTt3MaleCatchment      = tt3MaleCatchmentArea.getText().toString().trim();
+
+
+        strTt4FemaleService      = tt4FemaleServiceArea.getText().toString().trim();
+        strTt4MaleServicec       = tt4MaleServiceArea.getText().toString().trim();
+        strTt4FemaleCatchment    = tt4FemaleCatchmentArea.getText().toString().trim();
+        strTt4MaleCatchment      = tt4MaleCatchmentArea.getText().toString().trim();
+
+
+        strTt5FemaleService      = tt5FemaleServiceArea.getText().toString().trim();
+        strTt5MaleServicec       = tt5MaleServiceArea.getText().toString().trim();
+        strTt5FemaleCatchment    = tt5FemaleCatchmentArea.getText().toString().trim();
+        strTt5MaleCatchment      = tt5MaleCatchmentArea.getText().toString().trim();
+
+
+        strTt5CompletedFemaleService      = tt5CompletedFemaleServiceArea.getText().toString().trim();
+        strTt5CompletedMaleServicec       = tt5CompletedMaleServiceArea.getText().toString().trim();
+        strTt5CompletedFemaleCatchment    = tt5CompletedFemaleCatchmentArea.getText().toString().trim();
+        strTt5CompletedMaleCatchment      = tt5CompletedMaleCatchmentArea.getText().toString().trim();
 
     }
 
@@ -1324,9 +1447,15 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
     public boolean saveVaccinationsValues(){
 
         DatabaseHandler db = new DatabaseHandler(this);
+        //TODO REMOVE THE HARDCORDING OF DOSE IDS, GET THEM FROM THE SERVER OR DATABASE
         int BCG_DOSE_ID  = 61;
         int OPV_0_DOSE_ID = 62;
-        int TT_DOSE_ID   = 79;
+        int TT1_DOSE_ID   = 79;
+        int TT2_DOSE_ID   = 80;
+        int TT3_DOSE_ID   = 81;
+        int TT4_DOSE_ID   = 82;
+        int TT5_DOSE_ID   = 83;
+        int TT5_COMPLETED_DOSE_ID   = 84;
 
         int selectedMonth    = Integer.parseInt(currentSelectedMonth.getMonth_number());
         int selectedYear     = Integer.parseInt(currentlySelectedYear);
@@ -1386,28 +1515,152 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         app.sendBcgOpvTtToServer(OPV_0_DOSE_ID, opvMaleService, opvMaleCatchment, opvFemaleService, opvFemaleCatchment, 0, 0, 0, selectedMonth, selectedYear, modifiedOnString);
 
 
-        int ttMaleService = Integer.parseInt(strTtMaleServicec);
-        int ttFemaleService    = Integer.parseInt(strTtFemaleService);
-        int ttMaleCatchment    = Integer.parseInt(strTtMaleCatchment);
-        int ttFemaleCatchment  = Integer.parseInt(strTtFemaleCatchment);
-        int ttTotalService     = ttMaleService+ttFemaleService;
-        int ttTotalCatchment   = ttMaleCatchment+ttFemaleCatchment;
-        int ttTotalServiceAndCatchment = ttTotalService + ttTotalCatchment;
+        int tt1MaleService = Integer.parseInt(strTt1MaleServicec);
+        int tt1FemaleService    = Integer.parseInt(strTt1FemaleService);
+        int tt1MaleCatchment    = Integer.parseInt(strTt1MaleCatchment);
+        int tt1FemaleCatchment  = Integer.parseInt(strTt1FemaleCatchment);
+        int tt1TotalService     = tt1MaleService+tt1FemaleService;
+        int tt1TotalCatchment   = tt1MaleCatchment+tt1FemaleCatchment;
+        int tt1TotalServiceAndCatchment = tt1TotalService + tt1TotalCatchment;
 
-        ContentValues ttCv = new ContentValues();
-        ttCv.put(GIISContract.SyncColumns.UPDATED, 1);
-        ttCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID, TT_DOSE_ID+"");
-        ttCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_SERVICE_AREA, strTtFemaleService);
-        ttCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA, strTtMaleServicec);
-        bcgCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_SERVICE_AREA, ttTotalService+"");
-        ttCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_CATCHMENT_AREA, strTtFemaleCatchment);
-        ttCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_CATCHMENT_AREA, strTtMaleCatchment);
-        bcgCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_CATCHMENT_AREA, ttTotalCatchment+"");
-        bcgCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_CATCHMENT_AND_SERVICE_AREA, ttTotalServiceAndCatchment+"");
-        ttCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.REPORTING_MONTH, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
+        ContentValues tt1Cv = new ContentValues();
+        tt1Cv.put(GIISContract.SyncColumns.UPDATED, 1);
+        tt1Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID, TT1_DOSE_ID+"");
+        tt1Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_SERVICE_AREA, strTt1FemaleService);
+        tt1Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA, strTt1MaleServicec);
+        tt1Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_SERVICE_AREA, tt1TotalService+"");
+        tt1Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_CATCHMENT_AREA, strTt1FemaleCatchment);
+        tt1Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_CATCHMENT_AREA, strTt1MaleCatchment);
+        tt1Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_CATCHMENT_AREA, tt1TotalCatchment+"");
+        tt1Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_CATCHMENT_AND_SERVICE_AREA, tt1TotalServiceAndCatchment+"");
+        tt1Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.REPORTING_MONTH, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
 
-        db.addUpdateVaccinationsBcgOpvTt(ttCv, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear, TT_DOSE_ID+"");
-        app.sendBcgOpvTtToServer(TT_DOSE_ID, ttMaleService, ttMaleCatchment, ttFemaleService, ttFemaleCatchment, 0, 0, 0, selectedMonth, selectedYear, modifiedOnString);
+        db.addUpdateVaccinationsBcgOpvTt(tt1Cv, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear, TT1_DOSE_ID+"");
+        app.sendBcgOpvTtToServer(TT1_DOSE_ID, tt1MaleService, tt1MaleCatchment, tt1FemaleService, tt1FemaleCatchment, 0, 0, 0, selectedMonth, selectedYear, modifiedOnString);
+
+
+
+
+        int tt2MaleService = Integer.parseInt(strTt2MaleServicec);
+        int tt2FemaleService    = Integer.parseInt(strTt2FemaleService);
+        int tt2MaleCatchment    = Integer.parseInt(strTt2MaleCatchment);
+        int tt2FemaleCatchment  = Integer.parseInt(strTt2FemaleCatchment);
+        int tt2TotalService     = tt2MaleService+tt2FemaleService;
+        int tt2TotalCatchment   = tt2MaleCatchment+tt2FemaleCatchment;
+        int tt2TotalServiceAndCatchment = tt2TotalService + tt2TotalCatchment;
+
+        ContentValues tt2Cv = new ContentValues();
+        tt2Cv.put(GIISContract.SyncColumns.UPDATED, 1);
+        tt2Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID, TT2_DOSE_ID+"");
+        tt2Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_SERVICE_AREA, strTt2FemaleService);
+        tt2Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA, strTt2MaleServicec);
+        tt2Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_SERVICE_AREA, tt2TotalService+"");
+        tt2Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_CATCHMENT_AREA, strTt2FemaleCatchment);
+        tt2Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_CATCHMENT_AREA, strTt2MaleCatchment);
+        tt2Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_CATCHMENT_AREA, tt2TotalCatchment+"");
+        tt2Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_CATCHMENT_AND_SERVICE_AREA, tt2TotalServiceAndCatchment+"");
+        tt2Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.REPORTING_MONTH, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
+
+        db.addUpdateVaccinationsBcgOpvTt(tt2Cv, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear, TT2_DOSE_ID+"");
+        app.sendBcgOpvTtToServer(TT2_DOSE_ID, tt2MaleService, tt2MaleCatchment, tt2FemaleService, tt2FemaleCatchment, 0, 0, 0, selectedMonth, selectedYear, modifiedOnString);
+
+
+
+        int tt3MaleService = Integer.parseInt(strTt3MaleServicec);
+        int tt3FemaleService    = Integer.parseInt(strTt3FemaleService);
+        int tt3MaleCatchment    = Integer.parseInt(strTt3MaleCatchment);
+        int tt3FemaleCatchment  = Integer.parseInt(strTt3FemaleCatchment);
+        int tt3TotalService     = tt3MaleService+tt3FemaleService;
+        int tt3TotalCatchment   = tt3MaleCatchment+tt3FemaleCatchment;
+        int tt3TotalServiceAndCatchment = tt3TotalService + tt3TotalCatchment;
+
+        ContentValues tt3Cv = new ContentValues();
+        tt3Cv.put(GIISContract.SyncColumns.UPDATED, 1);
+        tt3Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID, TT3_DOSE_ID+"");
+        tt3Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_SERVICE_AREA, strTt3FemaleService);
+        tt3Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA, strTt3MaleServicec);
+        tt3Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_SERVICE_AREA, tt3TotalService+"");
+        tt3Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_CATCHMENT_AREA, strTt3FemaleCatchment);
+        tt3Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_CATCHMENT_AREA, strTt3MaleCatchment);
+        tt3Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_CATCHMENT_AREA, tt3TotalCatchment+"");
+        tt3Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_CATCHMENT_AND_SERVICE_AREA, tt3TotalServiceAndCatchment+"");
+        tt3Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.REPORTING_MONTH, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
+
+        db.addUpdateVaccinationsBcgOpvTt(tt3Cv, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear, TT3_DOSE_ID+"");
+        app.sendBcgOpvTtToServer(TT3_DOSE_ID, tt3MaleService, tt3MaleCatchment, tt3FemaleService, tt3FemaleCatchment, 0, 0, 0, selectedMonth, selectedYear, modifiedOnString);
+
+
+
+        int tt4MaleService = Integer.parseInt(strTt4MaleServicec);
+        int tt4FemaleService    = Integer.parseInt(strTt4FemaleService);
+        int tt4MaleCatchment    = Integer.parseInt(strTt4MaleCatchment);
+        int tt4FemaleCatchment  = Integer.parseInt(strTt4FemaleCatchment);
+        int tt4TotalService     = tt4MaleService+tt4FemaleService;
+        int tt4TotalCatchment   = tt4MaleCatchment+tt4FemaleCatchment;
+        int tt4TotalServiceAndCatchment = tt4TotalService + tt4TotalCatchment;
+
+        ContentValues tt4Cv = new ContentValues();
+        tt4Cv.put(GIISContract.SyncColumns.UPDATED, 1);
+        tt4Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID, TT4_DOSE_ID+"");
+        tt4Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_SERVICE_AREA, strTt4FemaleService);
+        tt4Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA, strTt4MaleServicec);
+        tt4Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_SERVICE_AREA, tt4TotalService+"");
+        tt4Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_CATCHMENT_AREA, strTt4FemaleCatchment);
+        tt4Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_CATCHMENT_AREA, strTt4MaleCatchment);
+        tt4Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_CATCHMENT_AREA, tt4TotalCatchment+"");
+        tt4Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_CATCHMENT_AND_SERVICE_AREA, tt4TotalServiceAndCatchment+"");
+        tt4Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.REPORTING_MONTH, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
+
+        db.addUpdateVaccinationsBcgOpvTt(tt4Cv, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear, TT4_DOSE_ID+"");
+        app.sendBcgOpvTtToServer(TT4_DOSE_ID, tt4MaleService, tt4MaleCatchment, tt4FemaleService, tt4FemaleCatchment, 0, 0, 0, selectedMonth, selectedYear, modifiedOnString);
+
+
+        int tt5MaleService = Integer.parseInt(strTt5MaleServicec);
+        int tt5FemaleService    = Integer.parseInt(strTt5FemaleService);
+        int tt5MaleCatchment    = Integer.parseInt(strTt5MaleCatchment);
+        int tt5FemaleCatchment  = Integer.parseInt(strTt5FemaleCatchment);
+        int tt5TotalService     = tt5MaleService+tt5FemaleService;
+        int tt5TotalCatchment   = tt5MaleCatchment+tt5FemaleCatchment;
+        int tt5TotalServiceAndCatchment = tt5TotalService + tt5TotalCatchment;
+
+        ContentValues tt5Cv = new ContentValues();
+        tt5Cv.put(GIISContract.SyncColumns.UPDATED, 1);
+        tt5Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID, TT5_DOSE_ID+"");
+        tt5Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_SERVICE_AREA, strTt5FemaleService);
+        tt5Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA, strTt5MaleServicec);
+        tt5Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_SERVICE_AREA, tt5TotalService+"");
+        tt5Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_CATCHMENT_AREA, strTt5FemaleCatchment);
+        tt5Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_CATCHMENT_AREA, strTt5MaleCatchment);
+        tt5Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_CATCHMENT_AREA, tt5TotalCatchment+"");
+        tt5Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_CATCHMENT_AND_SERVICE_AREA, tt5TotalServiceAndCatchment+"");
+        tt5Cv.put(SQLHandler.VaccinationsBcgOpvTtColumns.REPORTING_MONTH, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
+
+        db.addUpdateVaccinationsBcgOpvTt(tt5Cv, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear, TT5_DOSE_ID+"");
+        app.sendBcgOpvTtToServer(TT5_DOSE_ID, tt5MaleService, tt5MaleCatchment, tt5FemaleService, tt5FemaleCatchment, 0, 0, 0, selectedMonth, selectedYear, modifiedOnString);
+
+
+        int tt5CompletedMaleService = Integer.parseInt(strTt5CompletedMaleServicec);
+        int tt5CompletedFemaleService    = Integer.parseInt(strTt5CompletedFemaleService);
+        int tt5CompletedMaleCatchment    = Integer.parseInt(strTt5CompletedMaleCatchment);
+        int tt5CompletedFemaleCatchment  = Integer.parseInt(strTt5CompletedFemaleCatchment);
+        int tt5CompletedTotalService     = tt5CompletedMaleService+tt5CompletedFemaleService;
+        int tt5CompletedTotalCatchment   = tt5CompletedMaleCatchment+tt5CompletedFemaleCatchment;
+        int tt5CompletedTotalServiceAndCatchment = tt5CompletedTotalService + tt5CompletedTotalCatchment;
+
+        ContentValues tt5CompletedCv = new ContentValues();
+        tt5CompletedCv.put(GIISContract.SyncColumns.UPDATED, 1);
+        tt5CompletedCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID, TT5_COMPLETED_DOSE_ID+"");
+        tt5CompletedCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_SERVICE_AREA, strTt5CompletedFemaleService);
+        tt5CompletedCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA, strTt5CompletedMaleServicec);
+        tt5CompletedCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_SERVICE_AREA, tt5CompletedTotalService+"");
+        tt5CompletedCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_CATCHMENT_AREA, strTt5CompletedFemaleCatchment);
+        tt5CompletedCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_CATCHMENT_AREA, strTt5CompletedMaleCatchment);
+        tt5CompletedCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_CATCHMENT_AREA, tt5CompletedTotalCatchment+"");
+        tt5CompletedCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.TOTAL_CATCHMENT_AND_SERVICE_AREA, tt5CompletedTotalServiceAndCatchment+"");
+        tt5CompletedCv.put(SQLHandler.VaccinationsBcgOpvTtColumns.REPORTING_MONTH, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
+
+        db.addUpdateVaccinationsBcgOpvTt(tt5CompletedCv, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear, TT5_COMPLETED_DOSE_ID+"");
+        app.sendBcgOpvTtToServer(TT5_COMPLETED_DOSE_ID, tt5CompletedMaleService, tt5CompletedMaleCatchment, tt5CompletedFemaleService, tt5CompletedFemaleCatchment, 0, 0, 0, selectedMonth, selectedYear, modifiedOnString);
 
         return true;
     }
@@ -1618,10 +1871,37 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         strOpvMaleService = "";
         strOpvFemaleCatchment = "";
         strOpvMaleCatchment = "";
-        strTtFemaleService = "";
-        strTtMaleServicec = "";
-        strTtFemaleCatchment = "";
-        strTtMaleCatchment = "";
+        strTt1FemaleService = "";
+        strTt1MaleServicec = "";
+        strTt1FemaleCatchment = "";
+        strTt1MaleCatchment = "";
+
+
+        strTt2FemaleService = "";
+        strTt2MaleServicec = "";
+        strTt2FemaleCatchment = "";
+        strTt2MaleCatchment = "";
+
+        strTt3FemaleService = "";
+        strTt3MaleServicec = "";
+        strTt3FemaleCatchment = "";
+        strTt3MaleCatchment = "";
+
+        strTt4FemaleService = "";
+        strTt4MaleServicec = "";
+        strTt4FemaleCatchment = "";
+        strTt4MaleCatchment = "";
+
+        strTt5FemaleService = "";
+        strTt5MaleServicec = "";
+        strTt5FemaleCatchment = "";
+        strTt5MaleCatchment = "";
+
+        strTt5CompletedFemaleService = "";
+        strTt5CompletedMaleServicec = "";
+        strTt5CompletedFemaleCatchment = "";
+        strTt5CompletedMaleCatchment = "";
+
         strml005StockedOutDays = "";
         strml005StockInHand = "";
         strml005Wastage = "";
@@ -1676,10 +1956,41 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         opvMaleServiceArea.setText("");
         opvFemaleCatchmentArea.setText("");
         opvMaleCatchmentArea.setText("");
-        ttFemaleCatchmentArea.setText("");
-        ttFemaleServiceArea.setText("");
-        ttMaleCatchmentArea.setText("");
-        ttMaleServiceArea.setText("");
+        tt1FemaleCatchmentArea.setText("");
+        tt1FemaleServiceArea.setText("");
+        tt1MaleCatchmentArea.setText("");
+        tt1MaleServiceArea.setText("");
+
+
+        tt2FemaleCatchmentArea.setText("");
+        tt2FemaleServiceArea.setText("");
+        tt2MaleCatchmentArea.setText("");
+        tt2MaleServiceArea.setText("");
+
+
+        tt3FemaleCatchmentArea.setText("");
+        tt3FemaleServiceArea.setText("");
+        tt3MaleCatchmentArea.setText("");
+        tt3MaleServiceArea.setText("");
+
+
+        tt4FemaleCatchmentArea.setText("");
+        tt4FemaleServiceArea.setText("");
+        tt4MaleCatchmentArea.setText("");
+        tt4MaleServiceArea.setText("");
+
+
+        tt5FemaleCatchmentArea.setText("");
+        tt5FemaleServiceArea.setText("");
+        tt5MaleCatchmentArea.setText("");
+        tt5MaleServiceArea.setText("");
+
+
+        tt5CompletedFemaleCatchmentArea.setText("");
+        tt5CompletedFemaleServiceArea.setText("");
+        tt5CompletedMaleCatchmentArea.setText("");
+        tt5CompletedMaleServiceArea.setText("");
+
 
         otherMajorImmunizationActivities.setText("");
         otherMajorImmunizationActivitiesNew.setText("");
@@ -1841,10 +2152,41 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         opvMaleServiceArea      = (EditText) findViewById(R.id.opv_male_service);
         opvFemaleCatchmentArea  = (EditText) findViewById(R.id.opv_female_catchment);
         opvMaleCatchmentArea    = (EditText) findViewById(R.id.opv_male_catchment);
-        ttFemaleServiceArea     = (EditText) findViewById(R.id.tt_female_service);
-        ttMaleServiceArea       = (EditText) findViewById(R.id.tt_male_service);
-        ttFemaleCatchmentArea   = (EditText) findViewById(R.id.tt_female_catchment);
-        ttMaleCatchmentArea     = (EditText) findViewById(R.id.tt_male_catchment);
+        tt1FemaleServiceArea     = (EditText) findViewById(R.id.tt1_female_service);
+        tt1MaleServiceArea       = (EditText) findViewById(R.id.tt1_male_service);
+        tt1FemaleCatchmentArea   = (EditText) findViewById(R.id.tt1_female_catchment);
+        tt1MaleCatchmentArea     = (EditText) findViewById(R.id.tt1_male_catchment);
+
+
+        tt2FemaleServiceArea     = (EditText) findViewById(R.id.tt2_female_service);
+        tt2MaleServiceArea       = (EditText) findViewById(R.id.tt2_male_service);
+        tt2FemaleCatchmentArea   = (EditText) findViewById(R.id.tt2_female_catchment);
+        tt2MaleCatchmentArea     = (EditText) findViewById(R.id.tt2_male_catchment);
+
+
+        tt3FemaleServiceArea     = (EditText) findViewById(R.id.tt3_female_service);
+        tt3MaleServiceArea       = (EditText) findViewById(R.id.tt3_male_service);
+        tt3FemaleCatchmentArea   = (EditText) findViewById(R.id.tt3_female_catchment);
+        tt3MaleCatchmentArea     = (EditText) findViewById(R.id.tt3_male_catchment);
+
+
+        tt4FemaleServiceArea     = (EditText) findViewById(R.id.tt4_female_service);
+        tt4MaleServiceArea       = (EditText) findViewById(R.id.tt4_male_service);
+        tt4FemaleCatchmentArea   = (EditText) findViewById(R.id.tt4_female_catchment);
+        tt4MaleCatchmentArea     = (EditText) findViewById(R.id.tt4_male_catchment);
+
+
+        tt5FemaleServiceArea     = (EditText) findViewById(R.id.tt5_female_service);
+        tt5MaleServiceArea       = (EditText) findViewById(R.id.tt5_male_service);
+        tt5FemaleCatchmentArea   = (EditText) findViewById(R.id.tt5_female_catchment);
+        tt5MaleCatchmentArea     = (EditText) findViewById(R.id.tt5_male_catchment);
+
+
+        tt5CompletedFemaleServiceArea     = (EditText) findViewById(R.id.tt5_Completed_female_service);
+        tt5CompletedMaleServiceArea       = (EditText) findViewById(R.id.tt5_Completed_male_service);
+        tt5CompletedFemaleCatchmentArea   = (EditText) findViewById(R.id.tt5_Completed_female_catchment);
+        tt5CompletedMaleCatchmentArea     = (EditText) findViewById(R.id.tt5_Completed_male_catchment);
+
 
         otherMajorImmunizationActivities    = (EditText) findViewById(R.id.other_major_immunization_activities);
         otherMajorImmunizationActivitiesNew = (EditText) findViewById(R.id.other_major_immunization_activities_new);

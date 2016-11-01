@@ -15,8 +15,8 @@ android {
         applicationId "mobile.tiis.staging"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 144
-        versionName "2.4.6-beta.2"
+        versionCode 145
+        versionName "2.4.8-beta.1"
         multiDexEnabled true
 
     }
