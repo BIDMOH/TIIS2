@@ -63,7 +63,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
     private EditText tt5CompletedFemaleServiceArea, tt5CompletedMaleServiceArea, tt5CompletedFemaleCatchmentArea, tt5CompletedMaleCatchmentArea;
 
 
-    private EditText otherMajorImmunizationActivities, otherMajorImmunizationActivitiesNew;
+    private EditText otherMajorImmunizationActivities;
     private EditText ml005Balance, ml005Received, ml005Used, ml005Wastage, ml005StockInHand, ml005StockedOutDays;
     private EditText ads05Balance, ads05Received, ads05Used, ads05Wastage, ads05StockInHand, ads05StockedOutDays;
     private EditText dillutionBalance, dillutionReceived, dillutionUsed, dillutionWastage, dillutionStockInHand, dillutionStockedOutDays;
@@ -74,7 +74,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
     //Variables
     private String strFeverCases, strFeverDeaths, strAfpCases, strAfpDeaths, strTetanusCases, strTetanusDeaths;
     private String strTempMax, strTempMin, strAlarmHigh, strAlarmLow;
-    private String strFixedConducted, strOutreachConducted, strOutreachPlanned, strOutreachCancelled, strOtherMajorImmunizationActivitiesNew;
+    private String strFixedConducted, strOutreachConducted, strOutreachPlanned, strOutreachCancelled;
     private String strBcgFemaleService, strBcgMaleService, strBcgFemaleCatchment, strBcgMaleCatchment, strOpvFemaleService, strOpvMaleService, strOpvFemaleCatchment, strOpvMaleCatchment;
     private String strTt1FemaleService, strTt1MaleServicec, strTt1FemaleCatchment, strTt1MaleCatchment;
     private String strTt2FemaleService, strTt2MaleServicec, strTt2FemaleCatchment, strTt2MaleCatchment;
@@ -511,7 +511,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         tetanusDeaths.setEnabled(flag);
 
         //Immunization Sessions
-        otherMajorImmunizationActivitiesNew.setEnabled(flag);
+        otherMajorImmunizationActivities.setEnabled(flag);
         outreachCancelled.setEnabled(flag);
         outreachConducted.setEnabled(flag);
         outreachPlanned.setEnabled(flag);
@@ -713,7 +713,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         highAlarm   = Float.parseFloat(alarmHigh.getText().toString());
         lowAlarm    = Float.parseFloat(alarmLow.getText().toString());
 
-        if((lowAlarm > highAlarm) || (minT > maxT)){
+        if((lowAlarm > highAlarm)){
             sayThis(
                     "Verify the input values and submit again",
                     1
@@ -1229,7 +1229,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         strOutreachCancelled    = outreachCancelledInt+"";
         outreachCancelled.setText(strOutreachCancelled);
 
-        strOtherMajorImmunizationActivitiesNew  = otherMajorImmunizationActivitiesNew.getText().toString().trim();
+        strOtherMajorImmunizationActivities  = otherMajorImmunizationActivities.getText().toString().trim();
     }
 
     public void getValue4(){
@@ -1434,12 +1434,12 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         cv.put(SQLHandler.ImmunizationSessionColumns.OUTREACH_CANCELLED, strOutreachCancelled);
         cv.put(SQLHandler.ImmunizationSessionColumns.OUTREACH_CONDUCTED, strOutreachConducted);
         cv.put(SQLHandler.ImmunizationSessionColumns.OUTREACH_PLANNED, strOutreachPlanned);
-        cv.put(SQLHandler.ImmunizationSessionColumns.OTHERACTIVITIES, strOtherMajorImmunizationActivitiesNew);
+        cv.put(SQLHandler.ImmunizationSessionColumns.OTHERACTIVITIES, strOtherMajorImmunizationActivities);
         cv.put(SQLHandler.ImmunizationSessionColumns.REPORTING_MONTH, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
 
         DatabaseHandler db = new DatabaseHandler(this);
         db.addUpdateImmunizationSessions(cv, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
-        app.sendImmunizationSessionsToServer(outreachPlanned, strOtherMajorImmunizationActivities, selectedMonth, selectedYear, modifiedOnString);
+        app.sendImmunizationSessionsToServer(outreachPlanned,URLEncoder.encode(strOtherMajorImmunizationActivities), selectedMonth, selectedYear, modifiedOnString);
 
         return true;
     }
@@ -1993,7 +1993,6 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 
 
         otherMajorImmunizationActivities.setText("");
-        otherMajorImmunizationActivitiesNew.setText("");
 
         ml005Balance.setText("");
         ml005Received.setText("");
@@ -2188,8 +2187,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         tt5CompletedMaleCatchmentArea     = (EditText) findViewById(R.id.tt5_Completed_male_catchment);
 
 
-        otherMajorImmunizationActivities    = (EditText) findViewById(R.id.other_major_immunization_activities);
-        otherMajorImmunizationActivitiesNew = (EditText) findViewById(R.id.other_major_immunization_activities_new);
+        otherMajorImmunizationActivities    = (EditText) findViewById(R.id.other_major_immunization_activities_new);
 
         //MaterialSpinner
         monthYearSpinner    = (MaterialSpinner) findViewById(R.id.mon_year_spiner);
@@ -2456,7 +2454,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
             outreachPlanned.setText(outlanned);
             outreachConducted.setText(outConducted);
             outreachCancelled.setText(outCancelled);
-            otherMajorImmunizationActivitiesNew.setText(otherActivities);
+            otherMajorImmunizationActivities.setText(otherActivities);
         }
 
     }

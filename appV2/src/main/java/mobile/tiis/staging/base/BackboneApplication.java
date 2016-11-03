@@ -4541,13 +4541,13 @@ public class BackboneApplication extends Application {
         final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
 
         String userId;
-        if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
+        if (LOGGED_IN_USER_ID == null) {
+            Log.d(TAG,"userid null");
             List<User> allUsers = databaseInstance.getAllUsers();
             User user = allUsers.get(0);
             userId = user.getId();
         } else {
-            client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
-            userId = getLOGGED_IN_USER_ID();
+            userId = LOGGED_IN_USER_ID;
         }
 
 

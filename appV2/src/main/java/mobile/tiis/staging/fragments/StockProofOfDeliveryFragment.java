@@ -144,50 +144,36 @@ public class StockProofOfDeliveryFragment extends Fragment{
 
 
     private void saveButtonClicked(){
+        int counter = rowCollectorList.size();
+        boolean success = true;
+        for (int i=0;i<counter;i++) {
+            HealthFacilityProofOfDelivery healthfacility = rowCollectorList.get(i);
 
-        boolean canContinue = true;
-        boolean balanceNegative = false;
-
-        int count = stockHostTable.getChildCount();
-        // check if there are rows that have only qty or reason selected
-        for (int i=0; i<count; i++) {
-            if (((EditText)stockHostTable.getChildAt(i).findViewById(R.id.quantity_received)).getText().toString().equals("")) {
-                canContinue = false;
-                break;
+            if(!(((EditText)stockHostTable.getChildAt(i).findViewById(R.id.quantity_received)).getText().toString()).equals(""))
+            {
+                healthfacility.setQuantity(Integer.valueOf(((((EditText) stockHostTable.getChildAt(i).findViewById(R.id.quantity_received)).getText().toString()))));
             }
+            ContentValues values = new ContentValues();
+            values.put(SQLHandler.StockDistributionsValuesColumns.QUANTITY,healthfacility.getQuantity());
+            values.put(SQLHandler.StockDistributionsValuesColumns.STATUS,"RECEIVED");
+
+            database.getWritableDatabase().update(SQLHandler.Tables.STOCK_DISTRIBUTIONS,values,
+                    SQLHandler.StockDistributionsValuesColumns.STOCK_DISTRIBUTION_ID + "= " + healthfacility.getStockDistributionId(),null);
+
+            Date date = BackboneActivity.dateParser(healthfacility.getDistributionDate());
+            String distributionDate = null;
+            try {
+                distributionDate = URLEncoder.encode(new SimpleDateFormat("yyyy-MM-dd").format(date), "utf-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+
+            application.updateStockDistribution(healthfacility.getFromHealthFacilityId(),healthfacility.getToHealthFacilityId(),healthfacility.getProductId(),healthfacility.getLotId(),healthfacility.getItemId(),healthfacility.getDistributionType(),distributionDate,healthfacility.getQuantity(),"RECEIVED",healthfacility.getStockDistributionId());
         }
-
-        if (canContinue) {
-            int counter = rowCollectorList.size();
-            boolean success = true;
-            for (int i=0;i<counter;i++) {
-                HealthFacilityProofOfDelivery healthfacility = rowCollectorList.get(i);
-                healthfacility.setQuantity(Integer.valueOf(((((EditText)stockHostTable.getChildAt(i).findViewById(R.id.quantity_received)).getText().toString()))));
-
-                ContentValues values = new ContentValues();
-                values.put(SQLHandler.StockDistributionsValuesColumns.QUANTITY,healthfacility.getQuantity());
-                values.put(SQLHandler.StockDistributionsValuesColumns.STATUS,"RECEIVED");
-
-                database.getWritableDatabase().update(SQLHandler.Tables.STOCK_DISTRIBUTIONS,values,
-                        SQLHandler.StockDistributionsValuesColumns.STOCK_DISTRIBUTION_ID + "= " + healthfacility.getStockDistributionId(),null);
-
-                Date date = BackboneActivity.dateParser(healthfacility.getDistributionDate());
-                String distributionDate = null;
-                try {
-                    distributionDate = URLEncoder.encode(new SimpleDateFormat("yyyy-MM-dd").format(date), "utf-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-
-                application.updateStockDistribution(healthfacility.getFromHealthFacilityId(),healthfacility.getToHealthFacilityId(),healthfacility.getProductId(),healthfacility.getLotId(),healthfacility.getItemId(),healthfacility.getDistributionType(),distributionDate,healthfacility.getQuantity(),"RECEIVED",healthfacility.getStockDistributionId());
-            }
-            if (success) {
-                sayThis(getResources().getString(R.string.saved_successfully),2);
-            }
-            addViewsToTable();
-        } else {
-            sayThis("Please fill all fields",1);
+        if (success) {
+            sayThis(getResources().getString(R.string.saved_successfully),2);
         }
+        addViewsToTable();
 
         addViewsToTable();
 
