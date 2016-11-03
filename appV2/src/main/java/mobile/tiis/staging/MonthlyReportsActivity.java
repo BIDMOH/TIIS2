@@ -212,17 +212,19 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
                     Log.d("THURSDAY_TOUCHUPS", "Selected month is "+selmonth);
                     Log.d("THURSDAY_TOUCHUPS", "This month is "+month);
 
-                    if ((month-selmonth)>1){
-                        setFieldsAccessibility(false);
-                        fieldsEditable = false;
-                    }else if ((month-selmonth)==1 && dayOfMonth>5){
-                        setFieldsAccessibility(false);
-                        fieldsEditable = false;
-                    }else {
-                        setFieldsAccessibility(true);
-                        fieldsEditable = true;
-                    }
+//                    if ((month-selmonth)>1){
+//                        setFieldsAccessibility(false);
+//                        fieldsEditable = false;
+//                    }else if ((month-selmonth)==1 && dayOfMonth>5){
+//                        setFieldsAccessibility(false);
+//                        fieldsEditable = false;
+//                    }else {
+//                        setFieldsAccessibility(true);
+//                        fieldsEditable = true;
+//                    }
 
+                    setFieldsAccessibility(true);
+                    fieldsEditable = true;
                     checkdatabaseForAlreadyReportedFormsForThisMonth();
                 }
             }
@@ -241,19 +243,21 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         int monthVal   = calendar.get(Calendar.MONTH);
         monthVal = monthVal+1;
 
-        int selectedmonth = Integer.parseInt(currentSelectedMonth.getMonth_number());
+//        int selectedmonth = Integer.parseInt(currentSelectedMonth.getMonth_number());
+//
+//        if ((monthVal-selectedmonth)>1){
+//            setFieldsAccessibility(false);
+//            fieldsEditable = false;
+//        }else if ((monthVal-selectedmonth)==1 && dayOfMonth>5){
+//            setFieldsAccessibility(false);
+//            fieldsEditable = false;
+//        }else {
+//            setFieldsAccessibility(true);
+//            fieldsEditable = true;
+//        }
 
-        if ((monthVal-selectedmonth)>1){
-            setFieldsAccessibility(false);
-            fieldsEditable = false;
-        }else if ((monthVal-selectedmonth)==1 && dayOfMonth>5){
-            setFieldsAccessibility(false);
-            fieldsEditable = false;
-        }else {
-            setFieldsAccessibility(true);
-            fieldsEditable = true;
-        }
-
+        setFieldsAccessibility(true);
+        fieldsEditable = true;
 
     }
 
