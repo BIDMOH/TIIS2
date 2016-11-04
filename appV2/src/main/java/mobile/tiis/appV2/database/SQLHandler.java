@@ -18,6 +18,7 @@
 
 package mobile.tiis.appv2.database;
 
+import android.os.ParcelUuid;
 import android.provider.BaseColumns;
 
 
@@ -155,6 +156,25 @@ public class SQLHandler {
                     + UIValuesColumns.CODE + " TEXT NOT NULL,"
                     + UIValuesColumns.VALUE + " TEXT NOT NULL,"
                     + UIValuesColumns.SCREEN + " TEXT NOT NULL); ";
+
+    public static final String SQLDistributedStock =
+            "CREATE TABLE IF NOT EXISTS " + Tables.STOCK_DISTRIBUTIONS + " ("
+                    + StockDistributionsValuesColumns.STOCK_DISTRIBUTION_ID + " INTEGER PRIMARY KEY,"
+                    + StockDistributionsValuesColumns.FROM_HEALTH_FACILITY_ID + " INTEGER NOT NULL,"
+                    + StockDistributionsValuesColumns.TO_HEALTH_FACILITY_ID + " INTEGER NOT NULL,"
+                    + StockDistributionsValuesColumns.PROGRAM_ID + " INTEGER NOT NULL,"
+                    + StockDistributionsValuesColumns.DISTRIBUTION_DATE + " TEXT ,"
+                    + StockDistributionsValuesColumns.ITEM_ID + " TEXT NOT NULL,"
+                    + StockDistributionsValuesColumns.PRODUCT_ID + " INTEGER NOT NULL,"
+                    + StockDistributionsValuesColumns.LOT_ID + " INTEGER NOT NULL,"
+                    + StockDistributionsValuesColumns.VIMS_LOT_ID + " INTEGER NOT NULL,"
+                    + StockDistributionsValuesColumns.VVM_STATUS + " TEXT ,"
+                    + StockDistributionsValuesColumns.QUANTITY + " TEXT ,"
+                    + StockDistributionsValuesColumns.DISTRIBUTION_TYPE + " TEXT ,"
+                    + StockDistributionsValuesColumns.UNIT_OF_MEASURE + " TEXT ,"
+                    + StockDistributionsValuesColumns.STATUS + " TEXT NOT NULL); ";
+
+
     public static final String SQLFillUitValuesTable =
             "INSERT INTO '" + Tables.UIVALUES + "' (" + UIValuesColumns.LANGUAGE_ID + "," + UIValuesColumns.CODE + "," + UIValuesColumns.VALUE + "," + UIValuesColumns.SCREEN + ") " +
                     "SELECT 1 AS '" + UIValuesColumns.LANGUAGE_ID + "','app_name' AS '" + UIValuesColumns.CODE
@@ -646,6 +666,121 @@ public class SQLHandler {
                     + GIISContract.ItemColumns.ENTRY_DATE + " DATE,"
                     + GIISContract.ItemColumns.EXIT_DATE + " DATE);";
 
+    public static final String SQLDeseaseSurveillanceData =
+            "CREATE TABLE IF NOT EXISTS " + Tables.DESEASES_SURVEILLANCE + " ("
+                    + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
+                    + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
+                    + GIISContract.SyncColumns.MODIFIED_AT + " DATE, "
+                    + GIISContract.SurveillanceColumns.ID + " TEXT,"
+                    + GIISContract.SurveillanceColumns.FEVER_MONTHLY_CASES + " TEXT,"
+                    + GIISContract.SurveillanceColumns.FEVER_DEATHS + " TEXT,"
+                    + GIISContract.SurveillanceColumns.APF_MONTHLY_CASES + " TEXT,"
+                    + GIISContract.SurveillanceColumns.APF_DEATHS + " TEXT,"
+                    + GIISContract.SurveillanceColumns.NEONATAL_TT_CASES + " TEXT,"
+                    + GIISContract.SurveillanceColumns.NEONATAL_TT_DEATHS + " TEXT,"
+                    + GIISContract.SurveillanceColumns.REPORTED_MONTH + " TEXT);";
+
+
+    public static final String SQLRefrigeratorColums =
+            "CREATE TABLE IF NOT EXISTS " + Tables.REFRIGERATOR_TEMPERATURE + " ("
+                    + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
+                    + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
+                    + GIISContract.SyncColumns.MODIFIED_AT + " DATE, "
+                    + GIISContract.RefrigeratorColums.ID + " TEXT,"
+                    + GIISContract.RefrigeratorColums.TEMP_MAX + " TEXT,"
+                    + GIISContract.RefrigeratorColums.TEMP_MIN + " TEXT,"
+                    + GIISContract.RefrigeratorColums.ALARM_HIGH_TEMP + " TEXT,"
+                    + GIISContract.RefrigeratorColums.ALARM_LOW_TEMP + " TEXT,"
+                    + GIISContract.RefrigeratorColums.REPORTED_MONTH + " TEXT);";
+
+    public static final String SQLStockStatus =
+            "CREATE TABLE IF NOT EXISTS " + Tables.STOCK_STATUS_REPORT + " ("
+                    + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
+                    + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
+                    + GIISContract.SyncColumns.MODIFIED_AT + " DATE, "
+                    + GIISContract.StockStatusColumns.ID + " TEXT,"
+                    + GIISContract.StockStatusColumns.ITEM_NAME + " TEXT,"
+                    + GIISContract.StockStatusColumns.OPPENING_BALANCE + " TEXT,"
+                    + GIISContract.StockStatusColumns.CLOSING_BALANCE + " TEXT,"
+                    + GIISContract.StockStatusColumns.DISCARDED_UNOPENED + " TEXT,"
+                    + GIISContract.StockStatusColumns.DOSES_RECEIVED + " TEXT,"
+                    + GIISContract.StockStatusColumns.REPORTED_MONTH + " TEXT);";
+
+    public static final String SQLImmunizationSession =
+            "CREATE TABLE IF NOT EXISTS " + Tables.IMMUNIZATION_SESSION + " ("
+                    + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
+                    + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
+                    + GIISContract.SyncColumns.MODIFIED_AT + " DATE, "
+                    + GIISContract.ImmunizationSessionColumns.FIXED_CONDUCTED + " TEXT,"
+                    + GIISContract.ImmunizationSessionColumns.OUTREACH_CANCELLED + " TEXT,"
+                    + GIISContract.ImmunizationSessionColumns.OUTREACH_CONDUCTED + " TEXT,"
+                    + GIISContract.ImmunizationSessionColumns.OUTREACH_PLANNED + " TEXT,"
+                    + GIISContract.ImmunizationSessionColumns.OTHERACTIVITIES + " TEXT,"
+                    + GIISContract.ImmunizationSessionColumns.REPORTING_MONTH + " TEXT);";
+
+    public static final String SQLVaccinationsBcgOpvTt =
+            "CREATE TABLE IF NOT EXISTS " + Tables.VACCINATIONS_BCG_OPV_TT + " ("
+                    + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
+                    + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
+                    + GIISContract.SyncColumns.MODIFIED_AT + " DATE, "
+                    + GIISContract.VaccinationsBcgOpvTtColumns.DOSE_ID + " TEXT,"
+                    + GIISContract.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA + " TEXT,"
+                    + GIISContract.VaccinationsBcgOpvTtColumns.FEMALE_SERVICE_AREA + " TEXT,"
+                    + GIISContract.VaccinationsBcgOpvTtColumns.TOTAL_SERVICE_AREA + " TEXT,"
+                    + GIISContract.VaccinationsBcgOpvTtColumns.COVERAGE_SERVICE_AREA + " TEXT,"
+                    + GIISContract.VaccinationsBcgOpvTtColumns.MALE_CATCHMENT_AREA + " TEXT,"
+                    + GIISContract.VaccinationsBcgOpvTtColumns.FEMALE_CATCHMENT_AREA + " TEXT,"
+                    + GIISContract.VaccinationsBcgOpvTtColumns.TOTAL_CATCHMENT_AREA + " TEXT,"
+                    + GIISContract.VaccinationsBcgOpvTtColumns.COVERAGE_CATCHMENT_AREA + " TEXT,"
+                    + GIISContract.VaccinationsBcgOpvTtColumns.COVERAGE_CATCHMENT_AND_SERVICE + " TEXT,"
+                    + GIISContract.VaccinationsBcgOpvTtColumns.TOTAL_CATCHMENT_AND_SERVICE_AREA + " TEXT,"
+                    + GIISContract.VaccinationsBcgOpvTtColumns.REPORTING_MONTH + " TEXT);";
+
+    public static final String SQLMajorImunizationActivities =
+            "CREATE TABLE IF NOT EXISTS " + Tables.MAJOR_IMMUNIZATION_ACTIVITIES + " ("
+                    + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
+                    + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
+                    + GIISContract.SyncColumns.MODIFIED_AT + " DATE, "
+                    + GIISContract.OtherMajorImmunizationActivitiesColumns.OTHER_ACTIVITIES + " TEXT,"
+                    + GIISContract.OtherMajorImmunizationActivitiesColumns.MODIFIED_ON + " TEXT,"
+                    + GIISContract.OtherMajorImmunizationActivitiesColumns.REPORTING_MONTH + " TEXT);";
+
+    public static final String SQLSyringesAndSafetyBoxes =
+            "CREATE TABLE IF NOT EXISTS " + Tables.SYRINGES_AND_SAFETY_BOXES + " ("
+                    + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
+                    + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
+                    + GIISContract.SyncColumns.MODIFIED_AT + " DATE, "
+                    + GIISContract.SyringesAndSafetyBoxesColumns.ITEM_NAME + " TEXT,"
+                    + GIISContract.SyringesAndSafetyBoxesColumns.OPENING_BALANCE + " TEXT,"
+                    + GIISContract.SyringesAndSafetyBoxesColumns.RECEIVED + " TEXT,"
+                    + GIISContract.SyringesAndSafetyBoxesColumns.USED + " TEXT,"
+                    + GIISContract.SyringesAndSafetyBoxesColumns.WASTAGE + " TEXT,"
+                    + GIISContract.SyringesAndSafetyBoxesColumns.STOCK_AT_HAND + " TEXT,"
+                    + GIISContract.SyringesAndSafetyBoxesColumns.STOCKED_OUT_DAYS + " TEXT,"
+                    + GIISContract.SyringesAndSafetyBoxesColumns.REPORTING_MONTH + " TEXT);";
+
+
+    public static final String SQLHealthFacilityVitaminA =
+            "CREATE TABLE IF NOT EXISTS " + Tables.HF_VITAMIN_A + " ("
+                    + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + GIISContract.SyncColumns.UPDATED + " INTEGER NOT NULL,"
+                    + GIISContract.SyncColumns.OWNERS_USERNAME + " TEXT,"
+                    + GIISContract.SyncColumns.MODIFIED_AT + " DATE, "
+                    + GIISContract.HfVitaminAColumns.OPENING_BALANCE + " TEXT,"
+                    + GIISContract.HfVitaminAColumns.RECEIVED + " TEXT,"
+                    + GIISContract.HfVitaminAColumns.TOTAL_ADMINISTERED + " TEXT,"
+                    + GIISContract.HfVitaminAColumns.WASTAGE + " TEXT,"
+                    + GIISContract.HfVitaminAColumns.STOCK_ON_HAND + " TEXT,"
+                    + GIISContract.HfVitaminAColumns.VITAMIN_NAME + " TEXT,"
+                    + GIISContract.HfVitaminAColumns.REPORTING_MONTH + " TEXT);";
+
     public static final String NoTimeConstraintVaccines =
             "SELECT * FROM (" +
                     "SELECT v.APPOINTMENT_ID, " +
@@ -675,6 +810,58 @@ public class SQLHandler {
         String UPDATED = "updated";
         String OWNERS_USERNAME = "owners_username";
         String MODIFIED_AT = "modfied_at";
+    }
+
+    public interface ImmunizationSessionColumns{
+        String FIXED_CONDUCTED = "FIXED_CONDUCTED";
+        String OUTREACH_PLANNED = "OUTREACH_PLANNED";
+        String OUTREACH_CONDUCTED = "OUTREACH_CONDUCTED";
+        String OUTREACH_CANCELLED = "OUTREACH_CANCELLED";
+        String MODIFIED_ON = "MODIFIED_ON";
+        String REPORTING_MONTH = "REPORTING_MONTH";
+        String OTHERACTIVITIES = "OTHERACTIVITIES";
+    }
+
+    public interface VaccinationsBcgOpvTtColumns{
+        String DOSE_ID = "DOSE_ID";
+        String MALE_SERVICE_AREA = "MALE_SERVICE_AREA";
+        String FEMALE_SERVICE_AREA = "FEMALE_SERVICE_AREA";
+        String TOTAL_SERVICE_AREA = "TOTAL_SERVICE_AREA";
+        String MALE_CATCHMENT_AREA = "MALE_CATCHMENT_AREA";
+        String FEMALE_CATCHMENT_AREA = "FEMALE_CATCHMENT_AREA";
+        String TOTAL_CATCHMENT_AREA = "TOTAL_CATCHMENT_AREA";
+        String COVERAGE_CATCHMENT_AREA = "COVERAGE_CATCHMENT_AREA";
+        String COVERAGE_SERVICE_AREA = "COVERAGE_SERVICE_AREA";
+        String COVERAGE_CATCHMENT_AND_SERVICE = "COVERAGE_CATCHMENT_AND_SERVICE";
+        String TOTAL_CATCHMENT_AND_SERVICE_AREA = "TOTAL_CATCHMENT_AND_SERVICE_AREA";
+        String REPORTING_MONTH = "REPORTING_MONTH";
+        String MODIFIED_ON = "MODIFIED_ON";
+    }
+
+    public interface OtherMajorImmunizationActivitiesColumns{
+        String OTHER_ACTIVITIES = "OTHER_ACTIVITIES";
+        String REPORTING_MONTH = "REPORTING_MONTH";
+    }
+
+    public interface SyringesAndSafetyBoxesColumns{
+        String ITEM_NAME = "ITEM_NAME";
+        String OPENING_BALANCE = "OPENING_BALANCE";
+        String RECEIVED = "RECEIVED";
+        String USED = "USED";
+        String WASTAGE = "WASTAGE";
+        String STOCK_AT_HAND = "STOCK_AT_HAND";
+        String STOCKED_OUT_DAYS = "STOCKED_OUT_DAYS";
+        String REPORTING_MONTH = "REPORTING_MONTH";
+    }
+
+    public interface HfVitaminAColumns{
+        String VITAMIN_NAME = "VITAMIN_NAME";
+        String OPENING_BALANCE = "OPENING_BALANCE";
+        String RECEIVED = "RECEIVED";
+        String TOTAL_ADMINISTERED = "TOTAL_ADMINISTERED";
+        String WASTAGE = "WASTAGE";
+        String STOCK_ON_HAND = "STOCK_ON_HAND";
+        String REPORTING_MONTH = "REPORTING_MONTH";
     }
 
     public interface HealthFacilityColumns {
@@ -841,6 +1028,36 @@ public class SQLHandler {
         String OUTREACH = "OUTREACH";
     }
 
+    public interface SurveillanceColumns{
+        String ID = "ID";
+        String FEVER_MONTHLY_CASES = "FEVER_MONTHLY_CASES";
+        String FEVER_DEATHS = "FEVER_DEATHS";
+        String APF_MONTHLY_CASES = "AFP_MONTHLY_CASES";
+        String APF_DEATHS = "AFP_DEATHS";
+        String NEONATAL_TT_CASES = "NEONATAL_TT_CASES";
+        String NEONATAL_TT_DEATHS = "NEONATAL_TT_DEATHS";
+        String REPORTED_MONTH = "REPORTED_MONTH";
+    }
+
+    public interface RefrigeratorColums{
+        String ID = "ID";
+        String TEMP_MIN = "TEMP_MIN";
+        String TEMP_MAX = "TEMP_MAX";
+        String ALARM_LOW_TEMP = "ALARM_LOW_TEMP";
+        String ALARM_HIGH_TEMP = "ALARM_HIGH_TEMP";
+        String REPORTED_MONTH = "REPORTED_MONTH";
+    }
+
+    public interface StockStatusColumns{
+        String ID = "ID";
+        String ITEM_NAME ="ITEM_NAME";
+        String OPPENING_BALANCE ="OPPENING_BALANCE";
+        String CLOSING_BALANCE = "CLOSING_BALANCE";
+        String DOSES_RECEIVED = "DOSES_RECEIVED";
+        String DISCARDED_UNOPENED = "DISCARDED_UNOPENED";
+        String REPORTED_MONTH = "REPORTED_MONTH";
+    }
+
 //    public static final String SQLScheduledVaccinationTable =
 //            "CREATE TABLE IF NOT EXISTS " + Tables.SCHEDULED_VACCINATION + " ("
 //                    + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -946,6 +1163,23 @@ public class SQLHandler {
     }
 
 
+    public interface StockDistributionsValuesColumns {
+        String STOCK_DISTRIBUTION_ID = "stock_distribution_id";
+        String FROM_HEALTH_FACILITY_ID = "from_health_facility_id";
+        String TO_HEALTH_FACILITY_ID = "to_health_facility_id";
+        String PROGRAM_ID = "program_id";
+        String DISTRIBUTION_DATE = "distribution_date";
+        String ITEM_ID = "item_id";
+        String PRODUCT_ID = "product_id";
+        String LOT_ID = "lot_id";
+        String VIMS_LOT_ID = "vims_lot_id";
+        String VVM_STATUS = "vvm_status";
+        String QUANTITY = "quantity";
+        String STATUS = "status";
+        String UNIT_OF_MEASURE = "unit_of_measure";
+        String DISTRIBUTION_TYPE = "distribution_type";
+    }
+
     public interface Tables {
         String APP_STATE = "app_state";
         String HEALTH_FACILITY = "health_facility";
@@ -955,6 +1189,7 @@ public class SQLHandler {
         String CHILD = "child";
         String STATUS = "status";
         String UIVALUES = "uivalues";
+        String STOCK_DISTRIBUTIONS = "stock_distributions";
         String COMMUNITY = "community";
         String WEIGHT = "weight";
         String CHILD_WEIGHT = "child_weight";
@@ -976,6 +1211,14 @@ public class SQLHandler {
         String BIRTHPLACE = "birthplace";
         String CONFIG = "config";
         String ADJUSTMENT_REASONS = "Adjustment_Reasons";
+        String REFRIGERATOR_TEMPERATURE = "Refrigerator_Temperature";
+        String DESEASES_SURVEILLANCE = "Deseases_Surveillance";
+        String STOCK_STATUS_REPORT = "stock_status_report";
+        String IMMUNIZATION_SESSION = "immunization_session";
+        String VACCINATIONS_BCG_OPV_TT = "vaccinations_bcg_opv_tt";
+        String MAJOR_IMMUNIZATION_ACTIVITIES = "major_immunization_activities";
+        String SYRINGES_AND_SAFETY_BOXES = "syringes_and_safety_boxes";
+        String HF_VITAMIN_A = "health_facility_vitamin_a";
     }
 
     public interface Views {

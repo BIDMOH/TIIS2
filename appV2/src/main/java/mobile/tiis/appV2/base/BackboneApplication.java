@@ -42,6 +42,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestHandle;
+import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 
@@ -65,6 +66,7 @@ import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 import mobile.tiis.appv2.database.DatabaseHandler;
+import mobile.tiis.appv2.database.GIISContract;
 import mobile.tiis.appv2.database.SQLHandler;
 import mobile.tiis.appv2.entity.AdjustmentReasons;
 import mobile.tiis.appv2.entity.AdministerVaccinesModel;
@@ -88,7 +90,12 @@ import mobile.tiis.appv2.entity.Weight;
 import mobile.tiis.appv2.helpers.Utils;
 import mobile.tiis.appv2.postman.PostmanModel;
 import mobile.tiis.appv2.util.Constants;
-
+import mobile.tiis.appv2.entity.BcgOpvTtSurveillance;
+import mobile.tiis.appv2.entity.DeseasesSurveilance;
+import mobile.tiis.appv2.entity.HealthFacilityColdChain;
+import mobile.tiis.appv2.entity.ImmunizationSession;
+import mobile.tiis.appv2.entity.SyringesAndSafetyBoxes;
+import mobile.tiis.appv2.entity.VitaminAStock;
 
 /**
  * Created by Teodor on 2/3/2015.
@@ -162,6 +169,11 @@ public class BackboneApplication extends Application {
     public static final String GET_AGE_DEFINITIONS_LIST = "GET_AGE_DEFINITIONS_LIST";
     public static final String GET_SCHEDULED_VACCINATION_LIST = "GET_SCHEDULED_VACCINATION_LIST";
     public static final String GET_NON_VACCINATION_REASON_LIST = "GET_NON_VACCINATION_REASON_LIST";
+
+    public static final String GET_FACILITY_COLD_CHAIN = "GET_FACILITY_COLD_CHAIN";
+
+    public static final String GET_STOCK_DISTRIBUTIONS= "GetHealthFacilityStockDistributions";
+
     //checkin
     public static final String SEARCH_BY_BARCODE = "SearchByBarcodeV1";
     public static final String UPDATE_VACCINATION_QUEUE = "UpdateVaccinationQueue";
@@ -1217,6 +1229,927 @@ public class BackboneApplication extends Application {
         return searchedChild;
 
     }
+
+
+    /**
+     * START: Implementation To Send monthly Report Data to the server
+     */
+
+    /**
+     * Method for saving coldchain data to the server
+     * @param tempMax
+     * @param tempMin
+     * @param alarmHigh
+     * @param alarmLow
+     * @param selectedMonth
+     * @param selectedYear
+     * @param modOn
+     */
+    public void sendColdChainToServer(double tempMax, double tempMin, int alarmHigh, int alarmLow, int selectedMonth, int selectedYear, String modOn) {
+
+        final StringBuilder webServiceUrl;
+        webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+        webServiceUrl.append("StoreHealthFacilityColdChain?healthFacilityId=").append(getLOGGED_IN_USER_HF_ID())
+                .append("&tempMax=").append(tempMax)
+                .append("&tempMin=").append(tempMin)
+                .append("&alarmHighTemp=").append(alarmHigh)
+                .append("&alarmLowTemp=").append(alarmLow)
+                .append("&reportingMonth=").append(selectedMonth)
+                .append("&userId=").append(getLOGGED_IN_USER_ID())
+                .append("&modifiedOn=").append(modOn)
+                .append("&reportingYear=").append(selectedYear);
+
+        Log.d(TAG, "cold chain URL : "+webServiceUrl);
+
+        getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
+    }
+
+
+    public void sendDeseaseSurveillanceToServer(int feverMCases, int feverDeaths, int apfMcases, int apfDeaths, int ttMCases, int ttDeaths, int selectedMonth, int selectedYear, String modifiedOnString) {
+
+        final StringBuilder webServiceUrl;
+        webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+        webServiceUrl.append("StoreHealthFacilityDeseaseSurvailance?healthFacilityId=").append(getLOGGED_IN_USER_HF_ID())
+                .append("&feverMonthlyCases=").append(feverMCases)
+                .append("&feverMonthlyDeaths=").append(feverDeaths)
+                .append("&AFPMonthlyCases=").append(apfMcases)
+                .append("&AFPDeaths=").append(apfDeaths)
+                .append("&neonatalTTCases=").append(ttMCases)
+                .append("&neonatalTTDeaths=").append(ttDeaths)
+                .append("&reportingMonth=").append(selectedMonth)
+                .append("&reportingYear=").append(selectedYear)
+                .append("&userId=").append(Integer.parseInt(getLOGGED_IN_USER_ID()))
+                .append("&modifiedOn=").append(modifiedOnString);
+
+        Log.d(TAG, "Desease Surveillance URL : "+webServiceUrl);
+
+        getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
+    }
+
+    public void sendBcgOpvTtToServer(int doseID, int maleServiceArea, int maleCatchmentArea, int femaleServiceArea, int femaleCatchmentArea, int coverageServiceArea, int coverageCatchmentArea,
+                                     int coverageCatchmentAndServiceArea, int selectedMonth, int selectedYear, String modifiedOnString) {
+
+        final StringBuilder webServiceUrl;
+
+        webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+        webServiceUrl.append("StoreHealthFacilityBcgOpv0AndTTVaccinations?healthFacilityId=").append(getLOGGED_IN_USER_HF_ID())
+                .append("&DoseId=").append(doseID)
+                .append("&MaleServiceArea=").append(maleServiceArea)
+                .append("&MaleCatchmentArea=").append(maleCatchmentArea)
+                .append("&FemaleServiceArea=").append(femaleServiceArea)
+                .append("&FemaleCatchmentArea=").append(femaleCatchmentArea)
+                .append("&CoverageServiceArea=").append(coverageServiceArea)
+                .append("&CoverageCatchmentArea=").append(coverageCatchmentArea)
+                .append("&CoverageCatchmentAndServiceArea=").append(coverageCatchmentAndServiceArea)
+                .append("&reportingMonth=").append(selectedMonth)
+                .append("&reportingYear=").append(selectedYear)
+                .append("&userId=").append(Integer.parseInt(getLOGGED_IN_USER_ID()))
+                .append("&modifiedOn=").append(modifiedOnString);
+
+        getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
+    }
+
+    public void sendImmunizationSessionsToServer(int outreachPlanned, String otherMajorImmunizationActivities, int reportingMonth, int reportingYear, String modifiedOn){
+        final StringBuilder webServiceUrl;
+
+        webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+        webServiceUrl.append("StoreHealthFacilityImmunizationSessions?healthFacilityId=").append(getLOGGED_IN_USER_HF_ID())
+                .append("&OutreachPlanned=").append(outreachPlanned)
+                .append("&OtherMajorImmunizationActivities=").append(otherMajorImmunizationActivities)
+                .append("&reportingMonth=").append(reportingMonth)
+                .append("&reportingYear=").append(reportingYear)
+                .append("&userId=").append(Integer.parseInt(getLOGGED_IN_USER_ID()))
+                .append("&modifiedOn=").append(modifiedOn);
+
+        getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
+    }
+
+    public void sendSyrinjesAndSafetyBoxesToServer(String itemName, int balance, int received, int stockinhand, int used, int wastage, int stockedoutdays, int reportingmonth, int reportingyear, String modifiedOn){
+        final StringBuilder webServiceUrl;
+
+        webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+        webServiceUrl.append("StoreHealthFacilitySyringesAndSafetyBoxesStockBalance?healthFacilityId=").append(getLOGGED_IN_USER_HF_ID())
+                .append("&ItemName=").append(itemName)
+                .append("&OpeningBalance=").append(balance)
+                .append("&Received=").append(received)
+                .append("&StockInHand=").append(stockinhand)
+                .append("&Used=").append(used)
+                .append("&wastage=").append(wastage)
+                .append("&StockedOutDays=").append(stockedoutdays)
+                .append("&reportingMonth=").append(reportingmonth)
+                .append("&reportingYear=").append(reportingyear)
+                .append("&userId=").append(Integer.parseInt(getLOGGED_IN_USER_ID()))
+                .append("&modifiedOn=").append(modifiedOn);
+
+        getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
+    }
+
+    public void sendVitaminAStockToServer(String vitaminName, int openingBalance, int received, int stockInHand, int totalAdministered, int selectedMonth, int selectedYear, String modifiedOnString, int wastage ){
+        final StringBuilder webServiceUrl;
+        webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+        webServiceUrl.append("StoreHealthFacilityVitaminAStockBalance?healthFacilityId=").append(getLOGGED_IN_USER_HF_ID())
+                .append("&VitaminName=").append(vitaminName)
+                .append("&OpeningBalance=").append(openingBalance)
+                .append("&Received=").append(received)
+                .append("&StockInHand=").append(stockInHand)
+                .append("&TotalAdministered=").append(totalAdministered)
+                .append("&reportingMonth=").append(selectedMonth)
+                .append("&reportingYear=").append(selectedYear)
+                .append("&userId=").append(Integer.parseInt(getLOGGED_IN_USER_ID()))
+                .append("&modifiedOn=").append(modifiedOnString)
+                .append("&wastage=").append(wastage);
+
+        Log.d("VITAMIN_A", "URL to Postman is : "+webServiceUrl.toString());
+        getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
+    }
+
+    public void parseColdChainMonthly(String selectedMonth, String selectedYear){
+        try {
+            if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
+                List<User> allUsers = databaseInstance.getAllUsers();
+                User user = allUsers.get(0);
+
+                client.setBasicAuth(user.getUsername(), user.getPassword(), true);
+            } else {
+                client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+            }
+
+            final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+            webServiceUrl.append("GetHealthFacilityColdChain?healthFacilityId=").append(URLEncoder.encode(LOGGED_IN_USER_HF_ID))
+                    .append("&reportingMonth=").append(URLEncoder.encode(selectedMonth))
+                    .append("&reportingYear=").append(URLEncoder.encode(selectedYear));
+
+            Log.d(TAG, "Health Facility Cold Chain..........  "+webServiceUrl.toString());
+
+            RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    Log.d("TIMR_COLD_CHAIN", "Error connection to server"+responseString);
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String response) {
+                    Log.d("TIMR_COLD_CHAIN", "Success adding cold chain "+response);
+                    List<HealthFacilityColdChain> objects = new ArrayList<HealthFacilityColdChain>();
+                    try {
+                        Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                        ObjectMapper mapper = new ObjectMapper();
+                        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                        objects = mapper.readValue(response, new TypeReference<List<HealthFacilityColdChain>>() {
+                        });
+
+                    } catch (JsonGenerationException e) {
+                        e.printStackTrace();
+                    } catch (JsonMappingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        for (HealthFacilityColdChain object : objects) {
+                            String reportingMonth = getDatabaseInstance().getMonthNameFromNumber(object.getReportedMonth()+"", BackboneApplication.this)+" "+object.getReportedYear();
+
+                            ContentValues values = new ContentValues();
+                            values.put(SQLHandler.SyncColumns.UPDATED, 1);
+                            values.put(SQLHandler.RefrigeratorColums.ALARM_HIGH_TEMP, object.getAlarmHighTemp()+"");
+                            values.put(SQLHandler.RefrigeratorColums.ALARM_LOW_TEMP, object.getAlarmLowTemp()+"");
+                            values.put(SQLHandler.RefrigeratorColums.TEMP_MIN, object.getTempMin()+"");
+                            values.put(SQLHandler.RefrigeratorColums.TEMP_MAX, object.getTempMax()+"");
+                            values.put(SQLHandler.RefrigeratorColums.REPORTED_MONTH, reportingMonth);
+                            DatabaseHandler db = getDatabaseInstance();
+                            db.addUpdateRefrigeratorTemperature(values, reportingMonth);
+                        }
+                    }
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     *
+     * This method is used to parse healthFacility Cold Chain upon first syncronization to receive all the coldchain data for that facility
+     */
+    public void parseHealthFacilityColdChainAsList(){
+        try {
+            if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
+                List<User> allUsers = databaseInstance.getAllUsers();
+                User user = allUsers.get(0);
+
+                client.setBasicAuth(user.getUsername(), user.getPassword(), true);
+            } else {
+                client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+            }
+
+            final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+            webServiceUrl.append("GetHealthFacilityColdChainAsList?healthFacilityId=").append(URLEncoder.encode(LOGGED_IN_USER_HF_ID));
+            //GetHealthFacilityColdChainAsList?healthFacilityId=17342
+
+            Log.d(TAG, "Health Facility Cold Chain..........  "+webServiceUrl.toString());
+
+            RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String response) {
+                    List<HealthFacilityColdChain> objects = new ArrayList<HealthFacilityColdChain>();
+                    try {
+                        Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                        ObjectMapper mapper = new ObjectMapper();
+                        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                        objects = mapper.readValue(response, new TypeReference<List<HealthFacilityColdChain>>() {
+                        });
+
+                    } catch (JsonGenerationException e) {
+                        e.printStackTrace();
+                    } catch (JsonMappingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        for (HealthFacilityColdChain object : objects) {
+                            String reportingMonth = getDatabaseInstance().getMonthNameFromNumber(object.getReportedMonth()+"", BackboneApplication.this)+" "+object.getReportedYear();
+
+                            ContentValues values = new ContentValues();
+                            values.put(SQLHandler.SyncColumns.UPDATED, 1);
+                            values.put(SQLHandler.RefrigeratorColums.ALARM_HIGH_TEMP, object.getAlarmHighTemp()+"");
+                            values.put(SQLHandler.RefrigeratorColums.ALARM_LOW_TEMP, object.getAlarmLowTemp()+"");
+                            values.put(SQLHandler.RefrigeratorColums.TEMP_MIN, object.getTempMin()+"");
+                            values.put(SQLHandler.RefrigeratorColums.TEMP_MAX, object.getTempMax()+"");
+                            values.put(SQLHandler.RefrigeratorColums.REPORTED_MONTH, reportingMonth);
+                            DatabaseHandler db = getDatabaseInstance();
+                            db.addUpdateRefrigeratorTemperature(values, reportingMonth);
+                        }
+                    }
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void parseDeseaseSurveilanceMonthly(String selectedMonth, String selectedYear){
+        try {
+            if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
+                List<User> allUsers = databaseInstance.getAllUsers();
+                User user = allUsers.get(0);
+
+                client.setBasicAuth(user.getUsername(), user.getPassword(), true);
+            } else {
+                client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+            }
+
+            final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+            webServiceUrl.append("GetHealthFacilityDeseaseSurvailance?healthFacilityId=").append(URLEncoder.encode(LOGGED_IN_USER_HF_ID))
+                    .append("&reportingMonth=").append(URLEncoder.encode(selectedMonth))
+                    .append("&reportingYear=").append(URLEncoder.encode(selectedYear));
+
+            Log.d(TAG, "Desease Surveillance  "+webServiceUrl.toString());
+
+            RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    Log.d("TIMR_DESEASES", "Error connection to server"+responseString);
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String response) {
+                    Log.d("TIMR_DESEASES", "Success adding Deseases "+response);
+                    List<DeseasesSurveilance> objects = new ArrayList<DeseasesSurveilance>();
+                    try {
+                        Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                        ObjectMapper mapper = new ObjectMapper();
+                        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                        objects = mapper.readValue(response, new TypeReference<List<DeseasesSurveilance>>() {
+                        });
+
+                    } catch (JsonGenerationException e) {
+                        e.printStackTrace();
+                    } catch (JsonMappingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        for (DeseasesSurveilance object : objects) {
+                            String reportingMonth = getDatabaseInstance().getMonthNameFromNumber(object.getReportedMonth()+"", BackboneApplication.this)+" "+object.getReportedYear();
+
+                            ContentValues values = new ContentValues();
+                            values.put(SQLHandler.SyncColumns.UPDATED, 1);
+                            values.put(SQLHandler.SurveillanceColumns.FEVER_MONTHLY_CASES, object.getFeverMonthlyCases()+"");
+                            values.put(SQLHandler.SurveillanceColumns.FEVER_DEATHS, object.getFeverMonthlyDeaths()+"");
+                            values.put(SQLHandler.SurveillanceColumns.APF_MONTHLY_CASES, object.getAFPMonthlyCases()+"");
+                            values.put(SQLHandler.SurveillanceColumns.APF_DEATHS, object.getAFPDeaths()+"");
+                            values.put(SQLHandler.SurveillanceColumns.NEONATAL_TT_CASES, object.getNeonatalTTCases()+"");
+                            values.put(SQLHandler.SurveillanceColumns.NEONATAL_TT_DEATHS, object.getNeonatalTTDeaths()+"");
+                            values.put(SQLHandler.SurveillanceColumns.REPORTED_MONTH, reportingMonth);
+                            DatabaseHandler db = getDatabaseInstance();
+                            db.addUpdateDeseasesSurveillance(values, reportingMonth);
+                        }
+                    }
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void parseDeseaseSurveillanceAsList(){
+
+        try {
+            if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
+                List<User> allUsers = databaseInstance.getAllUsers();
+                User user = allUsers.get(0);
+
+                client.setBasicAuth(user.getUsername(), user.getPassword(), true);
+            } else {
+                client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+            }
+
+            final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+            webServiceUrl.append("GetHealthFacilityDeseaseSurvailanceAsList?healthFacilityId=").append(URLEncoder.encode(LOGGED_IN_USER_HF_ID));
+            //GetHealthFacilityColdChainAsList?healthFacilityId=17342
+
+            Log.d(TAG, "Health Facility Desease Surveillance..........  "+webServiceUrl.toString());
+
+            RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String response) {
+                    List<DeseasesSurveilance> objects = new ArrayList<DeseasesSurveilance>();
+                    try {
+                        Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                        ObjectMapper mapper = new ObjectMapper();
+                        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                        objects = mapper.readValue(response, new TypeReference<List<DeseasesSurveilance>>() {
+                        });
+
+                    } catch (JsonGenerationException e) {
+                        e.printStackTrace();
+                    } catch (JsonMappingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        for (DeseasesSurveilance object : objects) {
+                            String seletedMonth = getDatabaseInstance().getMonthNameFromNumber(object.getReportedMonth()+"", BackboneApplication.this)+" "+object.getReportedYear();
+                            ContentValues values = new ContentValues();
+                            values.put(SQLHandler.SyncColumns.UPDATED, 1);
+                            values.put(SQLHandler.SurveillanceColumns.FEVER_MONTHLY_CASES, object.getFeverMonthlyCases()+"");
+                            values.put(SQLHandler.SurveillanceColumns.FEVER_DEATHS, object.getFeverMonthlyDeaths()+"");
+                            values.put(SQLHandler.SurveillanceColumns.APF_MONTHLY_CASES, object.getAFPMonthlyCases()+"");
+                            values.put(SQLHandler.SurveillanceColumns.APF_DEATHS, object.getAFPDeaths()+"");
+                            values.put(SQLHandler.SurveillanceColumns.NEONATAL_TT_CASES, object.getNeonatalTTCases()+"");
+                            values.put(SQLHandler.SurveillanceColumns.NEONATAL_TT_DEATHS, object.getNeonatalTTDeaths()+"");
+                            values.put(SQLHandler.SurveillanceColumns.REPORTED_MONTH, seletedMonth);
+
+                            DatabaseHandler db = getDatabaseInstance();
+                            db.addUpdateDeseasesSurveillance(values, seletedMonth);
+                        }
+                    }
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    public void parseBcgOpvTtMonthly(String selectedMonth, String selectedYear){
+        try {
+            if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
+                List<User> allUsers = databaseInstance.getAllUsers();
+                User user = allUsers.get(0);
+
+                client.setBasicAuth(user.getUsername(), user.getPassword(), true);
+            } else {
+                client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+            }
+
+            final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+            webServiceUrl.append("GetHealthFacilityBcgOpv0AndTTVaccinationsAsList?healthFacilityId=").append(URLEncoder.encode(LOGGED_IN_USER_HF_ID))
+                    .append("&reportingMonth=").append(URLEncoder.encode(selectedMonth))
+                    .append("&reportingYear=").append(URLEncoder.encode(selectedYear));
+
+            Log.d(TAG, "Desease Surveillance  "+webServiceUrl.toString());
+
+            RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    Log.d("BCG_OPV_TT", "Error connection to server"+responseString);
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String response) {
+                    Log.d("BCG_OPV_TT", "Success adding Deseases "+response);
+                    List<BcgOpvTtSurveillance> objects = new ArrayList<BcgOpvTtSurveillance>();
+                    try {
+                        Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                        ObjectMapper mapper = new ObjectMapper();
+                        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                        objects = mapper.readValue(response, new TypeReference<List<BcgOpvTtSurveillance>>() {
+                        });
+
+                    } catch (JsonGenerationException e) {
+                        e.printStackTrace();
+                    } catch (JsonMappingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        for (BcgOpvTtSurveillance object : objects) {
+                            String reportingMonth   = getDatabaseInstance().getMonthNameFromNumber(object.getReportedMonth()+"", BackboneApplication.this)+" "+object.getReportedYear();
+                            String dose_id          = object.getDoseId()+"";
+                            ContentValues values = new ContentValues();
+                            values.put(SQLHandler.SyncColumns.UPDATED, 1);
+                            values.put(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID, object.getDoseId()+"");
+                            values.put(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_SERVICE_AREA, object.getFemaleServiceArea()+"");
+                            values.put(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA, object.getMaleServiceArea()+"");
+                            values.put(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_CATCHMENT_AREA, object.getFemaleCatchmentArea()+"");
+                            values.put(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_CATCHMENT_AREA, object.getMaleCatchmentArea()+"");
+                            values.put(SQLHandler.VaccinationsBcgOpvTtColumns.COVERAGE_SERVICE_AREA, object.getCoverageServiceArea()+"");
+                            values.put(SQLHandler.VaccinationsBcgOpvTtColumns.COVERAGE_CATCHMENT_AREA, object.getCoverageCatchmentArea()+"");
+                            values.put(SQLHandler.VaccinationsBcgOpvTtColumns.COVERAGE_CATCHMENT_AND_SERVICE, object.getCoverageCatchmentAndServiceArea()+"");
+                            values.put(SQLHandler.VaccinationsBcgOpvTtColumns.REPORTING_MONTH, reportingMonth);
+                            DatabaseHandler db = getDatabaseInstance();
+                            db.addUpdateVaccinationsBcgOpvTt(values, reportingMonth, dose_id);
+                        }
+                    }
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void parseBcgOpvTtAsList(){
+
+        try {
+            if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
+                List<User> allUsers = databaseInstance.getAllUsers();
+                User user = allUsers.get(0);
+
+                client.setBasicAuth(user.getUsername(), user.getPassword(), true);
+            } else {
+                client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+            }
+
+            final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+            webServiceUrl.append("GetHealthFacilityBcgOpv0AndTTVaccinationsAsList?healthFacilityId=").append(URLEncoder.encode(LOGGED_IN_USER_HF_ID));
+            //GetHealthFacilityColdChainAsList?healthFacilityId=17342
+
+            Log.d(TAG, "BCG_OPV0_TT URL"+webServiceUrl.toString());
+
+            RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String response) {
+                    List<BcgOpvTtSurveillance> objects = new ArrayList<BcgOpvTtSurveillance>();
+                    try {
+                        Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                        ObjectMapper mapper = new ObjectMapper();
+                        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                        objects = mapper.readValue(response, new TypeReference<List<BcgOpvTtSurveillance>>() {
+                        });
+
+                    } catch (JsonGenerationException e) {
+                        e.printStackTrace();
+                    } catch (JsonMappingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        for (BcgOpvTtSurveillance object : objects) {
+                            String reportingMonth   = getDatabaseInstance().getMonthNameFromNumber(object.getReportedMonth()+"", BackboneApplication.this)+" "+object.getReportedYear();
+                            int dose_id        = object.getDoseId();
+                            ContentValues values = new ContentValues();
+                            values.put(SQLHandler.SyncColumns.UPDATED, 1);
+                            values.put(SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID, object.getDoseId()+"");
+                            values.put(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_SERVICE_AREA, object.getFemaleServiceArea()+"");
+                            values.put(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_SERVICE_AREA, object.getMaleServiceArea()+"");
+                            values.put(SQLHandler.VaccinationsBcgOpvTtColumns.FEMALE_CATCHMENT_AREA, object.getFemaleCatchmentArea()+"");
+                            values.put(SQLHandler.VaccinationsBcgOpvTtColumns.MALE_CATCHMENT_AREA, object.getMaleCatchmentArea()+"");
+                            values.put(SQLHandler.VaccinationsBcgOpvTtColumns.COVERAGE_SERVICE_AREA, object.getCoverageServiceArea()+"");
+                            values.put(SQLHandler.VaccinationsBcgOpvTtColumns.COVERAGE_CATCHMENT_AREA, object.getCoverageCatchmentArea()+"");
+                            values.put(SQLHandler.VaccinationsBcgOpvTtColumns.COVERAGE_CATCHMENT_AND_SERVICE, object.getCoverageCatchmentAndServiceArea()+"");
+                            values.put(SQLHandler.VaccinationsBcgOpvTtColumns.REPORTING_MONTH, reportingMonth);
+                            DatabaseHandler db = getDatabaseInstance();
+                            db.addUpdateVaccinationsBcgOpvTt(values, reportingMonth, dose_id+"");
+                        }
+                    }
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    public void parseSyringesAndSafetyBoxesMonthly(String selectedMonth, String selectedYear){
+        try {
+            if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
+                List<User> allUsers = databaseInstance.getAllUsers();
+                User user = allUsers.get(0);
+
+                client.setBasicAuth(user.getUsername(), user.getPassword(), true);
+            } else {
+                client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+            }
+
+            final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+
+            webServiceUrl.append("GetHealthFacilitySyringesAndSafetyBoxesStockBalanceAsList?healthFacilityId=").append(URLEncoder.encode(LOGGED_IN_USER_HF_ID))
+                    .append("&reportingMonth=").append(URLEncoder.encode(selectedMonth))
+                    .append("&reportingYear=").append(URLEncoder.encode(selectedYear));
+
+            Log.d(TAG, "Syrignes and Safety Boxes URL  "+webServiceUrl.toString());
+
+            RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    Log.d("SYRINGES_BOXES", "Error connection to server"+responseString);
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String response) {
+                    Log.d("SYRINGES_BOXES", "Success adding Deseases "+response);
+                    List<SyringesAndSafetyBoxes> objects = new ArrayList<SyringesAndSafetyBoxes>();
+                    try {
+                        Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                        ObjectMapper mapper = new ObjectMapper();
+                        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                        objects = mapper.readValue(response, new TypeReference<List<SyringesAndSafetyBoxes>>() {
+                        });
+
+                    } catch (JsonGenerationException e) {
+                        e.printStackTrace();
+                    } catch (JsonMappingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        for (SyringesAndSafetyBoxes object : objects) {
+                            String reportingMonth   = getDatabaseInstance().getMonthNameFromNumber(object.getReportedMonth()+"", BackboneApplication.this)+" "+object.getReportedYear();
+                            String item_name        = object.getItemName();
+                            ContentValues values = new ContentValues();
+                            values.put(SQLHandler.SyncColumns.UPDATED, 1);
+
+                            values.put(GIISContract.SyncColumns.UPDATED, 1);
+                            values.put(SQLHandler.SyringesAndSafetyBoxesColumns.ITEM_NAME, object.getItemName());
+                            values.put(SQLHandler.SyringesAndSafetyBoxesColumns.OPENING_BALANCE, object.getOpeningBalance()+"");
+                            values.put(SQLHandler.SyringesAndSafetyBoxesColumns.RECEIVED, object.getReceived()+"");
+                            values.put(SQLHandler.SyringesAndSafetyBoxesColumns.USED, object.getUsed()+"");
+                            values.put(SQLHandler.SyringesAndSafetyBoxesColumns.WASTAGE, object.getWastage()+"");
+                            values.put(SQLHandler.SyringesAndSafetyBoxesColumns.STOCK_AT_HAND, object.getStockInHand()+"");
+                            values.put(SQLHandler.SyringesAndSafetyBoxesColumns.STOCKED_OUT_DAYS, object.getStockedOutDays()+"");
+                            values.put(SQLHandler.SyringesAndSafetyBoxesColumns.REPORTING_MONTH, reportingMonth);
+                            DatabaseHandler db = getDatabaseInstance();
+                            db.addUpdateInjectionEquipment(values, reportingMonth, item_name);
+                        }
+                    }
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void parseSyringesAndSafetyBoxesAsList(){
+
+        try {
+            if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
+                List<User> allUsers = databaseInstance.getAllUsers();
+                User user = allUsers.get(0);
+
+                client.setBasicAuth(user.getUsername(), user.getPassword(), true);
+            } else {
+                client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+            }
+
+            //TODO Add Apropriate URL (SYRINGES AND SAFETY BOXES)
+            final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+            webServiceUrl.append("GetHealthFacilitySyringesAndSafetyBoxesStockBalanceAsList?healthFacilityId=").append(URLEncoder.encode(LOGGED_IN_USER_HF_ID));
+
+            Log.d(TAG, "SYRINGES URL  "+webServiceUrl.toString());
+
+            RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String response) {
+                    List<SyringesAndSafetyBoxes> objects = new ArrayList<SyringesAndSafetyBoxes>();
+                    try {
+                        Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                        ObjectMapper mapper = new ObjectMapper();
+                        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                        objects = mapper.readValue(response, new TypeReference<List<SyringesAndSafetyBoxes>>() {
+                        });
+
+                    } catch (JsonGenerationException e) {
+                        e.printStackTrace();
+                    } catch (JsonMappingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        for (SyringesAndSafetyBoxes object : objects) {
+                            String reportingMonth   = getDatabaseInstance().getMonthNameFromNumber(object.getReportedMonth()+"", BackboneApplication.this)+" "+object.getReportedYear();
+                            String item_name        = object.getItemName();
+                            ContentValues values = new ContentValues();
+                            values.put(SQLHandler.SyncColumns.UPDATED, 1);
+                            values.put(SQLHandler.SyringesAndSafetyBoxesColumns.ITEM_NAME, object.getItemName());
+                            values.put(SQLHandler.SyringesAndSafetyBoxesColumns.OPENING_BALANCE, object.getOpeningBalance()+"");
+                            values.put(SQLHandler.SyringesAndSafetyBoxesColumns.RECEIVED, object.getReceived()+"");
+                            values.put(SQLHandler.SyringesAndSafetyBoxesColumns.USED, object.getUsed()+"");
+                            values.put(SQLHandler.SyringesAndSafetyBoxesColumns.WASTAGE, object.getWastage()+"");
+                            values.put(SQLHandler.SyringesAndSafetyBoxesColumns.STOCK_AT_HAND, object.getStockInHand()+"");
+                            values.put(SQLHandler.SyringesAndSafetyBoxesColumns.STOCKED_OUT_DAYS, object.getStockedOutDays()+"");
+                            values.put(SQLHandler.SyringesAndSafetyBoxesColumns.REPORTING_MONTH, reportingMonth);
+                            DatabaseHandler db = getDatabaseInstance();
+                            db.addUpdateInjectionEquipment(values, reportingMonth, item_name);
+                        }
+                    }
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    public void parseVitamAMonthly(String selectedMonth, String selectedYear){
+        try {
+            if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
+                List<User> allUsers = databaseInstance.getAllUsers();
+                User user = allUsers.get(0);
+
+                client.setBasicAuth(user.getUsername(), user.getPassword(), true);
+            } else {
+                client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+            }
+
+            final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+            webServiceUrl.append("GetHealthFacilityVitaminAStockBalance?healthFacilityId=").append(URLEncoder.encode(LOGGED_IN_USER_HF_ID))
+                    .append("&reportingMonth=").append(URLEncoder.encode(selectedMonth))
+                    .append("&reportingYear=").append(URLEncoder.encode(selectedYear));
+
+            Log.d("VITAMIN_A", "Vitamin A URL  "+webServiceUrl.toString());
+
+            RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    Log.d("VITAMIN_A", "Error connection to server"+responseString);
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String response) {
+                    Log.d("VITAMIN_A", "Success adding Deseases "+response);
+                    List<VitaminAStock> objects = new ArrayList<VitaminAStock>();
+                    try {
+                        Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                        ObjectMapper mapper = new ObjectMapper();
+                        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                        objects = mapper.readValue(response, new TypeReference<List<VitaminAStock>>() {
+                        });
+
+                    } catch (JsonGenerationException e) {
+                        e.printStackTrace();
+                    } catch (JsonMappingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        for (VitaminAStock object : objects) {
+                            String reportingMonth   = getDatabaseInstance().getMonthNameFromNumber(object.getReportedMonth()+"", BackboneApplication.this)+" "+object.getReportedYear();
+                            String vitamin_name        = object.getVitaminName();
+                            ContentValues values = new ContentValues();
+                            values.put(SQLHandler.SyncColumns.UPDATED, 1);
+                            values.put(SQLHandler.HfVitaminAColumns.VITAMIN_NAME, object.getVitaminName());
+                            values.put(SQLHandler.HfVitaminAColumns.OPENING_BALANCE, object.getOpeningBalance()+"");
+                            values.put(SQLHandler.HfVitaminAColumns.RECEIVED, object.getReceived()+"");
+                            values.put(SQLHandler.HfVitaminAColumns.TOTAL_ADMINISTERED, object.getTotalAdministered()+"");
+                            values.put(SQLHandler.HfVitaminAColumns.WASTAGE, object.getWastage()+"");
+                            values.put(SQLHandler.HfVitaminAColumns.STOCK_ON_HAND, object.getStockInHand()+"");
+                            values.put(SQLHandler.HfVitaminAColumns.REPORTING_MONTH, reportingMonth);
+                            DatabaseHandler db = getDatabaseInstance();
+                            db.addUpdateVitaminAStock(values, reportingMonth, vitamin_name);
+                        }
+                    }
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void parseVitaminAStockAsList(){
+
+        try {
+            if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
+                List<User> allUsers = databaseInstance.getAllUsers();
+                User user = allUsers.get(0);
+
+                client.setBasicAuth(user.getUsername(), user.getPassword(), true);
+            } else {
+                client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+            }
+
+            final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+            webServiceUrl.append("GetHealthFacilityVitaminAStockBalanceAsList?healthFacilityId=").append(URLEncoder.encode(LOGGED_IN_USER_HF_ID));
+            //GetHealthFacilityColdChainAsList?healthFacilityId=17342
+
+            Log.d(TAG, "Health Facility Desease Surveillance..........  "+webServiceUrl.toString());
+
+            RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String response) {
+                    List<VitaminAStock> objects = new ArrayList<VitaminAStock>();
+                    try {
+                        Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                        ObjectMapper mapper = new ObjectMapper();
+                        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                        objects = mapper.readValue(response, new TypeReference<List<VitaminAStock>>() {
+                        });
+
+                    } catch (JsonGenerationException e) {
+                        e.printStackTrace();
+                    } catch (JsonMappingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        for (VitaminAStock object : objects) {
+                            String reportingMonth   = getDatabaseInstance().getMonthNameFromNumber(object.getReportedMonth()+"", BackboneApplication.this)+" "+object.getReportedYear();
+                            String vitamin_name        = object.getHealthFacilityId();
+                            ContentValues values = new ContentValues();
+                            values.put(SQLHandler.SyncColumns.UPDATED, 1);
+                            values.put(SQLHandler.HfVitaminAColumns.VITAMIN_NAME, object.getVitaminName());
+                            values.put(SQLHandler.HfVitaminAColumns.OPENING_BALANCE, object.getOpeningBalance()+"");
+                            values.put(SQLHandler.HfVitaminAColumns.RECEIVED, object.getReceived()+"");
+                            values.put(SQLHandler.HfVitaminAColumns.TOTAL_ADMINISTERED, object.getTotalAdministered()+"");
+                            values.put(SQLHandler.HfVitaminAColumns.WASTAGE, object.getWastage()+"");
+                            values.put(SQLHandler.HfVitaminAColumns.STOCK_ON_HAND, object.getStockInHand()+"");
+                            values.put(SQLHandler.HfVitaminAColumns.REPORTING_MONTH, reportingMonth);
+                            DatabaseHandler db = getDatabaseInstance();
+                            db.addUpdateVitaminAStock(values, reportingMonth, vitamin_name);
+                        }
+                    }
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    public void parseImmunizationSessionMonthly(String selectedMonth, String selectedYear){
+        try {
+            if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
+                List<User> allUsers = databaseInstance.getAllUsers();
+                User user = allUsers.get(0);
+
+                client.setBasicAuth(user.getUsername(), user.getPassword(), true);
+            } else {
+                client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+            }
+
+            final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+            webServiceUrl.append("GetHealthFacilityImmunizationSessions?healthFacilityId=").append(URLEncoder.encode(LOGGED_IN_USER_HF_ID))
+                    .append("&reportingMonth=").append(URLEncoder.encode(selectedMonth))
+                    .append("&reportingYear=").append(URLEncoder.encode(selectedYear));
+
+            Log.d("IMMUNIZATION_SESSION", "Sessions  URL  "+webServiceUrl.toString());
+
+            RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    Log.d("IMMUNIZATION_SESSION", "Error connection to server"+responseString);
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String response) {
+                    Log.d("IMMUNIZATION_SESSION", "Success adding Deseases "+response);
+                    List<ImmunizationSession> objects = new ArrayList<ImmunizationSession>();
+                    try {
+                        Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                        ObjectMapper mapper = new ObjectMapper();
+                        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                        objects = mapper.readValue(response, new TypeReference<List<ImmunizationSession>>() {
+                        });
+
+                    } catch (JsonGenerationException e) {
+                        e.printStackTrace();
+                    } catch (JsonMappingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        for (ImmunizationSession object : objects) {
+                            String reportingMonth   = getDatabaseInstance().getMonthNameFromNumber(object.getReportedMonth()+"", BackboneApplication.this)+" "+object.getReportedYear();
+
+                            ContentValues values = new ContentValues();
+                            values.put(SQLHandler.SyncColumns.UPDATED, 1);
+                            values.put(SQLHandler.ImmunizationSessionColumns.OTHERACTIVITIES, object.getOtherMajorImmunizationActivities());
+                            values.put(SQLHandler.ImmunizationSessionColumns.OUTREACH_PLANNED, object.getOutreachPlanned()+"");
+                            values.put(SQLHandler.ImmunizationSessionColumns.REPORTING_MONTH, reportingMonth);
+
+                            DatabaseHandler db = getDatabaseInstance();
+                            db.addUpdateImmunizationSessions(values, reportingMonth);
+                        }
+                    }
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void parseImmunizationSessionAsList(){
+
+        try {
+            if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
+                List<User> allUsers = databaseInstance.getAllUsers();
+                User user = allUsers.get(0);
+
+                client.setBasicAuth(user.getUsername(), user.getPassword(), true);
+            } else {
+                client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+            }
+
+            final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+            webServiceUrl.append("GetHealthFacilityImmunizationSessionsAsList?healthFacilityId=").append(URLEncoder.encode(LOGGED_IN_USER_HF_ID));
+            //GetHealthFacilityColdChainAsList?healthFacilityId=17342
+
+            Log.d(TAG, "Immunization Sessions  "+webServiceUrl.toString());
+
+            RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String response) {
+                    List<ImmunizationSession> objects = new ArrayList<ImmunizationSession>();
+                    try {
+                        Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                        ObjectMapper mapper = new ObjectMapper();
+                        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                        objects = mapper.readValue(response, new TypeReference<List<ImmunizationSession>>() {
+                        });
+
+                    } catch (JsonGenerationException e) {
+                        e.printStackTrace();
+                    } catch (JsonMappingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        for (ImmunizationSession object : objects) {
+                            String reportingMonth   = getDatabaseInstance().getMonthNameFromNumber(object.getReportedMonth()+"", BackboneApplication.this)+" "+object.getReportedYear();
+
+                            ContentValues values = new ContentValues();
+                            values.put(SQLHandler.SyncColumns.UPDATED, 1);
+                            values.put(SQLHandler.ImmunizationSessionColumns.OTHERACTIVITIES, object.getOtherMajorImmunizationActivities());
+                            values.put(SQLHandler.ImmunizationSessionColumns.OUTREACH_PLANNED, object.getOutreachPlanned()+"");
+                            values.put(SQLHandler.ImmunizationSessionColumns.REPORTING_MONTH, reportingMonth);
+
+                            DatabaseHandler db = getDatabaseInstance();
+                            db.addUpdateImmunizationSessions(values, reportingMonth);
+                        }
+                    }
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+
+    /**
+     * END: Services To Send monthly Report Data to the server
+     */
+
 
     /**
      * @param barcode
@@ -2653,6 +3586,12 @@ public class BackboneApplication extends Application {
         StringBuilder webServiceURL;
 
         switch (service) {
+            case GET_FACILITY_COLD_CHAIN:
+                webServiceURL = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC)
+                        .append("GetHealthFacilityColdChain?healthFacilityId=").append(rec_id)
+                        .append("&reportingMonth=").append(10)
+                        .append("&reportingYear=").append(2016);
+                break;
             case GET_PLACE:
                 webServiceURL = new StringBuilder(WCF_URL).append(PLACE_MANAGEMENT_SVC).append(PLACE_MANAGEMENT_SVC_GETTER).append(rec_id);
                 break;
@@ -2839,6 +3778,7 @@ public class BackboneApplication extends Application {
         getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
         return childId;
     }
+
 
 
     /**
@@ -3211,7 +4151,6 @@ public class BackboneApplication extends Application {
 
 
     //method for AdminVacc
-
     public void setUpdateURL(AdministerVaccinesModel a, String strNotes, String strBarcode) {
         String dateTodayTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(Calendar.getInstance().getTime());
         try {
@@ -3230,7 +4169,7 @@ public class BackboneApplication extends Application {
                 .append("&vaccineLotId=").append(URLEncoder.encode(a.getVaccination_lot()))
                 .append("&healthFacilityId=").append(URLEncoder.encode(getLOGGED_IN_USER_HF_ID()))
                 .append("&vaccinationDate=").append(URLEncoder.encode(formatted.format(a.getTime2())))
-                .append("&notes=").append(vnotes)
+                .append("&notes=").append(URLEncoder.encode(vnotes))
                 .append("&vaccinationStatus=").append(a.getStatus())
                 .append("&nonvaccinationReasonId=").append(a.getNon_vac_reason())
                 .append("&userId=").append(this.getLOGGED_IN_USER_ID())
@@ -3517,4 +4456,154 @@ public class BackboneApplication extends Application {
         super.attachBaseContext(base);
         MultiDex.install(this);
     }
+
+
+    public void parseStockDistributions() {
+        try {
+            String username, password;
+            if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
+                List<User> allUsers = databaseInstance.getAllUsers();
+                User user = allUsers.get(0);
+
+                username = user.getUsername();
+                password = user.getPassword();
+                client.setBasicAuth(username, password, true);
+            } else {
+                client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+            }
+
+            final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC).append(GET_STOCK_DISTRIBUTIONS);
+
+            RequestParams params = new RequestParams();
+            params.add("healthFacilityId",getLOGGED_IN_USER_HF_ID());
+
+
+            RequestHandle message = client.get(webServiceUrl.toString(), params,new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    throwable.printStackTrace();
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String response) {
+                    JSONArray arr = null;
+                    try {
+                        arr = new JSONArray(response);
+                        int count = arr.length();
+                        for (int i=0;i<count;i++) {
+                            JSONObject o = arr.getJSONObject(i);
+
+                            try {
+                                ContentValues adCV = new ContentValues();
+                                DatabaseHandler db = getDatabaseInstance();
+
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.STOCK_DISTRIBUTION_ID, o.getInt("StockDistributionId"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.FROM_HEALTH_FACILITY_ID, o.getInt("FromHealthFacilityId"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.TO_HEALTH_FACILITY_ID, o.getInt("ToHealthFacilityId"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.PROGRAM_ID, o.getInt("ProgramId"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.PRODUCT_ID, o.getInt("ProductId"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.QUANTITY, o.getString("Quantity"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.ITEM_ID, o.getInt("ItemId"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.LOT_ID, o.getInt("LotId"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.VIMS_LOT_ID, o.getInt("VimsLotId"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.VVM_STATUS, o.getString("VvmStatus"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.STATUS, o.getString("Status"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.DISTRIBUTION_TYPE, o.getString("DistributionType"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.DISTRIBUTION_DATE, o.getString("DistributionDate"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.UNIT_OF_MEASURE, o.getString("BaseUom"));
+
+                                if (db.isStockDistributionInDb(o.getInt("StockDistributionId"))) {
+                                    db.getWritableDatabase().update(SQLHandler.Tables.STOCK_DISTRIBUTIONS, adCV,
+                                            SQLHandler.StockDistributionsValuesColumns.STOCK_DISTRIBUTION_ID + "= " + o.getInt("StockDistributionId"), null);
+                                } else {
+                                    db.getWritableDatabase().insert(SQLHandler.Tables.STOCK_DISTRIBUTIONS, null, adCV);
+                                }
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+    public void updateStockDistribution(int fromHealthFacilityId, int toHealthFacilityId, int productId, int lotId, int itemId, String distributionType , String distributionDate,int quantity,String status,int StockDistributionId) {
+        final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+
+        String userId;
+        if (LOGGED_IN_USER_ID == null) {
+            Log.d(TAG,"userid null");
+            List<User> allUsers = databaseInstance.getAllUsers();
+            User user = allUsers.get(0);
+            userId = user.getId();
+        } else {
+            userId = LOGGED_IN_USER_ID;
+        }
+
+
+        webServiceUrl.append("updateHeathFacilityStockDistributions?fromHealthFacilityId=").append(fromHealthFacilityId)
+                .append("&toHealthFacilityId=").append(toHealthFacilityId)
+                .append("&productId=").append(productId)
+                .append("&lotId=").append(lotId)
+                .append("&itemId=").append(itemId)
+                .append("&distributionType=").append(distributionType)
+                .append("&distributionDate=").append(distributionDate)
+                .append("&quantity=").append(quantity)
+                .append("&status=").append(status)
+                .append("&userId=").append(userId)
+                .append("&StockDistributionId=").append(StockDistributionId);
+
+        Log.e(" save health faci", webServiceUrl + "");
+
+        getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
+//        try {
+//            String username, password;
+//            if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
+//                List<User> allUsers = databaseInstance.getAllUsers();
+//                User user = allUsers.get(0);
+//
+//                username = user.getUsername();
+//                password = user.getPassword();
+//                client.setBasicAuth(username, password, true);
+//            } else {
+//                client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+//            }
+//            final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+//            webServiceUrl.append("updateHeathFacilityStockDistributions?fromHealthFacilityId=").append(fromHealthFacilityId)
+//                    .append("&toHealthFacilityId=").append(toHealthFacilityId)
+//                    .append("&productId=").append(productId)
+//                    .append("&lotId=").append(lotId)
+//                    .append("&itemId=").append(itemId)
+//                    .append("&distributionType=").append(distributionType)
+//                    .append("&distributionDate=").append(distributionDate)
+//                    .append("&quantity=").append(quantity)
+//                    .append("&status=").append(status)
+//                    .append("&userId=").append(userId)
+//                    .append("&StockDistributionId=").append(StockDistributionId);
+//
+//            Log.e(" save health faci", webServiceUrl + "");
+//
+//            RequestHandle message = client.get(webServiceUrl.toString(),new TextHttpResponseHandler() {
+//                @Override
+//                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                    getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
+//                }
+//
+//                @Override
+//                public void onSuccess(int statusCode, Header[] headers, String response) {
+//
+//                }
+//            });
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+    }
+
 }

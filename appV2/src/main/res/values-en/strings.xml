@@ -250,7 +250,7 @@
     <string name="vaccine_lot">Lot Number</string>
     <string name="vaccination_date">Vaccination Date</string>
     <string name="done">Done</string>
-    <string name="reason">Reason \nif not done</string>
+    <string name="reason">Reasons</string>
     <string name="reason_only">Reason</string>
     <string name="modify">Modify</string>
     <string name="empty_phone">The phone number can not be empty</string>
@@ -389,6 +389,7 @@
     <string name="home_vac_queue">Vaccination Queue</string>
     <string name="home_monthly_plan">Monthly Plan</string>
     <string name="home_reports">Reports</string>
+    <string name="home_monthly_reports">Monthly Reports</string>
     <string name="home_stock">Stock</string>
     <string name="home_logout">Logout</string>
     <string name="error_editing_dob">Error. Cannot Edit</string>

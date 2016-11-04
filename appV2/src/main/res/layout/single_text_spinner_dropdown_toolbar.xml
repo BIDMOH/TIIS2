@@ -1,0 +1,17 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:background="@color/light_blue_600">
+
+    <TextView
+        android:id="@+id/rowtext"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:gravity="center_vertical"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:layout_marginLeft="16dp"
+        android:text="Item Two"/>
+
+</RelativeLayout>

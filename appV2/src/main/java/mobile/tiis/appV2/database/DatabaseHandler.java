@@ -69,8 +69,7 @@ import mobile.tiis.appv2.entity.VaccinationEvent;
 import mobile.tiis.appv2.entity.VaccinationQueueObject;
 import mobile.tiis.appv2.fragments.FragmentVaccineNameQuantity;
 import mobile.tiis.appv2.postman.PostmanModel;
-
-import static mobile.tiis.appv2.database.SQLHandler.Tables.POSTMAN;
+import mobile.tiis.appv2.entity.StockStatusEntity;
 
 /**
  * Created by Melisa on 02/02/2015.
@@ -79,7 +78,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String TAG = "DatabaseHandler";
 
     public static final String DATABASE_NAME = "giis_mobile.db";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
     public static boolean dbPreinstalled = false;
 
     public DatabaseHandler(Context context) {
@@ -176,6 +175,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.execSQL(SQLHandler.SQLHealthFacilityBalance);
             db.execSQL(SQLHandler.SQLActiveLotNumber);
 
+            db.execSQL(SQLHandler.SQLDeseaseSurveillanceData);
+            db.execSQL(SQLHandler.SQLRefrigeratorColums);
+            db.execSQL(SQLHandler.SQLStockStatus);
+            db.execSQL(SQLHandler.SQLImmunizationSession);
+            db.execSQL(SQLHandler.SQLVaccinationsBcgOpvTt);
+            db.execSQL(SQLHandler.SQLMajorImunizationActivities);
+            db.execSQL(SQLHandler.SQLSyringesAndSafetyBoxes);
+            db.execSQL(SQLHandler.SQLHealthFacilityVitaminA);
+            db.execSQL(SQLHandler.SQLDistributedStock);
+
         }
     }
 
@@ -213,6 +222,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + Tables.BIRTHPLACE);
             db.execSQL("DROP TABLE IF EXISTS " + Tables.CONFIG);
             db.execSQL("DROP TABLE IF EXISTS " + Tables.ACTIVE_LOT_NUMBERS);
+            db.execSQL("DROP TABLE IF EXISTS " + Tables.DESEASES_SURVEILLANCE);
+            db.execSQL("DROP TABLE IF EXISTS " + Tables.REFRIGERATOR_TEMPERATURE);
+            db.execSQL("DROP TABLE IF EXISTS " + Tables.STOCK_STATUS_REPORT);
+
+            db.execSQL("DROP TABLE IF EXISTS " + Tables.IMMUNIZATION_SESSION);
+            db.execSQL("DROP TABLE IF EXISTS " + Tables.VACCINATIONS_BCG_OPV_TT);
+            db.execSQL("DROP TABLE IF EXISTS " + Tables.MAJOR_IMMUNIZATION_ACTIVITIES);
+            db.execSQL("DROP TABLE IF EXISTS " + Tables.SYRINGES_AND_SAFETY_BOXES);
+            db.execSQL("DROP TABLE IF EXISTS " + Tables.HF_VITAMIN_A);
+            db.execSQL("DROP TABLE IF EXISTS " + Tables.STOCK_DISTRIBUTIONS);
+
             db.execSQL("DROP VIEW IF EXISTS " + SQLHandler.Views.MONTHLY_PLAN);
 
             // CREATE NEW INSTANCE OF SCHEMA
@@ -240,6 +260,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                                 "AND (vaccination_event.NONVACCINATION_REASON_ID=0  OR vaccination_event.NONVACCINATION_REASON_ID in (Select ID from nonvaccination_reason where KEEP_CHILD_DUE = 'true'))"
                         , new String[]{childId});
         return cursor;
+    }
+
+    public String getCurrentMonthName(BackboneApplication application){
+
+        String monthName = "";
+
+        java.util.Date now = new java.util.Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+        int month = calendar.get(Calendar.MONTH);
+
+        if (month == 9 || month == 10 || month == 11){
+            monthName = getMonthNameFromNumber((month+1)+"", application);
+        }else {
+            monthName = getMonthNameFromNumber(("0"+(month+1)), application);
+        }
+
+        return monthName;
     }
 
     /**
@@ -723,6 +761,194 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     }
 
+    public long addUpdateRefrigeratorTemperature(ContentValues cv, String selectedMonth){
+        SQLiteDatabase sd = getWritableDatabase();
+        long result = -1;
+        sd.beginTransaction();
+        try {
+            if (!isColdChainPresentInDb(selectedMonth)) {
+                Log.d("COLD_CHAIN_TAG", "Not present, adding new");
+                result = sd.insert(Tables.REFRIGERATOR_TEMPERATURE, null, cv);
+            } else {
+                Log.d("COLD_CHAIN_TAG", "Yes present Update");
+                result = sd.update(Tables.REFRIGERATOR_TEMPERATURE, cv, SQLHandler.RefrigeratorColums.REPORTED_MONTH + "=?", new String[]{selectedMonth});
+            }
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+    }
+
+    public long addUpdateDeseasesSurveillance(ContentValues cv, String selectedMonth){
+        SQLiteDatabase sd = getWritableDatabase();
+        long result = -1;
+        sd.beginTransaction();
+        try {
+            if (!isDeseaseSurveillanceEntryInDB(selectedMonth)) {
+                Log.d("COLD_CHAIN_TAG", "DESEASE: Not present, adding new");
+                result = sd.insert(Tables.DESEASES_SURVEILLANCE, null, cv);
+            } else {
+                Log.d("COLD_CHAIN_TAG", "DESEASE: Yes present Update");
+                result = sd.update(Tables.DESEASES_SURVEILLANCE, cv, SQLHandler.RefrigeratorColums.REPORTED_MONTH + "=?", new String[]{selectedMonth});
+            }
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+    }
+
+    /**
+     *
+     * @param cv
+     * @param selectedMonth (Month Name + Year)
+     * @param doseID
+     * @return
+     */
+    public long addUpdateVaccinationsBcgOpvTt(ContentValues cv, String selectedMonth, String doseID){
+        SQLiteDatabase sd = getWritableDatabase();
+        long result = -1;
+        sd.beginTransaction();
+        try {
+            if (!isaVaccinationsBcgOpvTtInDb(selectedMonth, doseID)) {
+                Log.d("COLD_CHAIN_TAG", "BCG_OPV_TT: Not present, adding new");
+                result = sd.insert(Tables.VACCINATIONS_BCG_OPV_TT, null, cv);
+            } else {
+                Log.d("COLD_CHAIN_TAG", "BCG_OPV_TT: Yes present Update");
+                result = sd.update(Tables.VACCINATIONS_BCG_OPV_TT, cv, SQLHandler.VaccinationsBcgOpvTtColumns.REPORTING_MONTH + "=? AND "+
+                        SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID+" =?",
+                        new String[]{
+                                selectedMonth,
+                                doseID
+                        });
+            }
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+    }
+
+    public long addUpdateInjectionEquipment(ContentValues cv, String selectedMonth, String itemName){
+        SQLiteDatabase sd = getWritableDatabase();
+        long result = -1;
+        sd.beginTransaction();
+        try {
+            if (!isInjectionItemInDb(selectedMonth, itemName)) {
+                Log.d("COLD_CHAIN_TAG", "Syringes: Not present, adding new");
+                result = sd.insert(Tables.SYRINGES_AND_SAFETY_BOXES, null, cv);
+            } else {
+                Log.d("COLD_CHAIN_TAG", "Syringes: Yes present Update");
+                result = sd.update(Tables.SYRINGES_AND_SAFETY_BOXES, cv, SQLHandler.SyringesAndSafetyBoxesColumns.REPORTING_MONTH + "=? AND "+
+                                SQLHandler.SyringesAndSafetyBoxesColumns.ITEM_NAME+" =?",
+                        new String[]{
+                                selectedMonth,
+                                itemName
+                        });
+            }
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+    }
+
+    public long addUpdateVitaminAStock(ContentValues cv, String selectedMonth, String vitaminName){
+        SQLiteDatabase sd = getWritableDatabase();
+        long result = -1;
+        sd.beginTransaction();
+        try {
+            if (!isVitaminAInDb(selectedMonth, vitaminName)) {
+                Log.d("VITAMIN_A", "Vitamin A : Not present, adding new");
+                result = sd.insert(Tables.HF_VITAMIN_A, null, cv);
+            } else {
+                Log.d("VITAMIN_A", "Vitamin A : Yes present Update");
+                result = sd.update(Tables.HF_VITAMIN_A, cv, SQLHandler.HfVitaminAColumns.REPORTING_MONTH + "=? AND "+
+                                SQLHandler.HfVitaminAColumns.VITAMIN_NAME+" =?",
+                        new String[]{
+                                selectedMonth,
+                                vitaminName
+                        });
+            }
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+    }
+
+    public long addUpdateImmunizationSessions(ContentValues cv, String selectedMonth){
+        SQLiteDatabase sd = getWritableDatabase();
+        long result = -1;
+        sd.beginTransaction();
+        try {
+            if (!isImmunizationSessionInDb(selectedMonth)) {
+                Log.d("COLD_CHAIN_TAG", "BCG_OPV_TT: Not present, adding new");
+                result = sd.insert(Tables.IMMUNIZATION_SESSION, null, cv);
+            } else {
+                Log.d("COLD_CHAIN_TAG", "BCG_OPV_TT: Yes present Update");
+                result = sd.update(Tables.IMMUNIZATION_SESSION, cv, SQLHandler.VaccinationsBcgOpvTtColumns.REPORTING_MONTH + "=?",
+                        new String[]{
+                                selectedMonth
+                        });
+            }
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+    }
+
+    public long addImmunizationSessions(ContentValues cv){
+        SQLiteDatabase sd = getWritableDatabase();
+        long result =-1;
+        sd.beginTransaction();
+        try {
+            result = sd.insert(Tables.IMMUNIZATION_SESSION, null, cv);
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+    }
+
+    public long addOtherMajorImmunizationActivities(ContentValues cv){
+        SQLiteDatabase sd = getWritableDatabase();
+        long result =-1;
+        sd.beginTransaction();
+        try {
+            result = sd.insert(Tables.MAJOR_IMMUNIZATION_ACTIVITIES, null, cv);
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+    }
 
     public long addUpdateHealthFacility(ContentValues cv, String healthFacId) {
         // RETRIEVE WRITEABLE DATABASE AND INSERT or UPDATE
@@ -3285,6 +3511,86 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor.close();
         return found;
     }
+
+
+
+    //MONTHLY REPORT METHODS BEGIN
+
+    private boolean isColdChainPresentInDb(String selectedMonth){
+        Log.d("COLD_CHAIN_TAG", "checking cold chain");
+        String selectQuery = "SELECT * FROM "+ Tables.REFRIGERATOR_TEMPERATURE + " WHERE "+ SQLHandler.RefrigeratorColums.REPORTED_MONTH+"='"+selectedMonth+"'";
+        Log.d("COLD_CHAIN_TAG", selectQuery);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        Log.d("COLD_CHAIN_TAG", "cursor size is : "+cursor.getCount());
+        boolean found = cursor.moveToFirst();
+        cursor.close();
+        return found;
+
+    }
+
+    private boolean isDeseaseSurveillanceEntryInDB(String selectedMonth){
+        Log.d("COLD_CHAIN_TAG", "checking Surveillance");
+        String selectQuery = "SELECT * FROM "+ Tables.DESEASES_SURVEILLANCE + " WHERE "+ SQLHandler.RefrigeratorColums.REPORTED_MONTH+"='"+selectedMonth+"'";
+        Log.d("COLD_CHAIN_TAG", selectQuery);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        Log.d("COLD_CHAIN_TAG", "cursor size is : "+cursor.getCount());
+        boolean found = cursor.moveToFirst();
+        cursor.close();
+        return found;
+    }
+
+    private boolean isaVaccinationsBcgOpvTtInDb(String selectedMonth, String doseId){
+        Log.d("COLD_CHAIN_TAG", "checking BCG_OPV_TT");
+        String selectQuery = "SELECT * FROM "+ Tables.VACCINATIONS_BCG_OPV_TT + " WHERE "+ SQLHandler.VaccinationsBcgOpvTtColumns.REPORTING_MONTH+"='"+selectedMonth+"' AND "+ SQLHandler.VaccinationsBcgOpvTtColumns.DOSE_ID+" = '"+doseId+"'";
+        Log.d("COLD_CHAIN_TAG", selectQuery);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        Log.d("COLD_CHAIN_TAG", "cursor size is : "+cursor.getCount());
+        boolean found = cursor.moveToFirst();
+        cursor.close();
+        return found;
+    }
+
+    private boolean isInjectionItemInDb(String selectedMonth, String itemName){
+        Log.d("COLD_CHAIN_TAG", "checking BCG_OPV_TT");
+        String selectQuery = "SELECT * FROM "+ Tables.SYRINGES_AND_SAFETY_BOXES + " WHERE "+ SQLHandler.SyringesAndSafetyBoxesColumns.REPORTING_MONTH+"='"+selectedMonth+"' AND "+ SQLHandler.SyringesAndSafetyBoxesColumns.ITEM_NAME+" = '"+itemName+"'";
+        Log.d("COLD_CHAIN_TAG", selectQuery);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        Log.d("COLD_CHAIN_TAG", "cursor size is : "+cursor.getCount());
+        boolean found = cursor.moveToFirst();
+        cursor.close();
+        return found;
+    }
+
+    private boolean isVitaminAInDb(String selectedMonth, String vitaminName){
+        Log.d("VITAMIN_A", "checking Vitamin A");
+        String selectQuery = "SELECT * FROM "+ Tables.HF_VITAMIN_A + " WHERE "+ SQLHandler.HfVitaminAColumns.REPORTING_MONTH+"='"+selectedMonth+"' AND "+ SQLHandler.HfVitaminAColumns.VITAMIN_NAME+" = '"+vitaminName+"'";
+        Log.d("VITAMIN_A", selectQuery);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        Log.d("VITAMIN_A", "cursor size is : "+cursor.getCount());
+        boolean found = cursor.moveToFirst();
+        cursor.close();
+        return found;
+    }
+
+    private boolean isImmunizationSessionInDb(String selectedMonth){
+        Log.d("IMMUNIZATION_SESSION", "checking Imunization Session");
+        String selectQuery = "SELECT * FROM "+ Tables.IMMUNIZATION_SESSION + " WHERE "+ SQLHandler.ImmunizationSessionColumns.REPORTING_MONTH+"='"+selectedMonth+"'";
+        Log.d("IMMUNIZATION_SESSION", selectQuery);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        Log.d("IMMUNIZATION_SESSION", "cursor size is : "+cursor.getCount());
+        boolean found = cursor.moveToFirst();
+        cursor.close();
+        return found;
+    }
+
+    //MONTHLY REPORT METHODS END
+
     public String getDomicilesFoundInChildAndNotInPlace() {
         //Query on Child Table
         String selectQuery = " SELECT DISTINCT(DOMICILE_ID) FROM CHILD WHERE DOMICILE_ID  NOT IN (SELECT ID FROM place) AND DOMICILE_ID <> 0";
@@ -3666,7 +3972,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * @param app needed to get access to appv2 resources (in this case strings.xml)
      * @return
      */
-    private String getMonthNameFromNumber(String monthNrAsString, BackboneApplication app){
+    public String getMonthNameFromNumber(String monthNrAsString, BackboneApplication app){
         String monthName = "";
         if(monthNrAsString.equals("01")){
             monthName = app.getString(R.string.january);
@@ -3692,6 +3998,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             monthName = app.getString(R.string.november);
         }else if(monthNrAsString.equals("12")){
             monthName = app.getString(R.string.december);
+        }
+
+        if(monthNrAsString.equals("1")){
+            monthName = app.getString(R.string.january);
+        }else if(monthNrAsString.equals("2")){
+            monthName = app.getString(R.string.february);
+        }else if(monthNrAsString.equals("3")){
+            monthName = app.getString(R.string.march);
+        }else if(monthNrAsString.equals("4")){
+            monthName = app.getString(R.string.april);
+        }else if(monthNrAsString.equals("5")){
+            monthName = app.getString(R.string.may);
+        }else if(monthNrAsString.equals("6")){
+            monthName = app.getString(R.string.june);
+        }else if(monthNrAsString.equals("7")){
+            monthName = app.getString(R.string.july);
+        }else if(monthNrAsString.equals("8")){
+            monthName = app.getString(R.string.august);
+        }else if(monthNrAsString.equals("9")){
+            monthName = app.getString(R.string.september);
         }
 
         return monthName;
@@ -3769,6 +4095,121 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // return container
         cursor.close();
         return childrenList;
+    }
+
+    public boolean isMonthYearPresentInStockStatusTable(String monthYear, String itemName){
+        Log.d("STOCK_STATUS", monthYear+" "+itemName+" Checking to see if present");
+        String query = "SELECT * FROM "+Tables.STOCK_STATUS_REPORT+
+                " WHERE "+ SQLHandler.StockStatusColumns.REPORTED_MONTH+"='"+monthYear+
+                "' AND "+SQLHandler.StockStatusColumns.ITEM_NAME+" = '"+itemName+"'";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.getCount()>0){
+            Log.d("STOCK_STATUS", monthYear+" "+itemName+" Present in the database");
+            return true;
+        }
+        else{
+            Log.d("STOCK_STATUS", monthYear+" "+itemName+ " Not present in the database!!");
+            return false;
+        }
+    }
+
+    public long addToStockStatusTable(String monthYear, String itemName, int adjustment, boolean add){
+
+        SQLiteDatabase sd = getWritableDatabase();
+        long result = -1;
+        sd.beginTransaction();
+        //The CV passed here contains only single variables to be updated
+        try {
+            if (isMonthYearPresentInStockStatusTable(monthYear, itemName)){
+                Log.d("STOCK_STATUS", monthYear+" "+itemName);
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(GIISContract.SyncColumns.UPDATED, 1);
+                if (add){
+                    String currentValue = "0";
+                    String query = "SELECT "+ SQLHandler.StockStatusColumns.DOSES_RECEIVED+" FROM "+Tables.STOCK_STATUS_REPORT
+                            +" WHERE "+ SQLHandler.StockStatusColumns.REPORTED_MONTH+" = "+monthYear+ " AND "
+                            + SQLHandler.StockStatusColumns.ITEM_NAME+ " = "+itemName;
+                    SQLiteDatabase db = this.getWritableDatabase();
+                    Cursor cursor = db.rawQuery(query, null);
+                    if (cursor.moveToFirst()){
+                        currentValue = cursor.getString(0);
+                    }
+                    int currentValueInteger = Integer.parseInt(currentValue);
+                    int adjustedValue   = currentValueInteger+adjustment;
+                    contentValues.put(SQLHandler.StockStatusColumns.DOSES_RECEIVED, adjustedValue+"");
+                }else {
+                    String currentValue = "0";
+                    String query = "SELECT "+ SQLHandler.StockStatusColumns.DISCARDED_UNOPENED+" FROM "+Tables.STOCK_STATUS_REPORT
+                            +" WHERE "+ SQLHandler.StockStatusColumns.REPORTED_MONTH+" = "+monthYear+ " AND "
+                            + SQLHandler.StockStatusColumns.ITEM_NAME+ " = "+itemName;
+                    SQLiteDatabase db = this.getWritableDatabase();
+                    Cursor cursor = db.rawQuery(query, null);
+                    if (cursor.moveToFirst()){
+                        currentValue = cursor.getString(0);
+                    }
+                    int currentValueInteger = Integer.parseInt(currentValue);
+                    int adjustedValue   = currentValueInteger+adjustment;
+                    contentValues.put(SQLHandler.StockStatusColumns.DISCARDED_UNOPENED, adjustedValue+"");
+                }
+                result = sd.update(Tables.STOCK_STATUS_REPORT, contentValues,
+                        GIISContract.StockStatusColumns.REPORTED_MONTH + " = ? AND "+ GIISContract.StockStatusColumns.ITEM_NAME + " = ?",
+                        new String[]{
+                                monthYear, itemName
+                        });
+            }else {
+                Log.d("STOCK_STATUS", monthYear+" "+itemName+" Not present Inserting now!!");
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(GIISContract.SyncColumns.UPDATED, 1);
+                contentValues.put(SQLHandler.StockStatusColumns.REPORTED_MONTH, monthYear);
+                contentValues.put(SQLHandler.StockStatusColumns.ITEM_NAME, itemName);
+                if (add){
+                    contentValues.put(SQLHandler.StockStatusColumns.DOSES_RECEIVED, adjustment+"");
+                }else{
+                    contentValues.put(SQLHandler.StockStatusColumns.DISCARDED_UNOPENED, adjustment+"");
+                }
+                result = sd.insert(Tables.STOCK_STATUS_REPORT, null, contentValues);
+            }
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+    }
+
+    public List<StockStatusEntity> generateStock(String dateFrom, String dateTo, BackboneApplication app){
+        List<StockStatusEntity> stockStatusEntities = new ArrayList<>();
+
+        String selectQuery = "";
+        selectQuery = selectQuery+"SELECT sv.code, count(sv.ID) ";
+        selectQuery = selectQuery+"FROM "+ Tables.VACCINATION_EVENT+" as ve join dose as d ON d.ID = ve.DOSE_ID ";
+        selectQuery = selectQuery+"JOIN "+ Tables.SCHEDULED_VACCINATION+" as sv ON d.SCHEDULED_VACCINATION_ID = sv.ID ";
+        selectQuery = selectQuery+"WHERE strftime('%Y-%m-%d',substr(ve.vaccination_date,7,10), 'unixepoch') >= "+dateFrom+" AND strftime('%Y-%m-%d',substr(ve.vaccination_date,7,10), 'unixepoch') <= "+ dateTo+" ";
+        selectQuery = selectQuery+"AND ve.vaccination_status = 'true' ";
+        selectQuery = selectQuery+"AND ve."+SQLHandler.VaccinationEventColumns.HEALTH_FACILITY_ID+" = '"+app.getLOGGED_IN_USER_HF_ID()+ " ";
+        selectQuery = selectQuery+"GROUP BY sv.CODE ";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                StockStatusEntity children = new StockStatusEntity();
+                children.setItemName(cursor.getString(0));
+                children.setImmunizedChildren(cursor.getString(1));
+                stockStatusEntities.add(children);
+            } while (cursor.moveToNext());
+        }
+
+        // return container
+        cursor.close();
+
+        return stockStatusEntities;
     }
 
 
@@ -4123,4 +4564,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return stockList;
     }
 
+
+    public boolean isStockDistributionInDb(int StockDistributionId) {
+        String selectQuery = "SELECT "+ SQLHandler.StockDistributionsValuesColumns.TO_HEALTH_FACILITY_ID+" FROM stock_distributions" +
+                " WHERE "+ SQLHandler.StockDistributionsValuesColumns.STOCK_DISTRIBUTION_ID+" = " + StockDistributionId;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            cursor.close();
+            return true;
+        } else {
+            cursor.close();
+            return false;
+        }
+    }
 }
