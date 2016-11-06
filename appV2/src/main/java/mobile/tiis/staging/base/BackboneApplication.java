@@ -880,7 +880,11 @@ public class BackboneApplication extends Application {
             db1.setTransactionSuccessful();
             db1.endTransaction();
         } catch (Exception e) {
-            db1.endTransaction();
+            try {
+                db1.endTransaction();
+            }catch (Exception e1){
+                e1.printStackTrace();
+            }
             e.printStackTrace();
         }
         Log.d("coze", "saving data to db returning = " + containsData);

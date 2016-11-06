@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import mobile.tiis.staging.R;
@@ -21,6 +22,8 @@ public class AefiTopListAdapter extends BaseAdapter {
     private Context context;
 
     private ArrayList<AefiListItem> items;
+
+    private SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yyyy");
 
     public AefiTopListAdapter(Context ctx, ArrayList<AefiListItem> lastAppointementAefiList){
         this.context = ctx;
@@ -52,6 +55,10 @@ public class AefiTopListAdapter extends BaseAdapter {
         }
 
         viewHolder.vaccineDoses.setText(item.getVaccines());
+
+        if(item.getVaccinationDate()!=null)
+            viewHolder.vaccineDate.setText(format.format(item.getVaccinationDate()));
+        viewHolder.healthFacility.setText(item.getHealthFacilityName());
 
         return rowView;
     }

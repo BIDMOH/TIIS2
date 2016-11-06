@@ -2743,7 +2743,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     aefiListItem.setVaccinationDate(BackboneActivity.dateParser(dateStr));
                 String dateStrAefi = cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationAppointmentColumns.AEFI_DATE));
                 if (dateStrAefi != null && !dateStrAefi.isEmpty())
-                    aefiListItem.setAefiDate(BackboneActivity.dateParser(dateStr));
+                    aefiListItem.setAefiDate(BackboneActivity.dateParser(dateStrAefi));
                 aefiListItem.setNotes(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationAppointmentColumns.NOTES)));
                 aefiListItems.add(aefiListItem);
             } while (cursor.moveToNext());
@@ -2788,10 +2788,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             ArrayList<AefiListItem> aefiListItems = new ArrayList<AefiListItem>();
             do {
+                Log.d("eafi","appointment_id="+cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationEventColumns.APPOINTMENT_ID))+" AND childId = "+childId);
                 AefiListItem aefiListItem = new AefiListItem();
                 aefiListItem.setAppointementId(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationEventColumns.APPOINTMENT_ID)));
-                aefiListItem.setVaccines(getAefiVaccinessInString(childId,
-                        cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationEventColumns.APPOINTMENT_ID))));
+
+                String vaccineName = getAefiVaccinessInString(childId, cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationEventColumns.APPOINTMENT_ID)));
+                Log.d("eafi","vaccines names = "+vaccineName);
+
+                aefiListItem.setVaccines(vaccineName);
                 aefiListItem.setHealthFacilityName(cursor.getString(cursor.getColumnIndex(SQLHandler.HealthFacilityColumns.NAME)));
                 if (cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationEventColumns.VACCINATION_STATUS)).equalsIgnoreCase("true")) {
                     aefiListItem.setDone(true);
@@ -2809,7 +2813,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     aefiListItem.setVaccinationDate(BackboneActivity.dateParser(dateStr));
                 String dateStrAefi = cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationAppointmentColumns.AEFI_DATE));
                 if (dateStrAefi != null && !dateStrAefi.isEmpty())
-                    aefiListItem.setAefiDate(BackboneActivity.dateParser(dateStr));
+                    aefiListItem.setAefiDate(BackboneActivity.dateParser(dateStrAefi));
                 aefiListItem.setNotes(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationAppointmentColumns.NOTES)));
                 aefiListItems.add(aefiListItem);
             } while (cursor.moveToNext());
@@ -2828,9 +2832,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 " where " +
                 "ve." + SQLHandler.VaccinationEventColumns.CHILD_ID + " = '" + childId + "' AND " +
                 "ve." + SQLHandler.VaccinationEventColumns.APPOINTMENT_ID + " = '" + appointementId + "' AND " +
-                "ve." + SQLHandler.VaccinationEventColumns.VACCINATION_STATUS + " = 'true' AND " +
-                "(va." + SQLHandler.VaccinationAppointmentColumns.AEFI + " = 'false' or " +
-                "va." + SQLHandler.VaccinationAppointmentColumns.AEFI + " is null)";
+                "ve." + SQLHandler.VaccinationEventColumns.VACCINATION_STATUS + " = 'true'";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         StringBuilder sb = new StringBuilder("");
