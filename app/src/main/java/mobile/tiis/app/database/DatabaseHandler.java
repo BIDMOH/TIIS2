@@ -80,7 +80,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String TAG = "DatabaseHandler";
 
 //    public static final String DATABASE_NAME = "giis_mobile.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     public static boolean dbPreinstalled = false;
 
     private static final File dbfile = new File(FOLDER_EXTERNAL_DIRECTORY, "/giis_mobile.db");

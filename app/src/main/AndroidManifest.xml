@@ -126,10 +126,6 @@
         </receiver>
 
         <service
-            android:name="mobile.tiis.app.postman.SynchronisationService"
-            android:exported="false" >
-        </service>
-        <service
             android:name="mobile.tiis.app.postman.CheckForChangesSynchronisationService"
             android:exported="false"
             >
@@ -171,6 +167,7 @@
             </intent-filter>
         </receiver>
 
+        <service android:name=".postman.PostmanSynchronizationService" />
 
 
 

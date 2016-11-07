@@ -1,23 +1,15 @@
 package mobile.tiis.app;
 
-import android.accounts.Account;
-import android.accounts.AccountAuthenticatorResponse;
-import android.accounts.AccountManager;
 import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.database.DatabaseUtils;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,7 +20,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -49,10 +40,6 @@ import android.widget.Toast;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-import com.google.android.gcm.GCMRegistrar;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -64,22 +51,16 @@ import java.io.InputStream;
 
 import mobile.tiis.app.CustomViews.BadgeDrawable;
 import mobile.tiis.app.GCMCommunication.CommonUtilities;
-import mobile.tiis.app.GCMCommunication.ServerUtilities;
 import mobile.tiis.app.GCMCommunication.WakeLocker;
-import mobile.tiis.app.R;
 import mobile.tiis.app.adapters.DrawerListItemsAdapter;
 import mobile.tiis.app.base.BackboneActivity;
 import mobile.tiis.app.base.BackboneApplication;
 import mobile.tiis.app.database.DatabaseHandler;
-import mobile.tiis.app.database.SQLHandler;
 import mobile.tiis.app.fragments.FragmentStackManager;
 import mobile.tiis.app.fragments.VaccinationQueueFragment;
 import mobile.tiis.app.helpers.Utils;
-import mobile.tiis.app.postman.CheckForChangesSynchronisationService;
+import mobile.tiis.app.postman.PostmanSynchronizationService;
 import mobile.tiis.app.postman.RoutineAlarmReceiver;
-import mobile.tiis.app.postman.SynchronisationService;
-
-import static mobile.tiis.app.util.DatabaseUtil.copyDatabaseToExtStg;
 
 /**
  *  Created by issymac on 10/12/15.
@@ -188,7 +169,7 @@ public class HomeActivityRevised extends BackboneActivity {
     private final BroadcastReceiver mHandlePostmanCountReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String count = intent.getExtras().getString(SynchronisationService.SynchronisationService_MESSAGE);
+            String count = intent.getExtras().getString(PostmanSynchronizationService.SynchronisationService_MESSAGE);
             Log.d(TAG,"Received postman count = "+count);
 
 
@@ -307,7 +288,8 @@ public class HomeActivityRevised extends BackboneActivity {
 
             }
             RoutineAlarmReceiver.setAlarmCheckForChangesInChild(this);
-            RoutineAlarmReceiver.setPostmanAlarm(this);
+            Intent i = new Intent(HomeActivityRevised.this, PostmanSynchronizationService.class);
+            startService(i);
             nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(MenuItem item) {
@@ -714,7 +696,7 @@ public class HomeActivityRevised extends BackboneActivity {
                 application.parseStock();
 
                 //Starting the service to upload all postman data
-                Intent i = new Intent(HomeActivityRevised.this, SynchronisationService.class);
+                Intent i = new Intent(HomeActivityRevised.this, PostmanSynchronizationService.class);
                 startService(i);
 
             }
