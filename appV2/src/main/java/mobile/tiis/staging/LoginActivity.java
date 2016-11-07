@@ -698,6 +698,7 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
                         values.put(SQLHandler.UserColumns.HEALTH_FACILITY_ID, app.getLOGGED_IN_USER_HF_ID());
                         values.put(SQLHandler.UserColumns.ID, app.getLOGGED_IN_USER_ID());
                         values.put(SQLHandler.UserColumns.USERNAME, app.getLOGGED_IN_USERNAME());
+                        values.put(SQLHandler.UserColumns.PASSWORD, app.getLOGGED_IN_USER_PASS());
                         databaseHandler.addUser(values);
 
                         Log.d(TAG, "initiating offline for " + username + " password = " + password);

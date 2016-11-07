@@ -58,6 +58,7 @@ import mobile.tiis.staging.database.DatabaseHandler;
 import mobile.tiis.staging.fragments.FragmentStackManager;
 import mobile.tiis.staging.fragments.VaccinationQueueFragment;
 import mobile.tiis.staging.helpers.Utils;
+import mobile.tiis.staging.postman.PostmanSynchronizationService;
 import mobile.tiis.staging.postman.RoutineAlarmReceiver;
 import mobile.tiis.staging.postman.SynchronisationService;
 import mobile.tiis.staging.CustomViews.BadgeDrawable;
@@ -290,7 +291,8 @@ public class HomeActivityRevised extends BackboneActivity {
 
             }
             RoutineAlarmReceiver.setAlarmCheckForChangesInChild(this);
-            RoutineAlarmReceiver.setPostmanAlarm(this);
+//            RoutineAlarmReceiver.setPostmanAlarm(this);
+            startService(new Intent(this, PostmanSynchronizationService.class));
             nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(MenuItem item) {

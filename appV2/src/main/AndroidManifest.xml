@@ -79,7 +79,7 @@
         android:smallScreens="true"
         android:xlargeScreens="true" />
 
-    <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name=".base.BackboneApplication"
@@ -132,29 +132,29 @@
 
         <service
             android:name=".postman.SynchronisationService"
-            android:exported="false"></service>
+            android:exported="false"/>
         <service
             android:name=".postman.CheckForChangesSynchronisationService"
-            android:exported="false"></service>
+            android:exported="false"/>
 
         <activity
             android:name=".ChildDetailsActivity"
             android:parentActivityName=".HomeActivityRevised"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
             android:name=".StockActivityRevised"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:parentActivityName=".HomeActivityRevised"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
             android:name=".ReportsActivityRevised"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:parentActivityName=".HomeActivityRevised"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
             android:name=".AdministerVaccineOfflineRevisedActivity"
             android:parentActivityName=".HomeActivityRevised"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden"/>
 
         <service android:name=".GCMCommunication.GCMService" />
 
@@ -173,10 +173,12 @@
             android:name=".MonthlyReportsActivity"
             android:label="@string/title_activity_monthly_reports"
             android:theme="@style/TIISTheme"
-            android:parentActivityName=".HomeActivityRevised"></activity>
+            android:parentActivityName=".HomeActivityRevised"/>
 
         <activity android:name="mobile.tiis.staging.LotSettingsActivity">
         </activity>
+
+        <service android:name=".postman.PostmanSynchronizationService"/>
 
     </application>
 

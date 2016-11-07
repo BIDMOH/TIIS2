@@ -21,41 +21,43 @@ package mobile.tiis.staging.postman;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Base64;
 import android.util.Log;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpGet;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.SyncHttpClient;
+
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
+import java.util.concurrent.Executors;
 
+import cz.msebera.android.httpclient.Header;
+import mobile.tiis.staging.GCMCommunication.CommonUtilities;
 import mobile.tiis.staging.base.BackboneApplication;
 import mobile.tiis.staging.database.DatabaseHandler;
 import mobile.tiis.staging.helpers.Utils;
-import mobile.tiis.staging.GCMCommunication.CommonUtilities;
 /**
  * Created by Rubin on 3/18/2015.
  * subclass for handling asynchronous task requests in
  * a service on a separate thread.
  */
 public class SynchronisationService extends IntentService {
-
-
     public static final String SynchronisationService_MESSAGE = "mobile.giis.app.SynchronisationService.MSG";
     private static final String TAG = SynchronisationService.class.getSimpleName();
 
     public SynchronisationService() {
         super(SynchronisationService.class.getName());
     }
+    private DatabaseHandler db;
+    private BackboneApplication app;
 
     private DefaultHttpClient httpClient;
     public void onCreate() {
         super.onCreate();
+        app = (BackboneApplication) getApplication();
+        db = app.getDatabaseInstance();
         httpClient = new DefaultHttpClient();
         Log.d(TAG, ">>>onCreate()");
     }
@@ -71,9 +73,7 @@ public class SynchronisationService extends IntentService {
     protected void onHandleIntent(Intent intent) {
 
         Log.d(TAG,"synchronizing postman data");
-        BackboneApplication app = (BackboneApplication) getApplication();
         synchronized (app) {
-            DatabaseHandler db = app.getDatabaseInstance();
             List<PostmanModel> listPosts = db.getAllPosts();
             try {
                 sendResult(listPosts.size() + "", getApplicationContext());
@@ -81,7 +81,7 @@ public class SynchronisationService extends IntentService {
                 sendResult("0", getApplicationContext());
             }
             if (listPosts != null && app.getLOGGED_IN_USER_PASS() != null && app.getLOGGED_IN_USERNAME() != null) {
-                for (PostmanModel p : listPosts) {
+                for (final PostmanModel p : listPosts) {
                     sendResult(db.getAllPosts().size()+"",getApplicationContext());
                     Log.d(TAG,"url = "+p.getUrl());
                     if(p.getUrl() == null || p.getUrl().trim().equals("")){
@@ -94,89 +94,80 @@ public class SynchronisationService extends IntentService {
                         }
                         continue;
                     }
-                    try {
-                        HttpGet httpGet = new HttpGet(p.getUrl());
-                        Utils.writeNetworkLogFileOnSD("SynchronisationService" + " "+ Utils.returnDeviceIdAndTimestamp(getApplicationContext())+p.getUrl() );
-                        httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((app.getLOGGED_IN_USERNAME() + ":" + app.getLOGGED_IN_USER_PASS()).getBytes(), Base64.NO_WRAP));
-                        HttpResponse httpResponse = httpClient.execute(httpGet);
-                        if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                            Log.d(TAG,"code not 200. Code = "+httpResponse.getStatusLine().getStatusCode());
-                            InputStream inputStream = httpResponse.getEntity().getContent();
-                            // the response as a string if needed
-                            String response = Utils.getStringFromInputStream(inputStream);
-                            Log.d(TAG,"code not 200. Responce = "+response);
-                            Utils.writeNetworkLogFileOnSD(
-                                    Utils.returnDeviceIdAndTimestamp(getApplicationContext())
-                                            + " StatusCode " + httpResponse.getStatusLine().getStatusCode()
-                                            + " ReasonPhrase " + httpResponse.getStatusLine().getReasonPhrase()
-                                            + " ProtocolVersion " + httpResponse.getStatusLine().getProtocolVersion());
-                            return;
-                        }
 
-                        // the input stream of the response
-                        InputStream inputStream = httpResponse.getEntity().getContent();
-                        // the response as a string if needed
-                        String response = Utils.getStringFromInputStream(inputStream);
-                        Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+response);
+                    AsyncHttpClient aClient = new SyncHttpClient();
+                    aClient.setURLEncodingEnabled(false);
+                    aClient.setThreadPool(Executors.newFixedThreadPool(50));
+                    aClient.setBasicAuth(app.getLOGGED_IN_USERNAME(),app.getLOGGED_IN_USER_PASS());
+                    aClient.get(p.getUrl(), new AsyncHttpResponseHandler(true) {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                            String response = new String(responseBody);
+                            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+response);
+                            int codeNeg99 = 0;
+                            try{
+                                JSONObject jobj= null;
+                                jobj = new JSONObject(response);
+                                codeNeg99 = jobj.getInt("id");
 
-                        int codeNeg99 = 0;
-                        try{
-                            JSONObject jobj= null;
-                            jobj = new JSONObject(response);
-                            codeNeg99 = jobj.getInt("id");
+                                Log.d(TAG,"received id = "+codeNeg99);
+                            }catch(Exception e){
+                                e.printStackTrace();
+                            }
 
-                            Log.d(TAG,"received id = "+codeNeg99);
-                        }catch(Exception e){
-                            e.printStackTrace();
-                        }
-
-                        if(codeNeg99 != -99 && codeNeg99 != -1) {
-                            boolean res = false;
-                            do {
-                                try {
-                                    Thread.sleep(10000);
-                                    res = db.deletePostFromPostman(p.getPostId());
-                                    Log.d("POSTMAN COMPLETE","url = "+p.getUrl());
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }while(!res);
-                        }else{
-                            //check if this was a duplicate barcode registered in the server. if so delete the child
-                            if(p.getUrl().contains("RegisterChildWithAppoitmentsWithMothersHivStatusAndTT2VaccineStatusAndCatchment")){
-                               String barcode =  p.getUrl().split("=")[1].substring(0,10);
-                                Log.d(TAG,"barcode = "+barcode);
-                                db.removeChildFromChildTable(db.getChildIdByBarcode(barcode));
-
-                                //In some very minor cases a network connectivity may be disrupted after posting information to the server but before receiving the results
-                                //this inturns leads to some scenariors where the data remains in postman and on resending a childregistration request
-                                // that has already been registered in the server for the second time, the server will keep returning a -1 results code showing that the child is a dublicate.
-                                //To fix such issues after deletion of a dublicate registration entry from the postman and the database it is important to synch that childs details from the server into the device
-                                //by using the child's barcode.
-
-                                //TODO create a custome method for broadcasting child updates to only this specific device and not all other devices with this  child's data
-                                app.broadcastChildUpdatesWithBarcodeId(barcode);
-
-                                boolean res1 = false;
+                            if(codeNeg99 != -99 && codeNeg99 != -1) {
+                                boolean res = false;
                                 do {
                                     try {
                                         Thread.sleep(10000);
-                                        res1 = db.deletePostFromPostman(p.getPostId());
+                                        res = db.deletePostFromPostman(p.getPostId());
                                         Log.d("POSTMAN COMPLETE","url = "+p.getUrl());
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
-                                }while(!res1);
+                                }while(!res);
+                            }else{
+                                //check if this was a duplicate barcode registered in the server. if so delete the child
+                                if(p.getUrl().contains("RegisterChildWithAppoitmentsWithMothersHivStatusAndTT2VaccineStatusAndCatchment")){
+                                    String barcode =  p.getUrl().split("=")[1].substring(0,10);
+                                    Log.d(TAG,"barcode = "+barcode);
+                                    db.removeChildFromChildTable(db.getChildIdByBarcode(barcode));
 
+                                    //In some very minor cases a network connectivity may be disrupted after posting information to the server but before receiving the results
+                                    //this  leads to some scenariors where the data remains in postman and on resending a childregistration request
+                                    // that has already been registered in the server for the second time, the server will keep returning a -1 results code showing that the child is a dublicate.
+                                    //To fix such issues after deletion of a dublicate registration entry from the postman and the database it is important to synch that childs details from the server into the device
+                                    //by using the child's barcode.
+
+                                    //TODO create a custome method for broadcasting child updates to only this specific device and not all other devices with this  child's data
+                                    app.broadcastChildUpdatesWithBarcodeId(barcode);
+
+                                    boolean res1 = false;
+                                    do {
+                                        try {
+                                            Thread.sleep(10000);
+                                            res1 = db.deletePostFromPostman(p.getPostId());
+                                            Log.d("POSTMAN COMPLETE","url = "+p.getUrl());
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }while(!res1);
+
+                                }
                             }
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        continue;
-                    } catch (IllegalStateException ise){
-                        ise.printStackTrace();
-                        continue;
-                    }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+
+                            Log.d(TAG,"code not 200. Code = "+statusCode);
+                            Log.d(TAG,"code not 200. Responce = "+new String(responseBody));
+                            Utils.writeNetworkLogFileOnSD(
+                                    Utils.returnDeviceIdAndTimestamp(getApplicationContext())
+                                            + " StatusCode " + statusCode);
+                            return;
+                        }
+                    });
                 }
             }
             app.parseGCMChildrenInQueueById();
