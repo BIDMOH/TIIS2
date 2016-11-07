@@ -84,12 +84,16 @@ public class PostmanSynchronizationService extends Service {
             synchronized (app) {
 
                 List<PostmanModel> listPosts = db.getAllPosts();
+                Log.d(TAG,"getting all posts");
+                Log.d(TAG,"user = "+userName);
+                Log.d(TAG,"password = "+password);
                 try {
                     sendResult(listPosts.size() + "", getApplicationContext());
                 }catch (Exception e){
                     sendResult("0", getApplicationContext());
                 }
                 if (listPosts != null && userName != null && password != null) {
+                    Log.d(TAG,"postman count  = "+listPosts.size());
                     for (final PostmanModel p : listPosts) {
                         sendResult(db.getAllPosts().size()+"",getApplicationContext());
                         Log.d(TAG,"url = "+p.getUrl());

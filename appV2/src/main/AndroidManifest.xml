@@ -131,9 +131,6 @@
         </receiver>
 
         <service
-            android:name=".postman.SynchronisationService"
-            android:exported="false"/>
-        <service
             android:name=".postman.CheckForChangesSynchronisationService"
             android:exported="false"/>
 
