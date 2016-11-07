@@ -168,9 +168,6 @@ public class PostmanSynchronizationService extends Service {
 
                             @Override
                             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-
-                                Log.d(TAG,"code not 200. Code = "+statusCode);
-                                Log.d(TAG,"code not 200. Responce = "+new String(responseBody));
                                 Utils.writeNetworkLogFileOnSD(
                                         Utils.returnDeviceIdAndTimestamp(getApplicationContext())
                                                 + " StatusCode " + statusCode);
