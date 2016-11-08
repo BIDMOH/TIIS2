@@ -32,6 +32,7 @@ public class PostmanSynchronizationService extends Service {
     private DatabaseHandler db;
     private BackboneApplication app;
     private String userName,password;
+    private AsyncHttpClient aClient = new SyncHttpClient();
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -52,6 +53,11 @@ public class PostmanSynchronizationService extends Service {
 
         userName = app.getLOGGED_IN_USERNAME();
         password = app.getLOGGED_IN_USER_PASS();
+
+
+        aClient.setURLEncodingEnabled(false);
+        aClient.setThreadPool(Executors.newFixedThreadPool(500));
+        aClient.setBasicAuth(userName,password);
 
 
 
@@ -97,10 +103,6 @@ public class PostmanSynchronizationService extends Service {
                             continue;
                         }
 
-                        AsyncHttpClient aClient = new SyncHttpClient();
-                        aClient.setURLEncodingEnabled(false);
-                        aClient.setThreadPool(Executors.newFixedThreadPool(500));
-                        aClient.setBasicAuth(userName,password);
                         aClient.get(p.getUrl(), new AsyncHttpResponseHandler() {
                             @Override
                             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
