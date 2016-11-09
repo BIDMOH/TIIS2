@@ -157,6 +157,9 @@ public class PostmanSynchronizationService extends Service {
                                             }
                                         }while(!res1);
 
+                                    }else{
+                                        p.getPostId();
+                                        p.getResponseType();
                                     }
                                 }
                             }
