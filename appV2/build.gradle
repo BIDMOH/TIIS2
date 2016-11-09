@@ -16,7 +16,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 21
         versionCode 146
-        versionName "2.4.8-beta.3"
+        versionName "2.4.8-beta.4"
         multiDexEnabled true
 
     }

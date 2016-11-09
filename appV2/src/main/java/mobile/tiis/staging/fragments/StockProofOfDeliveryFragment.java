@@ -1,11 +1,17 @@
 package mobile.tiis.staging.fragments;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -21,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.trello.rxlifecycle.components.support.RxFragment;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -32,6 +39,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
+import mobile.tiis.staging.ChildDetailsActivity;
 import mobile.tiis.staging.HomeActivityRevised;
 import mobile.tiis.staging.R;
 import mobile.tiis.staging.adapters.SingleTextViewAdapter;
@@ -41,12 +49,20 @@ import mobile.tiis.staging.base.BackboneApplication;
 import mobile.tiis.staging.database.DatabaseHandler;
 import mobile.tiis.staging.database.SQLHandler;
 import mobile.tiis.staging.entity.AdjustmentReasons;
+import mobile.tiis.staging.entity.AdministerVaccinesModel;
 import mobile.tiis.staging.entity.HealthFacilityProofOfDelivery;
+import mobile.tiis.staging.util.BackgroundThread;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func0;
+
+import static mobile.tiis.staging.ChildDetailsActivity.childId;
 
 /**
  *  Created by issymac on 09/02/16.
  */
-public class StockProofOfDeliveryFragment extends Fragment{
+public class StockProofOfDeliveryFragment extends RxFragment {
     private static final String TAG = StockProofOfDeliveryFragment.class.getSimpleName();
 
     private static final String ARG_POSITION = "position";
@@ -61,7 +77,8 @@ public class StockProofOfDeliveryFragment extends Fragment{
 
     public static List<HealthFacilityProofOfDelivery> rowCollectorList;
     private TableLayout stockHostTable;
-
+    private ProgressDialog progressDialog;
+    private Looper backgroundLooper;
     public static StockProofOfDeliveryFragment newInstance() {
         StockProofOfDeliveryFragment f = new StockProofOfDeliveryFragment();
         Bundle b = new Bundle();
@@ -87,6 +104,10 @@ public class StockProofOfDeliveryFragment extends Fragment{
         });
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.setCancelable(false);
+
+        BackgroundThread backgroundThread = new BackgroundThread();
+        backgroundThread.start();
+        backgroundLooper = backgroundThread.getLooper();
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
@@ -168,14 +189,9 @@ public class StockProofOfDeliveryFragment extends Fragment{
                 e.printStackTrace();
             }
 
-            application.updateStockDistribution(healthfacility.getFromHealthFacilityId(),healthfacility.getToHealthFacilityId(),healthfacility.getProductId(),healthfacility.getLotId(),healthfacility.getItemId(),healthfacility.getDistributionType(),distributionDate,healthfacility.getQuantity(),"RECEIVED",healthfacility.getStockDistributionId());
+            saveVaccines(healthfacility,distributionDate);
         }
-        if (success) {
-            sayThis(getResources().getString(R.string.saved_successfully),2);
-        }
-        addViewsToTable();
 
-        addViewsToTable();
 
     }
 
@@ -231,6 +247,48 @@ public class StockProofOfDeliveryFragment extends Fragment{
 
         dialog.show();
     }
+
+
+    public void saveVaccines(final HealthFacilityProofOfDelivery healthfacility,final String distributionDate) {
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage("Saving data. \nPlease wait ...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Observable.defer(new Func0<Observable<Boolean>>() {
+            @Override
+            public Observable<Boolean> call() {
+                application.updateStockDistribution(healthfacility.getFromHealthFacilityId(),healthfacility.getToHealthFacilityId(),healthfacility.getProductId(),healthfacility.getLotId(),healthfacility.getItemId(),healthfacility.getDistributionType(),distributionDate,healthfacility.getQuantity(),"RECEIVED",healthfacility.getStockDistributionId());
+                return Observable.just(true);
+            }
+        }).subscribeOn(AndroidSchedulers.from(backgroundLooper))
+                // Be notified on the main thread
+                .observeOn(AndroidSchedulers.mainThread()).compose(this.<Boolean>bindToLifecycle())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d(TAG, "onCompleted()");
+                        if (progressDialog != null && progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
+
+                        sayThis(getResources().getString(R.string.saved_successfully),2);
+                        addViewsToTable();
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError()", e);
+                    }
+
+                    @Override
+                    public void onNext(Boolean string) {
+                        Log.d(TAG, "onNext(" + string + ")");
+                    }});
+
+    }
+
 
 
 }

@@ -162,6 +162,31 @@ public class PostmanSynchronizationService extends Service {
                                             }
                                         }while(!res1);
 
+                                    }else {
+                                        if(p.getResponseType()==-10){
+                                            //if the postman fails 10 times delete it from postman
+                                            boolean res1 = false;
+                                            do {
+                                                try {
+                                                    Thread.sleep(10000);
+                                                    res1 = db.deletePostFromPostman(p.getPostId());
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }while(!res1);
+
+                                        }else{
+                                            //if the postman fails 10 times delete it from postman
+                                            boolean res1 = false;
+                                            do {
+                                                try {
+                                                    Thread.sleep(10000);
+                                                    db.updatePost(p.getUrl(),p.getResponseType()-1,p.getPostId());
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }while(!res1);
+                                        }
                                     }
                                 }
                             }

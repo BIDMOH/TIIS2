@@ -1277,6 +1277,35 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
 
+
+    /**
+     * This method adds a post to be sent later to the server
+     *
+     * @param url            the url to be posted later
+     * @param responseTypeId the response type id
+     * @return
+     */
+    public long updatePost(String url, int responseTypeId,int postmanId) {
+        SQLiteDatabase sd = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(SQLHandler.PostmanColumns.URL, url);
+        cv.put(SQLHandler.PostmanColumns.RESPONSE_TYPE_ID, responseTypeId);
+        cv.putNull(SQLHandler.PostmanColumns.TEMPORARY_ID);
+        long result = -1;
+        sd.beginTransaction();
+        try {
+            result = sd.update(Tables.POSTMAN, cv," WHERE "+BaseColumns._ID+" = "+postmanId,null);
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+    }
+
+
     /**
      * This method adds a child id to the childupdates queue to be used to pull child updates incase of network failure
      *

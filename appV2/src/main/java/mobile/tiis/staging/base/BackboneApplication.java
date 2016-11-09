@@ -4466,33 +4466,40 @@ public class BackboneApplication extends Application {
 
 
     public void parseStockDistributions() {
+        Log.d(TAG,"parsing stock distributions");
         try {
-            String username, password;
+            String username, password,hfid;
             if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
                 List<User> allUsers = databaseInstance.getAllUsers();
                 User user = allUsers.get(0);
 
                 username = user.getUsername();
                 password = user.getPassword();
+                hfid = user.getHealthFacilityId();
                 client.setBasicAuth(username, password, true);
             } else {
                 client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+                hfid = LOGGED_IN_USER_HF_ID;
             }
 
             final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC).append(GET_STOCK_DISTRIBUTIONS);
+            Log.d(TAG,"parsing stock distributions url = "+webServiceUrl);
+            Log.d(TAG,"parsing stock distributions Health Facility Id = "+hfid);
 
             RequestParams params = new RequestParams();
-            params.add("healthFacilityId",getLOGGED_IN_USER_HF_ID());
+            params.add("healthFacilityId",hfid);
 
 
             RequestHandle message = client.get(webServiceUrl.toString(), params,new TextHttpResponseHandler() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    Log.d(TAG,"parsing stock distributions failure = "+responseString);
                     throwable.printStackTrace();
                 }
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, String response) {
+                    Log.d(TAG,"parsing stock distributions success = "+response);
                     JSONArray arr = null;
                     try {
                         arr = new JSONArray(response);
@@ -4525,6 +4532,7 @@ public class BackboneApplication extends Application {
                                 } else {
                                     db.getWritableDatabase().insert(SQLHandler.Tables.STOCK_DISTRIBUTIONS, null, adCV);
                                 }
+
                             }catch (Exception e){
                                 e.printStackTrace();
                             }
@@ -4545,13 +4553,19 @@ public class BackboneApplication extends Application {
         final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
 
         String userId;
+        String username, password;
         if (LOGGED_IN_USER_ID == null) {
             Log.d(TAG,"userid null");
             List<User> allUsers = databaseInstance.getAllUsers();
             User user = allUsers.get(0);
             userId = user.getId();
+            username = user.getUsername();
+            password = user.getPassword();
+
         } else {
             userId = LOGGED_IN_USER_ID;
+            username = LOGGED_IN_USERNAME;
+            password = LOGGED_IN_USER_PASS;
         }
 
 
@@ -4567,50 +4581,26 @@ public class BackboneApplication extends Application {
                 .append("&userId=").append(userId)
                 .append("&StockDistributionId=").append(StockDistributionId);
 
-        Log.e(" save health faci", webServiceUrl + "");
 
-        getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
-//        try {
-//            String username, password;
-//            if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
-//                List<User> allUsers = databaseInstance.getAllUsers();
-//                User user = allUsers.get(0);
-//
-//                username = user.getUsername();
-//                password = user.getPassword();
-//                client.setBasicAuth(username, password, true);
-//            } else {
-//                client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
-//            }
-//            final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
-//            webServiceUrl.append("updateHeathFacilityStockDistributions?fromHealthFacilityId=").append(fromHealthFacilityId)
-//                    .append("&toHealthFacilityId=").append(toHealthFacilityId)
-//                    .append("&productId=").append(productId)
-//                    .append("&lotId=").append(lotId)
-//                    .append("&itemId=").append(itemId)
-//                    .append("&distributionType=").append(distributionType)
-//                    .append("&distributionDate=").append(distributionDate)
-//                    .append("&quantity=").append(quantity)
-//                    .append("&status=").append(status)
-//                    .append("&userId=").append(userId)
-//                    .append("&StockDistributionId=").append(StockDistributionId);
-//
-//            Log.e(" save health faci", webServiceUrl + "");
-//
-//            RequestHandle message = client.get(webServiceUrl.toString(),new TextHttpResponseHandler() {
-//                @Override
-//                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-//                    getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
-//                }
-//
-//                @Override
-//                public void onSuccess(int statusCode, Header[] headers, String response) {
-//
-//                }
-//            });
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
+        try {
+            client.setBasicAuth(username,password,true);
+            RequestHandle message = client.get(webServiceUrl.toString(),new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String response) {
+                    if(statusCode!=200){
+                        getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
+                    }
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+            getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
+        }
     }
 
 }

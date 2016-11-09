@@ -47,6 +47,7 @@ import static mobile.tiis.staging.util.Constants.VITAMIN_A_100000_IU;
 import static mobile.tiis.staging.util.Constants.VITAMIN_A_200000_IU;
 
 public class MonthlyReportsActivity extends AppCompatActivity implements View.OnClickListener {
+    private static final String TAG = MonthlyReportsActivity.class.getSimpleName();
 
     //UI ELEMENTS
     private Button suveillanceSubmit, refrigeratorSubmit, immunizationButton, vaccinationsButton, otherMajorImmunizationActivitiesButton, syringesSubmitButton, vitaminASubmitButton;
@@ -212,19 +213,19 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
                     Log.d("THURSDAY_TOUCHUPS", "Selected month is "+selmonth);
                     Log.d("THURSDAY_TOUCHUPS", "This month is "+month);
 
-//                    if ((month-selmonth)>1){
-//                        setFieldsAccessibility(false);
-//                        fieldsEditable = false;
-//                    }else if ((month-selmonth)==1 && dayOfMonth>5){
-//                        setFieldsAccessibility(false);
-//                        fieldsEditable = false;
-//                    }else {
-//                        setFieldsAccessibility(true);
-//                        fieldsEditable = true;
-//                    }
-
-                    setFieldsAccessibility(true);
-                    fieldsEditable = true;
+                    if ((month-selmonth)==1 && dayOfMonth>10){
+                        setFieldsAccessibility(false);
+                        fieldsEditable = false;
+                    }else if ((month-selmonth)==1 && dayOfMonth<10){
+                        setFieldsAccessibility(true);
+                        fieldsEditable = true;
+                    }else if ((month-selmonth)==0){
+                        setFieldsAccessibility(true);
+                        fieldsEditable = true;
+                    }else {
+                        setFieldsAccessibility(false);
+                        fieldsEditable = false;
+                    }
                     checkdatabaseForAlreadyReportedFormsForThisMonth();
                 }
             }
@@ -243,21 +244,30 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         int monthVal   = calendar.get(Calendar.MONTH);
         monthVal = monthVal+1;
 
-//        int selectedmonth = Integer.parseInt(currentSelectedMonth.getMonth_number());
-//
-//        if ((monthVal-selectedmonth)>1){
-//            setFieldsAccessibility(false);
-//            fieldsEditable = false;
-//        }else if ((monthVal-selectedmonth)==1 && dayOfMonth>5){
-//            setFieldsAccessibility(false);
-//            fieldsEditable = false;
-//        }else {
-//            setFieldsAccessibility(true);
-//            fieldsEditable = true;
-//        }
+        int selectedmonth = Integer.parseInt(currentSelectedMonth.getMonth_number());
 
-        setFieldsAccessibility(true);
-        fieldsEditable = true;
+
+        if ((monthVal-selectedmonth)==1 && dayOfMonth>10){
+            Log.d(TAG,"monthVal-selectedmonth)==1 && dayOfMonth>10");
+            setFieldsAccessibility(false);
+            fieldsEditable = false;
+        }else if((monthVal-selectedmonth)==0 && dayOfMonth<=10) {
+            Log.d(TAG,"(monthVal-selectedmonth)==1 && dayOfMonth<=10");
+            setFieldsAccessibility(true);
+            fieldsEditable = true;
+            monthYearSpinner.setSelection(monthVal-1);
+        }else if ((monthVal-selectedmonth)>1){
+            Log.d(TAG,"(monthVal-selectedmonth)>1");
+            setFieldsAccessibility(false);
+            fieldsEditable = false;
+        }else {
+            Log.d(TAG,"else");
+            setFieldsAccessibility(true);
+            fieldsEditable = true;
+        }
+
+//        setFieldsAccessibility(true);
+//        fieldsEditable = true;
 
     }
 
@@ -516,7 +526,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 
         //Immunization Sessions
         otherMajorImmunizationActivities.setEnabled(flag);
-//        outreachCancelled.setEnabled(flag);
+        outreachCancelled.setEnabled(false);
         outreachConducted.setEnabled(flag);
         outreachPlanned.setEnabled(flag);
         fixedConducted.setEnabled(flag);
