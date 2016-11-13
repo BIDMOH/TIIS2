@@ -98,8 +98,8 @@ public class RoutineAlarmReceiver extends WakefulBroadcastReceiver {
             // this happens everytime a broadcast is received , without needing to categorise if the event comes from network or something else
             if (Utils.isOnline(context)) {
                 Log.d("WOWHITS", "Broadcast Received Syncronization of the service starts.........");
-                Intent i = new Intent(context, SynchronisationService.class);
-                context.startService(i);
+//                Intent i = new Intent(context, SynchronisationService.class);
+//                context.startService(i);
             }
         }
 

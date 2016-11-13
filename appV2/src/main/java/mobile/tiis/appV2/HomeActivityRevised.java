@@ -49,6 +49,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+
 import mobile.tiis.appv2.GCMCommunication.CommonUtilities;
 import mobile.tiis.appv2.GCMCommunication.WakeLocker;
 import mobile.tiis.appv2.adapters.DrawerListItemsAdapter;
@@ -58,8 +59,8 @@ import mobile.tiis.appv2.database.DatabaseHandler;
 import mobile.tiis.appv2.fragments.FragmentStackManager;
 import mobile.tiis.appv2.fragments.VaccinationQueueFragment;
 import mobile.tiis.appv2.helpers.Utils;
+import mobile.tiis.appv2.postman.PostmanSynchronizationService;
 import mobile.tiis.appv2.postman.RoutineAlarmReceiver;
-import mobile.tiis.appv2.postman.SynchronisationService;
 import mobile.tiis.appv2.CustomViews.BadgeDrawable;
 
 import static mobile.tiis.appv2.util.DatabaseUtil.copyDatabaseToExtStg;
@@ -171,7 +172,7 @@ public class HomeActivityRevised extends BackboneActivity {
     private final BroadcastReceiver mHandlePostmanCountReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String count = intent.getExtras().getString(SynchronisationService.SynchronisationService_MESSAGE);
+            String count = intent.getExtras().getString(PostmanSynchronizationService.SynchronisationService_MESSAGE);
             Log.d(TAG,"Received postman count = "+count);
 
 
@@ -290,7 +291,8 @@ public class HomeActivityRevised extends BackboneActivity {
 
             }
             RoutineAlarmReceiver.setAlarmCheckForChangesInChild(this);
-            RoutineAlarmReceiver.setPostmanAlarm(this);
+//            RoutineAlarmReceiver.setPostmanAlarm(this);
+            startService(new Intent(this, PostmanSynchronizationService.class));
             nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(MenuItem item) {
@@ -734,7 +736,8 @@ public class HomeActivityRevised extends BackboneActivity {
                 application.parseStock();
 
                 //Starting the service to upload all postman data
-                Intent i = new Intent(HomeActivityRevised.this, SynchronisationService.class);
+                Intent i = new Intent(HomeActivityRevised.this, PostmanSynchronizationService.class);
+
                 startService(i);
 
             }

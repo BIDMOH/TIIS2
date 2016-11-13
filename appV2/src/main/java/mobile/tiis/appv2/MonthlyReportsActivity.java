@@ -47,6 +47,7 @@ import static mobile.tiis.appv2.util.Constants.VITAMIN_A_100000_IU;
 import static mobile.tiis.appv2.util.Constants.VITAMIN_A_200000_IU;
 
 public class MonthlyReportsActivity extends AppCompatActivity implements View.OnClickListener {
+    private static final String TAG = MonthlyReportsActivity.class.getSimpleName();
 
     //UI ELEMENTS
     private Button suveillanceSubmit, refrigeratorSubmit, immunizationButton, vaccinationsButton, otherMajorImmunizationActivitiesButton, syringesSubmitButton, vitaminASubmitButton;
@@ -212,19 +213,19 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
                     Log.d("THURSDAY_TOUCHUPS", "Selected month is "+selmonth);
                     Log.d("THURSDAY_TOUCHUPS", "This month is "+month);
 
-//                    if ((month-selmonth)>1){
-//                        setFieldsAccessibility(false);
-//                        fieldsEditable = false;
-//                    }else if ((month-selmonth)==1 && dayOfMonth>5){
-//                        setFieldsAccessibility(false);
-//                        fieldsEditable = false;
-//                    }else {
-//                        setFieldsAccessibility(true);
-//                        fieldsEditable = true;
-//                    }
-
-                    setFieldsAccessibility(true);
-                    fieldsEditable = true;
+                    if ((month-selmonth)==1 && dayOfMonth>10){
+                        setFieldsAccessibility(false);
+                        fieldsEditable = false;
+                    }else if ((month-selmonth)==1 && dayOfMonth<10){
+                        setFieldsAccessibility(true);
+                        fieldsEditable = true;
+                    }else if ((month-selmonth)==0){
+                        setFieldsAccessibility(true);
+                        fieldsEditable = true;
+                    }else {
+                        setFieldsAccessibility(false);
+                        fieldsEditable = false;
+                    }
                     checkdatabaseForAlreadyReportedFormsForThisMonth();
                 }
             }
@@ -243,21 +244,30 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         int monthVal   = calendar.get(Calendar.MONTH);
         monthVal = monthVal+1;
 
-//        int selectedmonth = Integer.parseInt(currentSelectedMonth.getMonth_number());
-//
-//        if ((monthVal-selectedmonth)>1){
-//            setFieldsAccessibility(false);
-//            fieldsEditable = false;
-//        }else if ((monthVal-selectedmonth)==1 && dayOfMonth>5){
-//            setFieldsAccessibility(false);
-//            fieldsEditable = false;
-//        }else {
-//            setFieldsAccessibility(true);
-//            fieldsEditable = true;
-//        }
+        int selectedmonth = Integer.parseInt(currentSelectedMonth.getMonth_number());
 
-        setFieldsAccessibility(true);
-        fieldsEditable = true;
+
+        if ((monthVal-selectedmonth)==1 && dayOfMonth>10){
+            Log.d(TAG,"monthVal-selectedmonth)==1 && dayOfMonth>10");
+            setFieldsAccessibility(false);
+            fieldsEditable = false;
+        }else if((monthVal-selectedmonth)==0 && dayOfMonth<=10) {
+            Log.d(TAG,"(monthVal-selectedmonth)==1 && dayOfMonth<=10");
+            setFieldsAccessibility(true);
+            fieldsEditable = true;
+            monthYearSpinner.setSelection(monthVal-1);
+        }else if ((monthVal-selectedmonth)>1){
+            Log.d(TAG,"(monthVal-selectedmonth)>1");
+            setFieldsAccessibility(false);
+            fieldsEditable = false;
+        }else {
+            Log.d(TAG,"else");
+            setFieldsAccessibility(true);
+            fieldsEditable = true;
+        }
+
+//        setFieldsAccessibility(true);
+//        fieldsEditable = true;
 
     }
 
@@ -516,7 +526,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 
         //Immunization Sessions
         otherMajorImmunizationActivities.setEnabled(flag);
-        outreachCancelled.setEnabled(flag);
+        outreachCancelled.setEnabled(false);
         outreachConducted.setEnabled(flag);
         outreachPlanned.setEnabled(flag);
         fixedConducted.setEnabled(flag);
@@ -670,13 +680,10 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
     }
 
     public boolean verifyInputs2(){
-
-        float maxT, minT, highAlarm, lowAlarm;
-
         if (tempMin.getText().toString().equals(""))
         {
             sayThis(
-                    "You must fill all the fields before submitting",
+                    "Please fill the Minimum temperature",
                     1
             );
             return false;
@@ -685,21 +692,21 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         else if (tempMax.getText().toString().equals(""))
         {
             sayThis(
-                    "You must fill all the fields before submitting",
+                    "Please fill the Maximum temperature",
                     1
             );
             return false;
         }
         else if (alarmHigh.getText().toString().equals("")){
             sayThis(
-                    "You must fill all the fields before submitting",
+                    "Please fill the number of High alarm episodes",
                     1
             );
             return false;
         }
         else if (alarmLow.getText().toString().equals("")){
             sayThis(
-                    "You must fill all the fields before submitting",
+                    "Please fill the number of Low alarm episodes",
                     1
             );
             return false;
@@ -707,19 +714,6 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         else if (monthYearSpinner.getSelectedItemPosition() <= 0){
             sayThis(
                     "You must fill all the fields before submitting",
-                    1
-            );
-            return false;
-        }
-
-        maxT    = Float.parseFloat(tempMax.getText().toString());
-        minT    = Float.parseFloat(tempMin.getText().toString());
-        highAlarm   = Float.parseFloat(alarmHigh.getText().toString());
-        lowAlarm    = Float.parseFloat(alarmLow.getText().toString());
-
-        if((lowAlarm > highAlarm)){
-            sayThis(
-                    "Verify the input values and submit again",
                     1
             );
             return false;
@@ -750,81 +744,114 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
             );
             return false;
         }
-        if (outreachCancelled.getText().toString().trim().equals("")){
-            sayThis(
-                    "You must fill all the fields before submitting",
-                    1
-            );
-            return false;
-        }
         else
             return true;
     }
 
     public boolean verifyInputs4(){
         if(bcgFemaleServiceArea.getText().toString().trim().equals("")){
+            bcgFemaleServiceArea.setError("Please fill the number of BCG vaccination for female children within your service area");
             sayThis(
-                    "You must fill all the fields before submitting",
+                    "Please fill the number of BCG vaccination for female children within your service area",
                     1
             );
             return false;
         }
         if(bcgMaleServiceArea.getText().toString().trim().equals("")){
+            bcgMaleServiceArea.setError("Please fill the number of BCG vaccination for male children within your service area");
             sayThis(
-                    "You must fill all the fields before submitting",
+                    "Please fill the number of BCG vaccination for male children within your service area",
                     1
             );
             return false;
         }
         if(bcgFemaleCatchmentArea.getText().toString().trim().equals("")){
+            bcgFemaleCatchmentArea.setError("Please fill the number of BCG vaccination for female children within your catchment area");
             sayThis(
-                    "You must fill all the fields before submitting",
+                    "Please fill the number of BCG vaccination for female children within your catchment area",
                     1
             );
             return false;
         }
         if(bcgMaleCatchmentArea.getText().toString().trim().equals("")){
+            bcgMaleCatchmentArea.setError("Please fill the number of BCG vaccination for male children within your catchment area");
             sayThis(
-                    "You must fill all the fields before submitting",
+                    "Please fill the number of BCG vaccination for male children within your catchment area",
                     1
             );
             return false;
         }
         if (opvFemaleServiceArea.getText().toString().trim().equals("")){
+            opvFemaleServiceArea.setError("Please fill the number of OPV0 vaccination for female children within your service area");
             sayThis(
-                    "You must fill all the fields before submitting",
+                    "Please fill the number of OPV0 vaccination for female children within your service area",
                     1
             );
             return false;
         }
         if(opvMaleServiceArea.getText().toString().trim().equals("")){
+            opvMaleServiceArea.setError("Please fill the number of OPV0 vaccination for female children within your service area");
             sayThis(
-                    "You must fill all the fields before submitting",
+                    "Please fill the number of OPV0 vaccination for male children within your service area",
                     1
             );
             return false;
         }
         if(opvFemaleCatchmentArea.getText().toString().trim().equals("")){
+            opvFemaleCatchmentArea.setError("Please fill the number of OPV0 vaccination for female children within your catchment area");
             sayThis(
-                    "You must fill all the fields before submitting",
+                    "Please fill the number of OPV0 vaccination for female children within your catchment area",
                     1
             );
             return false;
         }
         if(opvMaleCatchmentArea.getText().toString().trim().equals("")){
+            opvMaleCatchmentArea.setError("Please fill the number of OPV0 vaccination for male children within your catchment area");
             sayThis(
-                    "You must fill all the fields before submitting",
+                    "Please fill the number of OPV0 vaccination for male children within your catchment area",
                     1
             );
             return false;
         }
-        if (tt1FemaleServiceArea.getText().toString().trim().equals("") || tt1MaleServiceArea.getText().toString().trim().equals("") || tt1FemaleCatchmentArea.getText().toString().trim().equals("") || tt1MaleCatchmentArea.getText().toString().trim().equals("")){
+        if (tt1FemaleServiceArea.getText().toString().trim().equals("") ){
+            tt1FemaleServiceArea.setError("Please fill the number of TT1 vaccination for female children within your service area");
             sayThis(
-                    "You must fill all the fields before submitting",
+                    "Please fill the number of TT1 vaccination for female children within your service area",
                     1
             );
             return false;
         }
+
+        if(tt1MaleServiceArea.getText().toString().trim().equals("")){
+            tt1MaleServiceArea.setError("Please fill the number of TT1 vaccination for male children within your service area");
+            sayThis(
+                    "Please fill the number of TT1 vaccination for male children within your service area",
+                    1
+            );
+            return false;
+
+        }
+
+        if(tt1FemaleCatchmentArea.getText().toString().trim().equals("")){
+            tt1FemaleCatchmentArea.setError("Please fill the number of TT1 vaccination for female children within your catchment area");
+            sayThis(
+                    "Please fill the number of TT1 vaccination for female children within your catchment area",
+                    1
+            );
+            return false;
+
+        }
+
+        if(tt1MaleCatchmentArea.getText().toString().trim().equals("")){
+            tt1MaleCatchmentArea.setError("Please fill the number of TT1 vaccination for male children within your catchment area");
+            sayThis(
+                    "Please fill the number of TT1 vaccination for male children within your catchment area",
+                    1
+            );
+            return false;
+
+        }
+
         if (tt2FemaleServiceArea.getText().toString().trim().equals("") || tt2MaleServiceArea.getText().toString().trim().equals("") || tt2FemaleCatchmentArea.getText().toString().trim().equals("") || tt2MaleCatchmentArea.getText().toString().trim().equals("")){
             sayThis(
                     "You must fill all the fields before submitting",
@@ -866,8 +893,9 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 
     public boolean verifyInputs5(){
         if (otherMajorImmunizationActivities.getText().toString().equals("")){
+            otherMajorImmunizationActivities.setError("Please fill the major immunization activities conducted");
             sayThis(
-                    "You must fill all the fields before submitting",
+                    "Please fill the major immunization activities conducted",
                     1
             );
             return false;
@@ -877,15 +905,17 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 
     public boolean verifyInputs6(){
         if (ml005Balance.getText().toString().equals("")){
+            ml005Balance.setError("Please fill the balance");
             sayThis(
-                    "You must fill all the fields before submitting",
+                    "Please fill the balance",
                     1
             );
             return false;
         }
         if (ml005Received.getText().toString().equals("")){
+            ml005Received.setError("Please fill the balance");
             sayThis(
-                    "You must fill all the fields before submitting",
+                    "Please fill the balance",
                     1
             );
             return false;
@@ -1105,6 +1135,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 
     public boolean verifyInputs7(){
         if (vitA1Opening.getText().toString().equals("")){
+            vitA1Opening.setError("please fill this field");
             sayThis(
                     "You must fill all the fields before submitting",
                     1
@@ -1112,6 +1143,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
             return false;
         }
         if (vitA1Received.getText().toString().equals("")){
+            vitA1Received.setError("You must fill all the fields before submitting");
             sayThis(
                     "You must fill all the fields before submitting",
                     1
@@ -1141,6 +1173,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         }
 
         if (vitA2Opening.getText().toString().equals("")){
+            vitA2Opening.setError("You must fill all the fields before submitting");
             sayThis(
                     "You must fill all the fields before submitting",
                     1
@@ -1148,15 +1181,17 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
             return false;
         }
         if (vitA2Received.getText().toString().equals("")){
+            vitA2Received.setError("Please receive the amount of vitamin A stock received");
             sayThis(
-                    "You must fill all the fields before submitting",
+                    "Please receive the amount of vitamin A stock received",
                     1
             );
             return false;
         }
         if (vitA2Administered.getText().toString().equals("")){
+            vitA2Administered.setError("Please enter the number of children administered with vitamin A");
             sayThis(
-                    "You must fill all the fields before submitting",
+                    "Please enter the number of children administered with vitamin A",
                     1
             );
             return false;
@@ -1169,8 +1204,9 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 //            return false;
 //        }
         if (vitA2StockInHand.getText().toString().equals("")){
+            vitA2StockInHand.setError("Please enter your stock in hand");
             sayThis(
-                    "You must fill all the fields before submitting",
+                    "Please enter your stock in hand",
                     1
             );
             return false;
