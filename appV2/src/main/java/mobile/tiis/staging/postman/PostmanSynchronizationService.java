@@ -165,6 +165,7 @@ public class PostmanSynchronizationService extends Service {
                                     }else {
                                         if(p.getResponseType()==-10){
                                             //if the postman fails 10 times delete it from postman
+                                            Log.d(TAG,"response type = "+(p.getResponseType()-1));
                                             boolean res1 = false;
                                             do {
                                                 try {
@@ -177,15 +178,20 @@ public class PostmanSynchronizationService extends Service {
 
                                         }else{
                                             //if the postman fails 10 times delete it from postman
-                                            boolean res1 = false;
+                                            long res1 = -99;
                                             do {
                                                 try {
                                                     Thread.sleep(10000);
-                                                    db.updatePost(p.getUrl(),p.getResponseType()-1,p.getPostId());
+                                                    int responseTypeId = p.getResponseType()-1;
+                                                    Log.d(TAG,"updating response type = "+responseTypeId);
+                                                    Log.d(TAG,"updating url = "+(p.getUrl()));
+                                                    Log.d(TAG,"updating postman id = "+(p.getPostId()));
+                                                    res1 = db.updatePost(p.getUrl(),responseTypeId,p.getPostId());
+                                                    Log.d(TAG,"update post result = "+res1);
                                                 } catch (Exception e) {
                                                     e.printStackTrace();
                                                 }
-                                            }while(!res1);
+                                            }while(res1==-99);
                                         }
                                     }
                                 }

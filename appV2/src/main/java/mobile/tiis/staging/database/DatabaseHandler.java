@@ -978,7 +978,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         List<Place> placeList = new ArrayList<Place>();
 
         //Query on Child Table
-        String selectQuery = "SELECT  * FROM " + Tables.PLACE +"  order by NAME";
+        String selectQuery = "SELECT  * FROM " + Tables.PLACE +" GROUP BY NAME ORDER BY NAME";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -1294,9 +1294,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         long result = -1;
         sd.beginTransaction();
         try {
-            result = sd.update(Tables.POSTMAN, cv," WHERE "+BaseColumns._ID+" = "+postmanId,null);
+            result = sd.update(Tables.POSTMAN, cv,BaseColumns._ID+" = "+postmanId,null);
             sd.setTransactionSuccessful();
         } catch (Exception e) {
+            e.printStackTrace();
             //Error in between database transaction
             result = -1;
         } finally {

@@ -55,6 +55,7 @@ public class AefiTopListAdapter extends BaseAdapter {
         }
 
         viewHolder.vaccineDoses.setText(item.getVaccines());
+        viewHolder.done.setChecked(true);
 
         if(item.getVaccinationDate()!=null)
             viewHolder.vaccineDate.setText(format.format(item.getVaccinationDate()));
