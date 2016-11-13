@@ -1,23 +1,13 @@
 package mobile.tiis.appv2.fragments;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Looper;
-import android.support.v4.app.Fragment;
-<<<<<<< HEAD:appV2/src/main/java/mobile/tiis/appv2/fragments/StockProofOfDeliveryFragment.java
-=======
-import android.support.v4.app.FragmentManager;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
->>>>>>> development:appV2/src/main/java/mobile/tiis/staging/fragments/StockProofOfDeliveryFragment.java
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,13 +16,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TextView;
-<<<<<<< HEAD:appV2/src/main/java/mobile/tiis/appv2/fragments/StockProofOfDeliveryFragment.java
-=======
-import android.widget.Toast;
 
-import com.rengwuxian.materialedittext.MaterialEditText;
 import com.trello.rxlifecycle.components.support.RxFragment;
->>>>>>> development:appV2/src/main/java/mobile/tiis/staging/fragments/StockProofOfDeliveryFragment.java
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -41,28 +26,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import java.util.concurrent.TimeUnit;
-
-import fr.ganfra.materialspinner.MaterialSpinner;
-import mobile.tiis.appv2.ChildDetailsActivity;
 import mobile.tiis.appv2.HomeActivityRevised;
 import mobile.tiis.appv2.R;
-import mobile.tiis.appv2.adapters.SingleTextViewAdapter;
 import mobile.tiis.appv2.adapters.StockAdjustmentListAdapter;
 import mobile.tiis.appv2.base.BackboneActivity;
 import mobile.tiis.appv2.base.BackboneApplication;
 import mobile.tiis.appv2.database.DatabaseHandler;
 import mobile.tiis.appv2.database.SQLHandler;
-import mobile.tiis.appv2.entity.AdjustmentReasons;
-import mobile.tiis.appv2.entity.AdministerVaccinesModel;
 import mobile.tiis.appv2.entity.HealthFacilityProofOfDelivery;
 import mobile.tiis.appv2.util.BackgroundThread;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func0;
-
-import static mobile.tiis.appv2.ChildDetailsActivity.childId;
 
 /**
  *  Created by issymac on 09/02/16.
