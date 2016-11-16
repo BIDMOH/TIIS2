@@ -3817,34 +3817,36 @@ public class BackboneApplication extends Application {
             String url = WCF_URL + "ChildManagement.svc/GetChildrenByHealthFacilityBeforeLastLoginV1?idUser=" + getLOGGED_IN_USER_ID();
             Log.d("secondLoginURL", url);
 
-            client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
-            client.get(url, new TextHttpResponseHandler() {
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    throwable.printStackTrace();
-                }
-
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, String response) {
-                    ChildCollector2 objects2 = new ChildCollector2();
-                    try {
-                        Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-                        ObjectMapper mapper = new ObjectMapper();
-                        objects2 = mapper.readValue(response, ChildCollector2.class);
-
-                    } catch (JsonGenerationException e) {
-                        e.printStackTrace();
-                    } catch (JsonMappingException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } finally {
-                        addChildVaccinationEventVaccinationAppointment(objects2);
+            try {
+                client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+                client.get(url, new TextHttpResponseHandler() {
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        throwable.printStackTrace();
                     }
-                }
-            });
 
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, String response) {
+                        ChildCollector2 objects2 = new ChildCollector2();
+                        try {
+                            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                            ObjectMapper mapper = new ObjectMapper();
+                            objects2 = mapper.readValue(response, ChildCollector2.class);
 
+                        } catch (JsonGenerationException e) {
+                            e.printStackTrace();
+                        } catch (JsonMappingException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } finally {
+                            addChildVaccinationEventVaccinationAppointment(objects2);
+                        }
+                    }
+                });
+            }catch(Exception e){
+                e.printStackTrace();
+            }
         }
 
     }
