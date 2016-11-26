@@ -389,6 +389,7 @@ public class BackboneApplication extends Application {
 
 
     public void parsePlace() {
+        Log.d(TAG,"parse place started");
         try {
             if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
                 List<User> allUsers = databaseInstance.getAllUsers();
@@ -437,10 +438,12 @@ public class BackboneApplication extends Application {
             e.printStackTrace();
         }
 
+        Log.d(TAG,"parse place finished");
 
     }
 
     public void parseBirthplace() {
+        Log.d(TAG,"parse place started");
         try {
             if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
                 List<User> allUsers = databaseInstance.getAllUsers();
@@ -479,6 +482,7 @@ public class BackboneApplication extends Application {
         }catch (Exception e){
             e.printStackTrace();
         }
+        Log.d(TAG,"parse birstplace finished");
 
     }
     public void loginRequest(){
@@ -673,7 +677,7 @@ public class BackboneApplication extends Application {
     public void parseStock() {
         if (LOGGED_IN_USER_HF_ID == null || LOGGED_IN_USER_HF_ID.equals("0")) return;
         final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, GET_STOCK);
-        Log.d("SOMA", "Parsing Stock Periodically : "+webServiceUrl.toString());
+        Log.d(TAG, "Parsing Stock Periodically : "+webServiceUrl.toString());
 
         client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
         RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
@@ -720,6 +724,8 @@ public class BackboneApplication extends Application {
                 }
             }
         });
+
+        Log.d(TAG,"parse stock finished");
     }
 
 
@@ -1436,6 +1442,7 @@ public class BackboneApplication extends Application {
      * This method is used to parse healthFacility Cold Chain upon first syncronization to receive all the coldchain data for that facility
      */
     public void parseHealthFacilityColdChainAsList(){
+        Log.d(TAG,"parse health facility coldchain started");
         try {
             if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
                 List<User> allUsers = databaseInstance.getAllUsers();
@@ -1494,9 +1501,12 @@ public class BackboneApplication extends Application {
         }catch (Exception e){
             e.printStackTrace();
         }
+
+        Log.d(TAG,"parse health facility cold chain finished");
     }
 
     public void parseDeseaseSurveilanceMonthly(String selectedMonth, String selectedYear){
+        Log.d(TAG,"parse desease surveilance started");
         try {
             if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
                 List<User> allUsers = databaseInstance.getAllUsers();
@@ -1559,6 +1569,8 @@ public class BackboneApplication extends Application {
         }catch (Exception e){
             e.printStackTrace();
         }
+
+        Log.d(TAG,"parse desease survailance finished");
     }
 
     public void parseDeseaseSurveillanceAsList(){
@@ -2806,6 +2818,7 @@ public class BackboneApplication extends Application {
 
 
     public void parseHealthFacility() {
+        Log.d(TAG,"parse health facility started");
         try {
             if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
                 List<User> allUsers = databaseInstance.getAllUsers();
@@ -2858,9 +2871,11 @@ public class BackboneApplication extends Application {
         }catch (Exception e){
             e.printStackTrace();
         }
+        Log.d(TAG,"parse health facility finished");
     }
 
     public void parseStatus() {
+        Log.d(TAG,"parse status started");
         try {
             if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
                 List<User> allUsers = databaseInstance.getAllUsers();
@@ -2914,9 +2929,13 @@ public class BackboneApplication extends Application {
         }
 
 
+        Log.d(TAG,"parse status finished");
+
     }
 
     public void parseItemLots() {
+
+        Log.d(TAG,"parse item lots started");
         try {
             String uname,passw;
             if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
@@ -2973,9 +2992,13 @@ public class BackboneApplication extends Application {
         }catch (Exception e){
             e.printStackTrace();
         }
+
+
+        Log.d(TAG,"parse itemlots finished");
     }
 
     public void parseWeight() {
+        Log.d(TAG,"parse weight started");
         try {
             String uname, passw;
             if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
@@ -3041,9 +3064,11 @@ public class BackboneApplication extends Application {
         }catch (Exception e){
             e.printStackTrace();
         }
+        Log.d(TAG,"parse weight finished");
     }
 
     public void parseNonVaccinationReason() {
+        Log.d(TAG,"parse non vaccination reason started");
         try {
             String uname, passw;
             if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
@@ -3099,9 +3124,12 @@ public class BackboneApplication extends Application {
         }catch (Exception e){
             e.printStackTrace();
         }
+
+        Log.d(TAG,"parse non vaccinaiton reason finished");
     }
 
     public void parseAgeDefinitions() {
+        Log.d(TAG,"parse agedefinition started");
         try {
             String uname, passw;
             if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
@@ -3157,10 +3185,12 @@ public class BackboneApplication extends Application {
         }catch (Exception e){
             e.printStackTrace();
         }
+
+        Log.d(TAG,"parse non vaccination reason finished");
     }
 
     public void parseItem() {
-
+        Log.d(TAG,"parse item started");
         try {
             if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
                 List<User> allUsers = databaseInstance.getAllUsers();
@@ -3217,9 +3247,11 @@ public class BackboneApplication extends Application {
         }catch (Exception e){
             e.printStackTrace();
         }
+        Log.d(TAG,"parse item finished");
     }
 
     public void parseScheduledVaccination() {
+        Log.d(TAG,"parse scheduled vaccination started");
         try {
             String uname, passw;
             if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
@@ -3277,9 +3309,12 @@ public class BackboneApplication extends Application {
         }catch (Exception e){
             e.printStackTrace();
         }
+        Log.d(TAG,"parse scheduled vaccination finished");
     }
 
     public void parseDose() {
+
+        Log.d(TAG,"parse dose started");
         try {
             String uname, passw;
             if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
@@ -3340,6 +3375,8 @@ public class BackboneApplication extends Application {
         }catch (Exception e){
             e.printStackTrace();
         }
+
+        Log.d(TAG,"parse dose finished");
     }
 
     private int parsedChildResults;
@@ -4230,6 +4267,7 @@ public class BackboneApplication extends Application {
     }
 
     public void parseStockAdjustmentReasons() {
+        Log.d(TAG,"parse stock adjustment reasons started");
         try {
             String username, password;
             if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
@@ -4286,6 +4324,8 @@ public class BackboneApplication extends Application {
         }catch (Exception e){
             e.printStackTrace();
         }
+
+        Log.d(TAG,"parse stock adjustment reasons finished");
     }
 
 

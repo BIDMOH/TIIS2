@@ -639,7 +639,6 @@ public class HomeActivityRevised extends BackboneActivity {
                 application.parseItemLots();
                 application.parseStock();
                 application.parseStockAdjustmentReasons();
-
                 application.parseHealthFacilityColdChainAsList();
                 application.parseDeseaseSurveillanceAsList();
                 application.parseBcgOpvTtAsList();
