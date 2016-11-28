@@ -3847,12 +3847,24 @@ public class BackboneApplication extends Application {
      */
     public void continuousModificationParser() {
         if (!USERNAME.equalsIgnoreCase("default")) {
-
-            String url = WCF_URL + "ChildManagement.svc/GetChildrenByHealthFacilityBeforeLastLoginV1?idUser=" + getLOGGED_IN_USER_ID();
-            Log.d("secondLoginURL", url);
-
             try {
-                client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+
+                String username, password;
+                if (LOGGED_IN_USERNAME == null) {
+                    Log.d(TAG,"username null");
+                    List<User> allUsers = databaseInstance.getAllUsers();
+                    User user = allUsers.get(0);
+                    username = user.getUsername();
+                    password = user.getPassword();
+                } else {
+                    username = LOGGED_IN_USERNAME;
+                    password = LOGGED_IN_USER_PASS;
+                }
+
+
+                String url = WCF_URL + "ChildManagement.svc/GetChildrenByHealthFacilityBeforeLastLoginV1?idUser=" + getLOGGED_IN_USER_ID();
+                Log.d("secondLoginURL", url);
+                client.setBasicAuth(username, password, true);
                 client.get(url, new TextHttpResponseHandler() {
                     @Override
                     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {

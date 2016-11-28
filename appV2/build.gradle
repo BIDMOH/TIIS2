@@ -15,8 +15,8 @@ android {
         applicationId "mobile.tiis.appv2"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 146
-        versionName "2.4.9"
+        versionCode 147
+        versionName "2.4.10"
         multiDexEnabled true
 
     }
