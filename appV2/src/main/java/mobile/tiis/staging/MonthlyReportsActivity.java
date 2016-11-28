@@ -680,8 +680,15 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
     }
 
     public boolean verifyInputs2(){
-        if (tempMin.getText().toString().equals(""))
+
+        if (Float.parseFloat(tempMin.getText().toString()) > Float.parseFloat(tempMax.getText().toString()))
         {
+            sayThis(
+                    "Please recheck your data, minimum temperature cannot exceed maximum temperature",
+                    1
+            );
+            return false;
+        }else if (tempMin.getText().toString().equals("")) {
             sayThis(
                     "Please fill the Minimum temperature",
                     1
@@ -689,8 +696,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
             return false;
         }
 
-        else if (tempMax.getText().toString().equals(""))
-        {
+        else if (tempMax.getText().toString().equals("")) {
             sayThis(
                     "Please fill the Maximum temperature",
                     1
