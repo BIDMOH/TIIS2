@@ -152,7 +152,7 @@ public class StockStatusFragment extends RxFragment {
 
     public void getStockInformationFromServer(){
 
-        ringProgressDialog = ProgressDialog.show(StockStatusFragment.this.getActivity(), "Please wait ...", "Downloading Image ...", true);
+        ringProgressDialog = ProgressDialog.show(StockStatusFragment.this.getActivity(), "Please wait ...", "Loading Report ...", true);
 
         Observable.defer(new Func0<Observable<Boolean>>() {
             @Override
