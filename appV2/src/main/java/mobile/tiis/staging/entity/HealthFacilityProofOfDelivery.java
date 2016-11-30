@@ -26,6 +26,7 @@ public class HealthFacilityProofOfDelivery {
     private String DistributionDate;
     private String DistributionType;
     private int FromHealthFacilityId;
+    private int StockDistributionId;
     private int ToHealthFacilityId;
     private int ItemId;
     private int LotId;
@@ -160,5 +161,13 @@ public class HealthFacilityProofOfDelivery {
 
     public void setUnitOfMeasure(String unitOfMeasure) {
         this.unitOfMeasure = unitOfMeasure;
+    }
+
+    public int getStockDistributionId() {
+        return StockDistributionId;
+    }
+
+    public void setStockDistributionId(int stockDistributionId) {
+        StockDistributionId = stockDistributionId;
     }
 }

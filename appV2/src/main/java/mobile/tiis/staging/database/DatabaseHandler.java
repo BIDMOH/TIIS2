@@ -1039,7 +1039,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         List<Place> placeList = new ArrayList<Place>();
 
         //Query on Child Table
-        String selectQuery = "SELECT  * FROM " + Tables.PLACE +"  order by NAME";
+        String selectQuery = "SELECT  * FROM " + Tables.PLACE +" GROUP BY NAME ORDER BY NAME";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -1337,6 +1337,36 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             return result;
         }
     }
+
+
+    /**
+     * This method adds a post to be sent later to the server
+     *
+     * @param url            the url to be posted later
+     * @param responseTypeId the response type id
+     * @return
+     */
+    public long updatePost(String url, int responseTypeId,int postmanId) {
+        SQLiteDatabase sd = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(SQLHandler.PostmanColumns.URL, url);
+        cv.put(SQLHandler.PostmanColumns.RESPONSE_TYPE_ID, responseTypeId);
+        cv.putNull(SQLHandler.PostmanColumns.TEMPORARY_ID);
+        long result = -1;
+        sd.beginTransaction();
+        try {
+            result = sd.update(Tables.POSTMAN, cv,BaseColumns._ID+" = "+postmanId,null);
+            sd.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            sd.endTransaction();
+            return result;
+        }
+    }
+
 
     /**
      * This method adds a child id to the childupdates queue to be used to pull child updates incase of network failure
@@ -2804,7 +2834,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     aefiListItem.setVaccinationDate(BackboneActivity.dateParser(dateStr));
                 String dateStrAefi = cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationAppointmentColumns.AEFI_DATE));
                 if (dateStrAefi != null && !dateStrAefi.isEmpty())
-                    aefiListItem.setAefiDate(BackboneActivity.dateParser(dateStr));
+                    aefiListItem.setAefiDate(BackboneActivity.dateParser(dateStrAefi));
                 aefiListItem.setNotes(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationAppointmentColumns.NOTES)));
                 aefiListItems.add(aefiListItem);
             } while (cursor.moveToNext());
@@ -2849,10 +2879,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             ArrayList<AefiListItem> aefiListItems = new ArrayList<AefiListItem>();
             do {
+                Log.d("eafi","appointment_id="+cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationEventColumns.APPOINTMENT_ID))+" AND childId = "+childId);
                 AefiListItem aefiListItem = new AefiListItem();
                 aefiListItem.setAppointementId(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationEventColumns.APPOINTMENT_ID)));
-                aefiListItem.setVaccines(getAefiVaccinessInString(childId,
-                        cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationEventColumns.APPOINTMENT_ID))));
+
+                String vaccineName = getAefiVaccinessInString(childId, cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationEventColumns.APPOINTMENT_ID)));
+                Log.d("eafi","vaccines names = "+vaccineName);
+
+                aefiListItem.setVaccines(vaccineName);
                 aefiListItem.setHealthFacilityName(cursor.getString(cursor.getColumnIndex(SQLHandler.HealthFacilityColumns.NAME)));
                 if (cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationEventColumns.VACCINATION_STATUS)).equalsIgnoreCase("true")) {
                     aefiListItem.setDone(true);
@@ -2870,7 +2904,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     aefiListItem.setVaccinationDate(BackboneActivity.dateParser(dateStr));
                 String dateStrAefi = cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationAppointmentColumns.AEFI_DATE));
                 if (dateStrAefi != null && !dateStrAefi.isEmpty())
-                    aefiListItem.setAefiDate(BackboneActivity.dateParser(dateStr));
+                    aefiListItem.setAefiDate(BackboneActivity.dateParser(dateStrAefi));
                 aefiListItem.setNotes(cursor.getString(cursor.getColumnIndex(SQLHandler.VaccinationAppointmentColumns.NOTES)));
                 aefiListItems.add(aefiListItem);
             } while (cursor.moveToNext());
@@ -2889,9 +2923,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 " where " +
                 "ve." + SQLHandler.VaccinationEventColumns.CHILD_ID + " = '" + childId + "' AND " +
                 "ve." + SQLHandler.VaccinationEventColumns.APPOINTMENT_ID + " = '" + appointementId + "' AND " +
-                "ve." + SQLHandler.VaccinationEventColumns.VACCINATION_STATUS + " = 'true' AND " +
-                "(va." + SQLHandler.VaccinationAppointmentColumns.AEFI + " = 'false' or " +
-                "va." + SQLHandler.VaccinationAppointmentColumns.AEFI + " is null)";
+                "ve." + SQLHandler.VaccinationEventColumns.VACCINATION_STATUS + " = 'true'";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         StringBuilder sb = new StringBuilder("");
@@ -4629,16 +4661,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-    public boolean isStockDistributionInDb(int fromHealthFacilityId,int toHealthFacilityId, String distributionDate, int itemId, int lotId, int productId, String quantity,String distributionType) {
+    public boolean isStockDistributionInDb(int StockDistributionId) {
         String selectQuery = "SELECT "+StockDistributionsValuesColumns.TO_HEALTH_FACILITY_ID+" FROM stock_distributions" +
-                " WHERE "+StockDistributionsValuesColumns.FROM_HEALTH_FACILITY_ID+" = " + fromHealthFacilityId + " AND "
-                +StockDistributionsValuesColumns.DISTRIBUTION_DATE+" = '" + distributionDate + "' AND "
-                +StockDistributionsValuesColumns.ITEM_ID+" = " + itemId + " AND "
-                +StockDistributionsValuesColumns.LOT_ID+" = " + lotId + " AND "
-                +StockDistributionsValuesColumns.PRODUCT_ID+" = " + productId + " AND "
-                +StockDistributionsValuesColumns.QUANTITY+" = '" + quantity + "' AND "
-                +StockDistributionsValuesColumns.DISTRIBUTION_TYPE+" = '" + distributionType + "' AND "
-                +StockDistributionsValuesColumns.TO_HEALTH_FACILITY_ID+" = " + toHealthFacilityId + "";
+                " WHERE "+StockDistributionsValuesColumns.STOCK_DISTRIBUTION_ID+" = " + StockDistributionId;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 

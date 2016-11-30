@@ -956,7 +956,11 @@ public class BackboneApplication extends Application {
             db1.setTransactionSuccessful();
             db1.endTransaction();
         } catch (Exception e) {
-            db1.endTransaction();
+            try {
+                db1.endTransaction();
+            }catch (Exception e1){
+                e1.printStackTrace();
+            }
             e.printStackTrace();
         }
         Log.d("coze", "saving data to db returning = " + containsData);
@@ -3885,38 +3889,52 @@ public class BackboneApplication extends Application {
      */
     public void continuousModificationParser() {
         if (!USERNAME.equalsIgnoreCase("default")) {
+            try {
 
-            String url = WCF_URL + "ChildManagement.svc/GetChildrenByHealthFacilityBeforeLastLoginV1?idUser=" + getLOGGED_IN_USER_ID();
-            Log.d("secondLoginURL", url);
-
-            client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
-            client.get(url, new TextHttpResponseHandler() {
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    throwable.printStackTrace();
+                String username, password;
+                if (LOGGED_IN_USERNAME == null) {
+                    Log.d(TAG,"username null");
+                    List<User> allUsers = databaseInstance.getAllUsers();
+                    User user = allUsers.get(0);
+                    username = user.getUsername();
+                    password = user.getPassword();
+                } else {
+                    username = LOGGED_IN_USERNAME;
+                    password = LOGGED_IN_USER_PASS;
                 }
 
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, String response) {
-                    ChildCollector2 objects2 = new ChildCollector2();
-                    try {
-                        Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
-                        ObjectMapper mapper = new ObjectMapper();
-                        objects2 = mapper.readValue(response, ChildCollector2.class);
 
-                    } catch (JsonGenerationException e) {
-                        e.printStackTrace();
-                    } catch (JsonMappingException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } finally {
-                        addChildVaccinationEventVaccinationAppointment(objects2);
+                String url = WCF_URL + "ChildManagement.svc/GetChildrenByHealthFacilityBeforeLastLoginV1?idUser=" + getLOGGED_IN_USER_ID();
+                Log.d("secondLoginURL", url);
+                client.setBasicAuth(username, password, true);
+                client.get(url, new TextHttpResponseHandler() {
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        throwable.printStackTrace();
                     }
-                }
-            });
 
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, String response) {
+                        ChildCollector2 objects2 = new ChildCollector2();
+                        try {
+                            Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                            ObjectMapper mapper = new ObjectMapper();
+                            objects2 = mapper.readValue(response, ChildCollector2.class);
 
+                        } catch (JsonGenerationException e) {
+                            e.printStackTrace();
+                        } catch (JsonMappingException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } finally {
+                            addChildVaccinationEventVaccinationAppointment(objects2);
+                        }
+                    }
+                });
+            }catch(Exception e){
+                e.printStackTrace();
+            }
         }
 
     }
@@ -4538,33 +4556,40 @@ public class BackboneApplication extends Application {
 
 
     public void parseStockDistributions() {
+        Log.d(TAG,"parsing stock distributions");
         try {
-            String username, password;
+            String username, password,hfid;
             if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
                 List<User> allUsers = databaseInstance.getAllUsers();
                 User user = allUsers.get(0);
 
                 username = user.getUsername();
                 password = user.getPassword();
+                hfid = user.getHealthFacilityId();
                 client.setBasicAuth(username, password, true);
             } else {
                 client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+                hfid = LOGGED_IN_USER_HF_ID;
             }
 
             final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC).append(GET_STOCK_DISTRIBUTIONS);
+            Log.d(TAG,"parsing stock distributions url = "+webServiceUrl);
+            Log.d(TAG,"parsing stock distributions Health Facility Id = "+hfid);
 
             RequestParams params = new RequestParams();
-            params.add("healthFacilityId",getLOGGED_IN_USER_HF_ID());
+            params.add("healthFacilityId",hfid);
 
 
             RequestHandle message = client.get(webServiceUrl.toString(), params,new TextHttpResponseHandler() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    Log.d(TAG,"parsing stock distributions failure = "+responseString);
                     throwable.printStackTrace();
                 }
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, String response) {
+                    Log.d(TAG,"parsing stock distributions success = "+response);
                     JSONArray arr = null;
                     try {
                         arr = new JSONArray(response);
@@ -4576,6 +4601,7 @@ public class BackboneApplication extends Application {
                                 ContentValues adCV = new ContentValues();
                                 DatabaseHandler db = getDatabaseInstance();
 
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.STOCK_DISTRIBUTION_ID, o.getInt("StockDistributionId"));
                                 adCV.put(SQLHandler.StockDistributionsValuesColumns.FROM_HEALTH_FACILITY_ID, o.getInt("FromHealthFacilityId"));
                                 adCV.put(SQLHandler.StockDistributionsValuesColumns.TO_HEALTH_FACILITY_ID, o.getInt("ToHealthFacilityId"));
                                 adCV.put(SQLHandler.StockDistributionsValuesColumns.PROGRAM_ID, o.getInt("ProgramId"));
@@ -4590,19 +4616,13 @@ public class BackboneApplication extends Application {
                                 adCV.put(SQLHandler.StockDistributionsValuesColumns.DISTRIBUTION_DATE, o.getString("DistributionDate"));
                                 adCV.put(SQLHandler.StockDistributionsValuesColumns.UNIT_OF_MEASURE, o.getString("BaseUom"));
 
-                                if (db.isStockDistributionInDb(o.getInt("FromHealthFacilityId"), o.getInt("ToHealthFacilityId"), o.getString("DistributionDate"), o.getInt("ItemId"), o.getInt("LotId"), o.getInt("ProductId"), o.getString("Quantity"), o.getString("DistributionType"))) {
+                                if (db.isStockDistributionInDb(o.getInt("StockDistributionId"))) {
                                     db.getWritableDatabase().update(SQLHandler.Tables.STOCK_DISTRIBUTIONS, adCV,
-                                            SQLHandler.StockDistributionsValuesColumns.FROM_HEALTH_FACILITY_ID + "= " + o.getInt("FromHealthFacilityId") + " AND " +
-                                                    SQLHandler.StockDistributionsValuesColumns.TO_HEALTH_FACILITY_ID + "= " + o.getInt("ToHealthFacilityId") + " AND " +
-                                                    SQLHandler.StockDistributionsValuesColumns.PRODUCT_ID + "= " + o.getInt("ProductId") + " AND " +
-                                                    SQLHandler.StockDistributionsValuesColumns.QUANTITY + "= '" + o.getString("Quantity") + "' AND " +
-                                                    SQLHandler.StockDistributionsValuesColumns.LOT_ID + "= " + o.getInt("LotId") + " AND " +
-                                                    SQLHandler.StockDistributionsValuesColumns.ITEM_ID + "= " + o.getInt("ItemId") + " AND " +
-                                                    SQLHandler.StockDistributionsValuesColumns.DISTRIBUTION_TYPE + "= '" + o.getString("DistributionType") + "' AND " +
-                                                    SQLHandler.StockDistributionsValuesColumns.DISTRIBUTION_DATE + "= '" + o.getString("DistributionDate") + "'", null);
+                                            SQLHandler.StockDistributionsValuesColumns.STOCK_DISTRIBUTION_ID + "= " + o.getInt("StockDistributionId"), null);
                                 } else {
                                     db.getWritableDatabase().insert(SQLHandler.Tables.STOCK_DISTRIBUTIONS, null, adCV);
                                 }
+
                             }catch (Exception e){
                                 e.printStackTrace();
                             }
@@ -4619,8 +4639,26 @@ public class BackboneApplication extends Application {
     }
 
 
-    public void updateStockDistribution(int fromHealthFacilityId, int toHealthFacilityId, int productId, int lotId, int itemId, String distributionType , String distributionDate,int quantity,String status,String userId) {
+    public void updateStockDistribution(int fromHealthFacilityId, int toHealthFacilityId, int productId, int lotId, int itemId, String distributionType , String distributionDate,int quantity,String status,int StockDistributionId) {
         final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+
+        String userId;
+        String username, password;
+        if (LOGGED_IN_USER_ID == null) {
+            Log.d(TAG,"userid null");
+            List<User> allUsers = databaseInstance.getAllUsers();
+            User user = allUsers.get(0);
+            userId = user.getId();
+            username = user.getUsername();
+            password = user.getPassword();
+
+        } else {
+            userId = LOGGED_IN_USER_ID;
+            username = LOGGED_IN_USERNAME;
+            password = LOGGED_IN_USER_PASS;
+        }
+
+
         webServiceUrl.append("updateHeathFacilityStockDistributions?fromHealthFacilityId=").append(fromHealthFacilityId)
                 .append("&toHealthFacilityId=").append(toHealthFacilityId)
                 .append("&productId=").append(productId)
@@ -4630,12 +4668,29 @@ public class BackboneApplication extends Application {
                 .append("&distributionDate=").append(distributionDate)
                 .append("&quantity=").append(quantity)
                 .append("&status=").append(status)
-                .append("&userId=").append(userId);
+                .append("&userId=").append(userId)
+                .append("&StockDistributionId=").append(StockDistributionId);
 
-        Log.e(" save health faci", webServiceUrl + "");
 
-        getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
+        try {
+            client.setBasicAuth(username,password,true);
+            RequestHandle message = client.get(webServiceUrl.toString(),new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
+                }
 
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String response) {
+                    if(statusCode!=200){
+                        getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
+                    }
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+            getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
+        }
     }
 
 }

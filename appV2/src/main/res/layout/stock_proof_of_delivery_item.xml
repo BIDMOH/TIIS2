@@ -39,6 +39,14 @@
             android:layout_gravity="center_vertical"
             android:textSize="16sp"
             android:id="@+id/lot_no"/>
+        <TextView
+            android:gravity="center_horizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".10"
+            android:layout_gravity="center_vertical"
+            android:textSize="16sp"
+            android:id="@+id/quantity_sent"/>
 
         <FrameLayout
             android:layout_width="0dp"

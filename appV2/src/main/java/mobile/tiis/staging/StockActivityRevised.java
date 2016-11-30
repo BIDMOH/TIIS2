@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,6 +32,7 @@ public class StockActivityRevised extends BackboneActivity {
     private StockViewPagerAdapter adapter;
     public Toolbar toolbar;
     public TextView toolbarTitle;
+    private int position;
 
     String title = "";
 
@@ -49,6 +51,8 @@ public class StockActivityRevised extends BackboneActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        setTitle("Stock");
+
         toolbarTitle.setText(title);
 
         adapter = new StockViewPagerAdapter(getSupportFragmentManager());
@@ -58,6 +62,11 @@ public class StockActivityRevised extends BackboneActivity {
         tabs.setTextColor(Color.WHITE);
 
         tabs.setViewPager(pager);
+
+        position = getIntent().getIntExtra("stock_distribution",-1);
+        if(position!=-1){
+            pager.setCurrentItem(2);
+        }
 
     }
 
@@ -101,5 +110,28 @@ public class StockActivityRevised extends BackboneActivity {
             }
         }
     };
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == android.R.id.home) { //app icon in action bar clicked; go back
+
+            if(position!=-1) {
+                if (((BackboneApplication) getApplication()).getLOGGED_IN_USER_ID() == null) {
+                    finish();
+                } else {
+                    Intent intent = new Intent(this, HomeActivityRevised.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    finish();
+
+                }
+            }else{
+                finish();
+            }
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
 }

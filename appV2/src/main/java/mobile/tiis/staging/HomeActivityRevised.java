@@ -58,8 +58,8 @@ import mobile.tiis.staging.database.DatabaseHandler;
 import mobile.tiis.staging.fragments.FragmentStackManager;
 import mobile.tiis.staging.fragments.VaccinationQueueFragment;
 import mobile.tiis.staging.helpers.Utils;
+import mobile.tiis.staging.postman.PostmanSynchronizationService;
 import mobile.tiis.staging.postman.RoutineAlarmReceiver;
-import mobile.tiis.staging.postman.SynchronisationService;
 import mobile.tiis.staging.CustomViews.BadgeDrawable;
 
 import static mobile.tiis.staging.util.DatabaseUtil.copyDatabaseToExtStg;
@@ -171,7 +171,7 @@ public class HomeActivityRevised extends BackboneActivity {
     private final BroadcastReceiver mHandlePostmanCountReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String count = intent.getExtras().getString(SynchronisationService.SynchronisationService_MESSAGE);
+            String count = intent.getExtras().getString(PostmanSynchronizationService.SynchronisationService_MESSAGE);
             Log.d(TAG,"Received postman count = "+count);
 
 
@@ -290,7 +290,8 @@ public class HomeActivityRevised extends BackboneActivity {
 
             }
             RoutineAlarmReceiver.setAlarmCheckForChangesInChild(this);
-            RoutineAlarmReceiver.setPostmanAlarm(this);
+//            RoutineAlarmReceiver.setPostmanAlarm(this);
+            startService(new Intent(this, PostmanSynchronizationService.class));
             nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(MenuItem item) {
@@ -734,7 +735,8 @@ public class HomeActivityRevised extends BackboneActivity {
                 application.parseStock();
 
                 //Starting the service to upload all postman data
-                Intent i = new Intent(HomeActivityRevised.this, SynchronisationService.class);
+                Intent i = new Intent(HomeActivityRevised.this, PostmanSynchronizationService.class);
+
                 startService(i);
 
             }

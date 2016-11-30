@@ -50,7 +50,7 @@
                 android:orientation="horizontal"
                 android:layout_below="@id/info">
 
-            <RelativeLayout
+                <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_marginLeft="16dp"
@@ -337,241 +337,11 @@
                 </LinearLayout>
 
             </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_height="wrap_content">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:id="@+id/separator_top_2"
-                    android:background="@color/black"/>
-
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="16dp"
-                    android:layout_height="50dp"
-                    android:layout_below="@id/separator_top_2"
-                    android:id="@+id/refrigerator_txt"
-                    android:text="REFRIGERATOR TEMPERATURE"
-                    android:background="@color/card_separator"
-                    android:textColor="@color/black"/>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:background="@drawable/border"
-                    android:layout_below="@id/refrigerator_txt">
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/black"/>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:background="@color/card_separator"
-                        android:orientation="horizontal">
-
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/black"/>
-
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="match_parent"
-                            android:text="Temperature"
-                            android:textColor="@color/black"
-                            android:gravity="center"/>
-
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/black"/>
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:textColor="@color/black"
-                            android:layout_height="match_parent"
-                            android:text="No. Of Alarm Episodes"
-                            android:gravity="center"/>
-
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/black"/>
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/black"/>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="match_parent"
-                            android:text="Max"
-                            android:gravity="center"/>
-
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/card_border"/>
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="match_parent"
-                            android:text="Min"
-                            android:gravity="center"/>
-
-                        <View
-                            android:layout_width="2dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/card_border"/>
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="match_parent"
-                            android:text="Low Temp"
-                            android:gravity="center"/>
-
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/card_border"/>
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="match_parent"
-                            android:text="High Temp"
-                            android:gravity="center"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:orientation="horizontal">
-
-                        <EditText
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="match_parent"
-                            android:layout_margin="6dp"
-                            android:paddingLeft="4dp"
-                            android:background="@drawable/border"
-                            android:id="@+id/temp_max"
-                            android:hint=""
-                            android:textSize="14sp"
-                            android:inputType="numberDecimal|numberSigned"/>
-
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/card_border"/>
-
-                        <EditText
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="match_parent"
-                            android:layout_margin="6dp"
-                            android:paddingLeft="4dp"
-                            android:background="@drawable/border"
-                            android:id="@+id/temp_min"
-                            android:hint=""
-                            android:textSize="14sp"
-                            android:inputType="numberDecimal|numberSigned"/>
-
-                        <View
-                            android:layout_width="2dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/card_border"/>
-
-                        <EditText
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="match_parent"
-                            android:layout_margin="6dp"
-                            android:paddingLeft="4dp"
-                            android:background="@drawable/border"
-                            android:inputType="numberDecimal|numberSigned"
-                            android:id="@+id/alarm_low"
-                            android:hint=""
-                            android:textSize="14sp"/>
-
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/card_border"/>
-
-                        <EditText
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="match_parent"
-                            android:layout_margin="6dp"
-                            android:paddingLeft="4dp"
-                            android:background="@drawable/border"
-                            android:id="@+id/alarm_high"
-                            android:hint=""
-                            android:textSize="14sp"
-                            android:inputType="numberDecimal|numberSigned"/>
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:background="@drawable/border"/>
-
-                    <Button
-                        android:layout_width="100dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="right"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:text="Submit"
-                        android:id="@+id/refrigerator_submit_button"/>
-
-
-                </LinearLayout>
-
-            </RelativeLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="16dp">
-
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp">
 
@@ -716,6 +486,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_margin="6dp"
                                 android:paddingLeft="4dp"
+                                android:editable="false"
                                 android:background="@drawable/border"
                                 android:id="@+id/outreach_cancelled"
                                 android:hint=""
@@ -761,6 +532,15 @@
 
                 </RelativeLayout>
 
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp">
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_weight="1"
@@ -1003,7 +783,7 @@
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
                                 android:layout_height="match_parent"
-                                android:text="OPV"
+                                android:text="OPV0"
                                 android:gravity="center"
                                 android:textSize="12sp"
                                 android:textColor="@color/black"/>
@@ -1067,11 +847,10 @@
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
                                 android:layout_height="match_parent"
-                                android:text="TT"
+                                android:text="TT1"
                                 android:gravity="center"
                                 android:textSize="12sp"
-                                android:textColor="@color/black"
-                                android:id="@+id/textView5" />
+                                android:textColor="@color/black" />
 
                             <EditText
                                 android:layout_width="0dp"
@@ -1080,7 +859,7 @@
                                 android:layout_margin="6dp"
                                 android:paddingLeft="4dp"
                                 android:background="@drawable/border"
-                                android:id="@+id/tt_female_service"
+                                android:id="@+id/tt1_female_service"
                                 android:hint=""
                                 android:inputType="number"/>
 
@@ -1091,7 +870,7 @@
                                 android:layout_margin="6dp"
                                 android:paddingLeft="4dp"
                                 android:background="@drawable/border"
-                                android:id="@+id/tt_male_service"
+                                android:id="@+id/tt1_male_service"
                                 android:hint=""
                                 android:inputType="number"/>
 
@@ -1102,7 +881,7 @@
                                 android:layout_margin="6dp"
                                 android:paddingLeft="4dp"
                                 android:background="@drawable/border"
-                                android:id="@+id/tt_female_catchment"
+                                android:id="@+id/tt1_female_catchment"
                                 android:hint=""
                                 android:inputType="number"/>
 
@@ -1114,12 +893,311 @@
                                 android:layout_margin="6dp"
                                 android:paddingLeft="4dp"
                                 android:background="@drawable/border"
-                                android:id="@+id/tt_male_catchment"
+                                android:id="@+id/tt1_male_catchment"
                                 android:hint=""
                                 android:inputType="number"/>
 
                         </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:orientation="horizontal">
 
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:text="TT2"
+                                android:gravity="center"
+                                android:textSize="12sp"
+                                android:textColor="@color/black"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt2_female_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt2_male_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt2_female_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt2_male_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:text="TT3"
+                                android:gravity="center"
+                                android:textSize="12sp"
+                                android:textColor="@color/black" />
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt3_female_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt3_male_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt3_female_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt3_male_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:text="TT4"
+                                android:gravity="center"
+                                android:textSize="12sp"
+                                android:textColor="@color/black"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt4_female_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt4_male_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt4_female_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt4_male_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:text="TT5"
+                                android:gravity="center"
+                                android:textSize="12sp"
+                                android:textColor="@color/black"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt5_female_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt5_male_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt5_female_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt5_male_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:text="Completed TT5"
+                                android:gravity="center"
+                                android:textSize="12sp"
+                                android:textColor="@color/black"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt5_Completed_female_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt5_Completed_male_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt5_Completed_female_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt5_Completed_male_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                        </LinearLayout>
 
                         <Button
                             android:layout_width="100dp"
@@ -1133,7 +1211,226 @@
                     </LinearLayout>
 
                 </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_height="wrap_content">
 
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:id="@+id/separator_top_2"
+                        android:background="@color/black"/>
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="16dp"
+                        android:layout_height="50dp"
+                        android:layout_below="@id/separator_top_2"
+                        android:id="@+id/refrigerator_txt"
+                        android:text="REFRIGERATOR MONITORING"
+                        android:background="@color/card_separator"
+                        android:textColor="@color/black"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/border"
+                        android:layout_below="@id/refrigerator_txt">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/black"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:background="@color/card_separator"
+                            android:orientation="horizontal">
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/black"/>
+
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:text="Temperature"
+                                android:textColor="@color/black"
+                                android:gravity="center"/>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/black"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:textColor="@color/black"
+                                android:layout_height="match_parent"
+                                android:text="No. Of Alarm Episodes"
+                                android:gravity="center"/>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/black"/>
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/black"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:text="Max"
+                                android:gravity="center"/>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/card_border"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:text="Min"
+                                android:gravity="center"/>
+
+                            <View
+                                android:layout_width="2dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/card_border"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:text="Low Temp"
+                                android:gravity="center"/>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/card_border"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:text="High Temp"
+                                android:gravity="center"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:orientation="horizontal">
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/temp_max"
+                                android:hint=""
+                                android:textSize="14sp"
+                                android:inputType="numberDecimal|numberSigned"/>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/card_border"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/temp_min"
+                                android:hint=""
+                                android:textSize="14sp"
+                                android:inputType="numberDecimal|numberSigned"/>
+
+                            <View
+                                android:layout_width="2dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/card_border"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:inputType="numberDecimal|numberSigned"
+                                android:id="@+id/alarm_low"
+                                android:hint=""
+                                android:textSize="14sp"/>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/card_border"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/alarm_high"
+                                android:hint=""
+                                android:textSize="14sp"
+                                android:inputType="numberDecimal|numberSigned"/>
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:background="@drawable/border"/>
+
+                        <Button
+                            android:layout_width="100dp"
+                            android:layout_height="50dp"
+                            android:layout_gravity="right"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:text="Submit"
+                            android:id="@+id/refrigerator_submit_button"/>
+
+
+                    </LinearLayout>
+
+                </RelativeLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -1209,7 +1506,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:text="SAFE INJECTION EQUIPMENT"
+                    android:text="SAFE BOXES AND SYRINGES"
                     android:gravity="center"
                     android:background="@color/card_separator"
                     android:textColor="@color/black"
@@ -1688,7 +1985,7 @@
             </LinearLayout>
 
 
-        <LinearLayout
+            <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/border"

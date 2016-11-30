@@ -159,7 +159,7 @@ public class SQLHandler {
 
     public static final String SQLDistributedStock =
             "CREATE TABLE IF NOT EXISTS " + Tables.STOCK_DISTRIBUTIONS + " ("
-                    + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + StockDistributionsValuesColumns.STOCK_DISTRIBUTION_ID + " INTEGER PRIMARY KEY,"
                     + StockDistributionsValuesColumns.FROM_HEALTH_FACILITY_ID + " INTEGER NOT NULL,"
                     + StockDistributionsValuesColumns.TO_HEALTH_FACILITY_ID + " INTEGER NOT NULL,"
                     + StockDistributionsValuesColumns.PROGRAM_ID + " INTEGER NOT NULL,"
@@ -1168,6 +1168,7 @@ public class SQLHandler {
 
 
     public interface StockDistributionsValuesColumns {
+        String STOCK_DISTRIBUTION_ID = "stock_distribution_id";
         String FROM_HEALTH_FACILITY_ID = "from_health_facility_id";
         String TO_HEALTH_FACILITY_ID = "to_health_facility_id";
         String PROGRAM_ID = "program_id";

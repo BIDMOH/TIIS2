@@ -13,12 +13,14 @@ import android.os.Build;
 import android.util.Log;
 import com.google.android.gcm.GCMBaseIntentService;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
 import mobile.tiis.staging.HomeActivityRevised;
 import mobile.tiis.staging.R;
+import mobile.tiis.staging.StockActivityRevised;
 import mobile.tiis.staging.base.BackboneApplication;
 
 public class GCMService extends GCMBaseIntentService {
@@ -107,7 +109,18 @@ public class GCMService extends GCMBaseIntentService {
             application.parseImmunizationSessionMonthly(prevMonth+"", year+"");
         }
         //STOCK DISTRIBUTIONS
-        else if(gcmMessage.equals("UpdateHealthFacilityStockDistributions")){
+        else if(gcmMessage.equals("newHealthFacilityStockDistributions")){
+            Log.d(TAG,"receiving new Heath facility stock distributions");
+            application.parseItem();
+            application.parseScheduledVaccination();
+            application.parseDose();
+            application.parseItemLots();
+            application.parseStock();
+            application.parseStockDistributions();
+            createNotification(context,"New Stock Received");
+        }
+
+        else if(gcmMessage.equals("proofOfDeliverySentSuccessfully")){
             Log.d(TAG,"updating Heath facility stock distributions");
             application.parseItem();
             application.parseScheduledVaccination();
@@ -115,7 +128,7 @@ public class GCMService extends GCMBaseIntentService {
             application.parseItemLots();
             application.parseStock();
             application.parseStockDistributions();
-            createNotification(context,"New Stock Sent");
+            createNotification(context,"Proof Of Delivery Sent Successfully");
         }
         else{
             application.getDatabaseInstance().addChildToChildUpdatesQueue(gcmMessage,3);
@@ -172,10 +185,12 @@ public class GCMService extends GCMBaseIntentService {
         Log.d(TAG, "Creating notification with ID == " + notificationId);
 
         Log.d(TAG,"the activity is not running");
-        intent = new Intent(context, HomeActivityRevised.class);
+        intent = new Intent(context, StockActivityRevised.class);
+        intent.putExtra("stock_distribution",3);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                 Intent.FLAG_ACTIVITY_CLEAR_TASK);
         pIntent = PendingIntent.getActivity(context, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
 
 
         long[] pattern = {500,500};

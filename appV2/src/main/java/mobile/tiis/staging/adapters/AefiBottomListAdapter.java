@@ -22,13 +22,14 @@ public class AefiBottomListAdapter extends BaseAdapter {
     private Context context;
 
     private ArrayList<AefiListItem> aefiItems;
-
+    private  LayoutInflater vi;
     final SimpleDateFormat ft;
 
     public AefiBottomListAdapter(Context ctx, ArrayList<AefiListItem> aefiItems){
         this.context    = ctx;
         this.aefiItems  = aefiItems;
         ft = new SimpleDateFormat("dd-MMM-yyyy");
+        vi = (LayoutInflater) context.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     static class ViewHolder{
@@ -42,7 +43,6 @@ public class AefiBottomListAdapter extends BaseAdapter {
         ViewHolder viewHolder = new ViewHolder();
         AefiListItem item = aefiItems.get(i);
 
-        LayoutInflater vi = (LayoutInflater) context.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if(rowView == null){
             rowView = vi.inflate(R.layout.aefi_list_two_item, null);
             viewHolder.vaccineDoses = (TextView) rowView.findViewById(R.id.vacc_dose);
@@ -65,7 +65,8 @@ public class AefiBottomListAdapter extends BaseAdapter {
         viewHolder.done.setChecked(item.isDone());
 
         viewHolder.AEFI.setChecked(item.isAefi());
-//        viewHolder.AEFIDates.setText(ft.format(item.getAefiDate()));
+        if(item.getAefiDate()!=null)
+            viewHolder.AEFIDates.setText(ft.format(item.getAefiDate()));
         viewHolder.notes.setText(item.getNotes());
 
         return rowView;

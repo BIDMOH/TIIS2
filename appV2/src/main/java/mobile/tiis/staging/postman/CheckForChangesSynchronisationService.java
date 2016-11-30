@@ -58,6 +58,7 @@ public class CheckForChangesSynchronisationService  extends IntentService {
                 app.parseHealthFacilityThatAreInVaccEventButNotInHealthFac(hfidFoundInVaccEvOnlyAndNotInHealthFac);
             }
             app.parseStock();
+            app.parseStockDistributions();
 
         }
 

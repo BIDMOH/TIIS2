@@ -92,6 +92,7 @@ public class ChildAefiPagerFragment extends RxFragment implements DatePickerDial
 
     MaterialEditText edtNotesAefi;
     private Looper backgroundLooper;
+    private ArrayList<AefiListItem> aefiListtemp;
 
     public static final long getDaysDifference(Date d1, Date d2) {
         long diff = d2.getTime() - d1.getTime();
@@ -205,25 +206,18 @@ public class ChildAefiPagerFragment extends RxFragment implements DatePickerDial
                 lastAppointementAefi.setNotes(edtNotesAefi.getText().toString());
                 contentValues.put(SQLHandler.VaccinationAppointmentColumns.NOTES, edtNotesAefi.getText().toString());
             }
+            contentValues.put(SQLHandler.VaccinationAppointmentColumns.ID,lastAppointementAefi.getAppointementId());
 
 
             if (contentValues.size() > 0) {
                 lastAppointementAefi.setModifiedById(app.getLOGGED_IN_USER_ID());
                 lastAppointementAefi.setModifiedOn(new Date());
                 if (mydb.updateVaccinationAppointementById(contentValues, lastAppointementAefi.getAppointementId()) > 0) {
+                    Log.d(TAG,"last appointment id after save = " + lastAppointementAefi.getAppointementId());
+                    String url = prepareUrl().toString();
+                    mydb.addPost(url, -1);
                     alertDialogBuilder.setMessage(R.string.child_change_data_saved_success);
-                    thread = new Thread() {
-                        @Override
-                        public void run() {
-                            String url = prepareUrl().toString();
-                            if (!app.updateAefiAppointement(prepareUrl())) {
-                                mydb.addPost(url, -1);
-                                Log.d("Save Edited Child", "Error while saving edited aefi " + lastAppointementAefi.getAppointementId());
-                            } else {
-                            }
-                        }
-                    };
-                    thread.start();
+
                 }
                 alertDialogBuilder.show();
                 reloadAefiLists();
@@ -294,6 +288,7 @@ public class ChildAefiPagerFragment extends RxFragment implements DatePickerDial
 
                             if (lastAppointementAefi != null) {
 
+                                Log.d(TAG,"last appointment id before save = " + lastAppointementAefi.getAppointementId());
                                 topListAdapter = new AefiTopListAdapter(ChildAefiPagerFragment.this.getActivity(), lastAppointementAefiList);
                                 topListView.setAdapter(topListAdapter);
 
@@ -349,19 +344,50 @@ public class ChildAefiPagerFragment extends RxFragment implements DatePickerDial
     }
 
     private void reloadAefiLists()  {
-        aefiItems.clear();
-        ArrayList<AefiListItem> aefiListtemp = mydb.getAefiVaccinationAppointement(childId);
-        if (aefiListtemp != null && aefiListtemp.size() > 0)
-            aefiItems.addAll(aefiListtemp);
-        bottomListAdapter.notifyDataSetChanged();
+        Observable.defer(new Func0<Observable<Boolean>>() {
+            @Override
+            public Observable<Boolean> call() {
+                // Do some long running operation
+                aefiItems.clear();
+                aefiListtemp = mydb.getAefiVaccinationAppointement(childId);
+                return Observable.just(true);
+            }
+        })// Run on a background thread
+                .subscribeOn(AndroidSchedulers.from(backgroundLooper))
+                // Be notified on the main thread
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<Boolean>bindToLifecycle())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d(TAG, "onCompleted()");
+                        if (aefiListtemp != null && aefiListtemp.size() > 0)
+                            aefiItems.addAll(aefiListtemp);
+                        bottomListAdapter.notifyDataSetChanged();
 
-        lastAppointementAefiList.clear();
-        ArrayList<AefiListItem> lastAppointementAefiListtemp = mydb.getAefiLastVaccinationAppointement(childId);
-        if (lastAppointementAefiListtemp != null && lastAppointementAefiListtemp.size() > 0) {
-            lastAppointementAefiList.addAll(lastAppointementAefiListtemp);
-            lastAppointementAefi = lastAppointementAefiList.get(0);
-        }
-        topListAdapter.notifyDataSetChanged();
+                        lastAppointementAefiList.clear();
+                        ArrayList<AefiListItem> lastAppointementAefiListtemp = mydb.getAefiLastVaccinationAppointement(childId);
+                        if (lastAppointementAefiListtemp != null && lastAppointementAefiListtemp.size() > 0) {
+                            lastAppointementAefiList.addAll(lastAppointementAefiListtemp);
+                            lastAppointementAefi = lastAppointementAefiList.get(0);
+                        }
+                        topListAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError()", e);
+                    }
+
+                    @Override
+                    public void onNext(Boolean string) {
+                        Log.d(TAG, "onNext(" + string + ")");
+                    }
+                });
+
+
+
+
     }
 
     private StringBuilder prepareUrl() {
@@ -372,7 +398,11 @@ public class ChildAefiPagerFragment extends RxFragment implements DatePickerDial
             webServiceUrl.append("&aefi=" + "true");
         else
             webServiceUrl.append("&aefi=" + "true");
-        webServiceUrl.append("&notes=" + lastAppointementAefi.getNotes());
+        try {
+            webServiceUrl.append("&notes=" + URLEncoder.encode(lastAppointementAefi.getNotes(),"utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         SimpleDateFormat formatted = new SimpleDateFormat("yyyy-MM-dd");
         if (lastAppointementAefi.getAefiDate() != null)
             try {

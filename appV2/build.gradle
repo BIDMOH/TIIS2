@@ -15,8 +15,8 @@ android {
         applicationId "mobile.tiis.staging"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 144
-        versionName "2.4.6-beta.2"
+        versionCode 147
+        versionName "2.4.9-beta.2"
         multiDexEnabled true
 
     }
@@ -32,6 +32,11 @@ android {
         // Or, if you prefer, you can continue to check for errors in release builds,
         // but continue the build even when errors are found:
         abortOnError false
+    }
+
+    dexOptions {
+        incremental true
+        javaMaxHeapSize "8g"
     }
 
 }
