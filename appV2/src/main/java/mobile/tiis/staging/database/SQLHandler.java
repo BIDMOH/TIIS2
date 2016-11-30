@@ -706,6 +706,8 @@ public class SQLHandler {
                     + GIISContract.StockStatusColumns.OPPENING_BALANCE + " TEXT,"
                     + GIISContract.StockStatusColumns.CLOSING_BALANCE + " TEXT,"
                     + GIISContract.StockStatusColumns.DISCARDED_UNOPENED + " TEXT,"
+                    + GIISContract.StockStatusColumns.DISCARDED_OPENED + " TEXT,"
+                    + GIISContract.StockStatusColumns.IMMUNIZED_CHILDREN + " TEXT,"
                     + GIISContract.StockStatusColumns.DOSES_RECEIVED + " TEXT,"
                     + GIISContract.StockStatusColumns.REPORTED_MONTH + " TEXT);";
 
@@ -1055,6 +1057,8 @@ public class SQLHandler {
         String CLOSING_BALANCE = "CLOSING_BALANCE";
         String DOSES_RECEIVED = "DOSES_RECEIVED";
         String DISCARDED_UNOPENED = "DISCARDED_UNOPENED";
+        String DISCARDED_OPENED = "DISCARDED_OPENED";
+        String IMMUNIZED_CHILDREN = "IMMUNIZED_CHILDREN";
         String REPORTED_MONTH = "REPORTED_MONTH";
     }
 

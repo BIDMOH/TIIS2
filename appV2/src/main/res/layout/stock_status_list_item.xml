@@ -73,6 +73,19 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text=""
+            android:id="@+id/opened_doses"
+            android:gravity="center"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/card_border"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text=""
             android:id="@+id/discarded_unopened"
             android:gravity="center"/>
         <View

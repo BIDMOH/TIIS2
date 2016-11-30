@@ -347,6 +347,52 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return result;
     }
 
+    public long addStockStatusReport(ContentValues cv){
+        long result;
+
+        SQLiteDatabase sd = getWritableDatabase();
+        sd.beginTransaction();
+        try{
+            result = sd.insert(Tables.STOCK_STATUS_REPORT, null, cv);
+            sd.setTransactionSuccessful();
+        }catch(Exception e){
+            result=-1;
+            sd.endTransaction();
+            throw e;
+        }
+        sd.endTransaction();
+        return result;
+
+    }
+
+    public long updateStockStatusReport(ContentValues cv, String reportedMonth, String antigen){
+        SQLiteDatabase sd = getWritableDatabase();
+        long result ;
+        sd.beginTransaction();
+        try{
+            result = sd.update(Tables.STOCK_STATUS_REPORT, cv, SQLHandler.StockStatusColumns.REPORTED_MONTH + "= ? AND "+
+                            SQLHandler.StockStatusColumns.ITEM_NAME+" = ?",
+                    new String[]{
+                            reportedMonth,
+                            antigen
+                    });
+            sd.setTransactionSuccessful();
+
+            //do not any more database operations between
+            //setTransactionSuccessful and endTransaction
+        }catch(Exception e){
+            //end the transaction on error too when doing exception handling
+            result=-1;
+            sd.endTransaction();
+            throw e;
+        }
+        //end the transaction on no error
+        sd.endTransaction();
+
+
+        return result;
+    }
+
     public long addStock(ContentValues cv) {
 
         long result;
@@ -397,6 +443,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         boolean found = cursor.moveToFirst();
+        cursor.close();
+        return found;
+    }
+
+    public boolean isStockStatusInDB(String selectedMonth, String antigen){
+        String selectQuery = "SELECT  * FROM " + Tables.STOCK_STATUS_REPORT + " WHERE "
+                +SQLHandler.StockStatusColumns.REPORTED_MONTH+" = '" +selectedMonth+ "' AND "+SQLHandler.StockStatusColumns.ITEM_NAME+" = '"+antigen+"'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        boolean found = cursor.moveToFirst();
+
+        Log.d("monthstartandenddate", "Query is : "+selectQuery);
+        Log.d("monthstartandenddate", "Result is : "+found);
+
         cursor.close();
         return found;
     }
@@ -4203,8 +4264,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 StockStatusEntity children = new StockStatusEntity();
-                children.setItemName(cursor.getString(0));
-                children.setImmunizedChildren(cursor.getString(1));
+                children.setAntigen(cursor.getString(0));
+                children.setChildrenImmunized(cursor.getString(1));
                 stockStatusEntities.add(children);
             } while (cursor.moveToNext());
         }

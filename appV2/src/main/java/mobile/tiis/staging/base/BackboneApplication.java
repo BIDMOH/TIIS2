@@ -87,6 +87,7 @@ import mobile.tiis.staging.entity.Place;
 import mobile.tiis.staging.entity.ScheduledVaccination;
 import mobile.tiis.staging.entity.Status;
 import mobile.tiis.staging.entity.Stock;
+import mobile.tiis.staging.entity.StockStatusEntity;
 import mobile.tiis.staging.entity.SyringesAndSafetyBoxes;
 import mobile.tiis.staging.entity.User;
 import mobile.tiis.staging.entity.VaccinationAppointment;
@@ -725,6 +726,81 @@ public class BackboneApplication extends Application {
         });
     }
 
+
+    public boolean parseStockStatusInformation(String fromDate, String toDate, final String reportingMonth){
+        if (LOGGED_IN_USER_HF_ID == null || LOGGED_IN_USER_HF_ID.equals("0")) return false;
+
+        /*
+        ec2-54-187-21-117.us-west-2.compute.amazonaws.com/SVC/StockManagement.svc/&fromDate=2016-11-132016-11-13
+         */
+        final StringBuilder webServiceUrl;
+        webServiceUrl = new StringBuilder(WCF_URL).append(STOCK_MANAGEMENT_SVC);
+        webServiceUrl.append("GetHealthFacilityCurrentStockByDose?hfid=").append(getLOGGED_IN_USER_HF_ID())
+                .append("&fromDate=").append(fromDate)
+                .append("&toDate=").append(toDate);
+
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String response) {
+                List<StockStatusEntity> objects = new ArrayList<StockStatusEntity>();
+                Log.d("monthstartandenddate", "Response : "+response);
+                Log.d("monthstartandenddate", "month is : "+reportingMonth);
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                    objects = mapper.readValue(response, new TypeReference<List<StockStatusEntity>>() {
+                    });
+
+                } catch (JsonGenerationException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    for (StockStatusEntity object : objects) {
+
+                        /*
+                        "antigen": "OPV",
+                        "childrenImmunized": 227,
+                        "dosesDiscardedOpened": 62,
+                        "dosesDiscardedUnopened": 0,
+                        "dosesReceived": 0,
+                        "openingBalance": 133,
+                        "stockOnHand": 40
+                        */
+
+                        ContentValues values = new ContentValues();
+                        values.put(SQLHandler.SyncColumns.UPDATED, 1);
+                        values.put(SQLHandler.StockStatusColumns.DISCARDED_UNOPENED, object.getDosesDiscardedUnopened());
+                        values.put(SQLHandler.StockStatusColumns.DISCARDED_OPENED, object.getDosesDiscardedOpened());
+                        values.put(SQLHandler.StockStatusColumns.DOSES_RECEIVED, object.getDosesReceived());
+                        values.put(SQLHandler.StockStatusColumns.ITEM_NAME, object.getAntigen());
+                        values.put(SQLHandler.StockStatusColumns.CLOSING_BALANCE, object.getStockOnHand());
+                        values.put(SQLHandler.StockStatusColumns.OPPENING_BALANCE, object.getOpeningBalance());
+                        values.put(SQLHandler.StockStatusColumns.REPORTED_MONTH, reportingMonth);
+                        values.put(SQLHandler.StockStatusColumns.IMMUNIZED_CHILDREN, object.getChildrenImmunized());
+                        DatabaseHandler db = getDatabaseInstance();
+                        if (!db.isStockStatusInDB(reportingMonth, object.getAntigen())) {
+                            db.addStockStatusReport(values);
+                            Log.d("monthstartandenddate", "adding new status for month : "+reportingMonth);
+                        } else {
+                            db.updateStockStatusReport(values, reportingMonth, object.getAntigen());
+                            Log.d("monthstartandenddate", "updating existing status for month : "+reportingMonth);
+                        }
+                    }
+                }
+            }
+        });
+        return true;
+    }
 
 
     public boolean addChildVaccinationEventVaccinationAppointment(ChildCollector2 childCollector) {
