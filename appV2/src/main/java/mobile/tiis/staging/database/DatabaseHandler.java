@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import mobile.tiis.staging.DatabaseModals.SessionsModel;
 import mobile.tiis.staging.R;
 import mobile.tiis.staging.base.BackboneActivity;
 import mobile.tiis.staging.base.BackboneApplication;
@@ -81,7 +82,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String TAG = "DatabaseHandler";
 
     public static final String DATABASE_NAME = "giis_mobile.db";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     public static boolean dbPreinstalled = false;
 
     public DatabaseHandler(Context context) {
@@ -187,6 +188,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.execSQL(SQLHandler.SQLSyringesAndSafetyBoxes);
             db.execSQL(SQLHandler.SQLHealthFacilityVitaminA);
             db.execSQL(SQLHandler.SQLDistributedStock);
+            db.execSQL(SQLHandler.SQLLoginSessions);
 
         }
     }
@@ -237,6 +239,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + Tables.STOCK_DISTRIBUTIONS);
 
             db.execSQL("DROP VIEW IF EXISTS " + SQLHandler.Views.MONTHLY_PLAN);
+            db.execSQL("DROP TABLE IF EXISTS " + Tables.HF_LOGIN_SESSIONS);
 
             // CREATE NEW INSTANCE OF SCHEMA
             onCreate(db);
@@ -4613,5 +4616,119 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             cursor.close();
             return false;
         }
+    }
+
+    public long storeHealthFacilitySession(String healthFacilityId, String userId, long time) {
+
+        SQLiteDatabase db = getWritableDatabase();
+        long result = -1;
+        db.beginTransaction();
+        ContentValues insertValues = new ContentValues();
+        insertValues.put(GIISContract.HfLoginSessions.USER_ID, userId);
+        insertValues.put(GIISContract.HfLoginSessions.HEALTH_FACILITY_ID, healthFacilityId);
+        insertValues.put(GIISContract.HfLoginSessions.LOGING_TIME, time);
+        insertValues.put(GIISContract.HfLoginSessions.SESSION_LENGTH, 0);
+        insertValues.put(GIISContract.HfLoginSessions.STATUS, 0);
+
+        try {
+            result = db.insert(Tables.HF_LOGIN_SESSIONS, null, insertValues);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            db.endTransaction();
+            return result;
+        }
+    }
+
+    public long getHealthFacilityLastLoginSession() {
+
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor c = db.rawQuery("SELECT * FROM "+Tables.HF_LOGIN_SESSIONS+" ORDER BY "+BaseColumns._ID+" DESC LIMIT 0,1",null);
+        c.moveToFirst();
+        return c.getLong(4);
+    }
+
+    public long updateHealthFacilitySessionDuration(long sessionLength) {
+
+        SQLiteDatabase db = getWritableDatabase();
+
+        Cursor c = db.rawQuery("SELECT * FROM "+Tables.HF_LOGIN_SESSIONS+" ORDER BY "+BaseColumns._ID+" DESC LIMIT 0,1",null);
+        c.moveToFirst();
+        long result = -1;
+        db.beginTransaction();
+        ContentValues insertValues = new ContentValues();
+        insertValues.put(BaseColumns._ID, c.getInt(0));
+        insertValues.put(GIISContract.HfLoginSessions.SESSION_LENGTH,sessionLength + c.getLong(4));
+        insertValues.put(GIISContract.HfLoginSessions.STATUS, 0);
+
+        Log.d(TAG,"updating Logout duration in miliseconds = "+ (sessionLength + c.getLong(4)));
+        Log.d(TAG,"updating id  = "+  c.getInt(0));
+
+        try {
+            result = db.update(Tables.HF_LOGIN_SESSIONS, insertValues, BaseColumns._ID + " = "+ c.getInt(0),null);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            db.endTransaction();
+            return result;
+        }
+    }
+
+
+    /**
+     * status codes.
+     *   0 = currently inprogress session.
+     *  -1 = completed session but has not yet been synchronized with the server
+     *   1 = completed and synchronised sessions.
+     * @return
+     */
+    public long updateHealthFacilityStatus(long session_id,int status) {
+
+        SQLiteDatabase db = getWritableDatabase();
+
+        Cursor c = db.rawQuery("SELECT * FROM "+Tables.HF_LOGIN_SESSIONS+" WHERE "+BaseColumns._ID+" = "+session_id,null);
+        c.moveToFirst();
+        long result = -1;
+        db.beginTransaction();
+        ContentValues insertValues = new ContentValues();
+        insertValues.put(BaseColumns._ID, c.getInt(0));
+        insertValues.put(GIISContract.HfLoginSessions.STATUS, status);
+        Log.d(TAG,"updating session status = "+ -1);
+        Log.d(TAG,"updating id  = "+  c.getInt(0));
+
+        try {
+            result = db.update(Tables.HF_LOGIN_SESSIONS, insertValues, BaseColumns._ID + " = "+ c.getInt(0),null);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            db.endTransaction();
+            return result;
+        }
+    }
+
+    public List<SessionsModel> getHealthFacilitySessions() {
+
+        SQLiteDatabase db = getWritableDatabase();
+
+        Cursor c = db.rawQuery("SELECT * FROM "+Tables.HF_LOGIN_SESSIONS+" WHERE "+GIISContract.HfLoginSessions.STATUS+" = -1 ",null);
+        int count = c.getCount();
+
+        List<SessionsModel> modelList = new ArrayList<>();
+        for (int i=0;i<count;i++){
+            c.move(i);
+            SessionsModel model = new SessionsModel();
+            model.setModel(c,model);
+            modelList.add(model);
+        }
+
+        return modelList;
+
     }
 }

@@ -781,6 +781,15 @@ public class SQLHandler {
                     + GIISContract.HfVitaminAColumns.VITAMIN_NAME + " TEXT,"
                     + GIISContract.HfVitaminAColumns.REPORTING_MONTH + " TEXT);";
 
+    public static final String SQLLoginSessions =
+            "CREATE TABLE IF NOT EXISTS " + Tables.HF_LOGIN_SESSIONS + " ("
+                    + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + GIISContract.HfLoginSessions.USER_ID + " TEXT,"
+                    + GIISContract.HfLoginSessions.HEALTH_FACILITY_ID + " TEXT,"
+                    + GIISContract.HfLoginSessions.LOGING_TIME + " LONG,"
+                    + GIISContract.HfLoginSessions.SESSION_LENGTH + " LONG,"
+                    + GIISContract.HfLoginSessions.STATUS + " INTEGER);";
+
     public static final String NoTimeConstraintVaccines =
             "SELECT * FROM (" +
                     "SELECT v.APPOINTMENT_ID, " +
@@ -1219,6 +1228,7 @@ public class SQLHandler {
         String MAJOR_IMMUNIZATION_ACTIVITIES = "major_immunization_activities";
         String SYRINGES_AND_SAFETY_BOXES = "syringes_and_safety_boxes";
         String HF_VITAMIN_A = "health_facility_vitamin_a";
+        String HF_LOGIN_SESSIONS = "health_facility_loggin_sessions";
     }
 
     public interface Views {

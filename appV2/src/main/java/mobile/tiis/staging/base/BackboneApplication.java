@@ -65,6 +65,7 @@ import java.util.Date;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
+import mobile.tiis.staging.DatabaseModals.SessionsModel;
 import mobile.tiis.staging.database.DatabaseHandler;
 import mobile.tiis.staging.database.GIISContract;
 import mobile.tiis.staging.database.SQLHandler;
@@ -4594,6 +4595,35 @@ public class BackboneApplication extends Application {
             e.printStackTrace();
             getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
         }
+    }
+
+
+    public List<SessionsModel> GetHealthFacilitySessionUpdateUrl(){
+
+        List<SessionsModel> modelList = databaseInstance.getHealthFacilitySessions();
+
+        for (SessionsModel model:modelList){
+            final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+
+            Calendar c = Calendar.getInstance();
+            c.setTimeInMillis(model.getLOGING_TIME());
+
+            Date date = c.getTime();
+
+            try {
+                webServiceUrl.append("StoreHealthFacilityLoginSessions?userId=").append(model.getUSER_ID())
+                        .append("&healthFacilityId=").append(model.getHEALTH_FACILITY_ID())
+                        .append("&loginTime=").append(URLEncoder.encode(new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(date), "utf-8"))
+                        .append("&sessionLength=").append(model.getSESSION_LENGTH()/1000);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+
+            model.setUrl(webServiceUrl.toString());
+        }
+
+
+        return modelList;
     }
 
 }

@@ -91,6 +91,13 @@ public class GIISContract {
         String REPORTING_MONTH = "REPORTING_MONTH";
         String MODIFIED_ON = "MODIFIED_ON";
     }
+    interface HfLoginSessions{
+        String HEALTH_FACILITY_ID = "HEALTH_FACILITY_ID";
+        String USER_ID = "USER_ID";
+        String LOGING_TIME = "LOGING_TIME";
+        String SESSION_LENGTH = "SESSION_LENGTH";
+        String STATUS = "STATUS";
+    }
 
     interface HealthFacilityColumns{
         String ID = "ID";

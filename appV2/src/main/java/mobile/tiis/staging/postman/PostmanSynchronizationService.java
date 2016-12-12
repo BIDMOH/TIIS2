@@ -15,6 +15,7 @@ import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.mime.content.StringBody;
+import mobile.tiis.staging.DatabaseModals.SessionsModel;
 import mobile.tiis.staging.GCMCommunication.CommonUtilities;
 import mobile.tiis.staging.base.BackboneApplication;
 import mobile.tiis.staging.database.DatabaseHandler;
@@ -207,6 +208,67 @@ public class PostmanSynchronizationService extends Service {
                         });
                     }
                 }
+
+
+                List<SessionsModel> listModels = app.GetHealthFacilitySessionUpdateUrl();
+
+                if (listModels != null && userName != null && password != null) {
+                    Log.d(TAG,"postman count  = "+listPosts.size());
+                    for (final SessionsModel p : listModels) {
+                        Log.d(TAG,"session url = "+p.getUrl());
+                        if(p.getUrl() == null || p.getUrl().trim().equals("")){
+                            try {
+                                Thread.sleep(5000);
+                                db.updateHealthFacilityStatus(p.get_id(),1);
+                                Log.d("SESSION COMPLETE","url = "+p.getUrl());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            continue;
+                        }
+
+                        aClient.get(p.getUrl(), new AsyncHttpResponseHandler(true) {
+                            @Override
+                            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                                String response = new String(responseBody);
+                                Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+response);
+                                int codeNeg99 = 0;
+                                try{
+                                    JSONObject jobj= null;
+                                    jobj = new JSONObject(response);
+                                    codeNeg99 = jobj.getInt("id");
+
+                                    Log.d(TAG,"received session id = "+codeNeg99);
+                                }catch(Exception e){
+                                    e.printStackTrace();
+                                }
+
+                                if(codeNeg99 != -1) {
+                                    long res = -1;
+                                    do {
+                                        try {
+                                            Thread.sleep(10000);
+                                            res = db.updateHealthFacilityStatus(p.get_id(),1);
+                                            Log.d("POSTMAN COMPLETE","url = "+p.getUrl());
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }while(res==-1);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                                Utils.writeNetworkLogFileOnSD(
+                                        Utils.returnDeviceIdAndTimestamp(getApplicationContext())
+                                                + " StatusCode " + statusCode);
+                                return;
+                            }
+                        });
+                    }
+                }
+
+
                 app.parseGCMChildrenInQueueById();
                 app.parseItemLots();
                 app.parseStock();

@@ -48,6 +48,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Calendar;
 
 import mobile.tiis.staging.GCMCommunication.CommonUtilities;
 import mobile.tiis.staging.GCMCommunication.WakeLocker;
@@ -116,6 +117,7 @@ public class HomeActivityRevised extends BackboneActivity {
 
     private boolean sync_needed;
     private FrameLayout frameLayout;
+    private SharedPreferences sessions_id;
     private SharedPreferences sync_preferences;
     private SharedPreferences login_preferences;
     public static final String LOGINPREFERENCE = "loginPrefs" ;
@@ -126,6 +128,7 @@ public class HomeActivityRevised extends BackboneActivity {
     protected Handler handler;
     private Menu optionsMenu;
     private DatabaseHandler db;
+    private Calendar onresumeCalendar;
 
 
     /**
@@ -202,6 +205,7 @@ public class HomeActivityRevised extends BackboneActivity {
 
         db = ((BackboneApplication)getApplication()).getDatabaseInstance();
 
+        sync_preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
 
 
@@ -259,7 +263,6 @@ public class HomeActivityRevised extends BackboneActivity {
 
         }
 
-        sync_preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         sync_needed = true;
         boolean secondSyncNeeded = false, firstLoginOfDaySyncNeeded = false;
         sync_needed = sync_preferences.getBoolean("synchronization_needed", true);
@@ -572,6 +575,7 @@ public class HomeActivityRevised extends BackboneActivity {
     protected void onResume() {
         super.onResume();
 
+        onresumeCalendar = Calendar.getInstance();
         registerReceiver(mHandleMessageReceiver, new IntentFilter(CommonUtilities.DISPLAY_MESSAGE_ACTION));
         registerReceiver(mHandlePostmanCountReceiver, new IntentFilter(CommonUtilities.DISPLAY_POSTMAN_COUNT_ACTION));
         registerReceiver(status_receiver,
@@ -580,6 +584,11 @@ public class HomeActivityRevised extends BackboneActivity {
 
     @Override
     protected void onPause(){
+
+        Calendar c = Calendar.getInstance();
+
+        db.updateHealthFacilitySessionDuration(c.getTimeInMillis() - onresumeCalendar.getTimeInMillis());
+
         super.onPause();
         unregisterReceiver(status_receiver);
 
@@ -589,6 +598,14 @@ public class HomeActivityRevised extends BackboneActivity {
 
     @Override
     public void onDestroy(){
+        Log.d(TAG,"on destroy called");
+        db.updateHealthFacilityStatus(sync_preferences.getLong("session_id",-1),-1);
+        Log.d(TAG,"session length = "+db.getHealthFacilityLastLoginSession());
+
+        SharedPreferences.Editor editor = sync_preferences.edit();
+        editor.putLong("session_id", -1);
+        editor.commit();
+
         super.onDestroy();
     }
 
@@ -1011,6 +1028,24 @@ public class HomeActivityRevised extends BackboneActivity {
 
 
     private void startWebService(final CharSequence loginURL , final String username, final String password){
+        //create a db and store login informations.
+
+        long id = sync_preferences.getLong("session_id",-1);
+
+        if(id==-1) {
+
+            Calendar c = Calendar.getInstance();
+            BackboneApplication app = (BackboneApplication) getApplication();
+
+            long results = db.storeHealthFacilitySession(app.getLOGGED_IN_USER_HF_ID(), app.getLOGGED_IN_USER_ID(), c.getTimeInMillis());
+            if (results != -1) {
+                Log.d(TAG, "login session stored successfully for ID " + results);
+                SharedPreferences.Editor editor = sync_preferences.edit();
+                editor.putLong("session_id", results);
+                editor.commit();
+            }
+        }
+
         handler = new Handler();
         Thread thread = new Thread(new Runnable() {
             public void run() {
@@ -1038,8 +1073,6 @@ public class HomeActivityRevised extends BackboneActivity {
                     if (token != JsonToken.START_OBJECT) {
                         handler.post(new Runnable() {
                             public void run() {
-
-
                                 LayoutInflater li = LayoutInflater.from(HomeActivityRevised.this);
                                 View promptsView = li.inflate(R.layout.custom_alert_dialogue, null);
                                 ((TextView)promptsView.findViewById(R.id.dialogMessage)).setText("Account credentials have been modified, please login again with the correct credentials");
@@ -1142,4 +1175,12 @@ public class HomeActivityRevised extends BackboneActivity {
         }
         return true;
     }
+
+    @Override
+    public void finish() {
+        Log.d(TAG,"finishing the activity");
+        super.finish();
+    }
+
+
 }
