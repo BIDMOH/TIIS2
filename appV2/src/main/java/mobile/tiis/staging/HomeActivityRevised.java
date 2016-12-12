@@ -457,6 +457,16 @@ public class HomeActivityRevised extends BackboneActivity {
             e.printStackTrace();
         }
 
+        db.updateHealthFacilityStatus();
+        Calendar c = Calendar.getInstance();
+        long results = db.storeHealthFacilitySession(app.getLOGGED_IN_USER_HF_ID(), app.getLOGGED_IN_USER_ID(), c.getTimeInMillis());
+        if (results != -1) {
+            Log.d(TAG, "login session stored successfully for ID " + results);
+            SharedPreferences.Editor editor = sync_preferences.edit();
+            editor.putLong("session_id", results);
+            editor.commit();
+        }
+
     }
 
     private void performLogout(){
@@ -584,7 +594,7 @@ public class HomeActivityRevised extends BackboneActivity {
 
     @Override
     protected void onPause(){
-
+        Log.d(TAG,"onPause called");
         Calendar c = Calendar.getInstance();
 
         db.updateHealthFacilitySessionDuration(c.getTimeInMillis() - onresumeCalendar.getTimeInMillis());
@@ -598,14 +608,6 @@ public class HomeActivityRevised extends BackboneActivity {
 
     @Override
     public void onDestroy(){
-        Log.d(TAG,"on destroy called");
-        db.updateHealthFacilityStatus(sync_preferences.getLong("session_id",-1),-1);
-        Log.d(TAG,"session length = "+db.getHealthFacilityLastLoginSession());
-
-        SharedPreferences.Editor editor = sync_preferences.edit();
-        editor.putLong("session_id", -1);
-        editor.commit();
-
         super.onDestroy();
     }
 
@@ -1026,25 +1028,10 @@ public class HomeActivityRevised extends BackboneActivity {
         }
     }
 
-
     private void startWebService(final CharSequence loginURL , final String username, final String password){
-        //create a db and store login informations.
+        //create a db and store login information.
 
-        long id = sync_preferences.getLong("session_id",-1);
 
-        if(id==-1) {
-
-            Calendar c = Calendar.getInstance();
-            BackboneApplication app = (BackboneApplication) getApplication();
-
-            long results = db.storeHealthFacilitySession(app.getLOGGED_IN_USER_HF_ID(), app.getLOGGED_IN_USER_ID(), c.getTimeInMillis());
-            if (results != -1) {
-                Log.d(TAG, "login session stored successfully for ID " + results);
-                SharedPreferences.Editor editor = sync_preferences.edit();
-                editor.putLong("session_id", results);
-                editor.commit();
-            }
-        }
 
         handler = new Handler();
         Thread thread = new Thread(new Runnable() {

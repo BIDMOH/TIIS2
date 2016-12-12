@@ -4600,7 +4600,10 @@ public class BackboneApplication extends Application {
 
     public List<SessionsModel> GetHealthFacilitySessionUpdateUrl(){
 
+        Log.d(TAG,"getting facility sessions");
         List<SessionsModel> modelList = databaseInstance.getHealthFacilitySessions();
+
+        Log.d(TAG,"facility sessions count = "+modelList.size());
 
         for (SessionsModel model:modelList){
             final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
@@ -4618,6 +4621,8 @@ public class BackboneApplication extends Application {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
+
+            Log.d(TAG,"model url = "+webServiceUrl);
 
             model.setUrl(webServiceUrl.toString());
         }

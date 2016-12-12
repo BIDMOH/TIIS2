@@ -213,7 +213,7 @@ public class PostmanSynchronizationService extends Service {
                 List<SessionsModel> listModels = app.GetHealthFacilitySessionUpdateUrl();
 
                 if (listModels != null && userName != null && password != null) {
-                    Log.d(TAG,"postman count  = "+listPosts.size());
+                    Log.d(TAG,"sessions count  = "+listModels.size());
                     for (final SessionsModel p : listModels) {
                         Log.d(TAG,"session url = "+p.getUrl());
                         if(p.getUrl() == null || p.getUrl().trim().equals("")){

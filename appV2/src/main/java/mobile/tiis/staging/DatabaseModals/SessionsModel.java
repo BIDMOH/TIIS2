@@ -39,7 +39,7 @@ public class SessionsModel extends Modal {
         return STATUS;
     }
 
-    public void setSTATUS(int STATUS) {
+    public void setStatus(int STATUS) {
         this.STATUS = STATUS;
     }
 
@@ -47,7 +47,7 @@ public class SessionsModel extends Modal {
         return USER_ID;
     }
 
-    public void setUSER_ID(String USER_ID) {
+    public void setUser_id(String USER_ID) {
         this.USER_ID = USER_ID;
     }
 
@@ -55,7 +55,7 @@ public class SessionsModel extends Modal {
         return HEALTH_FACILITY_ID;
     }
 
-    public void setHEALTH_FACILITY_ID(String HEALTH_FACILITY_ID) {
+    public void setHealth_facility_id(String HEALTH_FACILITY_ID) {
         this.HEALTH_FACILITY_ID = HEALTH_FACILITY_ID;
     }
 
@@ -63,7 +63,7 @@ public class SessionsModel extends Modal {
         return LOGING_TIME;
     }
 
-    public void setLOGING_TIME(long LOGING_TIME) {
+    public void setLoging_time(long LOGING_TIME) {
         this.LOGING_TIME = LOGING_TIME;
     }
 
@@ -71,7 +71,7 @@ public class SessionsModel extends Modal {
         return SESSION_LENGTH;
     }
 
-    public void setSESSION_LENGTH(long SESSION_LENGTH) {
+    public void setSession_length(long SESSION_LENGTH) {
         this.SESSION_LENGTH = SESSION_LENGTH;
     }
 
