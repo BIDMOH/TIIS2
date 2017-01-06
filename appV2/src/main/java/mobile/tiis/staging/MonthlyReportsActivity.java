@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -16,9 +17,12 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -29,6 +33,8 @@ import java.util.Date;
 import java.util.List;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
+import mobile.tiis.staging.adapters.AefiBottomListAdapter;
+import mobile.tiis.staging.adapters.AefiTopListAdapter;
 import mobile.tiis.staging.adapters.PlacesOfBirthAdapter;
 import mobile.tiis.staging.adapters.SpinnerAdapter;
 import mobile.tiis.staging.base.BackboneApplication;
@@ -36,6 +42,12 @@ import mobile.tiis.staging.database.DatabaseHandler;
 import mobile.tiis.staging.database.GIISContract;
 import mobile.tiis.staging.database.SQLHandler;
 import mobile.tiis.staging.entity.MonthEntity;
+import mobile.tiis.staging.fragments.ChildAefiPagerFragment;
+import mobile.tiis.staging.util.BackgroundThread;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func0;
 
 import java.util.Calendar;
 
@@ -46,7 +58,7 @@ import static mobile.tiis.staging.util.Constants.SDILLUTION;
 import static mobile.tiis.staging.util.Constants.VITAMIN_A_100000_IU;
 import static mobile.tiis.staging.util.Constants.VITAMIN_A_200000_IU;
 
-public class MonthlyReportsActivity extends AppCompatActivity implements View.OnClickListener {
+public class MonthlyReportsActivity extends RxAppCompatActivity implements View.OnClickListener {
     private static final String TAG = MonthlyReportsActivity.class.getSimpleName();
 
     //UI ELEMENTS
@@ -65,7 +77,7 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
     private EditText tt5CompletedFemaleServiceArea, tt5CompletedMaleServiceArea, tt5CompletedFemaleCatchmentArea, tt5CompletedMaleCatchmentArea;
 
 
-    private EditText otherMajorImmunizationActivities, otherMajorImmunizationActivitiesNew;
+    private EditText otherMajorImmunizationActivities;
     private EditText ml005Balance, ml005Received, ml005Used, ml005Wastage, ml005StockInHand, ml005StockedOutDays;
     private EditText ads05Balance, ads05Received, ads05Used, ads05Wastage, ads05StockInHand, ads05StockedOutDays;
     private EditText dillutionBalance, dillutionReceived, dillutionUsed, dillutionWastage, dillutionStockInHand, dillutionStockedOutDays;
@@ -112,12 +124,18 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
     public boolean fieldsEditable = true;
     private boolean databaseisfree = true;
     public ProgressBar pbar;
+    public LinearLayout sessionsLayouts;
+    private Looper backgroundLooper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_monthly_reports);
         setupview();
+
+        BackgroundThread backgroundThread = new BackgroundThread();
+        backgroundThread.start();
+        backgroundLooper = backgroundThread.getLooper();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -143,11 +161,9 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         app = (BackboneApplication) this.getApplication();
         mydb = app.getDatabaseInstance();
 
-//        setLastMonthReported();
 
-        Date now  = new Date();
+
         Calendar cal = Calendar.getInstance();
-        cal.setTime(now);
 
         int month   = cal.get(Calendar.MONTH)+1;
         int year    = cal.get(Calendar.YEAR);
@@ -174,6 +190,22 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 
         PlacesOfBirthAdapter adapter = new PlacesOfBirthAdapter(this, R.layout.single_text_spinner_dropdown_toolbar,years);
         yearSpinner.setAdapter(adapter);
+        yearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                currentlySelectedYear = years.get(position);
+
+                if (databaseisfree){
+                    databaseisfree = false;
+                    checkdatabaseForAlreadyReportedFormsForThisMonth();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         for (int i=0; i<years.size(); i++){
             if (years.get(i).equals(year+"")){
@@ -189,15 +221,11 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 
         for (int i =0; i<monthEntities.size(); i++){
             if (Integer.parseInt(monthEntities.get(i).getMonth_number()) == month){
-                monthYearSpinner.setSelection(i+1);
+                Log.d("monthlyReport",i+"");
+                monthYearSpinner.setSelection((i+1));
                 currentSelectedMonth = monthEntities.get(i);
             }
         }
-        if (databaseisfree){
-            databaseisfree = false;
-            checkdatabaseForAlreadyReportedFormsForThisMonth();
-        }
-
 
         monthYearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -263,9 +291,16 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
             fieldsEditable = false;
         }else if((monthVal-selectedmonth)==0 && dayOfMonth<=10) {
             Log.d(TAG,"(monthVal-selectedmonth)==1 && dayOfMonth<=10");
-            setFieldsAccessibility(true);
+
+            if((monthVal-1)==0){
+                monthYearSpinner.setSelection(12);
+                yearSpinner.setSelection(years.indexOf(currentlySelectedYear));
+                setFieldsAccessibility(false);
+            }else {
+                setFieldsAccessibility(true);
+                monthYearSpinner.setSelection(monthVal - 1);
+            }
             fieldsEditable = true;
-            monthYearSpinner.setSelection(monthVal-1);
         }else if ((monthVal-selectedmonth)>1){
             Log.d(TAG,"(monthVal-selectedmonth)>1");
             setFieldsAccessibility(false);
@@ -276,14 +311,133 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
             fieldsEditable = true;
         }
 
-//        setFieldsAccessibility(true);
-//        fieldsEditable = true;
+        if (databaseisfree){
+            databaseisfree = false;
+            checkdatabaseForAlreadyReportedFormsForThisMonth();
+        }
 
     }
 
-    public void checkdatabaseForAlreadyReportedFormsForThisMonth(){
-        QueryImmunizationSession queryImmunizationSession = new QueryImmunizationSession();
-        queryImmunizationSession.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+    private void checkdatabaseForAlreadyReportedFormsForThisMonth(){
+        db = mydb.getReadableDatabase();
+        pbar.setVisibility(View.VISIBLE);
+        sessionsLayouts.setVisibility(View.INVISIBLE);
+        Observable.defer(new Func0<Observable<Boolean>>() {
+            @Override
+            public Observable<Boolean> call() {
+                // Do some long running operation
+                //IMMUNiZATION SESSIONS
+                fixedConducted.setText("");
+                outreachConducted.setText("");
+                outreachPlanned.setText("");
+                outreachCancelled.setText("");
+                otherMajorImmunizationActivities.setText("");
+
+                querySurveillanceInformation( );
+                queryRefrigeratorTemperature( );
+                queryVaccinationsBcgOpvTt( );
+                querySafeInjectionEquipments( );
+                queryVitaminAStock( );
+                queryImmunizationSessions( );
+                return Observable.just(true);
+            }
+        })// Run on a background thread
+                .subscribeOn(AndroidSchedulers.from(backgroundLooper))
+                // Be notified on the main thread
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<Boolean>bindToLifecycle())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d(TAG, "onCompleted()");
+                        pbar.setVisibility(View.GONE);
+                        sessionsLayouts.setVisibility(View.VISIBLE);
+
+                        //dESEASE SURVEILANCE
+                        feverCases.setText(strFeverCases);
+                        feverDeaths.setText(strFeverDeaths);
+                        afpCases.setText(strAfpCases);
+                        afpDeaths.setText(strAfpDeaths);
+                        tetanusCases.setText(strTetanusCases);
+                        tetanusDeaths.setText(strTetanusDeaths);
+
+                        //COLD CHAIN
+                        tempMax.setText(strTempMax);
+                        tempMin.setText(strTempMin);
+                        alarmHigh.setText(strAlarmHigh);
+                        alarmLow.setText(strAlarmLow);
+
+                        //IMMUNiZATION SESSIONS
+                        fixedConducted.setText(strFixedConducted);
+                        outreachConducted.setText(strOutreachConducted);
+                        outreachPlanned.setText(strOutreachPlanned);
+                        outreachCancelled.setText(strOutreachCancelled);
+                        otherMajorImmunizationActivities.setText(strOtherMajorImmunizationActivities);
+
+                        //VACCINATIONS
+                        bcgFemaleServiceArea.setText(strBcgFemaleService);
+                        bcgMaleServiceArea.setText(strBcgMaleService);
+                        bcgFemaleCatchmentArea.setText(strBcgFemaleCatchment);
+                        bcgMaleCatchmentArea.setText(strBcgMaleCatchment);
+                        opvFemaleServiceArea.setText(strOpvFemaleService);
+                        opvMaleServiceArea.setText(strOpvMaleService);
+                        opvFemaleCatchmentArea.setText(strOpvFemaleCatchment);
+                        opvMaleCatchmentArea.setText(strOpvMaleCatchment);
+
+                        //SAFE INJECTIONS
+                        ml005Balance.setText(strml005Balance);
+                        ml005Received.setText(strml005Received);
+                        ml005Used.setText(strml005Used);
+                        ml005Wastage.setText(strml005Wastage);
+                        ml005StockInHand.setText(strml005StockInHand);
+                        ml005StockedOutDays.setText(strml005StockedOutDays);
+                        ads05Balance.setText(strads05Balance);
+                        ads05Received.setText(strads05Received);
+                        ads05Used.setText(strads05Used);
+                        ads05Wastage.setText(strads05Wastage);
+                        ads05StockInHand.setText(strads05StockInHand);
+                        ads05StockedOutDays.setText(strads05StockedOutDays);
+                        dillutionBalance.setText(strDillutionBalance);
+                        dillutionReceived.setText(strDillutionReceived);
+                        dillutionUsed.setText(strDillutionUsed);
+                        dillutionWastage.setText(strDillutionWastage);
+                        dillutionStockInHand.setText(strDillutionStockInHand);
+                        dillutionStockedOutDays.setText(strDillutionStockedOutDays);
+                        safetyBoxBalance.setText(strSafetyBoxBalance);
+                        safetyBoxReceived.setText(strSafetyBoxReceived);
+                        safetyBoxUsed.setText(strSafetyBoxUsed);
+                        safetyBoxWastage.setText(strSafetyBoxWastage);
+                        safetyBoxStockInHand.setText(strSafetyBoxStockInHand);
+                        safetyBoxStockedOutDays.setText(strSafetyBoxStockedOutDays);
+
+                        //VITAMINS
+                        vitA1Opening.setText(strVitA1Opening);
+                        vitA1Received.setText(strVitA1Received);
+                        vitA1Administered.setText(strVitA1Administered);
+                        vitA1Wastage.setText(strVitA1Wastage);
+                        vitA1StockInHand.setText(strVitA1StockInHand);
+                        vitA2Opening.setText(strVitA2Opening);
+                        vitA2Received.setText(strVitA2Received);
+                        vitA2Administered.setText(strVitA2Administered);
+                        vitA2Wastage.setText(strVitA2Wastage);
+                        vitA2StockInHand.setText(strVitA2StockInHand);
+
+                        pbar.setVisibility(View.GONE);
+                        databaseisfree = true;
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError()", e);
+                    }
+
+                    @Override
+                    public void onNext(Boolean string) {
+                        Log.d(TAG, "onNext(" + string + ")");
+                    }
+                });
+
     }
 
     public void queryRefrigeratorTemperature(){
@@ -315,27 +469,39 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 
     public void queryImmunizationSessions(){
 
-        String fromDate = "";
-        String toDate   = "";
-        String fxConducted = "";
-        String outlanned = "";
-        String outConducted = "";
-        String outCancelled = "";
-        String otherActivities = "";
+        long fromDate = 0;
+        long toDate   = 0;
 
         SimpleDateFormat formatted = new SimpleDateFormat("yyyy-MM-dd");
 
         Calendar calendar;
         Date lastmonth;
 
-        calendar = Calendar.getInstance(); // this would default to now
-        Date now = calendar.getTime();
-        toDate  = ((calendar.getTimeInMillis() - 24*60*60*1000) / 1000) + "";
 
-        calendar.add(Calendar.DAY_OF_MONTH, -28);
-        lastmonth = calendar.getTime();
 
-        String modifiedOnString = "";
+        if(Integer.parseInt(currentSelectedMonth.getMonth_number())+1>12){
+            calendar = Calendar.getInstance(); // this would default to now
+            calendar.set(Integer.parseInt(currentlySelectedYear),Integer.parseInt(currentSelectedMonth.getMonth_number())-1,1);
+            fromDate = calendar.getTimeInMillis()/1000;
+
+            calendar.set(Integer.parseInt(currentlySelectedYear),0,1);
+            toDate = calendar.getTimeInMillis()/1000;
+
+            Log.d(TAG,"from date = "+fromDate);
+            Log.d(TAG,"to date = "+toDate);
+        }else{
+            calendar = Calendar.getInstance(); // this would default to now
+            calendar.set(Integer.parseInt(currentlySelectedYear)-1,Integer.parseInt(currentSelectedMonth.getMonth_number())-1,1);
+            fromDate = calendar.getTimeInMillis()/1000;
+
+
+            calendar.set(Integer.parseInt(currentlySelectedYear)-1,Integer.parseInt(currentSelectedMonth.getMonth_number()),1);
+            toDate = calendar.getTimeInMillis()/1000;
+
+            Log.d(TAG,"from date = "+fromDate);
+            Log.d(TAG,"to date = "+toDate);
+        }
+
 
         String modifiedAtQuery = "SELECT "+GIISContract.SyncColumns.MODIFIED_AT+" FROM "+ SQLHandler.Tables.IMMUNIZATION_SESSION
                 +" WHERE "+ SQLHandler.ImmunizationSessionColumns.REPORTING_MONTH+" = '"+mydb.getMonthNameFromNumber((Integer.parseInt(currentSelectedMonth.getMonth_number())-1)+"", app)+" "+currentlySelectedYear+"'";
@@ -344,14 +510,6 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         Cursor modifiedAtCursor = dbX.rawQuery(modifiedAtQuery, null);
 
 
-        if (modifiedAtCursor.moveToFirst()){
-            modifiedOnString = modifiedAtCursor.getString(modifiedAtCursor.getColumnIndex(GIISContract.SyncColumns.MODIFIED_AT));
-        }else {
-            modifiedOnString    = formatted.format(lastmonth);
-            modifiedOnString    = ((calendar.getTimeInMillis() - 24*60*60*1000) / 1000) + "";
-        }
-
-        fromDate = modifiedOnString;
         SQLiteDatabase dbY = mydb.getReadableDatabase();
         String query = "SELECT * FROM "+ SQLHandler.Tables.IMMUNIZATION_SESSION
                 +" WHERE "+ SQLHandler.ImmunizationSessionColumns.REPORTING_MONTH+" = '"+currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear+"'";
@@ -364,42 +522,40 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
             strOutreachConducted = (cursor.getString(cursor.getColumnIndex(SQLHandler.ImmunizationSessionColumns.OUTREACH_CONDUCTED)));
             strOutreachCancelled = (cursor.getString(cursor.getColumnIndex(SQLHandler.ImmunizationSessionColumns.OUTREACH_CANCELLED)));
             strOtherMajorImmunizationActivities = (cursor.getString(cursor.getColumnIndex(SQLHandler.ImmunizationSessionColumns.OTHERACTIVITIES)));
-        }
-
-        String SQLCountOutReach = "SELECT COUNT (DISTINCT strftime('%d', datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch') )) AS IDS FROM vaccination_appointment as va " +
-                "INNER JOIN " +
-                "   vaccination_event as ve on va.ID = ve.APPOINTMENT_ID " +
-                "INNER JOIN " +
-                "   child as c on c.ID = ve.CHILD_ID " +
-                "WHERE ve.APPOINTMENT_ID = va.ID " +
-                "   AND ve.HEALTH_FACILITY_ID = '"+app.getLOGGED_IN_USER_HF_ID()+"' " +
-                "   AND ve.VACCINATION_STATUS = 'true'" +
-                "   AND va.OUTREACH = 'true'" +
-                "   AND datetime('"+fromDate+"','unixepoch') >= datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch') <= datetime('"+toDate+"','unixepoch')";
+        }else{
+            String SQLCountOutReach = "SELECT COUNT (DISTINCT strftime('%d', datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch') )) AS IDS FROM vaccination_appointment as va " +
+                    "INNER JOIN " +
+                    "   vaccination_event as ve on va.ID = ve.APPOINTMENT_ID " +
+                    "WHERE ve.APPOINTMENT_ID = va.ID " +
+                    "   AND ve.HEALTH_FACILITY_ID = '"+app.getLOGGED_IN_USER_HF_ID()+"' " +
+                    "   AND ve.VACCINATION_STATUS = 'true'" +
+                    "   AND va.OUTREACH = 'true'" +
+                    "   AND datetime('"+fromDate+"','unixepoch') <= datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch') " +
+                    "   AND datetime('"+toDate+"','unixepoch') >= datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch') ";
 
 
-        String SQLCountFixed = "SELECT COUNT (DISTINCT strftime('%d', datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch') )) AS IDS FROM vaccination_appointment as va " +
-                "INNER JOIN " +
-                "   vaccination_event as ve on va.ID = ve.APPOINTMENT_ID " +
-                "INNER JOIN " +
-                "   child as c on c.ID = ve.CHILD_ID " +
-                "WHERE ve.APPOINTMENT_ID = va.ID " +
-                "   AND ve.HEALTH_FACILITY_ID = '"+app.getLOGGED_IN_USER_HF_ID()+"' " +
-                "   AND ve.VACCINATION_STATUS = 'true'" +
-                "   AND va.OUTREACH = 'false' " +
-                "   AND datetime('"+fromDate+"','unixepoch') >= datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch') <= datetime('"+toDate+"','unixepoch')";
+            String SQLCountFixed = "SELECT COUNT (DISTINCT strftime('%d', datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch') )) AS IDS FROM vaccination_appointment as va " +
+                    "INNER JOIN " +
+                    "   vaccination_event as ve on va.ID = ve.APPOINTMENT_ID " +
+                    "WHERE ve.APPOINTMENT_ID = va.ID " +
+                    "   AND ve.HEALTH_FACILITY_ID = '"+app.getLOGGED_IN_USER_HF_ID()+"' " +
+                    "   AND ve.VACCINATION_STATUS = 'true'" +
+                    "   AND va.OUTREACH = 'false' " +
+                    "   AND datetime('"+fromDate+"','unixepoch') <= datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch') " +
+                    "   AND datetime('"+toDate+"','unixepoch') >= datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch')";
 
-        SQLiteDatabase dbZ = mydb.getReadableDatabase();
-        Cursor outreachCursor = dbZ.rawQuery(SQLCountOutReach, null);
-        if (outreachCursor.moveToFirst()){
-            int val = outreachCursor.getInt(outreachCursor.getColumnIndex("IDS"));
-            strOutreachConducted = (val+"");
-        }
+            SQLiteDatabase dbZ = mydb.getReadableDatabase();
+            Cursor outreachCursor = dbZ.rawQuery(SQLCountOutReach, null);
+            if (outreachCursor.moveToFirst()){
+                int val = outreachCursor.getInt(outreachCursor.getColumnIndex("IDS"));
+                strOutreachConducted = (val+"");
+            }
 
-        Cursor fixedCursor   = dbZ.rawQuery(SQLCountFixed, null);
-        if (fixedCursor.moveToFirst()){
-            int val = fixedCursor.getInt(fixedCursor.getColumnIndex("IDS"));
-            strFixedConducted = (val+"");
+            Cursor fixedCursor   = dbZ.rawQuery(SQLCountFixed, null);
+            if (fixedCursor.moveToFirst()){
+                int val = fixedCursor.getInt(fixedCursor.getColumnIndex("IDS"));
+                strFixedConducted = (val+"");
+            }
         }
 
     }
@@ -576,9 +732,9 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         //Immunization Sessions
         otherMajorImmunizationActivities.setEnabled(flag);
         outreachCancelled.setEnabled(false);
-        outreachConducted.setEnabled(flag);
-        outreachPlanned.setEnabled(flag);
-        fixedConducted.setEnabled(flag);
+        outreachConducted.setEnabled(false);
+        outreachPlanned.setEnabled(false);
+        fixedConducted.setEnabled(false);
 
         //BCG OPV TT
         bcgFemaleServiceArea.setEnabled(flag);
@@ -2242,8 +2398,11 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
 
 
         fixedConducted      = (EditText) findViewById(R.id.fixed_conducted);
+        fixedConducted.setEnabled(false);
         outreachPlanned     = (EditText) findViewById(R.id.outreach_planned);
+        outreachPlanned.setEnabled(false);
         outreachConducted   = (EditText) findViewById(R.id.outreach_conducted);
+        outreachConducted.setEnabled(false);
         outreachCancelled   = (EditText) findViewById(R.id.outreach_cancelled);
 
         bcgFemaleServiceArea    = (EditText) findViewById(R.id.bcg_female_service);
@@ -2336,11 +2495,12 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         toolbarTitle.setTypeface(HomeActivityRevised.Roboto_Regular);
 
         refrigderatorTitle  = (TextView) findViewById(R.id.refrigerator_txt);
-        refrigderatorTitle  .setTypeface(HomeActivityRevised.Rosario_Regular);
+        refrigderatorTitle.setTypeface(HomeActivityRevised.Rosario_Regular);
         surveillanceTitle   = (TextView) findViewById(R.id.surveillance_txt);
-        surveillanceTitle   .setTypeface(HomeActivityRevised.Rosario_Regular);
+        surveillanceTitle.setTypeface(HomeActivityRevised.Rosario_Regular);
 
-        pbar    = (ProgressBar) findViewById(R.id.immunization_session_progress_bar);
+        pbar                = (ProgressBar) findViewById(R.id.immunization_session_progress_bar);
+        sessionsLayouts     = (LinearLayout) findViewById(R.id.immunizationSessinonsLayouts);
 
     }
 
@@ -2442,108 +2602,6 @@ public class MonthlyReportsActivity extends AppCompatActivity implements View.On
         //dont leave the acitivity
     }
 
-    class QueryImmunizationSession extends AsyncTask<Void, Void, Void>{
 
-
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            db = mydb.getReadableDatabase();
-            pbar.setVisibility(View.VISIBLE);
-
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            querySurveillanceInformation( );
-            queryRefrigeratorTemperature( );
-            queryVaccinationsBcgOpvTt( );
-            querySafeInjectionEquipments( );
-            queryVitaminAStock( );
-//            queryImmunizationSessions( );
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            pbar.setVisibility(View.GONE);
-
-            //dESEASE SURVEILANCE
-            feverCases.setText(strFeverCases);
-            feverDeaths.setText(strFeverDeaths);
-            afpCases.setText(strAfpCases);
-            afpDeaths.setText(strAfpDeaths);
-            tetanusCases.setText(strTetanusCases);
-            tetanusDeaths.setText(strTetanusDeaths);
-
-            //COLD CHAIN
-            tempMax.setText(strTempMax);
-            tempMin.setText(strTempMin);
-            alarmHigh.setText(strAlarmHigh);
-            alarmLow.setText(strAlarmLow);
-
-            //IMMUNiZATION SESSIONS
-            fixedConducted.setText(strFixedConducted);
-            outreachConducted.setText(strOutreachConducted);
-            outreachPlanned.setText(strOutreachPlanned);
-            outreachCancelled.setText(strOutreachCancelled);
-            otherMajorImmunizationActivitiesNew.setText(strOtherMajorImmunizationActivities);
-
-            //VACCINATIONS
-            bcgFemaleServiceArea.setText(strBcgFemaleService);
-            bcgMaleServiceArea.setText(strBcgMaleService);
-            bcgFemaleCatchmentArea.setText(strBcgFemaleCatchment);
-            bcgMaleCatchmentArea.setText(strBcgMaleCatchment);
-            opvFemaleServiceArea.setText(strOpvFemaleService);
-            opvMaleServiceArea.setText(strOpvMaleService);
-            opvFemaleCatchmentArea.setText(strOpvFemaleCatchment);
-            opvMaleCatchmentArea.setText(strOpvMaleCatchment);
-
-            //SAFE INJECTIONS
-            ml005Balance.setText(strml005Balance);
-            ml005Received.setText(strml005Received);
-            ml005Used.setText(strml005Used);
-            ml005Wastage.setText(strml005Wastage);
-            ml005StockInHand.setText(strml005StockInHand);
-            ml005StockedOutDays.setText(strml005StockedOutDays);
-            ads05Balance.setText(strads05Balance);
-            ads05Received.setText(strads05Received);
-            ads05Used.setText(strads05Used);
-            ads05Wastage.setText(strads05Wastage);
-            ads05StockInHand.setText(strads05StockInHand);
-            ads05StockedOutDays.setText(strads05StockedOutDays);
-            dillutionBalance.setText(strDillutionBalance);
-            dillutionReceived.setText(strDillutionReceived);
-            dillutionUsed.setText(strDillutionUsed);
-            dillutionWastage.setText(strDillutionWastage);
-            dillutionStockInHand.setText(strDillutionStockInHand);
-            dillutionStockedOutDays.setText(strDillutionStockedOutDays);
-            safetyBoxBalance.setText(strSafetyBoxBalance);
-            safetyBoxReceived.setText(strSafetyBoxReceived);
-            safetyBoxUsed.setText(strSafetyBoxUsed);
-            safetyBoxWastage.setText(strSafetyBoxWastage);
-            safetyBoxStockInHand.setText(strSafetyBoxStockInHand);
-            safetyBoxStockedOutDays.setText(strSafetyBoxStockedOutDays);
-
-            //VITAMINS
-            vitA1Opening.setText(strVitA1Opening);
-            vitA1Received.setText(strVitA1Received);
-            vitA1Administered.setText(strVitA1Administered);
-            vitA1Wastage.setText(strVitA1Wastage);
-            vitA1StockInHand.setText(strVitA1StockInHand);
-            vitA2Opening.setText(strVitA2Opening);
-            vitA2Received.setText(strVitA2Received);
-            vitA2Administered.setText(strVitA2Administered);
-            vitA2Wastage.setText(strVitA2Wastage);
-            vitA2StockInHand.setText(strVitA2StockInHand);
-
-            pbar.setVisibility(View.GONE);
-            databaseisfree = true;
-
-        }
-
-    }
 
 }

@@ -165,34 +165,7 @@ public class StockProofOfDeliveryFragment extends RxFragment {
 
 
     private void saveButtonClicked(){
-        int counter = rowCollectorList.size();
-        boolean success = true;
-        for (int i=0;i<counter;i++) {
-            HealthFacilityProofOfDelivery healthfacility = rowCollectorList.get(i);
-
-            if(!(((EditText)stockHostTable.getChildAt(i).findViewById(R.id.quantity_received)).getText().toString()).equals(""))
-            {
-                healthfacility.setQuantity(Integer.valueOf(((((EditText) stockHostTable.getChildAt(i).findViewById(R.id.quantity_received)).getText().toString()))));
-            }
-            ContentValues values = new ContentValues();
-            values.put(SQLHandler.StockDistributionsValuesColumns.QUANTITY,healthfacility.getQuantity());
-            values.put(SQLHandler.StockDistributionsValuesColumns.STATUS,"RECEIVED");
-
-            database.getWritableDatabase().update(SQLHandler.Tables.STOCK_DISTRIBUTIONS,values,
-                    SQLHandler.StockDistributionsValuesColumns.STOCK_DISTRIBUTION_ID + "= " + healthfacility.getStockDistributionId(),null);
-
-            Date date = BackboneActivity.dateParser(healthfacility.getDistributionDate());
-            String distributionDate = null;
-            try {
-                distributionDate = URLEncoder.encode(new SimpleDateFormat("yyyy-MM-dd").format(date), "utf-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-
-            saveVaccines(healthfacility,distributionDate);
-        }
-
-
+        saveVaccines();
     }
 
     private ArrayList<HealthFacilityProofOfDelivery> getHealthFacilityStockDistributions(){
@@ -249,7 +222,7 @@ public class StockProofOfDeliveryFragment extends RxFragment {
     }
 
 
-    public void saveVaccines(final HealthFacilityProofOfDelivery healthfacility,final String distributionDate) {
+    public void saveVaccines() {
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("Saving data. \nPlease wait ...");
         progressDialog.setCanceledOnTouchOutside(false);
@@ -258,7 +231,32 @@ public class StockProofOfDeliveryFragment extends RxFragment {
         Observable.defer(new Func0<Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call() {
-                application.updateStockDistribution(healthfacility.getFromHealthFacilityId(),healthfacility.getToHealthFacilityId(),healthfacility.getProductId(),healthfacility.getLotId(),healthfacility.getItemId(),healthfacility.getDistributionType(),distributionDate,healthfacility.getQuantity(),"RECEIVED",healthfacility.getStockDistributionId());
+                int counter = rowCollectorList.size();
+                boolean success = true;
+                for (int i=0;i<counter;i++) {
+                    HealthFacilityProofOfDelivery healthfacility = rowCollectorList.get(i);
+
+                    if(!(((EditText)stockHostTable.getChildAt(i).findViewById(R.id.quantity_received)).getText().toString()).equals(""))
+                    {
+                        healthfacility.setQuantity(Integer.valueOf(((((EditText) stockHostTable.getChildAt(i).findViewById(R.id.quantity_received)).getText().toString()))));
+                    }
+                    ContentValues values = new ContentValues();
+                    values.put(SQLHandler.StockDistributionsValuesColumns.QUANTITY,healthfacility.getQuantity());
+                    values.put(SQLHandler.StockDistributionsValuesColumns.STATUS,"RECEIVED");
+
+                    database.getWritableDatabase().update(SQLHandler.Tables.STOCK_DISTRIBUTIONS,values,
+                            SQLHandler.StockDistributionsValuesColumns.STOCK_DISTRIBUTION_ID + "= " + healthfacility.getStockDistributionId(),null);
+
+                    Date date = BackboneActivity.dateParser(healthfacility.getDistributionDate());
+                    String distributionDate = null;
+                    try {
+                        distributionDate = URLEncoder.encode(new SimpleDateFormat("yyyy-MM-dd").format(date), "utf-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+
+                    application.updateStockDistribution(healthfacility.getFromHealthFacilityId(),healthfacility.getToHealthFacilityId(),healthfacility.getProductId(),healthfacility.getLotId(),healthfacility.getItemId(),healthfacility.getDistributionType(),distributionDate,healthfacility.getQuantity(),"RECEIVED",healthfacility.getStockDistributionId());
+                }
                 return Observable.just(true);
             }
         }).subscribeOn(AndroidSchedulers.from(backgroundLooper))

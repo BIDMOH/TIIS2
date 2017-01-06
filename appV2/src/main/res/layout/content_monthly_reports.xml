@@ -346,8 +346,10 @@
                     android:layout_marginRight="16dp">
 
                     <LinearLayout
+                        android:id="@+id/immunizationSessinonsLayouts"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:visibility="invisible"
                         android:background="@drawable/border"
                         android:orientation="vertical">
 
@@ -454,6 +456,7 @@
                                 android:paddingLeft="4dp"
                                 android:background="@drawable/border"
                                 android:id="@+id/fixed_conducted"
+                                android:editable="false"
                                 android:hint=""
                                 android:inputType="number"/>
 
@@ -474,6 +477,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_margin="6dp"
                                 android:paddingLeft="4dp"
+                                android:editable="false"
                                 android:background="@drawable/border"
                                 android:id="@+id/outreach_conducted"
                                 android:hint=""
@@ -523,7 +527,6 @@
                     </LinearLayout>
 
                     <ProgressBar
-                        android:visibility="gone"
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:layout_centerInParent="true"
