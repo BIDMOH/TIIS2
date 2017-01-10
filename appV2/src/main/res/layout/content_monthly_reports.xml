@@ -349,7 +349,7 @@
                         android:id="@+id/immunizationSessinonsLayouts"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:visibility="invisible"
+                        android:visibility="visible"
                         android:background="@drawable/border"
                         android:orientation="vertical">
 
@@ -529,6 +529,7 @@
                     <ProgressBar
                         android:layout_width="60dp"
                         android:layout_height="60dp"
+                        android:visibility="gone"
                         android:layout_centerInParent="true"
                         android:indeterminate="true"
                         android:id="@+id/immunization_session_progress_bar"/>

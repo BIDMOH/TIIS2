@@ -55,6 +55,7 @@ public class StockStatusFragment extends RxFragment {
     private TableLayout stockStatusTable;
     private MaterialSpinner reportingPeriod;
     private Button generateReport;
+    private  TextView healthFacility;
 
     List<String> monthYear = new ArrayList<>();
     List<MonthYearPair> monthYearPairs = new ArrayList<>();
@@ -84,14 +85,23 @@ public class StockStatusFragment extends RxFragment {
         cal.setTime(now);
 
         int mYear = cal.get(Calendar.YEAR);
+
         cal.add(Calendar.YEAR, -1);
         int lastYear = cal.get(Calendar.YEAR);
 
         int[] years = {mYear, lastYear};
 
         for (int year: years){
-            for (int i = 0; i<12; i++){
-                monthYearPairs.add(new MonthYearPair(i+1, year));
+            for (int i = 11; i>=0; i--){
+                if(year==mYear){
+                    Calendar c= Calendar.getInstance();
+                    int currentMonth =  c.get(Calendar.MONTH);
+                    if(currentMonth >= i){
+                        monthYearPairs.add(new MonthYearPair(i+1, year));
+                    }
+                }else {
+                    monthYearPairs.add(new MonthYearPair(i + 1, year));
+                }
             }
         }
 
@@ -134,6 +144,8 @@ public class StockStatusFragment extends RxFragment {
 
             }
         });
+
+        healthFacility.setText(app.getDatabaseInstance().getHealthCenterName(app.getLOGGED_IN_USER_HF_ID()));
 
         BackgroundThread backgroundThread = new BackgroundThread();
         backgroundThread.start();
@@ -209,18 +221,16 @@ public class StockStatusFragment extends RxFragment {
 
         {
             Calendar calendar = getCalendarForNow();
-            calendar.set(Calendar.MONTH, selectedMonth.getMonthyear().first);
+            calendar.set(Calendar.MONTH, selectedMonth.getMonthyear().first-1);
             calendar.set(Calendar.YEAR, selectedMonth.getMonthyear().second);
-            calendar.set(Calendar.DAY_OF_MONTH,
-                    calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+            calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
             setTimeToBeginningOfDay(calendar);
             begining = calendar.getTime();
         }
 
         {
             Calendar calendar = getCalendarForNow();
-            calendar.set(Calendar.DAY_OF_MONTH,
-                    calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+            calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
             setTimeToEndofDay(calendar);
             end = calendar.getTime();
         }
@@ -265,6 +275,8 @@ public class StockStatusFragment extends RxFragment {
             TextView immunizedChildren = (TextView) view.findViewById(R.id.immunized_children);
             TextView openingBalance = (TextView) view.findViewById(R.id.opening_balance);
             TextView closingBalance = (TextView) view.findViewById(R.id.closing_balance);
+            TextView usageRate = (TextView) view.findViewById(R.id.usage_rate);
+            TextView wastageRate = (TextView) view.findViewById(R.id.wastage_rate);
 
             itemName.setText(stockStatusEntity.getAntigen());
             dosesReceived.setText(stockStatusEntity.getDosesReceived());
@@ -273,6 +285,8 @@ public class StockStatusFragment extends RxFragment {
             immunizedChildren.setText(stockStatusEntity.getChildrenImmunized());
             openingBalance.setText(stockStatusEntity.getOpeningBalance());
             closingBalance.setText(stockStatusEntity.getStockOnHand());
+            usageRate.setText(stockStatusEntity.getUsageRate());
+            wastageRate.setText(stockStatusEntity.getWastageRate());
 
             stockStatusTable.addView(view);
         }
@@ -302,6 +316,13 @@ public class StockStatusFragment extends RxFragment {
                     row.setStockOnHand(cursor.getString(cursor.getColumnIndex(SQLHandler.StockStatusColumns.CLOSING_BALANCE)));
                     row.setDosesDiscardedOpened(cursor.getString(cursor.getColumnIndex(SQLHandler.StockStatusColumns.DISCARDED_OPENED)));
                     row.setChildrenImmunized(cursor.getString(cursor.getColumnIndex(SQLHandler.StockStatusColumns.IMMUNIZED_CHILDREN)));
+
+                    int discardedOpened = cursor.getInt(cursor.getColumnIndex(SQLHandler.StockStatusColumns.DISCARDED_OPENED));
+                    int discardedUnopened = cursor.getInt(cursor.getColumnIndex(SQLHandler.StockStatusColumns.DISCARDED_UNOPENED));
+                    int imunizedchildren = cursor.getInt(cursor.getColumnIndex(SQLHandler.StockStatusColumns.IMMUNIZED_CHILDREN));
+
+                    row.setUsageRate((imunizedchildren*100.0/(discardedOpened+discardedUnopened))+"");
+                    row.setWastageRate((100 -(imunizedchildren*100.0/(discardedOpened+discardedUnopened)))+"");
                     entities.add(row);
                 }while (cursor.moveToNext());
             }
@@ -315,6 +336,8 @@ public class StockStatusFragment extends RxFragment {
         stockStatusTable    .setVisibility(View.GONE);
         reportingPeriod     = (MaterialSpinner) v.findViewById(R.id.mon_year_spiner);
         generateReport      = (Button) v.findViewById(R.id.generate_report);
+
+        healthFacility  = (TextView) v.findViewById(R.id.hf_value);
     }
 
 

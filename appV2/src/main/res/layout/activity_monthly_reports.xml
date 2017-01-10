@@ -75,7 +75,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/toolbar_title"
-                    android:text="Monthly Reports"
+                    android:text="IVD Monthly Forms"
                     android:textSize="18sp"
                     android:textColor="@color/white"
                     android:textStyle="bold"

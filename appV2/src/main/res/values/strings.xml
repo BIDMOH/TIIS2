@@ -282,6 +282,6 @@
         <item>Inside Catchment</item>
         <item>Outside Catchment</item>
     </array>
-    <string name="title_activity_monthly_reports">Monthly Reports</string>
+    <string name="title_activity_monthly_reports">IVD Monthly Report Forms</string>
 
 </resources>

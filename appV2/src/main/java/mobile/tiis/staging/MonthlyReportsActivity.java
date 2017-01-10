@@ -142,6 +142,8 @@ public class MonthlyReportsActivity extends RxAppCompatActivity implements View.
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        getSupportActionBar().setTitle("IVD Monthly Report Forms");
+
         dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         View dialogueView   = LayoutInflater.from(this).inflate(R.layout.monthly_report_dialogue, null);

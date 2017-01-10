@@ -389,7 +389,7 @@
     <string name="home_vac_queue">Vaccination Queue</string>
     <string name="home_monthly_plan">Monthly Plan</string>
     <string name="home_reports">Reports</string>
-    <string name="home_monthly_reports">Monthly Reports</string>
+    <string name="home_monthly_reports">IVD Monthly Forms</string>
     <string name="home_stock">Stock</string>
     <string name="home_logout">Logout</string>
     <string name="error_editing_dob">Error. Cannot Edit</string>
