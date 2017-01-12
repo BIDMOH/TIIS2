@@ -231,7 +231,7 @@
     <string name="there_are_no_children">There are no children that match the search criteria!</string>
     <string name="btn_register">Register Child</string>
 
-    <string name="alert_empty_fields">Please check your data</string>
+    <string name="alert_empty_fields">Please check your data and fill all fields</string>
     <string name="empty_barcode">The barcode field can not be empty!</string>
     <string name="change_barcode_scan_when_exists_dialog">This child already has a barcode, are you sure you want to assign another one?</string>
     <string name="empty_child_id">The child Id field can not be empty</string>
@@ -401,6 +401,7 @@
     <string name="name_contains_spaces">The name should not contain spaces</string>
     <string name="similar_children_exist">Similar Children already exist, please check first if the child is not among them</string>
     <string name="list_of_similar_children_title">List of similar children within the System</string>
+    <string name="alert_not_multiple_of_product">Please check the entered data, Quantity entered is not multiple of product presentation</string>
 
 
 </resources>

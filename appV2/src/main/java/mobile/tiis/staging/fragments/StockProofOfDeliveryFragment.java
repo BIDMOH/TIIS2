@@ -165,7 +165,39 @@ public class StockProofOfDeliveryFragment extends RxFragment {
 
 
     private void saveButtonClicked(){
-        saveVaccines();
+        if(checkDataIntegrity()==0) {
+            saveVaccines();
+        }else if(checkDataIntegrity()==1){
+            sayThis(getResources().getString(R.string.alert_empty_fields),1);
+        }else if(checkDataIntegrity()==2){
+            sayThis(getResources().getString(R.string.alert_not_multiple_of_product),1);
+        }
+
+    }
+
+    private int checkDataIntegrity(){
+        int counter = rowCollectorList.size();
+        int status = 0;
+        for (int i=0;i<counter;i++) {
+            HealthFacilityProofOfDelivery healthfacility = rowCollectorList.get(i);
+
+            int receivedQuantity = 0;
+            try {
+                receivedQuantity = Integer.parseInt(((EditText) stockHostTable.getChildAt(i).findViewById(R.id.quantity_received)).getText().toString());
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+
+            if((((EditText)stockHostTable.getChildAt(i).findViewById(R.id.quantity_received)).getText().toString()).equals(""))
+            {
+                status = 1;
+            }else if(healthfacility.getDosesPerDispensingUnit()!=0){
+                if(receivedQuantity% healthfacility.getDosesPerDispensingUnit()!=0 )
+                    status = 2;
+            }
+        }
+        return status;
     }
 
     private ArrayList<HealthFacilityProofOfDelivery> getHealthFacilityStockDistributions(){
@@ -186,6 +218,7 @@ public class StockProofOfDeliveryFragment extends RxFragment {
                     row.setDistributionType(cursor.getString(cursor.getColumnIndex(SQLHandler.StockDistributionsValuesColumns.DISTRIBUTION_TYPE)));
                     row.setItemId(cursor.getInt(cursor.getColumnIndex(SQLHandler.StockDistributionsValuesColumns.ITEM_ID)));
                     row.setLotId(cursor.getInt(cursor.getColumnIndex(SQLHandler.StockDistributionsValuesColumns.LOT_ID)));
+                    row.setDosesPerDispensingUnit(cursor.getInt(cursor.getColumnIndex(SQLHandler.StockDistributionsValuesColumns.DOSES_PER_DISPENSING_UNIT)));
 
                     row.setProductId(cursor.getInt(cursor.getColumnIndex(SQLHandler.StockDistributionsValuesColumns.PRODUCT_ID)));
                     row.setProgramId(cursor.getInt(cursor.getColumnIndex(SQLHandler.StockDistributionsValuesColumns.PROGRAM_ID)));

@@ -166,6 +166,7 @@ public class SQLHandler {
                     + StockDistributionsValuesColumns.DISTRIBUTION_DATE + " TEXT ,"
                     + StockDistributionsValuesColumns.ITEM_ID + " TEXT NOT NULL,"
                     + StockDistributionsValuesColumns.PRODUCT_ID + " INTEGER NOT NULL,"
+                    + StockDistributionsValuesColumns.DOSES_PER_DISPENSING_UNIT + " INTEGER NOT NULL,"
                     + StockDistributionsValuesColumns.LOT_ID + " INTEGER NOT NULL,"
                     + StockDistributionsValuesColumns.VIMS_LOT_ID + " INTEGER NOT NULL,"
                     + StockDistributionsValuesColumns.VVM_STATUS + " TEXT ,"
@@ -1190,6 +1191,7 @@ public class SQLHandler {
         String QUANTITY = "quantity";
         String STATUS = "status";
         String UNIT_OF_MEASURE = "unit_of_measure";
+        String DOSES_PER_DISPENSING_UNIT = "doses_per_dispensing_unit";
         String DISTRIBUTION_TYPE = "distribution_type";
     }
 

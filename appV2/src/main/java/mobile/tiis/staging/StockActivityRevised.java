@@ -43,7 +43,7 @@ public class StockActivityRevised extends BackboneActivity {
         setUpView();
 
         Bundle extras = getIntent().getExtras();
-        title = extras.getString("title");
+        title = "Stock";
 
         if (toolbar != null) {
             setSupportActionBar(toolbar);
@@ -51,7 +51,6 @@ public class StockActivityRevised extends BackboneActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        setTitle("Stock");
 
         toolbarTitle.setText(title);
 

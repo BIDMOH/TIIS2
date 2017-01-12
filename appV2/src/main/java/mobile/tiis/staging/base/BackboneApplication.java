@@ -4598,6 +4598,7 @@ public class BackboneApplication extends Application {
                                 adCV.put(SQLHandler.StockDistributionsValuesColumns.DISTRIBUTION_TYPE, o.getString("DistributionType"));
                                 adCV.put(SQLHandler.StockDistributionsValuesColumns.DISTRIBUTION_DATE, o.getString("DistributionDate"));
                                 adCV.put(SQLHandler.StockDistributionsValuesColumns.UNIT_OF_MEASURE, o.getString("BaseUom"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.DOSES_PER_DISPENSING_UNIT, o.getInt("DosesPerDispensingUnit"));
 
                                 if (db.isStockDistributionInDb(o.getInt("StockDistributionId"))) {
                                     db.getWritableDatabase().update(SQLHandler.Tables.STOCK_DISTRIBUTIONS, adCV,

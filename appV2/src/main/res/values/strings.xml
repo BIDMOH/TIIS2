@@ -284,4 +284,6 @@
     </array>
     <string name="title_activity_monthly_reports">IVD Monthly Report Forms</string>
 
+    <string name="alert_not_multiple_of_product">Tafadhali angalia taarifa zako, Idadi yatakiwa kuwa kigao cha dawa</string>
+
 </resources>
