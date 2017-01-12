@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -542,21 +544,21 @@ public class MonthlyReportsActivity extends RxAppCompatActivity implements View.
 
         if(Integer.parseInt(currentSelectedMonth.getMonth_number())+1>12){
             calendar = Calendar.getInstance(); // this would default to now
-            calendar.set(Integer.parseInt(currentlySelectedYear),Integer.parseInt(currentSelectedMonth.getMonth_number())-1,1);
+            calendar.set(Integer.parseInt(currentlySelectedYear),Integer.parseInt(currentSelectedMonth.getMonth_number())-1,1,0,0);
             fromDate = calendar.getTimeInMillis()/1000;
 
-            calendar.set(Integer.parseInt(currentlySelectedYear)+1,0,1);
+            calendar.set(Integer.parseInt(currentlySelectedYear)+1,0,1,0,0);
             toDate = calendar.getTimeInMillis()/1000;
 
             Log.d(TAG,"from date = "+fromDate);
             Log.d(TAG,"to date = "+toDate);
         }else{
             calendar = Calendar.getInstance(); // this would default to now
-            calendar.set(Integer.parseInt(currentlySelectedYear),Integer.parseInt(currentSelectedMonth.getMonth_number())-1,1);
+            calendar.set(Integer.parseInt(currentlySelectedYear),Integer.parseInt(currentSelectedMonth.getMonth_number())-1,1,0,0);
             fromDate = calendar.getTimeInMillis()/1000;
 
 
-            calendar.set(Integer.parseInt(currentlySelectedYear),Integer.parseInt(currentSelectedMonth.getMonth_number()),1);
+            calendar.set(Integer.parseInt(currentlySelectedYear),Integer.parseInt(currentSelectedMonth.getMonth_number()),1,0,0);
             toDate = calendar.getTimeInMillis()/1000;
 
             Log.d(TAG,"from date = "+fromDate);
@@ -584,7 +586,7 @@ public class MonthlyReportsActivity extends RxAppCompatActivity implements View.
             strOutreachCancelled = (cursor.getString(cursor.getColumnIndex(SQLHandler.ImmunizationSessionColumns.OUTREACH_CANCELLED)));
             strOtherMajorImmunizationActivities = (cursor.getString(cursor.getColumnIndex(SQLHandler.ImmunizationSessionColumns.OTHERACTIVITIES)));
         }else{
-            String SQLCountOutReach = "SELECT COUNT (DISTINCT strftime('%d', datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch') )) AS IDS FROM vaccination_appointment as va " +
+            String SQLCountOutReach = "SELECT COUNT (DISTINCT strftime('%d-%m-%Y', datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch') )) AS IDS FROM vaccination_appointment as va " +
                     "INNER JOIN " +
                     "   vaccination_event as ve on va.ID = ve.APPOINTMENT_ID " +
                     "WHERE ve.APPOINTMENT_ID = va.ID " +
@@ -595,7 +597,7 @@ public class MonthlyReportsActivity extends RxAppCompatActivity implements View.
                     "   AND datetime('"+toDate+"','unixepoch') >= datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch') ";
 
 
-            String SQLCountFixed = "SELECT COUNT (DISTINCT strftime('%d', datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch') )) AS IDS FROM vaccination_appointment as va " +
+            String SQLCountFixed = "SELECT COUNT (DISTINCT strftime('%d-%m-%Y', datetime(substr(ve.VACCINATION_DATE,7,10), 'unixepoch') )) AS IDS FROM vaccination_appointment as va " +
                     "INNER JOIN " +
                     "   vaccination_event as ve on va.ID = ve.APPOINTMENT_ID " +
                     "WHERE ve.APPOINTMENT_ID = va.ID " +
@@ -607,12 +609,20 @@ public class MonthlyReportsActivity extends RxAppCompatActivity implements View.
 
             SQLiteDatabase dbZ = mydb.getReadableDatabase();
             Cursor outreachCursor = dbZ.rawQuery(SQLCountOutReach, null);
+
             if (outreachCursor.moveToFirst()){
                 int val = outreachCursor.getInt(outreachCursor.getColumnIndex("IDS"));
                 strOutreachConducted = (val+"");
             }
 
             Cursor fixedCursor   = dbZ.rawQuery(SQLCountFixed, null);
+
+//            int size = fixedCursor.getCount();
+//            for(int i=0;i<size;i++){
+//                fixedCursor.moveToPosition(i);
+//                Log.d("fixedsessions","days = "+fixedCursor.getString(0));
+//            }
+
             if (fixedCursor.moveToFirst()){
                 int val = fixedCursor.getInt(fixedCursor.getColumnIndex("IDS"));
                 strFixedConducted = (val+"");
@@ -800,7 +810,7 @@ public class MonthlyReportsActivity extends RxAppCompatActivity implements View.
         otherMajorImmunizationActivities.setEnabled(flag);
         outreachCancelled.setEnabled(false);
         outreachConducted.setEnabled(false);
-        outreachPlanned.setEnabled(false);
+        outreachPlanned.setEnabled(flag);
         fixedConducted.setEnabled(false);
 
         //BCG OPV TT
@@ -2469,9 +2479,36 @@ public class MonthlyReportsActivity extends RxAppCompatActivity implements View.
         fixedConducted.setEnabled(false);
         outreachPlanned     = (EditText) findViewById(R.id.outreach_planned);
         outreachPlanned.setEnabled(false);
+
         outreachConducted   = (EditText) findViewById(R.id.outreach_conducted);
         outreachConducted.setEnabled(false);
         outreachCancelled   = (EditText) findViewById(R.id.outreach_cancelled);
+
+        outreachPlanned.addTextChangedListener(
+                new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        int outreachConducted=0,outreachPlanned=0;
+                        try {
+                            outreachConducted = Integer.parseInt(strOutreachConducted);
+                            outreachPlanned = Integer.parseInt(s.toString());
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                        outreachCancelled.setText((outreachPlanned - outreachConducted)+"");
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+
+                    }
+                }
+        );
 
         bcgFemaleServiceArea    = (EditText) findViewById(R.id.bcg_female_service);
         bcgMaleServiceArea      = (EditText) findViewById(R.id.bcg_male_service);
