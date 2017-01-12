@@ -122,7 +122,6 @@ public class MonthlyReportsActivity extends RxAppCompatActivity implements View.
     public Dialog dialog;
     public TextView dialogueMessage, dialogueOKButton;
     public boolean fieldsEditable = true;
-    private boolean databaseisfree = true;
     public ProgressBar pbar;
     public LinearLayout sessionsLayouts;
     private Looper backgroundLooper;
@@ -168,7 +167,7 @@ public class MonthlyReportsActivity extends RxAppCompatActivity implements View.
         Calendar cal = Calendar.getInstance();
 
         int month   = cal.get(Calendar.MONTH)+1;
-        int year    = cal.get(Calendar.YEAR);
+        final int year    = cal.get(Calendar.YEAR);
 
         years.add("2015");
         years.add("2016");
@@ -196,11 +195,52 @@ public class MonthlyReportsActivity extends RxAppCompatActivity implements View.
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 currentlySelectedYear = years.get(position);
+                if (position >= 0){
+                    clearFields();
+                    Date today = new Date();
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(today);
 
-                if (databaseisfree){
-                    databaseisfree = false;
+                    int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+                    int month   = calendar.get(Calendar.MONTH);
+                    month = month+1;
+
+                    int selmonth = Integer.parseInt(currentSelectedMonth.getMonth_number());
+
+                    if(currentlySelectedYear.equals((year)+"")){
+                        if ((month-selmonth)==1 && dayOfMonth>10){
+                            setFieldsAccessibility(false);
+                            fieldsEditable = false;
+                        }else if ((month-selmonth)==1  && dayOfMonth<=10){
+                            setFieldsAccessibility(true);
+                            fieldsEditable = true;
+                        }else if ((month-selmonth)==0){
+                            setFieldsAccessibility(true);
+                            fieldsEditable = true;
+                        }else {
+                            setFieldsAccessibility(false);
+                            fieldsEditable = false;
+                        }
+                    }else  if(currentlySelectedYear.equals((year-1)+"")){
+                        if((selmonth-month)==11  && dayOfMonth<=10) {
+                            setFieldsAccessibility(true);
+                            fieldsEditable = true;
+                        }else{
+                            setFieldsAccessibility(false);
+                            fieldsEditable = false;
+                        }
+                    }else{
+                        setFieldsAccessibility(false);
+                        fieldsEditable = false;
+                    }
+
+
+
                     checkdatabaseForAlreadyReportedFormsForThisMonth();
+
                 }
+
+                checkdatabaseForAlreadyReportedFormsForThisMonth();
             }
 
             @Override
@@ -248,24 +288,34 @@ public class MonthlyReportsActivity extends RxAppCompatActivity implements View.
                     Log.d("THURSDAY_TOUCHUPS", "Selected month is "+selmonth);
                     Log.d("THURSDAY_TOUCHUPS", "This month is "+month);
 
-                    if ((month-selmonth)==1 && dayOfMonth>10){
-                        setFieldsAccessibility(false);
-                        fieldsEditable = false;
-                    }else if ((month-selmonth)==1 && dayOfMonth<10){
-                        setFieldsAccessibility(true);
-                        fieldsEditable = true;
-                    }else if ((month-selmonth)==0){
-                        setFieldsAccessibility(true);
-                        fieldsEditable = true;
-                    }else {
+                    if(currentlySelectedYear.equals((year)+"")){
+                        if ((month-selmonth)==1 && dayOfMonth>10){
+                            setFieldsAccessibility(false);
+                            fieldsEditable = false;
+                        }else if ((month-selmonth)==1  && dayOfMonth<=10){
+                            setFieldsAccessibility(true);
+                            fieldsEditable = true;
+                        }else if ((month-selmonth)==0){
+                            setFieldsAccessibility(true);
+                            fieldsEditable = true;
+                        }else {
+                            setFieldsAccessibility(false);
+                            fieldsEditable = false;
+                        }
+                    }else  if(currentlySelectedYear.equals((year-1)+"")){
+                        if((selmonth-month)==11  && dayOfMonth<=10) {
+                            setFieldsAccessibility(true);
+                            fieldsEditable = true;
+                        }else{
+                            setFieldsAccessibility(false);
+                            fieldsEditable = false;
+                        }
+                    }else{
                         setFieldsAccessibility(false);
                         fieldsEditable = false;
                     }
 
-                    if (databaseisfree){
-                        databaseisfree = false;
-                        checkdatabaseForAlreadyReportedFormsForThisMonth();
-                    }
+                    checkdatabaseForAlreadyReportedFormsForThisMonth();
 
                 }
             }
@@ -295,14 +345,14 @@ public class MonthlyReportsActivity extends RxAppCompatActivity implements View.
             Log.d(TAG,"(monthVal-selectedmonth)==1 && dayOfMonth<=10");
 
             if((monthVal-1)==0){
-                monthYearSpinner.setSelection(12);
                 yearSpinner.setSelection(years.indexOf(currentlySelectedYear));
-                setFieldsAccessibility(false);
+                monthYearSpinner.setSelection(12);
             }else {
-                setFieldsAccessibility(true);
                 monthYearSpinner.setSelection(monthVal - 1);
             }
+            setFieldsAccessibility(true);
             fieldsEditable = true;
+
         }else if ((monthVal-selectedmonth)>1){
             Log.d(TAG,"(monthVal-selectedmonth)>1");
             setFieldsAccessibility(false);
@@ -313,11 +363,7 @@ public class MonthlyReportsActivity extends RxAppCompatActivity implements View.
             fieldsEditable = true;
         }
 
-        if (databaseisfree){
-            databaseisfree = false;
-            checkdatabaseForAlreadyReportedFormsForThisMonth();
-        }
-
+        checkdatabaseForAlreadyReportedFormsForThisMonth();
     }
 
 
@@ -325,17 +371,29 @@ public class MonthlyReportsActivity extends RxAppCompatActivity implements View.
         db = mydb.getReadableDatabase();
         pbar.setVisibility(View.VISIBLE);
         sessionsLayouts.setVisibility(View.INVISIBLE);
+        fixedConducted.setText("");
+        outreachConducted.setText("");
+        outreachPlanned.setText("");
+        outreachCancelled.setText("");
+        otherMajorImmunizationActivities.setText("");
+
+        feverCases.setText("");
+        feverDeaths.setText("");
+        afpCases.setText("");
+        afpDeaths.setText("");
+        tetanusCases.setText("");
+        tetanusDeaths.setText("");
+
+        tempMax.setText("");
+        tempMin.setText("");
+        alarmHigh.setText("");
+        alarmLow.setText("");
+
         Observable.defer(new Func0<Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call() {
                 // Do some long running operation
                 //IMMUNiZATION SESSIONS
-                fixedConducted.setText("");
-                outreachConducted.setText("");
-                outreachPlanned.setText("");
-                outreachCancelled.setText("");
-                otherMajorImmunizationActivities.setText("");
-
                 querySurveillanceInformation( );
                 queryRefrigeratorTemperature( );
                 queryVaccinationsBcgOpvTt( );
@@ -426,7 +484,6 @@ public class MonthlyReportsActivity extends RxAppCompatActivity implements View.
                         vitA2StockInHand.setText(strVitA2StockInHand);
 
                         pbar.setVisibility(View.GONE);
-                        databaseisfree = true;
                     }
 
                     @Override
@@ -443,6 +500,7 @@ public class MonthlyReportsActivity extends RxAppCompatActivity implements View.
     }
 
     public void queryRefrigeratorTemperature(){
+        strTempMax=strTempMin=strAlarmLow=strAlarmHigh="";
 
         String query = "SELECT * FROM "+ SQLHandler.Tables.REFRIGERATOR_TEMPERATURE
                 +" WHERE "+ SQLHandler.RefrigeratorColums.REPORTED_MONTH+" = '"+currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear+"'";
@@ -456,6 +514,7 @@ public class MonthlyReportsActivity extends RxAppCompatActivity implements View.
     }
 
     public void querySurveillanceInformation(){
+        strFeverCases=strFeverDeaths=strAfpCases=strAfpDeaths=strTetanusCases=strTetanusDeaths="";
         String query = "SELECT * FROM "+ SQLHandler.Tables.DESEASES_SURVEILLANCE
                 +" WHERE "+ SQLHandler.SurveillanceColumns.REPORTED_MONTH+" = '"+currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear+"'";
         Cursor cursor = db.rawQuery(query, null);
@@ -486,18 +545,18 @@ public class MonthlyReportsActivity extends RxAppCompatActivity implements View.
             calendar.set(Integer.parseInt(currentlySelectedYear),Integer.parseInt(currentSelectedMonth.getMonth_number())-1,1);
             fromDate = calendar.getTimeInMillis()/1000;
 
-            calendar.set(Integer.parseInt(currentlySelectedYear),0,1);
+            calendar.set(Integer.parseInt(currentlySelectedYear)+1,0,1);
             toDate = calendar.getTimeInMillis()/1000;
 
             Log.d(TAG,"from date = "+fromDate);
             Log.d(TAG,"to date = "+toDate);
         }else{
             calendar = Calendar.getInstance(); // this would default to now
-            calendar.set(Integer.parseInt(currentlySelectedYear)-1,Integer.parseInt(currentSelectedMonth.getMonth_number())-1,1);
+            calendar.set(Integer.parseInt(currentlySelectedYear),Integer.parseInt(currentSelectedMonth.getMonth_number())-1,1);
             fromDate = calendar.getTimeInMillis()/1000;
 
 
-            calendar.set(Integer.parseInt(currentlySelectedYear)-1,Integer.parseInt(currentSelectedMonth.getMonth_number()),1);
+            calendar.set(Integer.parseInt(currentlySelectedYear),Integer.parseInt(currentSelectedMonth.getMonth_number()),1);
             toDate = calendar.getTimeInMillis()/1000;
 
             Log.d(TAG,"from date = "+fromDate);
@@ -563,6 +622,8 @@ public class MonthlyReportsActivity extends RxAppCompatActivity implements View.
     }
 
     public void queryVaccinationsBcgOpvTt(){
+        strBcgMaleCatchment=strBcgFemaleCatchment=strBcgMaleService=strBcgFemaleService=strOpvMaleCatchment=strOpvFemaleCatchment
+                =strOpvMaleService=strOpvFemaleService="";
         String query = "SELECT * FROM "+ SQLHandler.Tables.VACCINATIONS_BCG_OPV_TT
                 +" WHERE "+ SQLHandler.VaccinationsBcgOpvTtColumns.REPORTING_MONTH+" = '"+currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear+"'";
         Cursor cursor = db.rawQuery(query, null);
@@ -642,6 +703,9 @@ public class MonthlyReportsActivity extends RxAppCompatActivity implements View.
     }
 
     public void querySafeInjectionEquipments(){
+        strml005Balance=strml005Received=strml005Used=strml005Wastage=strml005StockInHand=strml005StockedOutDays=strads05Balance=strads05Received=strads05Used=strads05Wastage=strads05StockInHand=strads05StockedOutDays=
+                strDillutionBalance=strDillutionReceived=strDillutionUsed=strDillutionWastage=strDillutionStockInHand=strDillutionStockedOutDays=strSafetyBoxBalance=strSafetyBoxReceived=strSafetyBoxUsed=
+                        strSafetyBoxWastage=strSafetyBoxStockInHand=strSafetyBoxStockedOutDays="";
         String query = "SELECT * FROM "+ SQLHandler.Tables.SYRINGES_AND_SAFETY_BOXES
                 +" WHERE "+ SQLHandler.SyringesAndSafetyBoxesColumns.REPORTING_MONTH+" = '"+currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear+"'";
         Cursor cursor = db.rawQuery(query, null);
@@ -688,6 +752,7 @@ public class MonthlyReportsActivity extends RxAppCompatActivity implements View.
     }
 
     public void queryVitaminAStock(){
+        strVitA1Opening=strVitA1Received=strVitA1Administered=strVitA1Wastage=strVitA1StockInHand=strVitA2Opening=strVitA2Received=strVitA2Administered=strVitA2Wastage=strVitA2StockInHand="";
         String query = "SELECT * FROM "+ SQLHandler.Tables.HF_VITAMIN_A
                 +" WHERE "+ SQLHandler.HfVitaminAColumns.REPORTING_MONTH+" = '"+currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear+"'";
         Cursor cursor = db.rawQuery(query, null);
@@ -1670,7 +1735,8 @@ public class MonthlyReportsActivity extends RxAppCompatActivity implements View.
 
         int outreachPlanned = Integer.parseInt(strOutreachPlanned);
         int fixedConducted  = Integer.parseInt(strFixedConducted);
-        int cancelled       = outreachPlanned - fixedConducted;
+        int outreachConducted  = Integer.parseInt(strOutreachConducted);
+        int outreachCancelled       = outreachPlanned - outreachConducted;
 
         Date modifiedAt = null;
 
@@ -1692,7 +1758,7 @@ public class MonthlyReportsActivity extends RxAppCompatActivity implements View.
 
         DatabaseHandler db = new DatabaseHandler(this);
         db.addUpdateImmunizationSessions(cv, currentSelectedMonth.getMonth_name()+" "+currentlySelectedYear);
-        app.sendImmunizationSessionsToServer(outreachPlanned,URLEncoder.encode(strOtherMajorImmunizationActivities), selectedMonth, selectedYear, modifiedOnString);
+        app.sendImmunizationSessionsToServer(outreachPlanned,fixedConducted,outreachCancelled,outreachConducted,URLEncoder.encode(strOtherMajorImmunizationActivities), selectedMonth, selectedYear, modifiedOnString);
 
         return true;
     }

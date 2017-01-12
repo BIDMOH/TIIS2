@@ -1393,11 +1393,14 @@ public class BackboneApplication extends Application {
         getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
     }
 
-    public void sendImmunizationSessionsToServer(int outreachPlanned, String otherMajorImmunizationActivities, int reportingMonth, int reportingYear, String modifiedOn){
+    public void sendImmunizationSessionsToServer(int outreachPlanned,int fixedConducted,int outreachCanceled,int outreachConducted, String otherMajorImmunizationActivities, int reportingMonth, int reportingYear, String modifiedOn){
         final StringBuilder webServiceUrl;
 
         webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
         webServiceUrl.append("StoreHealthFacilityImmunizationSessions?healthFacilityId=").append(getLOGGED_IN_USER_HF_ID())
+                .append("&fixedConducted=").append(fixedConducted)
+                .append("&outreachCanceled=").append(outreachCanceled)
+                .append("&outreachConducted=").append(outreachConducted)
                 .append("&OutreachPlanned=").append(outreachPlanned)
                 .append("&OtherMajorImmunizationActivities=").append(otherMajorImmunizationActivities)
                 .append("&reportingMonth=").append(reportingMonth)
