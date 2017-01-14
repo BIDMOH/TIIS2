@@ -189,10 +189,8 @@ public class StockProofOfDeliveryFragment extends RxFragment {
             }
 
 
-            if((((EditText)stockHostTable.getChildAt(i).findViewById(R.id.quantity_received)).getText().toString()).equals(""))
+            if(!(((EditText)stockHostTable.getChildAt(i).findViewById(R.id.quantity_received)).getText().toString()).equals(""))
             {
-                status = 1;
-            }else if(healthfacility.getDosesPerDispensingUnit()!=0){
                 if(receivedQuantity% healthfacility.getDosesPerDispensingUnit()!=0 )
                     status = 2;
             }
