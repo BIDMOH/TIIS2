@@ -19,6 +19,8 @@ import android.widget.TextView;
 
 import com.trello.rxlifecycle.components.support.RxFragment;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -285,8 +287,21 @@ public class StockStatusFragment extends RxFragment {
             immunizedChildren.setText(stockStatusEntity.getChildrenImmunized());
             openingBalance.setText(stockStatusEntity.getOpeningBalance());
             closingBalance.setText(stockStatusEntity.getStockOnHand());
-            usageRate.setText(stockStatusEntity.getUsageRate());
-            wastageRate.setText(stockStatusEntity.getWastageRate());
+            try {
+                usageRate.setText(round(Double.parseDouble(stockStatusEntity.getUsageRate()),2)+"");
+            }catch (Exception e){
+                e.printStackTrace();
+                usageRate.setText(stockStatusEntity.getUsageRate());
+            }
+
+            try {
+                wastageRate.setText(round(Double.parseDouble(stockStatusEntity.getWastageRate()),2)+"");
+            }catch (Exception e){
+                e.printStackTrace();
+                wastageRate.setText(stockStatusEntity.getWastageRate());
+            }
+
+
 
             stockStatusTable.addView(view);
         }
@@ -294,6 +309,14 @@ public class StockStatusFragment extends RxFragment {
         ringProgressDialog.hide();
         stockStatusTable.setVisibility(View.VISIBLE);
 
+    }
+
+    private static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
     public List<StockStatusEntity> getDataFromStockStatusTable(){

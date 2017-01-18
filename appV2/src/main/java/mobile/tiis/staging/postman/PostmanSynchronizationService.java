@@ -260,7 +260,7 @@ public class PostmanSynchronizationService extends Service {
                                     do {
                                         try {
                                             Thread.sleep(10000);
-                                            res = db.updateHealthFacilityStatus(p.get_id(),1);
+                                            res = db.deleteHealthFacilityStatus(p.get_id());
                                             Log.d("POSTMAN COMPLETE","url = "+p.getUrl());
                                         } catch (Exception e) {
                                             e.printStackTrace();

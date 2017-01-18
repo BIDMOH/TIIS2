@@ -318,6 +318,4 @@ public class StockProofOfDeliveryFragment extends RxFragment {
 
     }
 
-
-
 }

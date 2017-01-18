@@ -4775,6 +4775,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
 
+    public long deleteHealthFacilityStatus(long session_id) {
+        SQLiteDatabase db = getWritableDatabase();
+        long result = -1;
+        db.beginTransaction();
+        try {
+            result = db.delete(Tables.HF_LOGIN_SESSIONS, BaseColumns._ID + " = " + session_id, null);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            db.endTransaction();
+            return result;
+        }
+    }
+
     public List<SessionsModel> getHealthFacilitySessions() {
 
         SQLiteDatabase db = getWritableDatabase();
