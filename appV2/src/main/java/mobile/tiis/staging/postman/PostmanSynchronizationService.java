@@ -217,16 +217,6 @@ public class PostmanSynchronizationService extends Service {
                     for (final SessionsModel p : listModels) {
                         Log.d(TAG,"session url = "+p.getUrl());
 
-                        if(p.getSESSION_LENGTH()==0){
-                            try {
-                                Thread.sleep(10000);
-                                db.updateHealthFacilityStatus(p.get_id(),1);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            continue;
-                        }
-
 
                         if(p.getUrl() == null || p.getUrl().trim().equals("")){
                             try {
