@@ -4689,7 +4689,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         insertValues.put(GIISContract.HfLoginSessions.HEALTH_FACILITY_ID, healthFacilityId);
         insertValues.put(GIISContract.HfLoginSessions.LOGING_TIME, time);
         insertValues.put(GIISContract.HfLoginSessions.SESSION_LENGTH, 0);
-        insertValues.put(GIISContract.HfLoginSessions.STATUS, 0);
+        insertValues.put(GIISContract.HfLoginSessions.STATUS, -1);
 
         try {
             result = db.insert(Tables.HF_LOGIN_SESSIONS, null, insertValues);
@@ -4704,42 +4704,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
 
-    public long getHealthFacilityLastLoginSession() {
-
-        SQLiteDatabase db = getReadableDatabase();
-
-        Cursor c = db.rawQuery("SELECT * FROM "+Tables.HF_LOGIN_SESSIONS+" ORDER BY "+BaseColumns._ID+" DESC LIMIT 0,1",null);
-        c.moveToFirst();
-        return c.getLong(4);
-    }
-
-    public long updateHealthFacilitySessionDuration(long sessionLength) {
-
-        SQLiteDatabase db = getWritableDatabase();
-
-        Cursor c = db.rawQuery("SELECT * FROM "+Tables.HF_LOGIN_SESSIONS+" ORDER BY "+BaseColumns._ID+" DESC LIMIT 0,1",null);
-        c.moveToFirst();
-        long result = -1;
-        db.beginTransaction();
-        ContentValues insertValues = new ContentValues();
-        insertValues.put(BaseColumns._ID, c.getInt(0));
-        insertValues.put(GIISContract.HfLoginSessions.SESSION_LENGTH,sessionLength + c.getLong(4));
-        insertValues.put(GIISContract.HfLoginSessions.STATUS, 0);
-
-        Log.d(TAG,"updating Logout duration in miliseconds = "+ (sessionLength + c.getLong(4)));
-        Log.d(TAG,"updating id  = "+  c.getInt(0));
-
-        try {
-            result = db.update(Tables.HF_LOGIN_SESSIONS, insertValues, BaseColumns._ID + " = "+ c.getInt(0),null);
-            db.setTransactionSuccessful();
-        } catch (Exception e) {
-            //Error in between database transaction
-            result = -1;
-        } finally {
-            db.endTransaction();
-            return result;
-        }
-    }
 
 
     /**
@@ -4813,37 +4777,5 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         return modelList;
 
-    }
-
-
-    /**
-     * Method called on opening of the app inorder to set all previous sessions as completed, incase the ondestroy function of the homeactivityrevised was not previously called while closing the app
-     * status codes.
-     *   0 = currently inprogress session.
-     *  -1 = completed session but has not yet been synchronized with the server
-     *   1 = completed and synchronised sessions.
-     * @return
-     */
-    public long updateHealthFacilityStatus() {
-
-        SQLiteDatabase db = getWritableDatabase();
-
-
-        long result = -1;
-        db.beginTransaction();
-        ContentValues insertValues = new ContentValues();
-        insertValues.put(GIISContract.HfLoginSessions.STATUS, -1);
-
-        try {
-            result = db.update(Tables.HF_LOGIN_SESSIONS, insertValues, GIISContract.HfLoginSessions.STATUS+" = 0 ",null);
-            db.setTransactionSuccessful();
-        } catch (Exception e) {
-            //Error in between database transaction
-            result = -1;
-        } finally {
-            db.endTransaction();
-            Log.d(TAG,"updating previous session status = " + result);
-            return result;
-        }
     }
 }

@@ -457,7 +457,6 @@ public class HomeActivityRevised extends BackboneActivity {
             e.printStackTrace();
         }
 
-        db.updateHealthFacilityStatus();
         Calendar c = Calendar.getInstance();
         long results = db.storeHealthFacilitySession(app.getLOGGED_IN_USER_HF_ID(), app.getLOGGED_IN_USER_ID(), c.getTimeInMillis());
         if (results != -1) {
@@ -595,9 +594,6 @@ public class HomeActivityRevised extends BackboneActivity {
     @Override
     protected void onPause(){
         Log.d(TAG,"onPause called");
-        Calendar c = Calendar.getInstance();
-
-        db.updateHealthFacilitySessionDuration(c.getTimeInMillis() - onresumeCalendar.getTimeInMillis());
 
         super.onPause();
         unregisterReceiver(status_receiver);
