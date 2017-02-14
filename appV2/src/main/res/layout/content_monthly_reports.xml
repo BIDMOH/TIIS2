@@ -346,8 +346,10 @@
                     android:layout_marginRight="16dp">
 
                     <LinearLayout
+                        android:id="@+id/immunizationSessinonsLayouts"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:visibility="visible"
                         android:background="@drawable/border"
                         android:orientation="vertical">
 
@@ -454,6 +456,7 @@
                                 android:paddingLeft="4dp"
                                 android:background="@drawable/border"
                                 android:id="@+id/fixed_conducted"
+                                android:editable="false"
                                 android:hint=""
                                 android:inputType="number"/>
 
@@ -474,6 +477,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_margin="6dp"
                                 android:paddingLeft="4dp"
+                                android:editable="false"
                                 android:background="@drawable/border"
                                 android:id="@+id/outreach_conducted"
                                 android:hint=""
@@ -523,9 +527,9 @@
                     </LinearLayout>
 
                     <ProgressBar
-                        android:visibility="gone"
                         android:layout_width="60dp"
                         android:layout_height="60dp"
+                        android:visibility="gone"
                         android:layout_centerInParent="true"
                         android:indeterminate="true"
                         android:id="@+id/immunization_session_progress_bar"/>
@@ -636,7 +640,6 @@
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
                                 android:background="@color/black"/>
-
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
@@ -646,6 +649,24 @@
                                 android:textSize="12sp"
                                 android:textColor="@color/black"/>
 
+
+
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/black"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:text="Male"
+                                android:gravity="center"
+                                android:textSize="12sp"
+                                android:textColor="@color/black"/>
+
+
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
@@ -659,6 +680,8 @@
                                 android:gravity="center"
                                 android:textSize="12sp"
                                 android:textColor="@color/black"/>
+
+
 
                             <View
                                 android:layout_width="1dp"
@@ -682,23 +705,9 @@
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
+                                android:textSize="12sp"
                                 android:layout_height="match_parent"
                                 android:text="Female"
-                                android:gravity="center"
-                                android:textSize="12sp"
-                                android:textColor="@color/black"/>
-
-                            <View
-                                android:layout_width="1dp"
-                                android:layout_height="match_parent"
-                                android:background="@color/black"/>
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:textSize="12sp"
-                                android:layout_height="match_parent"
-                                android:text="Male"
                                 android:gravity="center"
                                 android:textColor="@color/black"/>
 
@@ -735,6 +744,18 @@
                                 android:layout_margin="6dp"
                                 android:paddingLeft="4dp"
                                 android:background="@drawable/border"
+                                android:id="@+id/bcg_male_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
                                 android:id="@+id/bcg_female_service"
                                 android:hint=""
                                 android:inputType="number"/>
@@ -746,7 +767,7 @@
                                 android:layout_margin="6dp"
                                 android:paddingLeft="4dp"
                                 android:background="@drawable/border"
-                                android:id="@+id/bcg_male_service"
+                                android:id="@+id/bcg_male_catchment"
                                 android:hint=""
                                 android:inputType="number"/>
 
@@ -761,16 +782,7 @@
                                 android:hint=""
                                 android:inputType="number"/>
 
-                            <EditText
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:layout_height="match_parent"
-                                android:layout_margin="6dp"
-                                android:paddingLeft="4dp"
-                                android:background="@drawable/border"
-                                android:id="@+id/bcg_male_catchment"
-                                android:hint=""
-                                android:inputType="number"/>
+
 
                         </LinearLayout>
 
@@ -788,7 +800,16 @@
                                 android:textSize="12sp"
                                 android:textColor="@color/black"/>
 
-
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/opv_male_service"
+                                android:hint=""
+                                android:inputType="number"/>
                             <EditText
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
@@ -808,7 +829,7 @@
                                 android:layout_margin="6dp"
                                 android:paddingLeft="4dp"
                                 android:background="@drawable/border"
-                                android:id="@+id/opv_male_service"
+                                android:id="@+id/opv_male_catchment"
                                 android:hint=""
                                 android:inputType="number"/>
 
@@ -825,16 +846,7 @@
                                 android:inputType="number"/>
 
 
-                            <EditText
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:layout_height="match_parent"
-                                android:layout_margin="6dp"
-                                android:paddingLeft="4dp"
-                                android:background="@drawable/border"
-                                android:id="@+id/opv_male_catchment"
-                                android:hint=""
-                                android:inputType="number"/>
+
 
                         </LinearLayout>
 
@@ -851,18 +863,6 @@
                                 android:gravity="center"
                                 android:textSize="12sp"
                                 android:textColor="@color/black" />
-
-                            <EditText
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:layout_height="match_parent"
-                                android:layout_margin="6dp"
-                                android:paddingLeft="4dp"
-                                android:background="@drawable/border"
-                                android:id="@+id/tt1_female_service"
-                                android:hint=""
-                                android:inputType="number"/>
-
                             <EditText
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
@@ -881,7 +881,7 @@
                                 android:layout_margin="6dp"
                                 android:paddingLeft="4dp"
                                 android:background="@drawable/border"
-                                android:id="@+id/tt1_female_catchment"
+                                android:id="@+id/tt1_female_service"
                                 android:hint=""
                                 android:inputType="number"/>
 
@@ -897,6 +897,20 @@
                                 android:hint=""
                                 android:inputType="number"/>
 
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt1_female_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+
+
+
                         </LinearLayout>
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -911,6 +925,17 @@
                                 android:gravity="center"
                                 android:textSize="12sp"
                                 android:textColor="@color/black"/>
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt2_male_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
 
                             <EditText
                                 android:layout_width="0dp"
@@ -930,7 +955,7 @@
                                 android:layout_margin="6dp"
                                 android:paddingLeft="4dp"
                                 android:background="@drawable/border"
-                                android:id="@+id/tt2_male_service"
+                                android:id="@+id/tt2_male_catchment"
                                 android:hint=""
                                 android:inputType="number"/>
 
@@ -946,16 +971,7 @@
                                 android:inputType="number"/>
 
 
-                            <EditText
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:layout_height="match_parent"
-                                android:layout_margin="6dp"
-                                android:paddingLeft="4dp"
-                                android:background="@drawable/border"
-                                android:id="@+id/tt2_male_catchment"
-                                android:hint=""
-                                android:inputType="number"/>
+
 
                         </LinearLayout>
                         <LinearLayout
@@ -979,6 +995,17 @@
                                 android:layout_margin="6dp"
                                 android:paddingLeft="4dp"
                                 android:background="@drawable/border"
+                                android:id="@+id/tt3_male_service"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
                                 android:id="@+id/tt3_female_service"
                                 android:hint=""
                                 android:inputType="number"/>
@@ -990,7 +1017,7 @@
                                 android:layout_margin="6dp"
                                 android:paddingLeft="4dp"
                                 android:background="@drawable/border"
-                                android:id="@+id/tt3_male_service"
+                                android:id="@+id/tt3_male_catchment"
                                 android:hint=""
                                 android:inputType="number"/>
 
@@ -1006,16 +1033,6 @@
                                 android:inputType="number"/>
 
 
-                            <EditText
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:layout_height="match_parent"
-                                android:layout_margin="6dp"
-                                android:paddingLeft="4dp"
-                                android:background="@drawable/border"
-                                android:id="@+id/tt3_male_catchment"
-                                android:hint=""
-                                android:inputType="number"/>
 
                         </LinearLayout>
                         <LinearLayout
@@ -1031,6 +1048,16 @@
                                 android:gravity="center"
                                 android:textSize="12sp"
                                 android:textColor="@color/black"/>
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt4_male_service"
+                                android:hint=""
+                                android:inputType="number"/>
 
                             <EditText
                                 android:layout_width="0dp"
@@ -1050,7 +1077,7 @@
                                 android:layout_margin="6dp"
                                 android:paddingLeft="4dp"
                                 android:background="@drawable/border"
-                                android:id="@+id/tt4_male_service"
+                                android:id="@+id/tt4_male_catchment"
                                 android:hint=""
                                 android:inputType="number"/>
 
@@ -1062,18 +1089,6 @@
                                 android:paddingLeft="4dp"
                                 android:background="@drawable/border"
                                 android:id="@+id/tt4_female_catchment"
-                                android:hint=""
-                                android:inputType="number"/>
-
-
-                            <EditText
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:layout_height="match_parent"
-                                android:layout_margin="6dp"
-                                android:paddingLeft="4dp"
-                                android:background="@drawable/border"
-                                android:id="@+id/tt4_male_catchment"
                                 android:hint=""
                                 android:inputType="number"/>
 
@@ -1091,6 +1106,16 @@
                                 android:gravity="center"
                                 android:textSize="12sp"
                                 android:textColor="@color/black"/>
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt5_male_service"
+                                android:hint=""
+                                android:inputType="number"/>
 
                             <EditText
                                 android:layout_width="0dp"
@@ -1110,9 +1135,10 @@
                                 android:layout_margin="6dp"
                                 android:paddingLeft="4dp"
                                 android:background="@drawable/border"
-                                android:id="@+id/tt5_male_service"
+                                android:id="@+id/tt5_male_catchment"
                                 android:hint=""
                                 android:inputType="number"/>
+
 
                             <EditText
                                 android:layout_width="0dp"
@@ -1126,16 +1152,6 @@
                                 android:inputType="number"/>
 
 
-                            <EditText
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:layout_height="match_parent"
-                                android:layout_margin="6dp"
-                                android:paddingLeft="4dp"
-                                android:background="@drawable/border"
-                                android:id="@+id/tt5_male_catchment"
-                                android:hint=""
-                                android:inputType="number"/>
 
                         </LinearLayout>
                         <LinearLayout
@@ -1159,17 +1175,6 @@
                                 android:layout_margin="6dp"
                                 android:paddingLeft="4dp"
                                 android:background="@drawable/border"
-                                android:id="@+id/tt5_Completed_female_service"
-                                android:hint=""
-                                android:inputType="number"/>
-
-                            <EditText
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:layout_height="match_parent"
-                                android:layout_margin="6dp"
-                                android:paddingLeft="4dp"
-                                android:background="@drawable/border"
                                 android:id="@+id/tt5_Completed_male_service"
                                 android:hint=""
                                 android:inputType="number"/>
@@ -1181,10 +1186,9 @@
                                 android:layout_margin="6dp"
                                 android:paddingLeft="4dp"
                                 android:background="@drawable/border"
-                                android:id="@+id/tt5_Completed_female_catchment"
+                                android:id="@+id/tt5_Completed_female_service"
                                 android:hint=""
                                 android:inputType="number"/>
-
 
                             <EditText
                                 android:layout_width="0dp"
@@ -1194,6 +1198,17 @@
                                 android:paddingLeft="4dp"
                                 android:background="@drawable/border"
                                 android:id="@+id/tt5_Completed_male_catchment"
+                                android:hint=""
+                                android:inputType="number"/>
+
+                            <EditText
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_margin="6dp"
+                                android:paddingLeft="4dp"
+                                android:background="@drawable/border"
+                                android:id="@+id/tt5_Completed_female_catchment"
                                 android:hint=""
                                 android:inputType="number"/>
 
@@ -1302,7 +1317,7 @@
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
                                 android:layout_height="match_parent"
-                                android:text="Max"
+                                android:text="Min"
                                 android:gravity="center"/>
 
                             <View
@@ -1314,7 +1329,7 @@
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
                                 android:layout_height="match_parent"
-                                android:text="Min"
+                                android:text="Max"
                                 android:gravity="center"/>
 
                             <View
@@ -1347,7 +1362,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
                             android:orientation="horizontal">
-
                             <EditText
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
@@ -1355,10 +1369,12 @@
                                 android:layout_margin="6dp"
                                 android:paddingLeft="4dp"
                                 android:background="@drawable/border"
-                                android:id="@+id/temp_max"
+                                android:id="@+id/temp_min"
                                 android:hint=""
                                 android:textSize="14sp"
                                 android:inputType="numberDecimal|numberSigned"/>
+
+
 
                             <View
                                 android:layout_width="1dp"
@@ -1372,7 +1388,7 @@
                                 android:layout_margin="6dp"
                                 android:paddingLeft="4dp"
                                 android:background="@drawable/border"
-                                android:id="@+id/temp_min"
+                                android:id="@+id/temp_max"
                                 android:hint=""
                                 android:textSize="14sp"
                                 android:inputType="numberDecimal|numberSigned"/>

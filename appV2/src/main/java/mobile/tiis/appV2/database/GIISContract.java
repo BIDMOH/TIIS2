@@ -91,6 +91,13 @@ public class GIISContract {
         String REPORTING_MONTH = "REPORTING_MONTH";
         String MODIFIED_ON = "MODIFIED_ON";
     }
+    interface HfLoginSessions{
+        String HEALTH_FACILITY_ID = "HEALTH_FACILITY_ID";
+        String USER_ID = "USER_ID";
+        String LOGING_TIME = "LOGING_TIME";
+        String SESSION_LENGTH = "SESSION_LENGTH";
+        String STATUS = "STATUS";
+    }
 
     interface HealthFacilityColumns{
         String ID = "ID";
@@ -266,6 +273,8 @@ public class GIISContract {
         String CLOSING_BALANCE = "CLOSING_BALANCE";
         String DOSES_RECEIVED = "DOSES_RECEIVED";
         String DISCARDED_UNOPENED = "DISCARDED_UNOPENED";
+        String DISCARDED_OPENED = "DISCARDED_OPENED";
+        String IMMUNIZED_CHILDREN = "IMMUNIZED_CHILDREN";
         String REPORTED_MONTH = "REPORTED_MONTH";
     }
 

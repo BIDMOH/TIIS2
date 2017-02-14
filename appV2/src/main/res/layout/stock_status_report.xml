@@ -170,7 +170,7 @@
                         android:layout_weight="0.8"
                         android:layout_height="wrap_content"
                         android:id="@+id/hf_value"
-                        android:text="Baraa RC Dispensary"
+                        android:text=""
                         android:paddingTop="4dp"
                         android:paddingBottom="4dp"/>
 
@@ -309,6 +309,7 @@
                     android:background="@color/card_border"/>
 
                 <TextView
+                    android:visibility="gone"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -339,6 +340,19 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="Closing \nBalance"
+                    android:gravity="center"/>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/card_border"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Opened \nDoses"
+                    android:id="@+id/opened_doses"
                     android:gravity="center"/>
 
                 <View

@@ -83,6 +83,7 @@ import mobile.tiis.appv2.entity.Place;
 import mobile.tiis.appv2.entity.ScheduledVaccination;
 import mobile.tiis.appv2.entity.Status;
 import mobile.tiis.appv2.entity.Stock;
+import mobile.tiis.appv2.entity.StockStatusEntity;
 import mobile.tiis.appv2.entity.User;
 import mobile.tiis.appv2.entity.VaccinationAppointment;
 import mobile.tiis.appv2.entity.VaccinationEvent;
@@ -96,6 +97,8 @@ import mobile.tiis.appv2.entity.HealthFacilityColdChain;
 import mobile.tiis.appv2.entity.ImmunizationSession;
 import mobile.tiis.appv2.entity.SyringesAndSafetyBoxes;
 import mobile.tiis.appv2.entity.VitaminAStock;
+import mobile.tiis.appv2.DatabaseModals.SessionsModel;
+
 
 /**
  * Created by Teodor on 2/3/2015.
@@ -729,6 +732,81 @@ public class BackboneApplication extends Application {
     }
 
 
+    public boolean parseStockStatusInformation(String fromDate, String toDate, final String reportingMonth){
+        if (LOGGED_IN_USER_HF_ID == null || LOGGED_IN_USER_HF_ID.equals("0")) return false;
+
+        /*
+        ec2-54-187-21-117.us-west-2.compute.amazonaws.com/SVC/StockManagement.svc/&fromDate=2016-11-132016-11-13
+         */
+        final StringBuilder webServiceUrl;
+        webServiceUrl = new StringBuilder(WCF_URL).append(STOCK_MANAGEMENT_SVC);
+        webServiceUrl.append("GetHealthFacilityCurrentStockByDose?hfid=").append(getLOGGED_IN_USER_HF_ID())
+                .append("&fromDate=").append(fromDate)
+                .append("&toDate=").append(toDate);
+
+        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String response) {
+                List<StockStatusEntity> objects = new ArrayList<StockStatusEntity>();
+                Log.d("monthstartandenddate", "Response : "+response);
+                Log.d("monthstartandenddate", "month is : "+reportingMonth);
+                try {
+                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + response);
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                    objects = mapper.readValue(response, new TypeReference<List<StockStatusEntity>>() {
+                    });
+
+                } catch (JsonGenerationException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    for (StockStatusEntity object : objects) {
+
+                        /*
+                        "antigen": "OPV",
+                        "childrenImmunized": 227,
+                        "dosesDiscardedOpened": 62,
+                        "dosesDiscardedUnopened": 0,
+                        "dosesReceived": 0,
+                        "openingBalance": 133,
+                        "stockOnHand": 40
+                        */
+
+                        ContentValues values = new ContentValues();
+                        values.put(SQLHandler.SyncColumns.UPDATED, 1);
+                        values.put(SQLHandler.StockStatusColumns.DISCARDED_UNOPENED, object.getDosesDiscardedUnopened());
+                        values.put(SQLHandler.StockStatusColumns.DISCARDED_OPENED, object.getDosesDiscardedOpened());
+                        values.put(SQLHandler.StockStatusColumns.DOSES_RECEIVED, object.getDosesReceived());
+                        values.put(SQLHandler.StockStatusColumns.ITEM_NAME, object.getAntigen());
+                        values.put(SQLHandler.StockStatusColumns.CLOSING_BALANCE, object.getStockOnHand());
+                        values.put(SQLHandler.StockStatusColumns.OPPENING_BALANCE, object.getOpeningBalance());
+                        values.put(SQLHandler.StockStatusColumns.REPORTED_MONTH, reportingMonth);
+                        values.put(SQLHandler.StockStatusColumns.IMMUNIZED_CHILDREN, object.getChildrenImmunized());
+                        DatabaseHandler db = getDatabaseInstance();
+                        if (!db.isStockStatusInDB(reportingMonth, object.getAntigen())) {
+                            db.addStockStatusReport(values);
+                            Log.d("monthstartandenddate", "adding new status for month : "+reportingMonth);
+                        } else {
+                            db.updateStockStatusReport(values, reportingMonth, object.getAntigen());
+                            Log.d("monthstartandenddate", "updating existing status for month : "+reportingMonth);
+                        }
+                    }
+                }
+            }
+        });
+        return true;
+    }
+
 
     public boolean addChildVaccinationEventVaccinationAppointment(ChildCollector2 childCollector) {
         Log.d("coze","saving data to db");
@@ -1319,11 +1397,14 @@ public class BackboneApplication extends Application {
         getDatabaseInstance().addPost(webServiceUrl.toString(), 3);
     }
 
-    public void sendImmunizationSessionsToServer(int outreachPlanned, String otherMajorImmunizationActivities, int reportingMonth, int reportingYear, String modifiedOn){
+    public void sendImmunizationSessionsToServer(int outreachPlanned,int fixedConducted,int outreachCanceled,int outreachConducted, String otherMajorImmunizationActivities, int reportingMonth, int reportingYear, String modifiedOn){
         final StringBuilder webServiceUrl;
 
         webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
         webServiceUrl.append("StoreHealthFacilityImmunizationSessions?healthFacilityId=").append(getLOGGED_IN_USER_HF_ID())
+                .append("&fixedConducted=").append(fixedConducted)
+                .append("&outreachCanceled=").append(outreachCanceled)
+                .append("&outreachConducted=").append(outreachConducted)
                 .append("&OutreachPlanned=").append(outreachPlanned)
                 .append("&OtherMajorImmunizationActivities=").append(otherMajorImmunizationActivities)
                 .append("&reportingMonth=").append(reportingMonth)
@@ -2184,28 +2265,7 @@ public class BackboneApplication extends Application {
 
 
         getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
-//        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
-//        RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
-//            @Override
-//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-//                weightSaved = false;
-//                getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
-//            }
-//
-//            @Override
-//            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-//                try {
-//                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext()) + responseString);
-//                    weightSaved = true;
-//
-//                } catch (Exception e) {
-//                    getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
-//                    weightSaved = false;
-//                }
-//            }
-//        });
-//
-//        Log.e("service weight", webServiceUrl + "");
+
         return weightSaved;
 
 
@@ -4576,6 +4636,7 @@ public class BackboneApplication extends Application {
                                 adCV.put(SQLHandler.StockDistributionsValuesColumns.DISTRIBUTION_TYPE, o.getString("DistributionType"));
                                 adCV.put(SQLHandler.StockDistributionsValuesColumns.DISTRIBUTION_DATE, o.getString("DistributionDate"));
                                 adCV.put(SQLHandler.StockDistributionsValuesColumns.UNIT_OF_MEASURE, o.getString("BaseUom"));
+                                adCV.put(SQLHandler.StockDistributionsValuesColumns.DOSES_PER_DISPENSING_UNIT, o.getInt("DosesPerDispensingUnit"));
 
                                 if (db.isStockDistributionInDb(o.getInt("StockDistributionId"))) {
                                     db.getWritableDatabase().update(SQLHandler.Tables.STOCK_DISTRIBUTIONS, adCV,
@@ -4652,6 +4713,40 @@ public class BackboneApplication extends Application {
             e.printStackTrace();
             getDatabaseInstance().addPost(webServiceUrl.toString(), 1);
         }
+    }
+
+
+    public List<SessionsModel> GetHealthFacilitySessionUpdateUrl(){
+
+        Log.d(TAG,"getting facility sessions");
+        List<SessionsModel> modelList = databaseInstance.getHealthFacilitySessions();
+
+        Log.d(TAG,"facility sessions count = "+modelList.size());
+
+        for (SessionsModel model:modelList){
+            final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC);
+
+            Calendar c = Calendar.getInstance();
+            c.setTimeInMillis(model.getLOGING_TIME());
+
+            Date date = c.getTime();
+
+            try {
+                webServiceUrl.append("StoreHealthFacilityLoginSessions?userId=").append(model.getUSER_ID())
+                        .append("&healthFacilityId=").append(model.getHEALTH_FACILITY_ID())
+                        .append("&loginTime=").append(URLEncoder.encode(new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(date), "utf-8"))
+                        .append("&sessionLength=").append(model.getSESSION_LENGTH()/1000);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+
+            Log.d(TAG,"model url = "+webServiceUrl);
+
+            model.setUrl(webServiceUrl.toString());
+        }
+
+
+        return modelList;
     }
 
 }

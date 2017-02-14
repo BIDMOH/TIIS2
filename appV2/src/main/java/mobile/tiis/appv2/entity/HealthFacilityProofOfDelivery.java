@@ -39,6 +39,7 @@ public class HealthFacilityProofOfDelivery {
     private String vaccineName;
     private String lotNumber;
     private String unitOfMeasure;
+    private int dosesPerDispensingUnit;
 
     public String getDistributionDate() {
         return DistributionDate;
@@ -169,5 +170,13 @@ public class HealthFacilityProofOfDelivery {
 
     public void setStockDistributionId(int stockDistributionId) {
         StockDistributionId = stockDistributionId;
+    }
+
+    public int getDosesPerDispensingUnit() {
+        return dosesPerDispensingUnit;
+    }
+
+    public void setDosesPerDispensingUnit(int dosesPerDispensingUnit) {
+        this.dosesPerDispensingUnit = dosesPerDispensingUnit;
     }
 }

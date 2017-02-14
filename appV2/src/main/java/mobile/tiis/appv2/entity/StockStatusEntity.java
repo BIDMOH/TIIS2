@@ -6,30 +6,26 @@ package mobile.tiis.appv2.entity;
 
 public class StockStatusEntity {
 
-    String itemName;
-    String openningBalance;
+    String antigen;
+    String openingBalance;
     String dosesReceived;
-    String closingBalance;
-    String discardedUnopened;
-    String immunizedChildren;
+    String stockOnHand;
+    String dosesDiscardedUnopened;
+    String childrenImmunized;
+    String dosesDiscardedOpened;
     String usageRate;
     String wastageRate;
+    String reportingMonth;
 
-    public String getItemName() {
-        return itemName;
-    }
-
-    public void setItemName(String itemname) {
-        this.itemName = itemname;
-    }
-
-    public String getOpenningBalance() {
-        return openningBalance;
-    }
-
-    public void setOpenningBalance(String openningBalance) {
-        this.openningBalance = openningBalance;
-    }
+    /*
+    "antigen": "OPV",
+    "childrenImmunized": 227,
+    "dosesDiscardedOpened": 62,
+    "dosesDiscardedUnopened": 0,
+    "dosesReceived": 0,
+    "openingBalance": 133,
+    "stockOnHand": 40
+     */
 
     public String getDosesReceived() {
         return dosesReceived;
@@ -39,28 +35,52 @@ public class StockStatusEntity {
         this.dosesReceived = dosesReceived;
     }
 
-    public String getClosingBalance() {
-        return closingBalance;
+    public String getAntigen() {
+        return antigen;
     }
 
-    public void setClosingBalance(String closingBalance) {
-        this.closingBalance = closingBalance;
+    public void setAntigen(String antigen) {
+        this.antigen = antigen;
     }
 
-    public String getDiscardedUnopened() {
-        return discardedUnopened;
+    public String getOpeningBalance() {
+        return openingBalance;
     }
 
-    public void setDiscardedUnopened(String discardedUnopened) {
-        this.discardedUnopened = discardedUnopened;
+    public void setOpeningBalance(String openingBalance) {
+        this.openingBalance = openingBalance;
     }
 
-    public String getImmunizedChildren() {
-        return immunizedChildren;
+    public String getStockOnHand() {
+        return stockOnHand;
     }
 
-    public void setImmunizedChildren(String immunizedChildren) {
-        this.immunizedChildren = immunizedChildren;
+    public void setStockOnHand(String stockOnHand) {
+        this.stockOnHand = stockOnHand;
+    }
+
+    public String getDosesDiscardedUnopened() {
+        return dosesDiscardedUnopened;
+    }
+
+    public void setDosesDiscardedUnopened(String dosesDiscardedUnopened) {
+        this.dosesDiscardedUnopened = dosesDiscardedUnopened;
+    }
+
+    public String getChildrenImmunized() {
+        return childrenImmunized;
+    }
+
+    public void setChildrenImmunized(String childrenImmunized) {
+        this.childrenImmunized = childrenImmunized;
+    }
+
+    public String getDosesDiscardedOpened() {
+        return dosesDiscardedOpened;
+    }
+
+    public void setDosesDiscardedOpened(String dosesDiscardedOpened) {
+        this.dosesDiscardedOpened = dosesDiscardedOpened;
     }
 
     public String getUsageRate() {
@@ -78,4 +98,13 @@ public class StockStatusEntity {
     public void setWastageRate(String wastageRate) {
         this.wastageRate = wastageRate;
     }
+
+    public String getReportingMonth() {
+        return reportingMonth;
+    }
+
+    public void setReportingMonth(String reportingMonth) {
+        this.reportingMonth = reportingMonth;
+    }
+
 }

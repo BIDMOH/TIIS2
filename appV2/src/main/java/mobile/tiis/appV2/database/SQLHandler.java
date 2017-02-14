@@ -166,6 +166,7 @@ public class SQLHandler {
                     + StockDistributionsValuesColumns.DISTRIBUTION_DATE + " TEXT ,"
                     + StockDistributionsValuesColumns.ITEM_ID + " TEXT NOT NULL,"
                     + StockDistributionsValuesColumns.PRODUCT_ID + " INTEGER NOT NULL,"
+                    + StockDistributionsValuesColumns.DOSES_PER_DISPENSING_UNIT + " INTEGER NOT NULL,"
                     + StockDistributionsValuesColumns.LOT_ID + " INTEGER NOT NULL,"
                     + StockDistributionsValuesColumns.VIMS_LOT_ID + " INTEGER NOT NULL,"
                     + StockDistributionsValuesColumns.VVM_STATUS + " TEXT ,"
@@ -706,6 +707,8 @@ public class SQLHandler {
                     + GIISContract.StockStatusColumns.OPPENING_BALANCE + " TEXT,"
                     + GIISContract.StockStatusColumns.CLOSING_BALANCE + " TEXT,"
                     + GIISContract.StockStatusColumns.DISCARDED_UNOPENED + " TEXT,"
+                    + GIISContract.StockStatusColumns.DISCARDED_OPENED + " TEXT,"
+                    + GIISContract.StockStatusColumns.IMMUNIZED_CHILDREN + " TEXT,"
                     + GIISContract.StockStatusColumns.DOSES_RECEIVED + " TEXT,"
                     + GIISContract.StockStatusColumns.REPORTED_MONTH + " TEXT);";
 
@@ -780,6 +783,15 @@ public class SQLHandler {
                     + GIISContract.HfVitaminAColumns.STOCK_ON_HAND + " TEXT,"
                     + GIISContract.HfVitaminAColumns.VITAMIN_NAME + " TEXT,"
                     + GIISContract.HfVitaminAColumns.REPORTING_MONTH + " TEXT);";
+
+    public static final String SQLLoginSessions =
+            "CREATE TABLE IF NOT EXISTS " + Tables.HF_LOGIN_SESSIONS + " ("
+                    + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + GIISContract.HfLoginSessions.USER_ID + " TEXT,"
+                    + GIISContract.HfLoginSessions.HEALTH_FACILITY_ID + " TEXT,"
+                    + GIISContract.HfLoginSessions.LOGING_TIME + " LONG,"
+                    + GIISContract.HfLoginSessions.SESSION_LENGTH + " LONG,"
+                    + GIISContract.HfLoginSessions.STATUS + " INTEGER);";
 
     public static final String NoTimeConstraintVaccines =
             "SELECT * FROM (" +
@@ -1055,6 +1067,8 @@ public class SQLHandler {
         String CLOSING_BALANCE = "CLOSING_BALANCE";
         String DOSES_RECEIVED = "DOSES_RECEIVED";
         String DISCARDED_UNOPENED = "DISCARDED_UNOPENED";
+        String DISCARDED_OPENED = "DISCARDED_OPENED";
+        String IMMUNIZED_CHILDREN = "IMMUNIZED_CHILDREN";
         String REPORTED_MONTH = "REPORTED_MONTH";
     }
 
@@ -1177,6 +1191,7 @@ public class SQLHandler {
         String QUANTITY = "quantity";
         String STATUS = "status";
         String UNIT_OF_MEASURE = "unit_of_measure";
+        String DOSES_PER_DISPENSING_UNIT = "doses_per_dispensing_unit";
         String DISTRIBUTION_TYPE = "distribution_type";
     }
 
@@ -1219,6 +1234,7 @@ public class SQLHandler {
         String MAJOR_IMMUNIZATION_ACTIVITIES = "major_immunization_activities";
         String SYRINGES_AND_SAFETY_BOXES = "syringes_and_safety_boxes";
         String HF_VITAMIN_A = "health_facility_vitamin_a";
+        String HF_LOGIN_SESSIONS = "health_facility_loggin_sessions";
     }
 
     public interface Views {

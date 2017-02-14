@@ -70,6 +70,8 @@ import mobile.tiis.appv2.entity.VaccinationQueueObject;
 import mobile.tiis.appv2.fragments.FragmentVaccineNameQuantity;
 import mobile.tiis.appv2.postman.PostmanModel;
 import mobile.tiis.appv2.entity.StockStatusEntity;
+import mobile.tiis.appv2.DatabaseModals.SessionsModel;
+
 
 /**
  * Created by Melisa on 02/02/2015.
@@ -184,6 +186,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.execSQL(SQLHandler.SQLSyringesAndSafetyBoxes);
             db.execSQL(SQLHandler.SQLHealthFacilityVitaminA);
             db.execSQL(SQLHandler.SQLDistributedStock);
+            db.execSQL(SQLHandler.SQLLoginSessions);
 
         }
     }
@@ -234,6 +237,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + Tables.STOCK_DISTRIBUTIONS);
 
             db.execSQL("DROP VIEW IF EXISTS " + SQLHandler.Views.MONTHLY_PLAN);
+            db.execSQL("DROP TABLE IF EXISTS " + Tables.HF_LOGIN_SESSIONS);
 
             // CREATE NEW INSTANCE OF SCHEMA
             onCreate(db);
@@ -344,6 +348,52 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return result;
     }
 
+    public long addStockStatusReport(ContentValues cv){
+        long result;
+
+        SQLiteDatabase sd = getWritableDatabase();
+        sd.beginTransaction();
+        try{
+            result = sd.insert(Tables.STOCK_STATUS_REPORT, null, cv);
+            sd.setTransactionSuccessful();
+        }catch(Exception e){
+            result=-1;
+            sd.endTransaction();
+            throw e;
+        }
+        sd.endTransaction();
+        return result;
+
+    }
+
+    public long updateStockStatusReport(ContentValues cv, String reportedMonth, String antigen){
+        SQLiteDatabase sd = getWritableDatabase();
+        long result ;
+        sd.beginTransaction();
+        try{
+            result = sd.update(Tables.STOCK_STATUS_REPORT, cv, SQLHandler.StockStatusColumns.REPORTED_MONTH + "= ? AND "+
+                            SQLHandler.StockStatusColumns.ITEM_NAME+" = ?",
+                    new String[]{
+                            reportedMonth,
+                            antigen
+                    });
+            sd.setTransactionSuccessful();
+
+            //do not any more database operations between
+            //setTransactionSuccessful and endTransaction
+        }catch(Exception e){
+            //end the transaction on error too when doing exception handling
+            result=-1;
+            sd.endTransaction();
+            throw e;
+        }
+        //end the transaction on no error
+        sd.endTransaction();
+
+
+        return result;
+    }
+
     public long addStock(ContentValues cv) {
 
         long result;
@@ -394,6 +444,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         boolean found = cursor.moveToFirst();
+        cursor.close();
+        return found;
+    }
+
+    public boolean isStockStatusInDB(String selectedMonth, String antigen){
+        String selectQuery = "SELECT  * FROM " + Tables.STOCK_STATUS_REPORT + " WHERE "
+                +SQLHandler.StockStatusColumns.REPORTED_MONTH+" = '" +selectedMonth+ "' AND "+SQLHandler.StockStatusColumns.ITEM_NAME+" = '"+antigen+"'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        boolean found = cursor.moveToFirst();
+
+        Log.d("monthstartandenddate", "Query is : "+selectQuery);
+        Log.d("monthstartandenddate", "Result is : "+found);
+
         cursor.close();
         return found;
     }
@@ -4232,8 +4297,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 StockStatusEntity children = new StockStatusEntity();
-                children.setItemName(cursor.getString(0));
-                children.setImmunizedChildren(cursor.getString(1));
+                children.setAntigen(cursor.getString(0));
+                children.setChildrenImmunized(cursor.getString(1));
                 stockStatusEntities.add(children);
             } while (cursor.moveToNext());
         }
@@ -4610,5 +4675,105 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             cursor.close();
             return false;
         }
+    }
+
+    public long storeHealthFacilitySession(String healthFacilityId, String userId, long time) {
+
+        SQLiteDatabase db = getWritableDatabase();
+        long result = -1;
+        db.beginTransaction();
+        ContentValues insertValues = new ContentValues();
+        insertValues.put(GIISContract.HfLoginSessions.USER_ID, userId);
+        insertValues.put(GIISContract.HfLoginSessions.HEALTH_FACILITY_ID, healthFacilityId);
+        insertValues.put(GIISContract.HfLoginSessions.LOGING_TIME, time);
+        insertValues.put(GIISContract.HfLoginSessions.SESSION_LENGTH, 0);
+        insertValues.put(GIISContract.HfLoginSessions.STATUS, -1);
+
+        try {
+            result = db.insert(Tables.HF_LOGIN_SESSIONS, null, insertValues);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            db.endTransaction();
+            Log.d(TAG,"Login session stored with result = "+ result+" for userid = "+userId);
+            return result;
+        }
+    }
+
+
+
+    /**
+     * status codes.
+     *   0 = currently inprogress session.
+     *  -1 = completed session but has not yet been synchronized with the server
+     *   1 = completed and synchronised sessions.
+     * @return
+     */
+    public long updateHealthFacilityStatus(long session_id,int status) {
+
+        SQLiteDatabase db = getWritableDatabase();
+
+        Cursor c = db.rawQuery("SELECT * FROM "+Tables.HF_LOGIN_SESSIONS+" WHERE "+BaseColumns._ID+" = "+session_id,null);
+        c.moveToFirst();
+        long result = -1;
+        db.beginTransaction();
+        ContentValues insertValues = new ContentValues();
+        insertValues.put(BaseColumns._ID, c.getInt(0));
+        insertValues.put(GIISContract.HfLoginSessions.STATUS, status);
+        Log.d("destroy","updating session status = "+ status);
+        Log.d("destroy","updating id  = "+  c.getInt(0));
+
+        try {
+            result = db.update(Tables.HF_LOGIN_SESSIONS, insertValues, BaseColumns._ID + " = "+ c.getInt(0),null);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            db.endTransaction();
+            return result;
+        }
+    }
+
+    public long deleteHealthFacilityStatus(long session_id) {
+        SQLiteDatabase db = getWritableDatabase();
+        long result = -1;
+        db.beginTransaction();
+        try {
+            result = db.delete(Tables.HF_LOGIN_SESSIONS, BaseColumns._ID + " = " + session_id, null);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            //Error in between database transaction
+            result = -1;
+        } finally {
+            db.endTransaction();
+            return result;
+        }
+    }
+
+    public List<SessionsModel> getHealthFacilitySessions() {
+
+        SQLiteDatabase db = getWritableDatabase();
+
+        Cursor c = db.rawQuery("SELECT * FROM "+Tables.HF_LOGIN_SESSIONS+" WHERE "+GIISContract.HfLoginSessions.STATUS+" = -1 ",null);
+        int count = c.getCount();
+
+        Log.d(TAG,"SESSIONS COUNT = "+c.getCount());
+
+        List<SessionsModel> modelList = new ArrayList<>();
+        for (int i=0;i<count;i++){
+            c.moveToPosition(i);
+            SessionsModel model = new SessionsModel();
+            model.setModel(c,model);
+            Log.d(TAG,"session user id = "+c.getInt(c.getColumnIndex(GIISContract.HfLoginSessions.USER_ID)));
+            modelList.add(model);
+        }
+
+        Log.d(TAG,"SESSIONS Models COUNT = "+modelList.size());
+
+        return modelList;
+
     }
 }

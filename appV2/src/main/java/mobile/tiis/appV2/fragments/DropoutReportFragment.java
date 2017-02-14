@@ -14,6 +14,8 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
@@ -44,9 +46,9 @@ public class DropoutReportFragment extends Fragment {
 
     private MaterialSpinner dateSpinner;
 
-    public String[] years = {"2014", "2015", "2016" };
+    public String[] years = new String[4];
 
-    private String currentYearSelected = "2015";
+    private String currentYearSelected;
 
     private String hf_id, child_id, birthplacestr, villagestr, hfstr, statusstr, gender_val, birthdate_val;
 
@@ -70,6 +72,19 @@ public class DropoutReportFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         inflator = inflater;
+
+        Calendar c = Calendar.getInstance();
+        Date d = new Date(c.getTimeInMillis());
+
+
+        int y =c.get(Calendar.YEAR);
+        currentYearSelected = (y-1)+"";
+
+        for(int i=0;i<4;i++){
+            years[i] = (y-3+i)+"";
+        }
+
+
         View rowview;
         rowview = inflater.inflate(R.layout.fragment_dropout_report, null);
         prepareUIElements(rowview);
@@ -87,8 +102,8 @@ public class DropoutReportFragment extends Fragment {
 
         SingleTextViewAdapter dataAdapter = new SingleTextViewAdapter(DropoutReportFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, dateVAlues);
         dateSpinner.setAdapter(dataAdapter);
-        dateSpinner.setSelection(1);
-        currentYearSelected = dateVAlues.get(1);
+        dateSpinner.setSelection(3);
+        currentYearSelected = dateVAlues.get(3);
 
         new getDropOutTable().execute(currentYearSelected);
 
