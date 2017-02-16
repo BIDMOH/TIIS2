@@ -26,7 +26,7 @@ public class PostmanSynchronizationService extends Service {
 
     private static final String TAG = PostmanSynchronizationService.class.getSimpleName();
 
-    public static final long NOTIFY_INTERVAL = 10 * 1000; // 10 seconds
+    public static final long NOTIFY_INTERVAL = 1 * 60000; // 60 seconds
     public static final String SynchronisationService_MESSAGE = "mobile.giis.app.SynchronisationService.MSG";
     // timer handling
     private Timer mTimer = null;
@@ -83,7 +83,7 @@ public class PostmanSynchronizationService extends Service {
 
             Log.d(TAG,"synchronizing postman data");
             synchronized (app) {
-
+                app.CheckNewStockDistributionsFromVims();
                 List<PostmanModel> listPosts = db.getAllPosts();
                 Log.d(TAG,"getting all posts");
                 Log.d(TAG,"user = "+userName);

@@ -4711,4 +4711,39 @@ public class BackboneApplication extends Application {
         return modelList;
     }
 
+
+    public void CheckNewStockDistributionsFromVims(){
+        Log.d(TAG,"checking for new stocks from VIMS");
+        String healthFacilityId,username,password;
+        if (LOGGED_IN_USER_ID == null) {
+            Log.d(TAG,"userid null");
+            List<User> allUsers = databaseInstance.getAllUsers();
+            User user = allUsers.get(0);
+            healthFacilityId = user.getHealthFacilityId();
+            username = user.getUsername();
+            password = user.getPassword();
+
+        } else {
+            healthFacilityId = LOGGED_IN_USER_HF_ID;
+            username = LOGGED_IN_USERNAME;
+            password = LOGGED_IN_USER_PASS;
+        }
+
+        final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC).append("/checkForNewStockFromVims?healthFacilityId="+healthFacilityId);
+
+        client.setBasicAuth(username,password,true);
+        client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                throwable.printStackTrace();
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                Log.d(TAG,"response "+responseString);
+            }
+        });
+
+    }
+
 }
