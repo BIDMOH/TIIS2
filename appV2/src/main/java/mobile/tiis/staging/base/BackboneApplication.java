@@ -4716,7 +4716,6 @@ public class BackboneApplication extends Application {
         Log.d(TAG,"checking for new stocks from VIMS");
         String healthFacilityId,username,password;
         if (LOGGED_IN_USER_ID == null) {
-            Log.d(TAG,"userid null");
             List<User> allUsers = databaseInstance.getAllUsers();
             User user = allUsers.get(0);
             healthFacilityId = user.getHealthFacilityId();
@@ -4728,8 +4727,12 @@ public class BackboneApplication extends Application {
             username = LOGGED_IN_USERNAME;
             password = LOGGED_IN_USER_PASS;
         }
+        Log.d(TAG,"CheckNewStockDistributionsFromVims - Health Facility Id  = "+healthFacilityId);
+        Log.d(TAG,"CheckNewStockDistributionsFromVims - Username  = "+username);
 
         final StringBuilder webServiceUrl = new StringBuilder(WCF_URL).append(HEALTH_FACILITY_SVC).append("/checkForNewStockFromVims?healthFacilityId="+healthFacilityId);
+
+        Log.d(TAG,"CheckNewStockDistributionsFromVims - url  = "+webServiceUrl);
 
         client.setBasicAuth(username,password,true);
         client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
