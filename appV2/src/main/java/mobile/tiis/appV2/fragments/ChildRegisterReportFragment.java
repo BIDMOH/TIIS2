@@ -290,7 +290,7 @@ public class ChildRegisterReportFragment extends RxFragment{
                         "\t\t(SELECT VACCINATION_DATE FROM vaccination_event \n" +
                         "\t\tINNER JOIN   dose  on  vaccination_event.DOSE_ID = dose.ID \n" +
                         "\t\tWHERE \n" +
-                        "\t\tdose.FULLNAME = 'OPV0'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = 'true') AS OPV0,\n" +
+                        "\t\tdose.FULLNAME = 'OPV 0'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = 'true') AS OPV0,\n" +
                         "\t\t\n" +
                         "\t\t(SELECT VACCINATION_DATE FROM vaccination_event \n" +
                         "\t\tINNER JOIN   dose  on  vaccination_event.DOSE_ID = dose.ID \n" +

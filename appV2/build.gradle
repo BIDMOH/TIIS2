@@ -15,8 +15,10 @@ android {
         applicationId "mobile.tiis.appv2"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 142
-        versionName "2.4.7"
+
+        versionCode 149
+        versionName "2.4.12"
+
         multiDexEnabled true
 
     }
@@ -25,13 +27,17 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-
     }
     lintOptions {
         checkReleaseBuilds false
         // Or, if you prefer, you can continue to check for errors in release builds,
         // but continue the build even when errors are found:
         abortOnError false
+    }
+
+    dexOptions {
+        incremental true
+        javaMaxHeapSize "8g"
     }
 
 }
@@ -54,7 +60,6 @@ dependencies {
         exclude group: 'com.nineoldandroids', module: 'library'
         exclude group: 'com.android.support', module: 'appcompat-v7'
     }
-
     compile 'com.loopj.android:android-async-http:1.4.9'
     compile 'io.realm:realm-android:0.87.5'
     compile 'com.wdullaer:materialdatetimepicker:2.3.0'

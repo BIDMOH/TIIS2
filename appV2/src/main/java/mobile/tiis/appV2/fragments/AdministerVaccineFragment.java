@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +29,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TableLayout;
+import android.widget.TextClock;
 import android.widget.TextView;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -65,6 +67,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func0;
 
 import static mobile.tiis.appv2.ChildDetailsActivity.childId;
+import static mobile.tiis.appv2.base.BackboneApplication.TABLET_REGISTRATION_MODE_PREFERENCE_NAME;
+
 
 /**
  * Created by issymac on 27/01/16.
@@ -116,6 +120,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
     private View scrollLayout;
     protected static final int REFRESH = 0;
     private Looper backgroundLooper;
+    private TextView backEnteringChild;
 
 
     private Subscription subscription;
@@ -355,6 +360,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
             final Spinner spReason          = (Spinner)rowView.findViewById(R.id.non_vacc_reason_spinner);
             final CheckBox chDone           = (CheckBox)rowView.findViewById(R.id.vaccine_administered_done_checkbox);
             final View view                 = (View) rowView.findViewById(R.id.split_dose);
+            TextView backEnteringChild      = (TextView) rowView.findViewById(R.id.back_enter_info);
 
             tvDose.setText(item.getDoseName());
             tvVaccineDate.setText(item.getTime());
@@ -481,6 +487,7 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
             Log.d("SOMA", "today is "+compareDateTwo);
             Log.d("SOMA", "is Child Backentered "+isChildBackEntered);
 
+
             if (compareDateOne.compareTo(compareDateTwo)<0 && (isChildBackEntered)){
                 spVaccLot.setSelection(1);
                 item.setVaccination_lot_pos(1);
@@ -509,6 +516,22 @@ public class AdministerVaccineFragment extends BackHandledFragment implements Vi
                     spReason.setSelection(reasons.indexOf("Kukosekana chanjo"));
 
                 }
+            }
+
+            /**
+            Check to see if the tablet is in registration mode then allow only backentering of childre
+             */
+            if(PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).getBoolean(TABLET_REGISTRATION_MODE_PREFERENCE_NAME, false)){
+                spVaccLot.setSelection(1);
+                item.setVaccination_lot_pos(1);
+                item.setVaccination_lot(item.getVaccine_lot_map().get(item.getVaccine_lot_list().get(1)).toString());
+                spReason.setVisibility(View.GONE);
+                backEnteringChild.setVisibility(View.VISIBLE);
+                //Disable spinner and done checkbox
+                spVaccLot.setEnabled(false);
+            }else {
+                spReason.setVisibility(View.VISIBLE);
+                backEnteringChild.setVisibility(View.GONE);
             }
 
             //rowCollector.setVaccination_lot_pos(1);

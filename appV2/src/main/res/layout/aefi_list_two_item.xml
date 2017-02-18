@@ -41,6 +41,7 @@
             android:id="@+id/health_facility"/>
 
         <CheckBox
+            android:clickable="false"
             android:layout_width="0dp"
             android:layout_weight=".05"
             android:layout_height="50dp"
@@ -53,6 +54,7 @@
             android:layout_weight=".05"
             android:layout_height="50dp"
             android:id="@+id/aefi_box"
+            android:clickable="false"
             android:button="@drawable/checkbox_background"
             android:gravity="center_vertical|center_horizontal"/>
 

@@ -157,7 +157,7 @@ public class ChildRegisterReportRecyclerAdapter extends BaseAdapter {
                 Date date = BackboneActivity.dateParser(a.OPV0);
                 holder.opv0.setText(ft.format(date));
             } else {
-                holder.opv0.setText("");
+                holder.opv0.setText("---");
             }
             if (a.OPV1 != null && !a.OPV1.equals("null")) {
                 Date date = BackboneActivity.dateParser(a.OPV1);

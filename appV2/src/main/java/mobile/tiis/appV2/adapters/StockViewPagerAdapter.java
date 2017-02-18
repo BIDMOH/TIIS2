@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import mobile.tiis.appv2.fragments.HealthFacilityBalanceFragment;
 import mobile.tiis.appv2.fragments.StockAdjustmentFragment;
+import mobile.tiis.appv2.fragments.StockProofOfDeliveryFragment;
 
 /**
  *  Created by issymac on 16/12/15.
@@ -13,7 +14,7 @@ import mobile.tiis.appv2.fragments.StockAdjustmentFragment;
 
 public class StockViewPagerAdapter extends FragmentPagerAdapter {
 
-    private final String[] TITLES = { "Stock Adjustments", "Health Facility Balance" };
+    private final String[] TITLES = { "Stock Adjustments", "Health Facility Balance","Stock Proof Of Delivery" };
 
     public StockViewPagerAdapter(FragmentManager fm) {
         super(fm);
@@ -34,8 +35,10 @@ public class StockViewPagerAdapter extends FragmentPagerAdapter {
         switch (position){
             case 0:
                 return StockAdjustmentFragment.newInstance();
-            default:
+            case 1:
                 return HealthFacilityBalanceFragment.newInstance();
+            default:
+                return StockProofOfDeliveryFragment.newInstance();
         }
     }
 

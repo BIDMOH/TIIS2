@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
 
+
 import mobile.tiis.appv2.fragments.ChildRegisterReportFragment;
 import mobile.tiis.appv2.fragments.DefaultersReportFragment;
 import mobile.tiis.appv2.fragments.HealthFacilityImmunizationCoverageScheduledReportFragment;
@@ -16,13 +17,26 @@ import mobile.tiis.appv2.fragments.ImmunizedChildrenFragment;
 import mobile.tiis.appv2.fragments.StockTabFragment;
 import mobile.tiis.appv2.fragments.TabFragment;
 
+
+import mobile.tiis.appv2.fragments.ChildRegisterReportFragment;
+import mobile.tiis.appv2.fragments.DefaultersReportFragment;
+import mobile.tiis.appv2.fragments.HealthFacilityImmunizationCoverageScheduledReportFragment;
+import mobile.tiis.appv2.fragments.HealthFacilityImmunizationCoverageTargetReportFragment;
+import mobile.tiis.appv2.fragments.HealthFacilityVisitsAndVaccinationSummaryFragment;
+import mobile.tiis.appv2.fragments.DropoutReportFragment;
+import mobile.tiis.appv2.fragments.ImmunizationChartFragment;
+import mobile.tiis.appv2.fragments.ImmunizedChildrenFragment;
+import mobile.tiis.appv2.fragments.StockStatusFragment;
+import mobile.tiis.appv2.fragments.StockTabFragment;
+import mobile.tiis.appv2.fragments.TabFragment;
+
 /**
  *  Created by issymac on 14/12/15.
  */
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
-    private final String[] TITLES = {"Child Register Report (MTUHA)","Immunization Coverage Report (Scheduled)", "Immunization Coverage Report (Target)", "Defaulters List", "Dropout Report", "Immunized Children", "Vaccination Summary"};
+    private final String[] TITLES = {"Child Register Report (MTUHA)","Immunization Coverage Report (Scheduled)", "Immunization Coverage Report (Target)", "Defaulters List", "Dropout Report", "Immunized Children", "Vaccination Summary", "Stock Report"};
 
 
     public ViewPagerAdapter(FragmentManager fm) {
@@ -64,11 +78,11 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         else if (position == 5){
             return ImmunizedChildrenFragment.newInstance();
         }
-//        else if (position == 6){
-//            return StockTabFragment.newInstance();
-//        }
         else if (position == 6){
             return HealthFacilityVisitsAndVaccinationSummaryFragment.newInstance(position);
+        }
+        else if (position == 7){
+            return StockStatusFragment.newInstance();
         }
         else{
             return TabFragment.newInstance(position);

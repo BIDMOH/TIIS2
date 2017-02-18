@@ -835,7 +835,7 @@ public class ChildSummaryPagerFragment extends RxFragment {
                 birthplaceOrig = birthplaceAdapter.getCount() - 1;
             }
 
-            SingleTextViewAdapter dataAdapter = new SingleTextViewAdapter(ChildSummaryPagerFragment.this.getActivity(), R.layout.single_text_spinner_item_drop_down, place_names);
+            SingleTextViewAdapter dataAdapter = new SingleTextViewAdapter(getActivity(), R.layout.single_text_spinner_item_drop_down, place_names);
             //@Teodor -> Modification -> E njejta liste si per Place of Birth dhe per Village
             villageSpinner.setAdapter(dataAdapter);
             villageSpinner.setEnabled(false);
@@ -1158,11 +1158,19 @@ public class ChildSummaryPagerFragment extends RxFragment {
             return false;
         }
         // we have as the last element the one that is empty element. We can not select it.
-        if (villageSpinner.getSelectedItemPosition() == placeList.size()) {
+        if (villageSpinner.getSelectedItemPosition() == placeList.size()+1 || villageSpinner.getSelectedItemPosition()==0) {
             alertDialogBuilder.setMessage(getString(R.string.empty_village));
             alertDialogBuilder.show();
             return false;
         }
+
+        Log.d(TAG,"place name = "+place_names.get(villageSpinner.getSelectedItemPosition()-1).toLowerCase());
+        if (place_names.get(villageSpinner.getSelectedItemPosition()-1).toLowerCase().equals("not applicable") && metNotesValue.getText().toString().equals("")) {
+            alertDialogBuilder.setMessage(getString(R.string.empty_notes));
+            alertDialogBuilder.show();
+            return false;
+        }
+
         if (registerHealthFacilityId.equals("")) {
             alertDialogBuilder.setMessage(getString(R.string.empty_healthfacility));
             alertDialogBuilder.show();
@@ -1335,13 +1343,17 @@ public class ChildSummaryPagerFragment extends RxFragment {
             contentValues.put(SQLHandler.ChildColumns.BIRTHPLACE, birthplaceList.get(pobSpinner.getSelectedItemPosition()-1).getName());
             contentValues.put(SQLHandler.ChildColumns.BIRTHPLACE_ID, birthplaceList.get(pobSpinner.getSelectedItemPosition()-1).getId());
         }
-//        Log.d("coze","vilage name = "+placeList.get(villageSpinner.getSelectedItemPosition()-1).getName());
+        Log.d("coze","vilage name = "+placeList.get(villageSpinner.getSelectedItemPosition()-1).getName());
         if (!placeList.get(villageSpinner.getSelectedItemPosition()-1).getName().equalsIgnoreCase(currentChild.getDomicile())) {
             currentChild.setDomicileId(placeList.get(villageSpinner.getSelectedItemPosition()-1).getId());
             currentChild.setDomicile(placeList.get(villageSpinner.getSelectedItemPosition()-1).getName());
             contentValues.put(SQLHandler.ChildColumns.DOMICILE, placeList.get(villageSpinner.getSelectedItemPosition()-1).getName());
             contentValues.put(SQLHandler.ChildColumns.DOMICILE_ID, placeList.get(villageSpinner.getSelectedItemPosition()-1).getId());
         }
+
+
+
+
         if (!healthFacilityList.get(healthFacOrig).getName().equalsIgnoreCase(currentChild.getHealthcenter())) {
             currentChild.setHealthcenterId(healthFacilityList.get(healthFacOrig).getId());
             currentChild.setHealthcenter(healthFacilityList.get(healthFacOrig).getName());

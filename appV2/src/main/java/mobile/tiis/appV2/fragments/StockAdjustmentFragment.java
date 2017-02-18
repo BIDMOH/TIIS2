@@ -204,10 +204,47 @@ public class StockAdjustmentFragment extends Fragment{
                 boolean success = true;
                 for (HealthFacilityBalance item : rowCollectorList) {
                     if (!item.getTempBalance().equals("")) {
-                        item.setBalance(
-                                (listAdjustmentReasons.get(item.getSelectedAdjustmentReasonPosition() - 1).getPozitive().equals("true"))
-                                        ?item.getBalance()+Integer.parseInt(item.getTempBalance())
-                                        :item.getBalance()-Integer.parseInt(item.getTempBalance()));
+                        //database.addToStockStatusTable();
+                        //needed monthyear, itemname and Contentvalue
+
+                        Date now = new Date();
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(now);
+                        int month = calendar.get(Calendar.MONTH);
+                        Log.d("STOCK_STATUS", "month is : "+month);
+                        int year = calendar.get(Calendar.YEAR);
+
+                        String monthName = "";
+
+                        if (month == 9 || month == 10 || month == 11){
+                            monthName = database.getMonthNameFromNumber((month+1)+"", application);
+                        }else {
+                            monthName = database.getMonthNameFromNumber(("0"+(month+1)), application);
+                        }
+
+                        Log.d("STOCK_STATUS", "Month obtained is : "+monthName);
+
+                        /**
+                         * Inspect If the dose adjustment has been additional or substractional and respond accordingly
+                         * ADDITIONAL (true) : Call method to add the adjusted value to the RECEIVED STOCK in the stock status table
+                         * SUBSTRACTION (false) : Call method to add the adjusted value to DISCARDED UNOPENED column of the stock status table
+                         */
+                        if (listAdjustmentReasons.get(item.getSelectedAdjustmentReasonPosition() - 1).getPozitive().equals("true")){
+                            //add
+                            item.setBalance(item.getBalance()+Integer.parseInt(item.getTempBalance()));
+                            database.addToStockStatusTable(monthName+" "+year, item.getItem_name(), Integer.parseInt(item.getTempBalance()), true);
+                            //TODO: Get the actual reasons that contribute to REVEIVED_STOCKS only, receipt, from another facility!
+
+                        }else {
+                            //Substract
+                            item.setBalance(item.getBalance()-Integer.parseInt(item.getTempBalance()));
+                            database.addToStockStatusTable(monthName+" "+year, item.getItem_name(), Integer.parseInt(item.getTempBalance()), false);
+                            //TODO: Get the actual reasons that contribute to DISCARDED_UNOPENED only, vvm status changed, and Expired!
+                        }
+//                        item.setBalance(
+//                                (listAdjustmentReasons.get(item.getSelectedAdjustmentReasonPosition() - 1).getPozitive().equals("true"))
+//                                        ?item.getBalance()+Integer.parseInt(item.getTempBalance())
+//                                        :item.getBalance()-Integer.parseInt(item.getTempBalance()));
                         if (database.updateHealthFacilityBalance(item) != -1) {
                             startThread(item, listAdjustmentReasons.get(item.getSelectedAdjustmentReasonPosition() - 1).getId());
                         } else {

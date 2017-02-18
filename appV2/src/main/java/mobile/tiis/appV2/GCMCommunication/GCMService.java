@@ -13,10 +13,14 @@ import android.os.Build;
 import android.util.Log;
 import com.google.android.gcm.GCMBaseIntentService;
 
+import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Random;
 
 import mobile.tiis.appv2.HomeActivityRevised;
 import mobile.tiis.appv2.R;
+import mobile.tiis.appv2.StockActivityRevised;
 import mobile.tiis.appv2.base.BackboneApplication;
 
 public class GCMService extends GCMBaseIntentService {
@@ -57,15 +61,84 @@ public class GCMService extends GCMBaseIntentService {
         Log.d(TAG, "message received");
 
         BackboneApplication application = (BackboneApplication) getApplication();
-        String childId = intent.getStringExtra("message");
-        application.getDatabaseInstance().addChildToChildUpdatesQueue(childId,3);
-        synchronized (application) {
-            application.parseGCMChildrenInQueueById();
+        String gcmMessage = intent.getStringExtra("message");
+        Log.d(TAG, "Message Received "+gcmMessage);
+
+        Date now = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+
+        int month       = (calendar.get(Calendar.MONTH)+1);
+        int prevMonth   = month - 1;
+        if (month == 1){
+            prevMonth = 12;
+        }
+        int year = calendar.get(Calendar.YEAR);
+
+        //HEALTH FACILITY COLD CHAIN
+        if (gcmMessage.equals("UpdateHealthFacilityColdChain")){
+            application.parseColdChainMonthly(month+"", year+"");
+            application.parseColdChainMonthly(prevMonth+"", year+"");
+
+        }
+        //DESEASES SURVEILLANCE
+        else if (gcmMessage.equals("UpdateHealthFacilityDeseaseSurvailance")){
+            application.parseDeseaseSurveilanceMonthly(month+"", year+"");
+            application.parseDeseaseSurveilanceMonthly(prevMonth+"", year+"");
+        }
+        //BCG_OPV_TT
+        else if(gcmMessage.equals("UpdateHealthFacilityBcgOpv0AndTTVaccinations")){
+            application.parseBcgOpvTtMonthly(month+"", year+"");
+            application.parseBcgOpvTtMonthly(prevMonth+"", year+"");
+        }
+        //SYRINGES AND SAFETY BOXES
+        else if(gcmMessage.equals("UpdateHealthFacilitySyringesAndSafetyBoxesStockBalance")){
+            application.parseSyringesAndSafetyBoxesMonthly(month+"", year+"");
+            application.parseSyringesAndSafetyBoxesMonthly(prevMonth+"", year+"");
+        }
+        //VITAMIN A STOCK
+        else if(gcmMessage.equals("UpdateHealthFacilityVitaminAStockBalance")){
+            application.parseVitamAMonthly(month+"", year+"");
+            application.parseVitamAMonthly(prevMonth+"", year+"");
+        }
+        //IMMUNIZATION SESSIONS
+        else if(gcmMessage.equals("UpdateHealthFacilityImmunizationSessions")){
+            Log.d("IMMUNIZATION_SESSION", "month is : "+month);
+            Log.d("IMMUNIZATION_SESSION", "previous month is : "+prevMonth);
+            application.parseImmunizationSessionMonthly(month+"", year+"");
+            application.parseImmunizationSessionMonthly(prevMonth+"", year+"");
+        }
+        //STOCK DISTRIBUTIONS
+        else if(gcmMessage.equals("newHealthFacilityStockDistributions")){
+            Log.d(TAG,"receiving new Heath facility stock distributions");
+            application.parseItem();
+            application.parseScheduledVaccination();
+            application.parseDose();
+            application.parseItemLots();
+            application.parseStock();
+            application.parseStockDistributions();
+            createNotification(context,"New Stock Received");
         }
 
-//        createNotification(context,"updates received");
-        sendResult(childId,context);
+        else if(gcmMessage.equals("proofOfDeliverySentSuccessfully")){
+            Log.d(TAG,"updating Heath facility stock distributions");
+            application.parseItem();
+            application.parseScheduledVaccination();
+            application.parseDose();
+            application.parseItemLots();
+            application.parseStock();
+            application.parseStockDistributions();
+            createNotification(context,"Proof Of Delivery Sent Successfully");
+        }
+        else{
+            application.getDatabaseInstance().addChildToChildUpdatesQueue(gcmMessage,3);
+            synchronized (application) {
+                application.parseGCMChildrenInQueueById();
+            }
+            sendResult(gcmMessage,context);
 
+        }
+//        createNotification(context,"updates received");
 
 	}
 
@@ -112,10 +185,12 @@ public class GCMService extends GCMBaseIntentService {
         Log.d(TAG, "Creating notification with ID == " + notificationId);
 
         Log.d(TAG,"the activity is not running");
-        intent = new Intent(context, HomeActivityRevised.class);
+        intent = new Intent(context, StockActivityRevised.class);
+        intent.putExtra("stock_distribution",3);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                 Intent.FLAG_ACTIVITY_CLEAR_TASK);
         pIntent = PendingIntent.getActivity(context, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
 
 
         long[] pattern = {500,500};
