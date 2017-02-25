@@ -77,8 +77,8 @@ public class BadgeDrawable extends Drawable {
 		mTextPaint.getTextBounds(mCount, 0, mCount.length(), mTxtRect);
 		float textHeight = mTxtRect.bottom - mTxtRect.top;
 		float textY = centerY + (textHeight / 3f);
-		if(mCount.length() > 3)
-			canvas.drawText("999+", centerX, textY, mTextPaint);
+		if(mCount.length() > 4)
+			canvas.drawText("9999+", centerX, textY, mTextPaint);
 		else
 			canvas.drawText(mCount, centerX, textY, mTextPaint);
 	}
