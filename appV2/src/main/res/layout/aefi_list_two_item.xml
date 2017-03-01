@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:id="@+id/titles_rl"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight=".15"
+            android:layout_height="wrap_content"
+            android:text="Vaccine Doses"
+            android:textColor="@color/black"
+            android:id="@+id/vacc_dose"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight=".15"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:layout_height="wrap_content"
+            android:text="Vaccine Date"
+            android:id="@+id/vacc_date"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight=".15"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:layout_height="wrap_content"
+            android:text="Health Facility"
+            android:id="@+id/health_facility"/>
+
+        <CheckBox
+            android:clickable="false"
+            android:layout_width="0dp"
+            android:layout_weight=".05"
+            android:layout_height="50dp"
+            android:id="@+id/done_checkbox"
+            android:button="@drawable/checkbox_background"
+            android:gravity="center_vertical|center_horizontal"/>
+
+        <CheckBox
+            android:layout_width="0dp"
+            android:layout_weight=".05"
+            android:layout_height="50dp"
+            android:id="@+id/aefi_box"
+            android:clickable="false"
+            android:button="@drawable/checkbox_background"
+            android:gravity="center_vertical|center_horizontal"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight=".15"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:layout_height="wrap_content"
+            android:text="AEFI Dates"
+            android:id="@+id/aefi_dates"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight=".20"
+            android:layout_height="wrap_content"
+            android:text="Notes"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:id="@+id/notes"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>
