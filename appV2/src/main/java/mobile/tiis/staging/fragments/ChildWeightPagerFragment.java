@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+import mobile.tiis.staging.ChildDetailsActivity;
 import mobile.tiis.staging.R;
 import mobile.tiis.staging.base.BackboneActivity;
 import mobile.tiis.staging.base.BackboneApplication;
@@ -120,7 +121,7 @@ public class ChildWeightPagerFragment extends Fragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                currentChild = mydb.getChildById(childId);
+                currentChild = mydb.getChildById(ChildDetailsActivity.childId);
 
                 if (Utils.isStringBlank((metWeightValue.getText().toString())) || metWeightValue.getText().toString().substring(0, 1).equals("0")) {
 

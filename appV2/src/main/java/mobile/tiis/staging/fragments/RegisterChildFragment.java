@@ -292,8 +292,7 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (!(i == -1)){
-                    Log.d("vvu_tt2", motherVVU.get(i));
-                    childRegistryYear = spinnerYears.get(registryYearSpinner.getSelectedItemPosition()-1);
+                    childRegistryYear = spinnerYears.get(i-1);
                 }
             }
 

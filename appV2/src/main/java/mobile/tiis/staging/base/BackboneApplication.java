@@ -213,7 +213,7 @@ public class BackboneApplication extends Application {
     private String LOGGED_IN_USER_PASS;
     private String LOGGED_IN_FIRSTNAME;
     private String LOGGED_IN_LASTNAME;
-    private String LOGGED_IN_USER_HF_ID;
+    private static String LOGGED_IN_USER_HF_ID;
     private DatabaseHandler databaseInstance;
     private boolean main_sync_needed = true;
     private boolean MODIFICATION_SYNCRONIZATION_COMPLETED_STATUS = false;
@@ -332,7 +332,23 @@ public class BackboneApplication extends Application {
     }
 
     public String getLOGGED_IN_USER_HF_ID() {
-        return LOGGED_IN_USER_HF_ID;
+        if(LOGGED_IN_USER_HF_ID!=null)
+            return LOGGED_IN_USER_HF_ID;
+        else{
+            if (databaseInstance != null) {
+                Log.d(TAG,"databaseinstance is not null");
+                List<User> allUsers = databaseInstance.getAllUsers();
+                Log.d(TAG,"users count = "+allUsers.size());
+                for (User thisUser : allUsers) {
+                    Log.d(TAG,"users in device = "+thisUser.getUsername());
+                    if (thisUser.getId().equals(getLOGGED_IN_USER_ID())) {
+                        LOGGED_IN_USER_HF_ID = thisUser.getHealthFacilityId();
+                        return LOGGED_IN_USER_HF_ID;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     public String getLOGGED_IN_LASTNAME() {
@@ -2449,9 +2465,16 @@ public class BackboneApplication extends Application {
         final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, UPDATE_VACCINATION_QUEUE);
         webServiceUrl.append("?barcode=").append(URLEncoder.encode(barcode)).append("&hfid=").append(childHfid)
                 .append("&date=").append(dateNow).append("&userId=").append(userId);
-        Log.e("day30", webServiceUrl.toString());
 
-        client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        if (LOGGED_IN_USERNAME == null || LOGGED_IN_USER_PASS == null) {
+            List<User> allUsers = databaseInstance.getAllUsers();
+            User user = allUsers.get(0);
+
+            client.setBasicAuth(user.getUsername(), user.getPassword(), true);
+        } else {
+            client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
+        }
+
         client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {

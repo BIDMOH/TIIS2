@@ -170,12 +170,10 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
                                     initializePagers();
                                     childInfoLoader.setVisibility(View.GONE);
 
-                                    Log.d("currentpage", "current child health facility id = " + currentChild.getHealthcenterId());
-                                    Log.d("currentpage", "current child health facility id = " + app.getLOGGED_IN_USER_HF_ID());
 
-                                    if (currentChild.getHealthcenterId().equals(app.getLOGGED_IN_USER_HF_ID())) {
-                                        Log.d("currentpage", "equal");
-                                        try {
+                                    Log.d("currentpage", "equal");
+                                    try {
+                                        if (currentChild.getHealthcenterId().equals(app.getLOGGED_IN_USER_HF_ID())) {
                                             if (currentChild.getMotherHivStatus().equals("") || currentChild.getMotherTT2Status().equals("")) {
                                                 enableViewPagerPaging(false);
                                                 Log.d("currentpage", "disabling viewpager");
@@ -185,16 +183,17 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
                                             } else {
                                                 Log.d("currentpage", "all is well");
                                             }
-                                        } catch (NullPointerException e) {
-
-                                            Log.d(TAG, "disabling viewpager due to null pointer exception");
-                                            pager.setPagingEnabled(false);
-                                            tabs.setDisabled(true);
-                                            FlashDialogue flashDialogue = new FlashDialogue();
-                                            flashDialogue.execute();
-//                                            Toast.makeText(ChildDetailsActivity.this, "Please edit and fill all relevant fields before continuing", Toast.LENGTH_LONG).show();
                                         }
+                                    } catch (NullPointerException e) {
+
+                                        Log.d(TAG, "disabling viewpager due to null pointer exception");
+                                        pager.setPagingEnabled(false);
+                                        tabs.setDisabled(true);
+                                        FlashDialogue flashDialogue = new FlashDialogue();
+                                        flashDialogue.execute();
+//                                            Toast.makeText(ChildDetailsActivity.this, "Please edit and fill all relevant fields before continuing", Toast.LENGTH_LONG).show();
                                     }
+
                                 }
 
                                 @Override
@@ -250,11 +249,8 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
                                 initializePagers();
                                 childInfoLoader.setVisibility(View.GONE);
 
-                                Log.d("currentpage", "values not null current child health facility id = " + currentChild.getHealthcenterId());
-                                Log.d("currentpage", "values not null current child health facility id = " + app.getLOGGED_IN_USER_HF_ID());
-                                if (currentChild.getHealthcenterId().equals(app.getLOGGED_IN_USER_HF_ID())) {
-                                    Log.d("currentpage", "equal");
-                                    try {
+                                try {
+                                    if (currentChild.getHealthcenterId().equals(app.getLOGGED_IN_USER_HF_ID())) {
                                         if (!isNewChild) {
                                             if (currentChild.getMotherHivStatus().equals("") || currentChild.getMotherTT2Status().equals("")) {
                                                 enableViewPagerPaging(false);
@@ -266,16 +262,17 @@ public class ChildDetailsActivity extends BackboneActivity implements BackHandle
                                                 Log.d("currentpage", "all is well");
                                             }
                                         }
-                                    } catch (NullPointerException e) {
-
-                                        Log.d(TAG, "disabling viewpager due to null pointer exception");
-                                        pager.setPagingEnabled(false);
-                                        tabs.setDisabled(true);
-                                        FlashDialogue flashDialogue = new FlashDialogue();
-                                        flashDialogue.execute();
-//                                        Toast.makeText(ChildDetailsActivity.this, "Please edit and fill all relevant fields before continuing", Toast.LENGTH_LONG).show();
                                     }
+                                } catch (NullPointerException e) {
+
+                                    Log.d(TAG, "disabling viewpager due to null pointer exception");
+                                    pager.setPagingEnabled(false);
+                                    tabs.setDisabled(true);
+                                    FlashDialogue flashDialogue = new FlashDialogue();
+                                    flashDialogue.execute();
+//                                        Toast.makeText(ChildDetailsActivity.this, "Please edit and fill all relevant fields before continuing", Toast.LENGTH_LONG).show();
                                 }
+
                             }
 
                             @Override
