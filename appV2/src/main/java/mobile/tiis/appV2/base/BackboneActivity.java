@@ -93,18 +93,22 @@ public class BackboneActivity extends RxAppCompatActivity {
 
 
     public static void setupTypeface(Context ctx){
-        Roboto_Light = Typeface.createFromAsset(ctx.getAssets(), "Roboto-Light.ttf");
-        Roboto_Black = Typeface.createFromAsset(ctx.getAssets(), "Roboto-Black.ttf");
-        Roboto_Condensed = Typeface.createFromAsset(ctx.getAssets(), "Roboto-Condensed.ttf");
-        Roboto_BoldCondensedItalic = Typeface.createFromAsset(ctx.getAssets(), "Roboto-BoldCondensedItalic.ttf");
-        Roboto_BoldCondensed = Typeface.createFromAsset(ctx.getAssets(), "Roboto-BoldCondensed.ttf");
-        Roboto_Regular = Typeface.createFromAsset(ctx.getAssets(), "Roboto-Regular.ttf");
-        Roboto_Medium = Typeface.createFromAsset(ctx.getAssets(), "Roboto-Medium.ttf");
-        Rosario_Regular = Typeface.createFromAsset(ctx.getAssets(), "Rosario-Regular.ttf");
-        Rosario_Italic = Typeface.createFromAsset(ctx.getAssets(), "Rosario-Italic.ttf");
-        Rosario_Bold = Typeface.createFromAsset(ctx.getAssets(), "Rosario-Bold.ttf");
-        Fun_Raiser = Typeface.createFromAsset(ctx.getAssets(), "Fun-Raiser.ttf");
-        Athletic = Typeface.createFromAsset(ctx.getAssets(), "athletic.ttf");
+        try {
+            Roboto_Light = Typeface.createFromAsset(ctx.getAssets(), "Roboto-Light.ttf");
+            Roboto_Black = Typeface.createFromAsset(ctx.getAssets(), "Roboto-Black.ttf");
+            Roboto_Condensed = Typeface.createFromAsset(ctx.getAssets(), "Roboto-Condensed.ttf");
+            Roboto_BoldCondensedItalic = Typeface.createFromAsset(ctx.getAssets(), "Roboto-BoldCondensedItalic.ttf");
+            Roboto_BoldCondensed = Typeface.createFromAsset(ctx.getAssets(), "Roboto-BoldCondensed.ttf");
+            Roboto_Regular = Typeface.createFromAsset(ctx.getAssets(), "Roboto-Regular.ttf");
+            Roboto_Medium = Typeface.createFromAsset(ctx.getAssets(), "Roboto-Medium.ttf");
+            Rosario_Regular = Typeface.createFromAsset(ctx.getAssets(), "Rosario-Regular.ttf");
+            Rosario_Italic = Typeface.createFromAsset(ctx.getAssets(), "Rosario-Italic.ttf");
+            Rosario_Bold = Typeface.createFromAsset(ctx.getAssets(), "Rosario-Bold.ttf");
+            Fun_Raiser = Typeface.createFromAsset(ctx.getAssets(), "Fun-Raiser.ttf");
+            Athletic = Typeface.createFromAsset(ctx.getAssets(), "athletic.ttf");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**

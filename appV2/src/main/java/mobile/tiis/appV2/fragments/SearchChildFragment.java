@@ -233,8 +233,12 @@ public class SearchChildFragment extends RxFragment implements DatePickerDialog.
                         Intent childDetailsActivity = new Intent(SearchChildFragment.this.getActivity(), ChildDetailsActivity.class);
                         childDetailsActivity.putExtra("barcode", adapter.getBarcode(i));
 
-                        if(!((Child) adapter.getItem(i)).getHealthcenterId().equals(app.getLOGGED_IN_USER_HF_ID())) {
-                            childDetailsActivity.putExtra("isNewChild", true);
+                        try {
+                            if (!((Child) adapter.getItem(i)).getHealthcenterId().equals(app.getLOGGED_IN_USER_HF_ID())) {
+                                childDetailsActivity.putExtra("isNewChild", true);
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
                         }
 
                         childDetailsActivity.putExtra("myChild", (Child) adapter.getItem(i));

@@ -55,7 +55,16 @@ public class ReportsActivityRevised extends BackboneActivity {
 
         tabs.setTextColor(Color.WHITE);
 
-        new stallRendering().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        try {
+            new stallRendering().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }catch (Exception e){
+            e.printStackTrace();
+            loadingBar.setVisibility(View.GONE);
+            adapter = new ViewPagerAdapter(getSupportFragmentManager());
+            pager.setOffscreenPageLimit(10);
+            pager.setAdapter(adapter);
+            tabs.setViewPager(pager);
+        }
 
     }
 
