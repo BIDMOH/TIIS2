@@ -26,7 +26,7 @@ public class PostmanSynchronizationService extends Service {
 
     private static final String TAG = PostmanSynchronizationService.class.getSimpleName();
 
-    public static final long NOTIFY_INTERVAL = 6 * 60000; // 60 seconds
+    public static final long NOTIFY_INTERVAL = 30 * 60000; // 60 seconds
     public static final String SynchronisationService_MESSAGE = "mobile.giis.app.SynchronisationService.MSG";
     // timer handling
     private Timer mTimer = null;
