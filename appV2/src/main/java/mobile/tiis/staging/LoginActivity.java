@@ -59,7 +59,12 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.SingleClientConnManager;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -75,6 +80,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
 import mobile.tiis.staging.GCMCommunication.CommonUtilities;
@@ -311,7 +319,7 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
         setContentView(R.layout.login_activity);
 
 
-        // We load the KeyStore
+        // TODO Remove this from production code
         try {
             /// We initialize a default Keystore
             KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -599,7 +607,27 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
                 try
                 {
                     int balanceCounter = 0;
-                    DefaultHttpClient httpClient = new DefaultHttpClient();
+
+
+
+                    // Do not do this in production!!!
+                    HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+
+                    DefaultHttpClient client = new DefaultHttpClient();
+
+                    SchemeRegistry registry = new SchemeRegistry();
+                    SSLSocketFactory socketFactory = SSLSocketFactory.getSocketFactory();
+                    socketFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
+                    registry.register(new Scheme("https", socketFactory, 443));
+                    SingleClientConnManager mgr = new SingleClientConnManager(client.getParams(), registry);
+                    DefaultHttpClient httpClient = new DefaultHttpClient(mgr, client.getParams());
+
+                    // Set verifier
+                    HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+
+
+
+//                    DefaultHttpClient httpClient = new DefaultHttpClient();
                     HttpGet httpGet = new HttpGet(loginURL.toString());
                     Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+loginURL.toString());
                     httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((username + ":" + password).getBytes(), Base64.NO_WRAP));
