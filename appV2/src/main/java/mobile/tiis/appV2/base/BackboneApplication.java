@@ -41,6 +41,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.MySSLSocketFactory;
 import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
@@ -58,6 +59,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -65,6 +72,7 @@ import java.util.Date;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
+import mobile.tiis.appv2.R;
 import mobile.tiis.appv2.database.DatabaseHandler;
 import mobile.tiis.appv2.database.GIISContract;
 import mobile.tiis.appv2.database.SQLHandler;
@@ -2588,6 +2596,33 @@ public class BackboneApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "application created");
+
+
+        // TODO Remove this from production code
+        try {
+            /// We initialize a default Keystore
+            KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            trustStore.load(null, null);
+            // We initialize a new SSLSocketFacrory
+            MySSLSocketFactory socketFactory = new MySSLSocketFactory(trustStore);
+            // We set that all host names are allowed in the socket factory
+            socketFactory.setHostnameVerifier(MySSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+            // We set the SSL Factory
+            client.setSSLSocketFactory(socketFactory);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        } catch (UnrecoverableKeyException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
+
         client.setMaxRetriesAndTimeout(5,1000);
         client.setURLEncodingEnabled(false);
 
@@ -4755,10 +4790,11 @@ public class BackboneApplication extends Application {
             Date date = c.getTime();
 
             try {
-                webServiceUrl.append("StoreHealthFacilityLoginSessions?userId=").append(model.getUSER_ID())
+                webServiceUrl.append("StoreHealthFacilityLoginSessionsAndAppVersion?userId=").append(model.getUSER_ID())
                         .append("&healthFacilityId=").append(model.getHEALTH_FACILITY_ID())
                         .append("&loginTime=").append(URLEncoder.encode(new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(date), "utf-8"))
-                        .append("&sessionLength=").append(model.getSESSION_LENGTH()/1000);
+                        .append("&sessionLength=").append(model.getSESSION_LENGTH()/1000)
+                        .append("&appVersion=").append(getResources().getString(R.string.version_no));
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
