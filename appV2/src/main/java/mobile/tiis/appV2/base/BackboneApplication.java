@@ -4794,7 +4794,7 @@ public class BackboneApplication extends Application {
                         .append("&healthFacilityId=").append(model.getHEALTH_FACILITY_ID())
                         .append("&loginTime=").append(URLEncoder.encode(new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(date), "utf-8"))
                         .append("&sessionLength=").append(model.getSESSION_LENGTH()/1000)
-                        .append("&appVersion=").append(getResources().getString(R.string.version_no));
+                        .append("&appVersion=").append(URLEncoder.encode(getResources().getString(R.string.version_no)));
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
