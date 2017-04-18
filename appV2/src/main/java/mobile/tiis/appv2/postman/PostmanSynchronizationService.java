@@ -7,8 +7,17 @@ import android.os.IBinder;
 import android.util.Log;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.MySSLSocketFactory;
 import com.loopj.android.http.SyncHttpClient;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -51,6 +60,31 @@ public class PostmanSynchronizationService extends Service {
         }
         app = (BackboneApplication) getApplication();
         db = app.getDatabaseInstance();
+
+        // We load the KeyStore
+        try {
+            /// We initialize a default Keystore
+            KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            trustStore.load(null, null);
+            // We initialize a new SSLSocketFacrory
+            MySSLSocketFactory socketFactory = new MySSLSocketFactory(trustStore);
+            // We set that all host names are allowed in the socket factory
+            socketFactory.setHostnameVerifier(MySSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+            // We set the SSL Factory
+            aClient.setSSLSocketFactory(socketFactory);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        } catch (UnrecoverableKeyException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
 
         if (app.getLOGGED_IN_USERNAME() == null) {
             Log.d(TAG,"userid null");

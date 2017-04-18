@@ -55,6 +55,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.MySSLSocketFactory;
+import com.loopj.android.http.TextHttpResponseHandler;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.apache.http.HttpResponse;
@@ -76,6 +77,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+import cz.msebera.android.httpclient.Header;
 import fr.ganfra.materialspinner.MaterialSpinner;
 import mobile.tiis.appv2.GCMCommunication.CommonUtilities;
 import mobile.tiis.appv2.GCMCommunication.ServerUtilities;
@@ -553,74 +555,76 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
     protected void startWebService(final CharSequence loginURL , final String username, final String password){
         client.setBasicAuth(username, password, true);
 
-        //new handler in case of login error in the thread
-        handler = new Handler();
+        client.get(loginURL.toString(), new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                progressDialog.show();
+                progressDialog.dismiss();
+                toastMessage("Login failed Login failed.\n" +
+                        "Please check your details or your web connectivity");
+                loginButton.setEnabled(true);
+            }
 
-        Thread thread = new Thread(new Runnable() {
-            public void run() {
-                try
-                {
-                    int balanceCounter = 0;
-                    DefaultHttpClient httpClient = new DefaultHttpClient();
-                    HttpGet httpGet = new HttpGet(loginURL.toString());
-                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+loginURL.toString());
-                    httpGet.setHeader("Authorization", "Basic " + Base64.encodeToString((username + ":" + password).getBytes(), Base64.NO_WRAP));
-                    HttpResponse httpResponse = httpClient.execute(httpGet);
-                    InputStream inputStream = httpResponse.getEntity().getContent();
-                    Log.d("", loginURL.toString());
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                JsonFactory factory = new JsonFactory();
+                JsonParser jsonParser = null;
+                try {
+                    jsonParser = factory.createJsonParser(responseString);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                JsonToken token = null;
+                try {
+                    token = jsonParser.nextToken();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-
-                    ByteArrayInputStream bais = Utils.getMultiReadInputStream(inputStream);
-                    Utils.writeNetworkLogFileOnSD(Utils.returnDeviceIdAndTimestamp(getApplicationContext())+Utils.getStringFromInputStreamAndLeaveStreamOpen(bais));
-                    bais.reset();
-                    JsonFactory factory = new JsonFactory();
-                    JsonParser jsonParser = factory.createJsonParser(bais);
-                    JsonToken token = jsonParser.nextToken();
-
-                    if (token == JsonToken.START_OBJECT){
-                        balanceCounter++;
-                        boolean idNextToHfId =false;
-                        while (!(balanceCounter==0))
-                        {
+                int balanceCounter = 0;
+                if (token == JsonToken.START_OBJECT){
+                    balanceCounter++;
+                    boolean idNextToHfId =false;
+                    while (!(balanceCounter==0))
+                    {
+                        try {
                             token = jsonParser.nextToken();
 
-                            if(token == JsonToken.START_OBJECT){
+                            if (token == JsonToken.START_OBJECT) {
                                 balanceCounter++;
-                            }
-                            else if(token == JsonToken.END_OBJECT){
+                            } else if (token == JsonToken.END_OBJECT) {
                                 balanceCounter--;
-                            }
-                            else if(token == JsonToken.FIELD_NAME){
+                            } else if (token == JsonToken.FIELD_NAME) {
                                 String object = jsonParser.getCurrentName();
-                                switch (object){
+                                switch (object) {
                                     case "HealthFacilityId":
-                                        token=jsonParser.nextToken();
+                                        token = jsonParser.nextToken();
                                         app.setLoggedInUserHealthFacilityId(jsonParser.getText());
                                         Log.d("", "healthFacilityId is: " + jsonParser.getText());
-                                        idNextToHfId=true;
+                                        idNextToHfId = true;
                                         break;
                                     case "Firstname":
-                                        token=jsonParser.nextToken();
+                                        token = jsonParser.nextToken();
                                         app.setLoggedInFirstname(jsonParser.getText());
                                         Log.d("", "firstname is: " + jsonParser.getText());
                                         break;
                                     case "Lastname":
-                                        token=jsonParser.nextToken();
+                                        token = jsonParser.nextToken();
                                         app.setLoggedInLastname(jsonParser.getText());
                                         Log.d("", "lastname is: " + jsonParser.getText());
                                         break;
                                     case "Username":
-                                        token=jsonParser.nextToken();
+                                        token = jsonParser.nextToken();
                                         app.setLoggedInUsername(jsonParser.getText());
                                         Log.d("", "username is: " + jsonParser.getText());
                                         break;
                                     case "Lastlogin":
-                                        token=jsonParser.nextToken();
+                                        token = jsonParser.nextToken();
                                         Log.d("", "lastlogin is: " + jsonParser.getText());
                                         break;
                                     case "Id":
-                                        if(idNextToHfId){
-                                            token=jsonParser.nextToken();
+                                        if (idNextToHfId) {
+                                            token = jsonParser.nextToken();
                                             app.setLoggedInUserId(jsonParser.getText());
                                             Log.d("", "Id is: " + jsonParser.getText());
                                         }
@@ -629,85 +633,71 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
                                         break;
                                 }
                             }
-                        }
-
-                        Account account = new Account(username, ACCOUNT_TYPE);
-                        AccountManager accountManager = AccountManager.get(LoginActivity.this);
-//                        boolean accountCreated = accountManager.addAccountExplicitly(account, LoginActivity.this.password, null);
-                        boolean accountCreated = accountManager.addAccountExplicitly(account, password, null);
-
-                        Bundle extras = LoginActivity.this.getIntent().getExtras();
-                        if (extras != null) {
-                            if (accountCreated) {  //Pass the new account back to the account manager
-                                AccountAuthenticatorResponse response = extras.getParcelable(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
-                                Bundle res = new Bundle();
-                                res.putString(AccountManager.KEY_ACCOUNT_NAME, username);
-                                res.putString(AccountManager.KEY_ACCOUNT_TYPE, ACCOUNT_TYPE);
-                                res.putString(AccountManager.KEY_PASSWORD, password);
-                                response.onResult(res);
-                            }
-                        }
-
-                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                        SharedPreferences.Editor editor = prefs.edit();
-                        editor.putBoolean("secondSyncNeeded", true);
-                        editor.commit();
-
-                        ContentValues values = new ContentValues();
-                        values.put(SQLHandler.SyncColumns.UPDATED, 1);
-                        values.put(SQLHandler.UserColumns.FIRSTNAME, app.getLOGGED_IN_FIRSTNAME());
-                        values.put(SQLHandler.UserColumns.LASTNAME, app.getLOGGED_IN_LASTNAME());
-                        values.put(SQLHandler.UserColumns.HEALTH_FACILITY_ID, app.getLOGGED_IN_USER_HF_ID());
-                        values.put(SQLHandler.UserColumns.ID, app.getLOGGED_IN_USER_ID());
-                        values.put(SQLHandler.UserColumns.USERNAME, app.getLOGGED_IN_USERNAME());
-                        values.put(SQLHandler.UserColumns.PASSWORD,password);
-                        databaseHandler.addUser(values);
-
-                        Log.d(TAG, "initiating offline for " + username + " password = " + password);
-                        app.initializeOffline(username, password);
-
-                        Intent intent;
-                        if(prefs.getBoolean("synchronization_needed", true)){
-                            Log.d("supportLog", "call the loggin second time before the account was found");
-                            intent = new Intent(LoginActivity.this, HomeActivityRevised.class);
-                        }else{
-                            Log.d("supportLog", "call the loggin second time before the account was found");
-                            intent = new Intent(LoginActivity.this, HomeActivityRevised.class);
-                            evaluateIfFirstLogin(app.getLOGGED_IN_USER_ID());
-                        }
-                        app.setUsername(username);
-
-                        startActivity(intent);
-                    }
-                    //if login failed show error
-                    else {
-                        handler.post(new Runnable() {
-                            public void run() {
-                                progressDialog.show();
-                                progressDialog.dismiss();
-                                toastMessage("Login failed.\nPlease check your details!");
-                                loginButton.setEnabled(true);
-                            }
-                        });
-                    }
-                }
-                catch (Exception e)
-                {
-                    handler.post(new Runnable() {
-                        public void run() {
+                        }catch (Exception e){
+                            e.printStackTrace();
                             progressDialog.show();
                             progressDialog.dismiss();
-                            toastMessage("Login failed Login failed.\n" +
-                                    "Please check your details or your web connectivity");
+                            toastMessage("Login failed.\nPlease check your details!");
                             loginButton.setEnabled(true);
-
                         }
-                    });
-                    e.printStackTrace();
+                    }
+
+                    Account account = new Account(username, ACCOUNT_TYPE);
+                    AccountManager accountManager = AccountManager.get(LoginActivity.this);
+//                        boolean accountCreated = accountManager.addAccountExplicitly(account, LoginActivity.this.password, null);
+                    boolean accountCreated = accountManager.addAccountExplicitly(account, password, null);
+
+                    Bundle extras = LoginActivity.this.getIntent().getExtras();
+                    if (extras != null) {
+                        if (accountCreated) {  //Pass the new account back to the account manager
+                            AccountAuthenticatorResponse response = extras.getParcelable(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
+                            Bundle res = new Bundle();
+                            res.putString(AccountManager.KEY_ACCOUNT_NAME, username);
+                            res.putString(AccountManager.KEY_ACCOUNT_TYPE, ACCOUNT_TYPE);
+                            res.putString(AccountManager.KEY_PASSWORD, password);
+                            response.onResult(res);
+                        }
+                    }
+
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putBoolean("secondSyncNeeded", true);
+                    editor.commit();
+
+                    ContentValues values = new ContentValues();
+                    values.put(SQLHandler.SyncColumns.UPDATED, 1);
+                    values.put(SQLHandler.UserColumns.FIRSTNAME, app.getLOGGED_IN_FIRSTNAME());
+                    values.put(SQLHandler.UserColumns.LASTNAME, app.getLOGGED_IN_LASTNAME());
+                    values.put(SQLHandler.UserColumns.HEALTH_FACILITY_ID, app.getLOGGED_IN_USER_HF_ID());
+                    values.put(SQLHandler.UserColumns.ID, app.getLOGGED_IN_USER_ID());
+                    values.put(SQLHandler.UserColumns.USERNAME, app.getLOGGED_IN_USERNAME());
+                    values.put(SQLHandler.UserColumns.PASSWORD,password);
+                    databaseHandler.addUser(values);
+
+                    Log.d(TAG, "initiating offline for " + username + " password = " + password);
+                    app.initializeOffline(username, password);
+
+                    Intent intent;
+                    if(prefs.getBoolean("synchronization_needed", true)){
+                        Log.d("supportLog", "call the loggin second time before the account was found");
+                        intent = new Intent(LoginActivity.this, LotSettingsActivity.class);
+                    }else{
+                        Log.d("supportLog", "call the loggin second time before the account was found");
+                        intent = new Intent(LoginActivity.this, LotSettingsActivity.class);
+                        evaluateIfFirstLogin(app.getLOGGED_IN_USER_ID());
+                    }
+                    app.setUsername(username);
+                    startActivity(intent);
+                }
+                //if login failed show error
+                else {
+                    progressDialog.show();
+                    progressDialog.dismiss();
+                    toastMessage("Login failed.\nPlease check your details!");
+                    loginButton.setEnabled(true);
                 }
             }
         });
-        thread.start();
 
     }
 
