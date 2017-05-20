@@ -34,7 +34,7 @@ public class PostmanSynchronizationService extends Service {
 
     private static final String TAG = PostmanSynchronizationService.class.getSimpleName();
 
-    public static final long VIMS_QUERY_INTERVAL = 10 * 60000; // 10 minutes
+    public static final long VIMS_QUERY_INTERVAL = 30 * 60000; // 30 minutes
     public static final long POSTMAN_SYNCHRONIZATION_INTERVAL = 1 * 60000; // 1 minute
     public static final String SynchronisationService_MESSAGE = "mobile.giis.app.SynchronisationService.MSG";
     // timer handling
