@@ -731,35 +731,33 @@ public class HomeActivityRevised extends BackboneActivity {
         @Override
         protected Boolean doInBackground(Integer... params) {
             BackboneApplication application = (BackboneApplication) getApplication();
-            synchronized (application){
-                application.continuousModificationParser();
-                application.getVaccinationQueueByDateAndUser();
-                application.intervalGetChildrenByHealthFacilitySinceLastLogin();
+            application.continuousModificationParser();
+            application.getVaccinationQueueByDateAndUser();
+            application.intervalGetChildrenByHealthFacilitySinceLastLogin();
 
-                if(application.getLOGGED_IN_USER_ID()!=null && !application.getLOGGED_IN_USER_ID().equals("")){
-                    application.getGetChildByIdList();
-                }
-
-                Log.e("getting places", "getting places that are not found in the table but are in the childrens records");
-                String placesFoundInChildOnlyAndNotInPlace = application.getDatabaseInstance().getDomicilesFoundInChildAndNotInPlace();
-                if(placesFoundInChildOnlyAndNotInPlace != null){
-                    application.parsePlacesThatAreInChildAndNotInPlaces(placesFoundInChildOnlyAndNotInPlace);
-                }
-
-                String hfidFoundInVaccEvOnlyAndNotInHealthFac = application.getDatabaseInstance().getHFIDFoundInVaccEvAndNotInHealthFac();
-                if(hfidFoundInVaccEvOnlyAndNotInHealthFac != null){
-                    application.parseHealthFacilityThatAreInVaccEventButNotInHealthFac(hfidFoundInVaccEvOnlyAndNotInHealthFac);
-                }
-
-                application.parseItemLots();
-                application.parseStock();
-
-                //Starting the service to upload all postman data
-                Intent i = new Intent(HomeActivityRevised.this, PostmanSynchronizationService.class);
-
-                startService(i);
-
+            if(application.getLOGGED_IN_USER_ID()!=null && !application.getLOGGED_IN_USER_ID().equals("")){
+                application.getGetChildByIdList();
             }
+
+            Log.e("getting places", "getting places that are not found in the table but are in the childrens records");
+            String placesFoundInChildOnlyAndNotInPlace = application.getDatabaseInstance().getDomicilesFoundInChildAndNotInPlace();
+            if(placesFoundInChildOnlyAndNotInPlace != null){
+                application.parsePlacesThatAreInChildAndNotInPlaces(placesFoundInChildOnlyAndNotInPlace);
+            }
+
+            String hfidFoundInVaccEvOnlyAndNotInHealthFac = application.getDatabaseInstance().getHFIDFoundInVaccEvAndNotInHealthFac();
+            if(hfidFoundInVaccEvOnlyAndNotInHealthFac != null){
+                application.parseHealthFacilityThatAreInVaccEventButNotInHealthFac(hfidFoundInVaccEvOnlyAndNotInHealthFac);
+            }
+
+            application.parseItemLots();
+            application.parseStock();
+
+            //Starting the service to upload all postman data
+            Intent i = new Intent(HomeActivityRevised.this, PostmanSynchronizationService.class);
+
+            startService(i);
+
 
             return true;
         }
