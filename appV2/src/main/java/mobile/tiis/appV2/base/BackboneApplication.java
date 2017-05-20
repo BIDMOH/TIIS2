@@ -3069,7 +3069,7 @@ public class BackboneApplication extends Application {
 
             client.setBasicAuth(uname, passw, true);
             final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, GET_ITEM_LOT_ID);
-            Log.d("", webServiceUrl.toString());
+            Log.d(TAG,"parsing item lots : "+ webServiceUrl.toString());
             RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {

@@ -349,18 +349,18 @@ public class ChildRegisterReportFragment extends RxFragment{
                         "\t\t(SELECT VACCINATION_DATE FROM vaccination_event \n" +
                         "\t\tINNER JOIN   dose  on  vaccination_event.DOSE_ID = dose.ID \n" +
                         "\t\tWHERE \n" +
-                        "\t\tdose.FULLNAME = 'PCV 1'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = 'true') AS PCV1,\n" +
+                        "\t\tdose.FULLNAME = 'PCV-13 1'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = 'true') AS PCV1,\n" +
                         "\t\t\n" +
                         "\t\t\n" +
                         "\t\t(SELECT VACCINATION_DATE FROM vaccination_event \n" +
                         "\t\tINNER JOIN   dose  on  vaccination_event.DOSE_ID = dose.ID \n" +
                         "\t\tWHERE \n" +
-                        "\t\tdose.FULLNAME = 'PCV 2'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = 'true') AS PCV2,\n" +
+                        "\t\tdose.FULLNAME = 'PCV-13 2'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = 'true') AS PCV2,\n" +
                         "\t\t\n" +
                         "\t\t(SELECT VACCINATION_DATE FROM vaccination_event \n" +
                         "\t\tINNER JOIN   dose  on  vaccination_event.DOSE_ID = dose.ID \n" +
                         "\t\tWHERE \n" +
-                        "\t\tdose.FULLNAME = 'PCV 3'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = 'true') AS PCV3,\n" +
+                        "\t\tdose.FULLNAME = 'PCV-13 3'  AND vaccination_event.CHILD_ID = CHILD.ID AND VACCINATION_STATUS = 'true') AS PCV3,\n" +
                         "\t\t\n" +
                         "\t\t\n" +
                         "\t\t\n" +
@@ -436,7 +436,7 @@ public class ChildRegisterReportFragment extends RxFragment{
 
                         } while (cursor.moveToNext());
 
-                        adapter = new ChildRegisterReportRecyclerAdapter(mVar,getActivity());
+
                     }
                     cursor.close();
                 }
@@ -461,7 +461,7 @@ public class ChildRegisterReportFragment extends RxFragment{
 
                     @Override
                     public void onNext(ArrayList<ViewChildRegisterInfoRow> mVar) {
-
+                        adapter = new ChildRegisterReportRecyclerAdapter(mVar,getActivity());
                     }
                 });
 
