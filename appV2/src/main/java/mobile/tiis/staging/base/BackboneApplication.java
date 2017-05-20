@@ -702,7 +702,7 @@ public class BackboneApplication extends Application {
     public void parseStock() {
         if (LOGGED_IN_USER_HF_ID == null || LOGGED_IN_USER_HF_ID.equals("0")) return;
         final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, GET_STOCK);
-        Log.d("SOMA", "Parsing Stock Periodically : "+webServiceUrl.toString());
+        Log.d(TAG, "Parsing Stock Periodically : "+webServiceUrl.toString());
 
         client.setBasicAuth(LOGGED_IN_USERNAME, LOGGED_IN_USER_PASS, true);
         RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
@@ -3052,7 +3052,7 @@ public class BackboneApplication extends Application {
 
             client.setBasicAuth(uname, passw, true);
             final StringBuilder webServiceUrl = createWebServiceURL(LOGGED_IN_USER_HF_ID, GET_ITEM_LOT_ID);
-            Log.d("", webServiceUrl.toString());
+            Log.d(TAG,"parsing item lots : "+ webServiceUrl.toString());
             RequestHandle message = client.get(webServiceUrl.toString(), new TextHttpResponseHandler() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {

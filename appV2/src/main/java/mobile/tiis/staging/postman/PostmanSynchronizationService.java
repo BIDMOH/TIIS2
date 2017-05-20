@@ -23,7 +23,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.entity.mime.content.StringBody;
 import mobile.tiis.staging.DatabaseModals.SessionsModel;
 import mobile.tiis.staging.GCMCommunication.CommonUtilities;
 import mobile.tiis.staging.base.BackboneApplication;
@@ -35,7 +34,8 @@ public class PostmanSynchronizationService extends Service {
 
     private static final String TAG = PostmanSynchronizationService.class.getSimpleName();
 
-    public static final long NOTIFY_INTERVAL = 30 * 60000; // 30 minutes
+    public static final long VIMS_QUERY_INTERVAL = 10 * 60000; // 6 minutes
+    public static final long POSTMAN_SYNCHRONIZATION_INTERVAL = 1 * 60000; // 1 minute
     public static final String SynchronisationService_MESSAGE = "mobile.giis.app.SynchronisationService.MSG";
     // timer handling
     private Timer mTimer = null;
@@ -107,17 +107,31 @@ public class PostmanSynchronizationService extends Service {
         aClient.setBasicAuth(userName,password);
 
         Log.d(TAG, ">>>onCreate()");
-        mTimer.scheduleAtFixedRate(new TimeDisplayTimerTask(), 0, NOTIFY_INTERVAL);
+        mTimer.scheduleAtFixedRate(new PostmanSynchronization(), 0, POSTMAN_SYNCHRONIZATION_INTERVAL);
+        mTimer.scheduleAtFixedRate(new CheckForNewStockFromVims(), 0, VIMS_QUERY_INTERVAL);
     }
 
-    class TimeDisplayTimerTask extends TimerTask {
+    class CheckForNewStockFromVims extends TimerTask {
 
         @Override
         public void run() {
 
-            Log.d(TAG,"synchronizing postman data");
+            Log.d(TAG,"checking for new stock from vims");
             synchronized (app) {
                 app.CheckNewStockDistributionsFromVims();
+                app.parseItemLots();
+                app.parseStock();
+            }
+
+        }
+    }
+
+    class PostmanSynchronization extends TimerTask {
+
+        @Override
+        public void run() {
+            Log.d(TAG,"synchronizing postman data");
+            synchronized (app) {
                 List<PostmanModel> listPosts = db.getAllPosts();
                 Log.d(TAG,"getting all posts");
                 Log.d(TAG,"user = "+userName);
@@ -306,8 +320,6 @@ public class PostmanSynchronizationService extends Service {
 
 
                 app.parseGCMChildrenInQueueById();
-                app.parseItemLots();
-                app.parseStock();
             }
 
         }
