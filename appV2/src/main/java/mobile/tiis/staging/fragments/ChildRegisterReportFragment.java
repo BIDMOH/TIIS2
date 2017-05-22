@@ -436,7 +436,6 @@ public class ChildRegisterReportFragment extends RxFragment{
 
                         } while (cursor.moveToNext());
 
-                        adapter = new ChildRegisterReportRecyclerAdapter(mVar,getActivity());
                     }
                     cursor.close();
                 }
@@ -461,7 +460,7 @@ public class ChildRegisterReportFragment extends RxFragment{
 
                     @Override
                     public void onNext(ArrayList<ViewChildRegisterInfoRow> mVar) {
-
+                        adapter = new ChildRegisterReportRecyclerAdapter(mVar,getActivity());
                     }
                 });
 
