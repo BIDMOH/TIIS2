@@ -436,7 +436,6 @@ public class ChildRegisterReportFragment extends RxFragment{
 
                         } while (cursor.moveToNext());
 
-
                     }
                     cursor.close();
                 }
