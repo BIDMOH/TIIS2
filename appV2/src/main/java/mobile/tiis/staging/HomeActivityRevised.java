@@ -263,10 +263,10 @@ public class HomeActivityRevised extends BackboneActivity {
 
         }
 
-        sync_needed = true;
-        boolean secondSyncNeeded = false, firstLoginOfDaySyncNeeded = false;
-        sync_needed = sync_preferences.getBoolean("synchronization_needed", true);
-        secondSyncNeeded = true;
+        boolean secondSyncNeeded, firstLoginOfDaySyncNeeded = false;
+        sync_needed = sync_preferences.getBoolean("synchronization_needed", false);
+        secondSyncNeeded = sync_preferences.getBoolean("secondSyncNeeded", false);
+        Log.d(TAG,"second sync needed = "+secondSyncNeeded);
         firstLoginOfDaySyncNeeded = sync_preferences.getBoolean("firstLoginOfDaySyncNeeded", false);
         if (app.getLOGGED_IN_FIRSTNAME() == null && app.getLOGGED_IN_LASTNAME() == null && app.getUsername() == null) {
             Log.d("CHECHINGLOGOUT", "No user creds found in the application upon starting the activiry");
@@ -281,7 +281,6 @@ public class HomeActivityRevised extends BackboneActivity {
                 else
                     new firstLoginOfDaySynchronisation().execute(0);
             } else if (Utils.isOnline(this) && secondSyncNeeded) {
-                Log.e("RUBIN", "RUBIN secondSyncNeeded");
                 try {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
                         new updateSynchronisation().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, 0);
@@ -630,7 +629,7 @@ public class HomeActivityRevised extends BackboneActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             if (!DatabaseHandler.dbPreinstalled)
-                Toast.makeText(getApplicationContext(), "Database synchronization started.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Main Database synchronization started.", Toast.LENGTH_LONG).show();
             alertDialog = alertDialogBuilder.create();
             alertDialog.show();
         }
@@ -682,13 +681,7 @@ public class HomeActivityRevised extends BackboneActivity {
                 }
 
             }
-            BackboneApplication app = (BackboneApplication) getApplication();
 
-            SharedPreferences.Editor editor = sync_preferences.edit();
-            editor.putBoolean("synchronization_needed", false);
-            editor.putBoolean("secondSyncNeeded", false);
-            editor.commit();
-            app.setMainSyncronizationNeededStatus(false);
             alertDialog.dismiss();
             //Starting the repeating synchronisation procedure that happens every week
             // and pulls changes done to some main tables
@@ -702,13 +695,17 @@ public class HomeActivityRevised extends BackboneActivity {
             Log.e("SYNC FINISHED", "Database synchronization finished.");
 
 
+            SharedPreferences.Editor editor = sync_preferences.edit();
+            editor.putBoolean("synchronization_needed", false);
+            editor.apply();
+            ((BackboneApplication)getApplication()).setMainSyncronizationNeededStatus(false);
+
             //Starting the repeating synchronisation procedure that happens every 10 minutes
             // and pulls changes done to children or children added
             RoutineAlarmReceiver.setAlarmCheckForChangesInChild(HomeActivityRevised.this);
 
             if (!DatabaseHandler.dbPreinstalled)
                 Toast.makeText(getApplicationContext(), "mainSynchronisation finished.", Toast.LENGTH_LONG).show(
-
                 );
         }
     }
@@ -763,6 +760,10 @@ public class HomeActivityRevised extends BackboneActivity {
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
             Log.e("SYNC FINISHED", "Database synchronization finished.");
+
+            SharedPreferences.Editor ep = sync_preferences.edit();
+            ep.putBoolean("secondSyncNeeded", false);
+            ep.apply();
         }
     }
 
@@ -772,12 +773,10 @@ public class HomeActivityRevised extends BackboneActivity {
             BackboneApplication app = (BackboneApplication) getApplication();
             ImageView wifi_logo = (ImageView)findViewById(R.id.home_wifi_icon);
             if(Utils.isOnline(context)){
-//                wifi_logo.setBackgroundColor(0xff00ff00);
                 wifi_logo.setImageResource(R.drawable.network_on);
                 app.setOnlineStatus(true);
             }
             else{
-//                wifi_logo.setBackgroundColor(0xffff0000);
                 wifi_logo.setImageResource(R.drawable.network_off);
                 app.setOnlineStatus(false);
             }
