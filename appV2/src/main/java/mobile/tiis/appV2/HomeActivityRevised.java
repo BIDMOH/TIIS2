@@ -270,7 +270,7 @@ public class HomeActivityRevised extends BackboneActivity {
         }
 
         boolean secondSyncNeeded, firstLoginOfDaySyncNeeded = false;
-        sync_needed = sync_preferences.getBoolean("synchronization_needed", false);
+        sync_needed = sync_preferences.getBoolean("synchronization_needed", true);
         secondSyncNeeded = sync_preferences.getBoolean("secondSyncNeeded", false);
         Log.d(TAG,"second sync needed = "+secondSyncNeeded);
         firstLoginOfDaySyncNeeded = sync_preferences.getBoolean("firstLoginOfDaySyncNeeded", false);
