@@ -231,7 +231,7 @@
     <string name="there_are_no_children">There are no children that match the search criteria!</string>
     <string name="btn_register">Register Child</string>
 
-    <string name="alert_empty_fields">Please check your data and fill all fields</string>
+    <string name="alert_empty_fields">Please check your data</string>
     <string name="empty_barcode">The barcode field can not be empty!</string>
     <string name="change_barcode_scan_when_exists_dialog">This child already has a barcode, are you sure you want to assign another one?</string>
     <string name="empty_child_id">The child Id field can not be empty</string>
