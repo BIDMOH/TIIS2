@@ -594,7 +594,6 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
 
         Log.d("registrar", placeOfBirthSpinner.getSelectedItemPosition()+"");
         Log.d("registrar", placeOfDomicileSpinner.getSelectedItemPosition()+"");
-
         if (etbarcode.getText().toString().isEmpty() || etbarcode.getText().equals("")) {
             etbarcode.setErrorColor(Color.RED);
             etbarcode.setError(getString(R.string.empty_barcode));
@@ -676,10 +675,21 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
         }
 
 
-        if (etChildCumulativeSn.length() > 0){
+        if (etChildCumulativeSn.getText().toString().length() > 0){
             try {
-                if(registryYearSpinner.getSelectedItemPosition() - 1==0){
-                    registryYearSpinner.setError("Please Select the registration Year");
+                Log.d(TAG,"cumulative number filed");
+                Log.d(TAG,"registration year selected position = "+registryYearSpinner.getSelectedItemPosition());
+                if(registryYearSpinner.getSelectedItemPosition()==0){
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity())
+                            .setTitle(getString(R.string.alert_empty_fields))
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    ((AlertDialog) dialog).dismiss();
+                                }
+                            });
+                    alertDialogBuilder.setMessage("Please Select the registration Year");
+                    alertDialogBuilder.show();
+                    return false;
                 }else if(mydb.isChildRegistrationNoPresentInDb(spinnerYears.get(registryYearSpinner.getSelectedItemPosition() - 1), etChildCumulativeSn.getText().toString(), etbarcode.getText().toString())) {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity())
                             .setTitle(getString(R.string.alert_empty_fields))
@@ -696,6 +706,9 @@ public class RegisterChildFragment extends RxFragment implements DatePickerDialo
             }catch (Exception e ){
                 e.printStackTrace();
             }
+        }else if(registryYearSpinner.getSelectedItemPosition()!=0){
+            etChildCumulativeSn.setError("Please fill the child registration number");
+            return false;
         }
 
         if(!catchment.equals("inside") && registerHealthFacilityId.equals("")){
