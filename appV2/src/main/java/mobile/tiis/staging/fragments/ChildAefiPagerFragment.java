@@ -348,6 +348,7 @@ public class ChildAefiPagerFragment extends RxFragment implements DatePickerDial
             @Override
             public Observable<Boolean> call() {
                 // Do some long running operation
+                chkHadAefi.setChecked(false);
                 aefiItems.clear();
                 aefiListtemp = mydb.getAefiVaccinationAppointement(childId);
                 return Observable.just(true);
