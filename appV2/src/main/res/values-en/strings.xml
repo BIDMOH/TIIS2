@@ -245,7 +245,7 @@
     <string name="empty_healthfacility">Please select health facility</string>
     <string name="empty_status">Please select status</string>
     <string name="child_change_data_saved_success">Saved successfully!</string>
-    <string name="child_change_data_saved_error">Error!Changes not saved!</string>
+    <string name="child_change_data_saved_error">Changes not saved!</string>
     <string name="btn_clear">Clear</string>
     <string name="vaccine_lot">Lot Number</string>
     <string name="vaccination_date">Vaccination Date</string>

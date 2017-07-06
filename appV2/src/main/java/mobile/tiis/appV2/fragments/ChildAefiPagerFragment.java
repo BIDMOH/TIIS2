@@ -185,7 +185,7 @@ public class ChildAefiPagerFragment extends RxFragment implements DatePickerDial
                     }
                 });
         ContentValues contentValues = new ContentValues();
-        if (lastAppointementAefi != null) {
+        if (lastAppointementAefi != null && chkHadAefi.isChecked()) {
             if (chkHadAefi.isChecked() != lastAppointementAefi.isAefi()) {
                 lastAppointementAefi.setAefi(chkHadAefi.isChecked());
                 if (chkHadAefi.isChecked())
@@ -292,7 +292,7 @@ public class ChildAefiPagerFragment extends RxFragment implements DatePickerDial
                                 topListAdapter = new AefiTopListAdapter(ChildAefiPagerFragment.this.getActivity(), lastAppointementAefiList);
                                 topListView.setAdapter(topListAdapter);
 
-                                chkHadAefi.setChecked(true);
+//                                chkHadAefi.setChecked(true);
                                 if (lastAppointementAefi.getAefiDate() != null)
                                     btnAefiDate.setText(format.format(lastAppointementAefi.getAefiDate()));
                                 else
@@ -348,6 +348,7 @@ public class ChildAefiPagerFragment extends RxFragment implements DatePickerDial
             @Override
             public Observable<Boolean> call() {
                 // Do some long running operation
+                chkHadAefi.setChecked(false);
                 aefiItems.clear();
                 aefiListtemp = mydb.getAefiVaccinationAppointement(childId);
                 return Observable.just(true);
