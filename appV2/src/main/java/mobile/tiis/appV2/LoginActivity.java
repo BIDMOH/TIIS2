@@ -649,13 +649,17 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
 
                     Bundle extras = LoginActivity.this.getIntent().getExtras();
                     if (extras != null) {
-                        if (accountCreated) {  //Pass the new account back to the account manager
-                            AccountAuthenticatorResponse response = extras.getParcelable(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
-                            Bundle res = new Bundle();
-                            res.putString(AccountManager.KEY_ACCOUNT_NAME, username);
-                            res.putString(AccountManager.KEY_ACCOUNT_TYPE, ACCOUNT_TYPE);
-                            res.putString(AccountManager.KEY_PASSWORD, password);
-                            response.onResult(res);
+                        try {
+                            if (accountCreated) {  //Pass the new account back to the account manager
+                                AccountAuthenticatorResponse response = extras.getParcelable(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
+                                Bundle res = new Bundle();
+                                res.putString(AccountManager.KEY_ACCOUNT_NAME, username);
+                                res.putString(AccountManager.KEY_ACCOUNT_TYPE, ACCOUNT_TYPE);
+                                res.putString(AccountManager.KEY_PASSWORD, password);
+                                response.onResult(res);
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
                         }
                     }
 

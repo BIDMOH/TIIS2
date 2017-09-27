@@ -226,6 +226,11 @@ public class PostmanSynchronizationService extends Service {
                                                     e.printStackTrace();
                                                 }
                                             }while(res1==-99);
+
+                                            if(p.getResponseType()-1 <-10){
+                                                db.deletePostFromPostman(p.getPostId());
+                                            }
+
                                         }
                                     }
                                 }
