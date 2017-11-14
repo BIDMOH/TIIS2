@@ -645,7 +645,13 @@ public class LoginActivity extends BackboneActivity implements View.OnClickListe
                     Account account = new Account(username, ACCOUNT_TYPE);
                     AccountManager accountManager = AccountManager.get(LoginActivity.this);
 //                        boolean accountCreated = accountManager.addAccountExplicitly(account, LoginActivity.this.password, null);
-                    boolean accountCreated = accountManager.addAccountExplicitly(account, password, null);
+
+                    boolean accountCreated=false;
+                    try {
+                        accountCreated = accountManager.addAccountExplicitly(account, password, null);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
 
                     Bundle extras = LoginActivity.this.getIntent().getExtras();
                     if (extras != null) {
